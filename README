@@ -1,0 +1,26 @@
+IEEE 802.15.4 Low-Rate Wireless Personal Area Network (WPAN)
+============================================================
+
+
+IEEE 802.15.4 defines physical layers and a media access control for
+wireless networks. ZigBee and 6loWPAN are based on IEEE 802.15.4.
+
+This project aims to add experimental WPAN functionality to the Ben
+NanoNote, in order to permit evaluation of overall network performance
+and to examine possible integration into future devices.
+
+
+Hardware architecture
+---------------------
+
+IEEE 802.15.4 transceiver chips are available from several manufacturers,
+including Atmel, Freescale, and Texas Instruments. These chips are similar
+in size, functionality, and cost. The first prototype is based on the
+Atmel AT86RF230.
+
+The RF module will be physically placed on the left side of the LCD
+module, replacing part of the display's PCB.
+
+When installed in the Ben, the transceiver will connect directly via SPI
+to the Jz4720. For development, a SiLabs C8051F326 microcontroller
+implements a USB to SPI conversion.

@@ -1,0 +1,24 @@
+N: at86rf230
+A: transceiver
+A: txrx
+D: http://www.atmel.com/dyn/resources/prod_documents/doc5131.pdf
+
+N: c8051f326
+A: mcu
+D: http://www.silabs.com/Support Documents/TechnicalDocs/C8051F326.pdf
+
+# AN043 -- Small Size 2.4 GHz PCB Antenna (Rev. D)
+N: AN043
+A: antenna
+D: http://focus.ti.com/lit/an/swra117d/swra117d.pdf
+
+# AVR2004: LC-Balun for AT86RF230
+N: avr2004
+A: balun
+D: http://www.atmel.com/dyn/resources/prod_documents/doc8113.pdf
+
+# AVR2005: Design Considerations for the AT86RF230
+N: avr2005
+A: at86rf230-design
+A: design
+D: http://www.atmel.com/dyn/resources/prod_documents/doc8092.pdf
