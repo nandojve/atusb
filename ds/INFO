@@ -22,3 +22,13 @@ N: avr2005
 A: at86rf230-design
 A: design
 D: http://www.atmel.com/dyn/resources/prod_documents/doc8092.pdf
+
+# Mini-USB B receptacle (this footprint is fairly universal)
+N: mini_usb_b
+D: http://jae-connector.com/en/pdf/SJ037525.pdf
+# D: http://documents.tycoelectronics.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv&DocNm=1734035&DocType=CD&DocLang=EN
+
+# Footprints of standard rectangular passive components
+N: stdpass
+D: http://www.vishay.com/doc?20035
+
