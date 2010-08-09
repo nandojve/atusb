@@ -1,0 +1,10 @@
+#
+# Tags:
+#
+# F	Footprint name (must be first)
+# D	Data sheet identifier (N tag of ds/INFO)
+#
+
+# TI meandered inverted F antenna
+F: meander
+D: AN043
