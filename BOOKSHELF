@@ -1,3 +1,11 @@
+#
+# Tags:
+#
+# N	name to use for dsv (must be first)
+# A	alias name(s)
+# D	data sheet url
+#
+
 N: at86rf230
 A: transceiver
 A: txrx
@@ -30,5 +38,4 @@ D: http://jae-connector.com/en/pdf/SJ037525.pdf
 
 # Footprints of standard rectangular passive components
 N: stdpass
-D: http://www.vishay.com/doc?20035
-
+D: http://www.vishay.com/docs/20035/dcrcwe3.pdf

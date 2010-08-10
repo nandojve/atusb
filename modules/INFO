@@ -2,12 +2,12 @@
 # Tags:
 #
 # F	Footprint name (must be first)
-# D	Data sheet identifier (N tag of ds/INFO; can be omitted if equal to F)
+# N	Data sheet identifier (N tag of BOOKSHELF; can be omitted if equal to F)
 #
 
 # TI meandered inverted F antenna
 F: meander
-D: AN043
+N: AN043
 
 # Mini-USB B receptable (SMT; almost generic)
 F: mini_usb_b
