@@ -11,3 +11,6 @@ S: c8051f326
 
 # mini_usb_b (generic)
 S: mini_usb_b
+
+# Atmel AT86RF230 2.4 GHz Transceiver for IEEE 802.15.4
+S: at86rf230
