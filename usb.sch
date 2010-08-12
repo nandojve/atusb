@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Thu Aug 12 15:50:03 2010
+EESchema Schematic File Version 2  date Thu Aug 12 16:00:30 2010
 LIBS:power
 LIBS:device
 LIBS:conn
@@ -21,8 +21,9 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
+Connection ~ 3700 2900
 Wire Wire Line
-	4750 3450 4750 4500
+	3700 2700 3700 4050
 Wire Wire Line
 	5050 1800 5050 1600
 Wire Wire Line
@@ -50,7 +51,7 @@ Wire Wire Line
 Wire Wire Line
 	6900 6150 6900 4600
 Wire Wire Line
-	5600 4800 6750 4800
+	6750 4800 5600 4800
 Connection ~ 5600 3650
 Wire Wire Line
 	5600 4800 5600 3650
@@ -64,9 +65,9 @@ Wire Wire Line
 Wire Wire Line
 	5150 4900 5150 5100
 Wire Wire Line
-	5150 3350 5800 3350
+	5800 3350 5150 3350
 Wire Wire Line
-	5150 4500 5150 3350
+	5150 3350 5150 4500
 Wire Wire Line
 	2350 3350 2550 3350
 Connection ~ 1000 3050
@@ -75,12 +76,12 @@ Wire Wire Line
 Wire Wire Line
 	1000 3500 1200 3500
 Wire Wire Line
-	1000 2900 1200 2900
+	1200 2900 1000 2900
 Wire Wire Line
 	1000 3350 1200 3350
 Connection ~ 1000 3350
 Wire Wire Line
-	1000 3700 1000 2900
+	1000 2900 1000 3700
 Connection ~ 1000 3500
 Wire Wire Line
 	2350 3500 2550 3500
@@ -98,8 +99,6 @@ Wire Wire Line
 Connection ~ 3100 3200
 Wire Wire Line
 	3700 2900 2350 2900
-Wire Wire Line
-	3700 4050 3700 2900
 Wire Wire Line
 	3400 4550 3400 4750
 Wire Wire Line
@@ -141,15 +140,21 @@ Wire Wire Line
 	5600 2550 5600 2750
 Wire Wire Line
 	5600 2750 5800 2750
+Wire Wire Line
+	4750 4500 4750 3650
+Text Label 2550 3200 0    60   ~ 0
+D+
+Text Label 2550 3050 0    60   ~ 0
+D-
 Text Notes 1100 1200 0    200  ~ 40
 USB
 $Comp
 L VDD #PWR05
 U 1 1 4C64122B
-P 4750 3450
-F 0 "#PWR05" H 4750 3550 30  0001 C CNN
-F 1 "VDD" H 4750 3560 30  0000 C CNN
-	1    4750 3450
+P 3700 2700
+F 0 "#PWR05" H 3700 2800 30  0001 C CNN
+F 1 "VDD" H 3700 2810 30  0000 C CNN
+	1    3700 2700
 	1    0    0    -1  
 $EndComp
 $Comp
