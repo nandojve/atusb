@@ -5,6 +5,7 @@ Alvaro Lopes <alvieboy@alvie.com>
 
 Rene Harder <rehar@saweb.de>
 
+  components/antenna.lib
   modules/mini-usb.fpd
 
 Werner Almesberger <werner@openmoko.org>

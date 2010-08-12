@@ -16,7 +16,7 @@ frame antenna {
 	__2: vec .(D5, 0mm)
 	__3: vec .(W2, 0mm)
 	__4: vec @(-W1/2, D4/2)
-	pad "GND" __0 .
+	pad "1" __0 .
 	pad "X" . __1
 	__5: vec .(-D1, 0mm)
 	__6: vec __1(-W1, 0mm)
@@ -29,7 +29,7 @@ frame antenna {
 	pad "X" __6 .
 	__10: vec __3(0mm, -L6)
 	__11: vec .(-W2, D4)
-	pad "FEED" . __10
+	pad "2" . __10
 	pad "X" . __3
 	__12: vec __7(0mm, -L4)
 	__13: vec .(W2, 0mm)

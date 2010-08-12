@@ -19,3 +19,6 @@ S: at86rf230
 # the rest is ground)
 S: xtal-4
 N: nx3225sa
+
+# Generic antenna with ground on pin 1, feed on pin 2
+S: antenna
