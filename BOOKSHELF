@@ -47,3 +47,14 @@ D: http://www.nxp.com/documents/outline_drawing/sot617-3_po.pdf
 
 N: atmel-qfn
 D: http://www.atmel.com/dyn/resources/prod_documents/doc8583.pdf
+
+# NDK NX3225SA OA/AV/SRW crystals
+N: nx3225sa
+A: xtal
+D: http://www.ndk.com/images/products/catalog/c_NX3225SA-STD-CSR-3_e.pdf
+#
+# Digi-Key's version:
+#D: http://media.digikey.com/pdf/Data Sheets/NDK PDFs/NX3225SA.pdf?cshift_ck=null&client_id=5042&cshift_ck=null&client_id=5042
+#
+
+

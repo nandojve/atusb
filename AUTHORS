@@ -1,6 +1,7 @@
 Alvaro Lopes <alvieboy@alvie.com>
 
   components/mini_usb_b.lib
+  components/xtal-4.lib (originally tas4025a.lib)
 
 Rene Harder <rehar@saweb.de>
 
@@ -13,3 +14,4 @@ Werner Almesberger <werner@openmoko.org>
   modules/meander.fpd
   modules/qfn.fpd
   modules/stdpass.fpd
+  modules/xtal-4.fpg
