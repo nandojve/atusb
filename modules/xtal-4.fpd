@@ -32,7 +32,7 @@ frame outline {
 	line . __1 w
 }
 
-package "xtal-4-${Dx}x${Dy}"
+package "xtal4-${Dx}x${Dy}"
 unit mm
 
 table

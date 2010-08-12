@@ -13,6 +13,7 @@ Werner Almesberger <werner@openmoko.org>
   components/at86rf230.lib
   components/c8051f326.lib
   modules/meander.fpd
+  modules/pads.fpd
   modules/qfn.fpd
   modules/stdpass.fpd
   modules/xtal-4.fpg

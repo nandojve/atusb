@@ -41,3 +41,6 @@ N: sot617-3-lp
 # numbering is counter-clockwise)
 F: xtal-4
 N: nx3225sa
+
+# Solder pads and test points
+F: pads
