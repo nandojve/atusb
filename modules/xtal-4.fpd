@@ -47,3 +47,5 @@ measx pads.__0 -> pads.__0 1mm+Py/2+Gy
 measy pads.__0 -> pads.__0 -1mm-Px/2-Gx
 measy pad.__1 -> pad.__0 1mm
 measx pad.__1 -> pad.__0 -1mm
+measx outline.__0 >> outline.__0 Gy/2+Py/2+1.5mm
+measy outline.__0 >> outline.__0 -(Gx/2+Px/2+1.5mm)
