@@ -14,3 +14,25 @@ F: mini_usb_b
 
 # Standard rectangular passive components
 F: stdpass
+
+# "Generic" simple QFN
+F: qfn
+#
+# The information for these packages comes from various sources:
+#
+# - the C8051F326 data sheet, for the QFN28 footprint (N: mcu)
+# - the AT86F326 data sheet, for the QFN32 package dimensions (N: txrx)
+# - Atmel's general recommendations for QFN land patterns (N: atmel-qfn)
+# - NXP's SOT617-1 and SOT617-3, for package and land pattern:
+#   http://www.nxp.com/package/SOT617-1.html
+#   http://www.nxp.com/package/SOT617-3.html
+#
+# Known bugs:
+#
+# - we should distribute the solder paste in an array of small
+#   squares instead of just covering the whole center pad.
+# - really ought to merge all the various QFN definitions (we have more
+#   over at gta02-core) into a single QFN file with a big mean table of
+#   everything
+#
+N: sot617-3-lp

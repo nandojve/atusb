@@ -39,3 +39,11 @@ D: http://jae-connector.com/en/pdf/SJ037525.pdf
 # Footprints of standard rectangular passive components
 N: stdpass
 D: http://www.vishay.com/docs/20035/dcrcwe3.pdf
+
+# NXP SOT617-3 package (QFN32 with a 3.6 x 3.6 mm center pad)
+N: sot617-3-lp
+A: nxp-qfn32-lp
+D: http://www.nxp.com/documents/outline_drawing/sot617-3_po.pdf
+
+N: atmel-qfn
+D: http://www.atmel.com/dyn/resources/prod_documents/doc8583.pdf
