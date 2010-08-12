@@ -1,0 +1,15 @@
+Alvaro Lopes <alvieboy@alvie.com>
+
+  components/mini_usb_b.lib
+
+Rene Harder <rehar@saweb.de>
+
+  modules/mini-usb.fpd
+
+Werner Almesberger <werner@openmoko.org>
+
+  components/at86rf230.lib
+  components/c8051f326.lib
+  modules/meander.fpd
+  modules/qfn.fpd
+  modules/stdpass.fpd

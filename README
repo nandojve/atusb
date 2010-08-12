@@ -9,6 +9,8 @@ This project aims to add experimental WPAN functionality to the Ben
 NanoNote, in order to permit evaluation of overall network performance
 and to examine possible integration into future devices.
 
+This work is licensed under the terms detailed in the file COPYING.
+
 
 Hardware architecture
 ---------------------
