@@ -57,4 +57,7 @@ D: http://www.ndk.com/images/products/catalog/c_NX3225SA-STD-CSR-3_e.pdf
 #D: http://media.digikey.com/pdf/Data Sheets/NDK PDFs/NX3225SA.pdf?cshift_ck=null&client_id=5042&cshift_ck=null&client_id=5042
 #
 
-
+# Lite-On 0603 LED, super red
+N: ltst-c190krkt
+A: led
+D: http://optoelectronics.liteon.com/en-us/api/DwonloadFileHandler.ashx?txtSpecNo=DS-22-99-0151&txtPartNo=LTST-C190KRKT
