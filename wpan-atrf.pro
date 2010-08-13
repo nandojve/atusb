@@ -1,5 +1,5 @@
-update=Mon Aug  9 21:08:19 2010
-last_client=eeschema
+update=Thu Aug 12 22:33:41 2010
+last_client=pcbnew
 [eeschema]
 version=1
 LibDir=
@@ -44,3 +44,34 @@ LibName5=components/c8051f326
 LibName6=components/mini_usb_b
 LibName7=components/xtal-4
 LibName8=components/antenna
+[cvpcb]
+version=1
+NetIExt=net
+[cvpcb/libraries]
+EquName1=devcms
+[pcbnew]
+version=1
+PadDrlX=320
+PadDimH=600
+PadDimV=600
+BoardThickness=630
+SgPcb45=1
+TxtPcbV=800
+TxtPcbH=600
+TxtModV=600
+TxtModH=600
+TxtModW=120
+VEgarde=100
+DrawLar=150
+EdgeLar=150
+TxtLar=120
+MSegLar=150
+LastNetListRead=wpan-atrf.net
+[pcbnew/libraries]
+LibDir=
+LibName1=modules/meander
+LibName2=modules/mini-usb
+LibName3=modules/pads
+LibName4=modules/qfn
+LibName5=modules/stdpass
+LibName6=modules/xtal-4
