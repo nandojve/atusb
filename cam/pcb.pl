@@ -62,7 +62,7 @@ sub one
 }
 
 
-z = -0.8
+$z = -0.8;
 # x: corner offset, compensation for rotation, array position
 # y: corner offet
 &orig(5+16+22*3, 5)
