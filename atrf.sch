@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Thu Aug 12 19:20:23 2010
+EESchema Schematic File Version 2  date Wed Aug 18 16:13:59 2010
 LIBS:power
 LIBS:device
 LIBS:conn
@@ -13,7 +13,7 @@ EELAYER END
 $Descr A4 11700 8267
 Sheet 3 3
 Title ""
-Date "12 aug 2010"
+Date "18 aug 2010"
 Rev ""
 Comp ""
 Comment1 ""
@@ -22,7 +22,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 Text Label 9900 4650 0    60   ~ 0
-CLKN
+CLKM
 Text Label 6000 4500 0    60   ~ 0
 TST
 Text Label 6000 4200 0    60   ~ 0
