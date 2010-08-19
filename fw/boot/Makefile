@@ -18,14 +18,4 @@ F32XBASE = ../../../f32xbase
 include $(F32XBASE)/fw/common/Makefile.system
 include $(F32XBASE)/fw/common/Makefile.common
 
-CFLAGS += -DLOW_SPEED
 LDFLAGS += --code-size $(PAYLOAD_START)
-
-boot.rel:	$(F32XBASE)/fw/boot/boot.c
-		$(CC) $(CFLAGS) -o $@ -c $<
-
-usb.rel:	$(F32XBASE)/fw/common/usb.c
-		$(CC) $(CFLAGS) -o $@ -c $<
-
-dfu.rel:	$(F32XBASE)/fw/boot/dfu.c
-		$(CC) $(CFLAGS) -o $@ -c $<
