@@ -19,7 +19,7 @@ F32XBASE = ../../../f32xbase
 include $(F32XBASE)/fw/common/Makefile.system
 include $(F32XBASE)/fw/common/Makefile.common
 
-CFLAGS += -I../include
+CFLAGS += -I../common -I../include
 LDFLAGS += --code-size $(PAYLOAD_SIZE) --code-loc $(PAYLOAD_START)
 
 USB_ID = $(shell \

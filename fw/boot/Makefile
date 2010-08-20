@@ -18,4 +18,5 @@ F32XBASE = ../../../f32xbase
 include $(F32XBASE)/fw/common/Makefile.system
 include $(F32XBASE)/fw/common/Makefile.common
 
+CFLAGS += -I../common
 LDFLAGS += --code-size $(PAYLOAD_START)
