@@ -15,18 +15,7 @@
 
 #include "io.h"
 #include "io-parts.h"
-
-
-/*
- *  Platform-specific settings
- *
- * USB_VENDOR = Qi Hardware
- * USB_PRODUCT = 802.15.4, device 0
- *                   -- -         -
- */
-
-#define	USB_VENDOR	0x20b7
-#define	USB_PRODUCT	0x1540
+#include "atspi/usb-ids.h"
 
 
 /* ----- Boot loader configuration ----------------------------------------- */
