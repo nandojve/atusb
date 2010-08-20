@@ -25,7 +25,7 @@ static void init_io(void)
 	 *
 	 * MOSI		push-pull	0
 	 * MISO		open drain	1	(input)
-	 * SCLK		push-pull	1
+	 * SCLK		push-pull	0
 	 * nSS		push-pull	1
 	 * nRST_RF	push-pull	1
 	 * IRQ_RF	open drain	1	(input)
@@ -37,22 +37,22 @@ static void init_io(void)
 	 */
 
 	MOSI = 0;
-	MOSI_MODE = 1;
+	MOSI_MODE |= 1 << MOSI_BIT;
 
 	SCLK = 0;
-	SCLK_MODE = 1;
+	SCLK_MODE |= 1 << SCLK_BIT;
 
-	nSS_MODE = 1;
+	nSS_MODE |= 1 << nSS_BIT;
 
-	nRST_RF_MODE = 1;
+	nRST_RF_MODE |= 1 << nRST_RF_BIT;
 
 	SLP_TR = 0;
-	SLP_TR_MODE = 1;
+	SLP_TR_MODE |= 1 << SLP_TR_BIT;
 
 	P0 &=
 	    ~((1 << 0) | (1 << 3) | (1 << 4) | (1 << 5) | (1 << 6) | (1 << 7));
+	    /* change 1 << 0 to 1 << 2 once 100813 boards are reworked */
 	P3 = 0;
-	
 }
 
 

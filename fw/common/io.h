@@ -28,7 +28,7 @@
 /* Miscellaneous RF signals */
 
 #define	nRST_RF	P2_0
-#define	IRQ_RF	P0_2
+#define	IRQ_RF	P0_2	/* change to P0_0 when 100813 board are reworked */
 #define	SLP_TR	P2_1
 
 #endif /* !IO_H */
