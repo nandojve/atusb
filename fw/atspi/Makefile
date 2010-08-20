@@ -24,7 +24,7 @@ LDFLAGS += --code-size $(PAYLOAD_SIZE) --code-loc $(PAYLOAD_START)
 
 USB_ID = $(shell \
   ( echo '\#include "config.h"'; echo USB_VENDOR:USB_PRODUCT; ) | \
-  cpp -I../common | sed '/^ *$$/d;/^\#/d' )
+  cpp -I../common -I../include | sed '/^ *$$/d;/^\#/d' )
 
 .PHONY:		dfu
 

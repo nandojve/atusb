@@ -1,5 +1,5 @@
 /*
- * atspi/atspi.c - ATSPIinitialization and main loop
+ * atspi/atspi.c - ATSPI initialization and main loop
  *
  * Written 2008-2010 by Werner Almesberger
  * Copyright 2008-2010 Werner Almesberger
