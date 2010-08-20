@@ -29,6 +29,31 @@
 #define error(...)
 
 
+/*
+ * SDCC 2.8.0 had a number of code generation bugs that appeared in the big
+ * switch statement of my_setup. SDCC_FORCE_UPDATE forced the value of the
+ * "size" variable to be written to memory. This work-around doesn't seem
+ * to be necessary with 2.9.0, but we keep it around, just in case.
+ *
+ * Unfortunately, the setup->bRequest garbling bug is still with us. Without
+ * the evaluation forced with SDCC_FORCE_EVAL, sdcc gets confused about the
+ * value of setup->bRequest and then rejects all SETUP requests.
+ */
+
+#define	SDCC_FORCE_EVAL(type, value)	\
+    do {				\
+	static volatile type foo;	\
+	foo = value;			\
+    } while (0)
+
+#define	SDCC_FORCE_UPDATE(type, var)	\
+    do {				\
+	volatile type foo;		\
+	foo = var;			\
+	var = foo;			\
+    } while (0)
+
+
 static const uint8_t id[] = { EP0ATSPI_MAJOR, EP0ATSPI_MINOR, HW_TYPE };
 static __xdata uint8_t buf[MAX_PSDU+3]; /* command, PHDR, and LQ */
 static uint8_t size;
@@ -73,8 +98,12 @@ static void do_buf_write(void *user)
 }
 
 
+#define	BUILD_OFFSET	7	/* '#' plus "65535" plus ' ' */
+
+
 static __bit my_setup(struct setup_request *setup) __reentrant
 {
+	unsigned tmp;
 	uint8_t i;
 
 	switch (setup->bmRequestType | setup->bRequest << 8) {
@@ -84,22 +113,24 @@ static __bit my_setup(struct setup_request *setup) __reentrant
 			return 0;
 		usb_send(&ep0, id, setup->wLength, NULL, NULL);
 		return 1;
-	case ATSPI_FROM_DEV(ATSPI_BUILD_NUMBER):
-		debug("ATSPI_BUILD_NUMBER\n");
-		if (setup->wLength > 2)
-			return 0;
-		usb_send(&ep0, (void *) &build_number, setup->wLength,
-		    NULL, NULL);
-		return 1;
-	case ATSPI_FROM_DEV(ATSPI_BUILD_DATE):
-		debug("ATSPI_BUILD_DATE\n");
-		for (size = 0; build_date[size]; size++);
-		if (size > EP1_SIZE)
-			return 0;
+	case ATSPI_FROM_DEV(ATSPI_BUILD):
+		debug("ATSPI_BUILD\n");
+		tmp = build_number;
+		for (i = BUILD_OFFSET-2; tmp; i--) {
+			buf[i] = (tmp % 10)+'0';
+			tmp /= 10;
+		}
+		buf[i] = '#';
+		buf[BUILD_OFFSET-1] = ' ';
+		for (size = 0; build_date[size]; size++)
+			buf[BUILD_OFFSET+size] = build_date[size];
+		size += BUILD_OFFSET-i+1;
+		SDCC_FORCE_EVAL(uint8_t, setup->bRequest);
 		if (size > setup->wLength)
 			return 0;
-		usb_send(&ep0, build_date, size, NULL, NULL);
+		usb_send(&ep0, buf+i, size, NULL, NULL);
 		return 1;
+
 	case ATSPI_TO_DEV(ATSPI_RESET):
 		debug("ATSPI_RESET\n");
 		RSTSRC = SWRSF;
@@ -180,6 +211,7 @@ static __bit my_setup(struct setup_request *setup) __reentrant
 		nSS = 1;
 		usb_send(&ep0, buf, size, NULL, NULL);
 		return 1;
+#endif
 
 	default:
 		error("Unrecognized SETUP: 0x%02x 0x%02x ...\n",

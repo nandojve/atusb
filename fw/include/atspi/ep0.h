@@ -18,9 +18,8 @@
  * Direction	bRequest		wValue		wIndex	wLength
  *
  * ->host	ATSPI_ID		-		-	3
+ * ->host	ATSPI_BUILD		-		-	#bytes
  * host->	ATSPI_RESET		-		-	0
- * ->host	ATSPI_BUILD_NUMBER	-		-	2
- * ->host	ATSPI_BUILD_DATE	-		-	#bytes
  *
  * host->	ATSPI_RF_RESET		-		-	
  *
@@ -61,9 +60,8 @@
 
 enum atspi_requests {
 	ATSPI_ID			= 0x00,
+	ATSPI_BUILD,
 	ATSPI_RESET,
-	ATSPI_BUILD_NUMBER,
-	ATSPI_BUILD_DATE,
 	ATSPI_RF_RESET			= 0x10,
 	ATSPI_REG_WRITE			= 0x20,
 	ATSPI_REG_READ,
