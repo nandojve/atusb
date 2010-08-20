@@ -1,5 +1,5 @@
 #
-# atspi/Makefile - Build the ATSPI identification utility
+# lib/Makefile - Build the ATSPI library
 #
 # Written 2010 by Werner Almesberger
 # Copyright 2010 Werner Almesberger
@@ -13,9 +13,20 @@
 
 F32XBASE = ../../../f32xbase
 
-MAIN = atspi-id
+LIB = libatspi.a
 
-include $(F32XBASE)/lib/Makefile.common
+CFLAGS = -Wall -I$(F32XBASE)/include -I../../fw/include -I../include
+OBJS = $(F32XBASE)/lib/usb.o atspi.o
 
-CFLAGS += -I../../fw/include -I../include
-LDLIBS += -L../lib -latspi
+.PHONY:		all clean spotless
+
+all:		$(LIB)
+
+$(LIB):		$(OBJS)
+		$(AR) cr $@ $^
+
+clean:
+		rm -f $(OBJS)
+
+spotless:	clean
+		rm -f $(LIB)

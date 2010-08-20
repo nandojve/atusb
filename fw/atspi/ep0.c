@@ -211,7 +211,6 @@ static __bit my_setup(struct setup_request *setup) __reentrant
 		nSS = 1;
 		usb_send(&ep0, buf, size, NULL, NULL);
 		return 1;
-#endif
 
 	default:
 		error("Unrecognized SETUP: 0x%02x 0x%02x ...\n",

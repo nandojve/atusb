@@ -26,4 +26,11 @@ enum at86rf230_spi_cmd {
 #define	MAX_PSDU	127	/* octets, see AT86RF230 manual section 8.1  */
 #define	SRAM_SIZE	128
 
+enum at86rf230_regs {
+	AT86RF230_REG_PART_NUM		= 0x1c,
+	AT86RF230_REG_VERSION_NUM	= 0x1d,
+	AT86RF230_REG_MAN_ID_0		= 0x1e,
+	AT86RF230_REG_MAN_ID_1		= 0x1f,
+};
+
 #endif /* !AT86RF230_H */

@@ -13,10 +13,10 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <usb.h>
 
-#include "f32xbase/usb.h"
 #include "atspi/ep0.h"
-#include "atspi/usb-ids.h"
+#include "atspi.h"
 
 
 #define	FROM_DEV	ATSPI_FROM_DEV(0)
@@ -101,11 +101,9 @@ int main(int argc, const char **argv)
 
 	if (argc != 1)
 		usage(*argv);
-	dev = open_usb(USB_VENDOR, USB_PRODUCT);
-	if (!dev) {
-		fprintf(stderr, ":-(\n");
+	dev = atspi_open();
+	if (!dev)
 		return 1;
-	}
 
 	show_info(dev);
 
