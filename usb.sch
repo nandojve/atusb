@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Wed Aug 18 15:44:36 2010
+EESchema Schematic File Version 2  date Fri Aug 20 17:20:36 2010
 LIBS:power
 LIBS:device
 LIBS:conn
@@ -13,7 +13,7 @@ EELAYER END
 $Descr A4 11700 8267
 Sheet 2 3
 Title ""
-Date "18 aug 2010"
+Date "20 aug 2010"
 Rev ""
 Comp ""
 Comment1 ""
@@ -21,19 +21,24 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
+Connection ~ 5600 1200
+Wire Wire Line
+	5600 1000 5600 2750
+Wire Wire Line
+	8250 1700 8250 1500
+Wire Wire Line
+	8250 1500 8050 1500
+Wire Wire Line
+	6950 1500 6750 1500
 Wire Wire Line
 	3700 4050 3700 2900
 Connection ~ 5150 3350
 Wire Wire Line
-	5150 2700 5150 4500
+	5150 4500 5150 2700
 Wire Wire Line
 	4750 4500 4750 3650
 Wire Wire Line
-	5800 2750 5600 2750
-Wire Wire Line
-	5600 2750 5600 2550
-Wire Wire Line
-	6050 1600 5750 1600
+	5600 2750 5800 2750
 Wire Wire Line
 	9800 5200 7200 5200
 Wire Wire Line
@@ -42,10 +47,6 @@ Wire Wire Line
 	8600 3500 9800 3500
 Wire Wire Line
 	8600 3200 9800 3200
-Wire Wire Line
-	9800 1600 6900 1600
-Wire Wire Line
-	6900 1600 6900 1800
 Wire Wire Line
 	5800 3050 4150 3050
 Wire Wire Line
@@ -62,11 +63,11 @@ Wire Wire Line
 	7050 4600 7050 6150
 Connection ~ 6750 4800
 Wire Wire Line
-	6750 6150 6750 4600
+	6750 4600 6750 6150
 Connection ~ 4750 3650
 Connection ~ 3700 3650
 Wire Wire Line
-	3700 3650 5800 3650
+	5800 3650 3700 3650
 Wire Wire Line
 	3400 4550 3400 4750
 Wire Wire Line
@@ -135,13 +136,12 @@ Wire Wire Line
 Wire Wire Line
 	7350 5100 9800 5100
 Wire Wire Line
-	6750 1800 6750 1600
+	6750 1500 6750 1800
 Wire Wire Line
-	6750 1600 6550 1600
+	7450 1500 7650 1500
 Wire Wire Line
-	5350 1600 5050 1600
-Wire Wire Line
-	5050 1600 5050 1800
+	5600 1200 9800 1200
+NoConn ~ 6900 1800
 Text Label 2550 3200 0    60   ~ 0
 D+
 Text Label 2550 3050 0    60   ~ 0
@@ -160,11 +160,11 @@ $EndComp
 $Comp
 L TST P10
 U 1 1 4C6409BB
-P 5600 2550
-F 0 "P10" H 5600 2850 40  0000 C CNN
-F 1 "TST" H 5600 2800 30  0000 C CNN
-F 2 "PAD_60x60" H 5600 2550 60  0001 C CNN
-	1    5600 2550
+P 5600 1000
+F 0 "P10" H 5600 1300 40  0000 C CNN
+F 1 "TST" H 5600 1250 30  0000 C CNN
+F 2 "PAD_60x60" H 5600 1000 60  0001 C CNN
+	1    5600 1000
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -197,10 +197,10 @@ $EndComp
 $Comp
 L GND #PWR09
 U 1 1 4C6408AD
-P 5050 1800
-F 0 "#PWR09" H 5050 1800 30  0001 C CNN
-F 1 "GND" H 5050 1730 30  0001 C CNN
-	1    5050 1800
+P 8250 1700
+F 0 "#PWR09" H 8250 1700 30  0001 C CNN
+F 1 "GND" H 8250 1630 30  0001 C CNN
+	1    8250 1700
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -313,27 +313,27 @@ $EndComp
 $Comp
 L R R1
 U 1 1 4C6402F2
-P 6300 1600
-F 0 "R1" V 6380 1600 50  0000 C CNN
-F 1 "68" V 6300 1600 50  0000 C CNN
-F 2 "0603" H 6300 1600 60  0001 C CNN
-	1    6300 1600
+P 7200 1500
+F 0 "R1" V 7280 1500 50  0000 C CNN
+F 1 "68" V 7200 1500 50  0000 C CNN
+F 2 "0603" H 7200 1500 60  0001 C CNN
+	1    7200 1500
 	0    1    -1   0   
 $EndComp
 $Comp
 L LED D1
 U 1 1 4C6402EE
-P 5550 1600
-F 0 "D1" H 5550 1700 50  0000 C CNN
-F 1 "LTST-C190KTKR" H 5550 1500 50  0000 C CNN
-F 2 "0603" H 5550 1600 60  0001 C CNN
-	1    5550 1600
-	-1   0    0    -1  
+P 7850 1500
+F 0 "D1" H 7850 1600 50  0000 C CNN
+F 1 "LTST-C190KTKR" H 7850 1400 50  0000 C CNN
+F 2 "0603" H 7850 1500 60  0001 C CNN
+	1    7850 1500
+	1    0    0    -1  
 $EndComp
 NoConn ~ 7350 1800
 NoConn ~ 7200 1800
 NoConn ~ 7050 1800
-Text HLabel 9800 1600 2    60   Input ~ 0
+Text HLabel 9800 1200 2    60   Input ~ 0
 IRQ_RF
 Text HLabel 9800 5200 2    60   Output ~ 0
 nSS
