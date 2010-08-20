@@ -18,8 +18,48 @@
 #include "version.h"
 
 
+static void init_io(void)
+{
+	/*
+	 * Signal	Mode		Value
+	 *
+	 * MOSI		push-pull	0
+	 * MISO		open drain	1	(input)
+	 * SCLK		push-pull	1
+	 * nSS		push-pull	1
+	 * nRST_RF	push-pull	1
+	 * IRQ_RF	open drain	1	(input)
+	 * SLP_TR	push-pull	0
+	 *
+	 * LED		push-pull	0	(set up by boot loader)
+	 *
+	 * all unused	open drain 	0
+	 */
+
+	MOSI = 0;
+	MOSI_MODE = 1;
+
+	SCLK = 0;
+	SCLK_MODE = 1;
+
+	nSS_MODE = 1;
+
+	nRST_RF_MODE = 1;
+
+	SLP_TR = 0;
+	SLP_TR_MODE = 1;
+
+	P0 &=
+	    ~((1 << 0) | (1 << 3) | (1 << 4) | (1 << 5) | (1 << 6) | (1 << 7));
+	P3 = 0;
+	
+}
+
+
 void main(void)
 {
+	init_io();
+
 	usb_init();
 	ep0_init();
 

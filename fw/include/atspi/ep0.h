@@ -17,10 +17,19 @@
 /*
  * Direction	bRequest		wValue		wIndex	wLength
  *
- * ->host	ATSPI_ID		0		0	3
- * host->	ATSPI_RESET		0		0	0
+ * ->host	ATSPI_ID		-		-	3
+ * host->	ATSPI_RESET		-		-	0
  * ->host	ATSPI_BUILD_NUMBER	-		-	2
  * ->host	ATSPI_BUILD_DATE	-		-	#bytes
+ *
+ * host->	ATSPI_RF_RESET		-		-	
+ *
+ * host->	ATSPI_REG_WRITE		value		addr	0
+ * ->host	ATSPI_REG_READ		-		addr	1
+ * host->	ATSPI_BUF_WRITE		-		-	#bytes
+ * ->host	ATSPI_BUF_READ		-		-	#bytes
+ * host->	ATSPI_SRAM_WRITE	-		addr	#bytes
+ * ->host	ATSPI_SRAM_READ		-		addr	#bytes
  */
 
 /*
@@ -55,6 +64,13 @@ enum atspi_requests {
 	ATSPI_RESET,
 	ATSPI_BUILD_NUMBER,
 	ATSPI_BUILD_DATE,
+	ATSPI_RF_RESET			= 0x10,
+	ATSPI_REG_WRITE			= 0x20,
+	ATSPI_REG_READ,
+	ATSPI_BUF_WRITE,
+	ATSPI_BUF_READ,
+	ATSPI_SRAM_WRITE,
+	ATSPI_SRAM_READ,
 };
 
 
