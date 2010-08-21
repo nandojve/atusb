@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <usb.h>
 
+#include "at86rf230.h"
 #include "atspi/ep0.h"
 #include "atspi.h"
 
@@ -72,6 +73,7 @@ static void show_info(usb_dev_handle *dev)
 	uint8_t major, minor, target;
 	char buf[BUF_SIZE+1];	/* +1 for terminating \0 */
 	int len;
+	uint8_t part, version, man_id_0, man_id_1;
 
 	printf("%04x:%04x ",
 	    device->descriptor.idVendor, device->descriptor.idProduct);
@@ -85,6 +87,13 @@ static void show_info(usb_dev_handle *dev)
 		exit(1);
 	buf[len] = 0;
 	printf("%10s%s\n", "", buf);
+
+	part = atspi_reg_read(dev, AT86RF230_REG_PART_NUM);
+	version = atspi_reg_read(dev, AT86RF230_REG_VERSION_NUM);
+	man_id_0 = atspi_reg_read(dev, AT86RF230_REG_MAN_ID_0);
+	man_id_1 = atspi_reg_read(dev, AT86RF230_REG_MAN_ID_1);
+	printf("%10spart 0x%02x version %u manufacturer xxxx%02x%02x\n", "",
+	    part, version, man_id_1, man_id_0);
 }
 
 

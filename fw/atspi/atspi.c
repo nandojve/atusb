@@ -18,6 +18,17 @@
 #include "version.h"
 
 
+void reset_rf(void)
+{
+	int i;
+
+	nRST_RF = 0;
+	/* 11.4.12: min 625 ns */
+	for (i = 0; i != 10; i++);
+	nRST_RF = 1;
+}
+
+
 static void init_io(void)
 {
 	/*
@@ -53,6 +64,26 @@ static void init_io(void)
 	    ~((1 << 0) | (1 << 3) | (1 << 4) | (1 << 5) | (1 << 6) | (1 << 7));
 	    /* change 1 << 0 to 1 << 2 once 100813 boards are reworked */
 	P3 = 0;
+
+#if 0
+	/*
+	 * We can *almost* disable the pull-ups. The only obstacle is that
+	 * MISO is not driven when not in use. So we either need an external
+	 * pull-up/down or keep all the pull-ups on.
+	 */
+
+	/*
+	 * Disable pull-ups
+	 */
+	GPIOCN |= WEAKPUD;
+#endif
+
+	/*
+	 * The manual says the reset is optional, but reality disagrees with
+	 * this optimistic assessment quite violently.
+	 */
+
+	reset_rf();
 }
 
 

@@ -25,6 +25,9 @@
 #include "version.h"
 
 
+extern void reset_rf(void);
+
+
 #define debug(...)
 #define error(...)
 
@@ -138,9 +141,7 @@ static __bit my_setup(struct setup_request *setup) __reentrant
 
 	case ATSPI_TO_DEV(ATSPI_RF_RESET):
 		debug("ATSPI_RF_RESET\n");
-		nRST_RF = 0;
-		/* 11.4.12 min 625 ns */
-		nRST_RF = 1;
+		reset_rf();
 		return 1;
 
 	case ATSPI_TO_DEV(ATSPI_REG_WRITE):
