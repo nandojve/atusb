@@ -88,10 +88,10 @@ static void show_info(usb_dev_handle *dev)
 	buf[len] = 0;
 	printf("%10s%s\n", "", buf);
 
-	part = atspi_reg_read(dev, AT86RF230_REG_PART_NUM);
-	version = atspi_reg_read(dev, AT86RF230_REG_VERSION_NUM);
-	man_id_0 = atspi_reg_read(dev, AT86RF230_REG_MAN_ID_0);
-	man_id_1 = atspi_reg_read(dev, AT86RF230_REG_MAN_ID_1);
+	part = atspi_reg_read(dev, REG_PART_NUM);
+	version = atspi_reg_read(dev, REG_VERSION_NUM);
+	man_id_0 = atspi_reg_read(dev, REG_MAN_ID_0);
+	man_id_1 = atspi_reg_read(dev, REG_MAN_ID_1);
 	printf("%10spart 0x%02x version %u manufacturer xxxx%02x%02x\n", "",
 	    part, version, man_id_1, man_id_0);
 }
