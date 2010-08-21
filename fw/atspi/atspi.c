@@ -23,7 +23,10 @@ void reset_rf(void)
 	int i;
 
 	nRST_RF = 0;
-	/* 11.4.12: min 625 ns */
+	/*
+	 * 11.4.12: min 625 ns.
+	 * The pulse we generate is slightly longer than 4 us.
+	 */
 	for (i = 0; i != 10; i++);
 	nRST_RF = 1;
 }
