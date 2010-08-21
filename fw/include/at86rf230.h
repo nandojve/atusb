@@ -113,20 +113,20 @@ enum {
 	TRAC_STATUS_INVALID			= 7
 };
 
-/* --- TRX_STATE [4:0] ----------------------------------------------------- */
+/* --- TRX_CMD [4:0] ----------------------------------------------------- */
 
-#define	TRX_STATE_SHIFT		0
-#define	TRX_STATE_MASK		7
+#define	TRX_CMD_SHIFT	0
+#define	TRX_CMD_MASK	7
 
 enum {
-	TRX_STATE_NOP			= 0x00,	/* reset default */
-	TRX_STATE_TX_START		= 0x02,
-	TRX_STATE_FORCE_TRX_OFF		= 0x03,
-	TRX_STATE_RX_ON			= 0x06,
-	TRX_STATE_TRX_OFF		= 0x08,
-	TRX_STATE_PLL_ON		= 0x09,
-	TRX_STATE_RX_AACK_ON		= 0x16,
-	TRX_STATE_TX_ARET_ON		= 0x19,
+	TRX_CMD_NOP		= 0x00,	/* reset default */
+	TRX_CMD_TX_START	= 0x02,
+	TRX_CMD_FORCE_TRX_OFF	= 0x03,
+	TRX_CMD_RX_ON		= 0x06,
+	TRX_CMD_TRX_OFF		= 0x08,
+	TRX_CMD_PLL_ON		= 0x09,
+	TRX_CMD_RX_AACK_ON	= 0x16,
+	TRX_CMD_TX_ARET_ON	= 0x19,
 };
 
 /* --- TRX_CTRL_0 [7:6] ---------------------------------------------------- */

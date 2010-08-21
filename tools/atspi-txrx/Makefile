@@ -1,5 +1,5 @@
 #
-# atspi-id/Makefile - Build the ATSPI identification utility
+# atspi-txrx/Makefile - Build the TX/RX test utility
 #
 # Written 2010 by Werner Almesberger
 # Copyright 2010 Werner Almesberger
@@ -13,7 +13,7 @@
 
 F32XBASE = ../../../f32xbase
 
-MAIN = atspi-id
+MAIN = atspi-txrx
 
 include $(F32XBASE)/lib/Makefile.common
 
