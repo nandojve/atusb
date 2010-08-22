@@ -1,4 +1,4 @@
-update=Fri Aug 20 17:28:04 2010
+update=Sun Aug 22 16:03:40 2010
 last_client=pcbnew
 [eeschema]
 version=1
@@ -39,11 +39,11 @@ ShowSheetReferenceAndTitleBlock=1
 LibName1=power
 LibName2=device
 LibName3=conn
-LibName4=components/at86rf230
-LibName5=components/c8051f326
-LibName6=components/mini_usb_b
-LibName7=components/xtal-4
-LibName8=components/antenna
+LibName4=../components/at86rf230
+LibName5=../components/c8051f326
+LibName6=../components/mini_usb_b
+LibName7=../components/xtal-4
+LibName8=../components/antenna
 [cvpcb]
 version=1
 NetIExt=net
@@ -69,9 +69,9 @@ MSegLar=150
 LastNetListRead=wpan-atrf.net
 [pcbnew/libraries]
 LibDir=
-LibName1=modules/meander
-LibName2=modules/mini-usb
-LibName3=modules/pads
-LibName4=modules/qfn
-LibName5=modules/stdpass
-LibName6=modules/xtal-4
+LibName1=../modules/meander
+LibName2=../modules/mini-usb
+LibName3=../modules/pads
+LibName4=../modules/qfn
+LibName5=../modules/stdpass
+LibName6=../modules/xtal-4
