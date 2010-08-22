@@ -20,6 +20,17 @@ N: AN043
 A: antenna
 D: http://focus.ti.com/lit/an/swra117d/swra117d.pdf
 
+# AN032 -- SRD regulations for license-free transceiver operation in the
+# 2.4 GHz band
+N: AN032
+A: regulations
+D: http://focus.ti.com/lit/an/swra060/swra060.pdf
+
+# AVR2001: AT86RF230 Software Programmer's Guide
+N: avr2001
+A: guide
+D: http://www.atmel.com/dyn/resources/prod_documents/doc8087.pdf
+
 # AVR2004: LC-Balun for AT86RF230
 N: avr2004
 A: balun
