@@ -71,6 +71,41 @@ void atspi_close(usb_dev_handle *dev)
 }
 
 
+/* ----- device mode ------------------------------------------------------- */
+
+
+void atspi_reset(usb_dev_handle *dev)
+{
+	int res;
+
+	if (error)
+		return;
+
+	res =
+	    usb_control_msg(dev, TO_DEV, ATSPI_RESET, 0, 0, NULL, 0, 1000);
+	if (res < 0) {
+		fprintf(stderr, "ATSPI_RESET: %d\n", res);
+		error = 1;
+	}
+}
+
+
+void atspi_reset_rf(usb_dev_handle *dev)
+{
+	int res;
+
+	if (error)
+		return;
+
+	res =
+	    usb_control_msg(dev, TO_DEV, ATSPI_RF_RESET, 0, 0, NULL, 0, 1000);
+	if (res < 0) {
+		fprintf(stderr, "ATSPI_RF_RESET: %d\n", res);
+		error = 1;
+	}
+}
+
+
 /* ----- register access --------------------------------------------------- */
 
 
