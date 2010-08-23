@@ -1,5 +1,5 @@
 #
-# boot/Makefile - Makefile for DFU-capable boot loader
+# atspi-boot/Makefile - Makefile for DFU-capable boot loader for ATSPI
 #
 # Written 2008, 2010 by Werner Almesberger
 # Copyright 2008, 2010 Werner Almesberger
@@ -18,5 +18,5 @@ F32XBASE = ../../../f32xbase
 include $(F32XBASE)/fw/common/Makefile.system
 include $(F32XBASE)/fw/common/Makefile.common
 
-CFLAGS += -I../common
+CFLAGS += -I../common -I../include
 LDFLAGS += --code-size $(PAYLOAD_START)
