@@ -11,7 +11,7 @@
 #
 
 
-F32XBASE = ../../../f32xbase
+F32XBASE = ../../../../f32xbase
 
 MAIN = atspi-id
 

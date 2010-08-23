@@ -1,5 +1,5 @@
 /*
- * atspi/at86rf230.h - AT86RF230 protocol and register definitions
+ * include/at86rf230.h - AT86RF230 protocol and register definitions
  *
  * Written 2008-2010 by Werner Almesberger
  * Copyright 2008-2010 Werner Almesberger

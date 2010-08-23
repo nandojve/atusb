@@ -14,7 +14,7 @@
 MAIN = atspi
 OBJS = $(MAIN) usb descr version ep0
 
-F32XBASE = ../../../f32xbase
+F32XBASE = ../../../../f32xbase
 
 include $(F32XBASE)/fw/common/Makefile.system
 include $(F32XBASE)/fw/common/Makefile.common

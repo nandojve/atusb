@@ -11,7 +11,7 @@
 #
 
 
-DIRS=common atspi-boot atspi
+DIRS=common boot atspi
 
 
 .PHONY:		all depend install uninstall clean spotless

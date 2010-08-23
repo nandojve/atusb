@@ -1,5 +1,5 @@
 #
-# atspi-boot/Makefile - Makefile for DFU-capable boot loader for ATSPI
+# boot/Makefile - Makefile for DFU-capable boot loader for ATSPI
 #
 # Written 2008, 2010 by Werner Almesberger
 # Copyright 2008, 2010 Werner Almesberger
@@ -13,7 +13,7 @@
 MAIN=boot
 OBJS=$(MAIN) usb dfu version
 
-F32XBASE = ../../../f32xbase
+F32XBASE = ../../../../f32xbase
 
 include $(F32XBASE)/fw/common/Makefile.system
 include $(F32XBASE)/fw/common/Makefile.common

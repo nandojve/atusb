@@ -13,4 +13,4 @@
 
 DIRS=atspi-id atspi-reset atspi-rssi
 
-include ../Makefile.recurse
+include ../../Makefile.recurse
