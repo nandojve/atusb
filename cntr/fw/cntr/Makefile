@@ -12,7 +12,7 @@
 
 
 MAIN = cntr
-OBJS = $(MAIN) # usb descr version ep0
+OBJS = $(MAIN) usb descr version ep0
 
 F32XBASE = ../../../../f32xbase
 

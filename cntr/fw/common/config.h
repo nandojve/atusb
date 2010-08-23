@@ -25,8 +25,9 @@
  * This turns on the LED, to indicate that we're in the boot loader.
  */
 
-#define PLATFORM_SETUP \
-	LED_MODE |= 1 << LED_BIT;
+#define PLATFORM_SETUP			\
+	LED_MODE |= 1 << LED_BIT;	\
+	XBR1 = XBARE;
 
 
 /*
