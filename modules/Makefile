@@ -1,4 +1,4 @@
-MODULES=meander mini-usb pads qfn stdpass xtal-4
+MODULES=meander mini-usb pads qfn qfp stdpass xtal-4
 
 .SUFFIXES:	.fpd .mod
 .PHONY:		all clean

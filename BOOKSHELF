@@ -9,11 +9,17 @@
 N: at86rf230
 A: transceiver
 A: txrx
+A: atrf
 D: http://www.atmel.com/dyn/resources/prod_documents/doc5131.pdf
 
 N: c8051f326
 A: mcu
+A: f326
 D: http://www.silabs.com/Support Documents/TechnicalDocs/C8051F326.pdf
+
+N: c8051f320
+A: f320
+D: https://www.silabs.com/Support Documents/TechnicalDocs/C8051F32x.pdf
 
 # AN043 -- Small Size 2.4 GHz PCB Antenna (Rev. D)
 N: AN043

@@ -6,6 +6,9 @@
 # N	Data sheet identifier (N tag of BOOKSHELF; can be omitted if equal to S)
 #
 
+# C8051F320 MCU
+S: c8051f320
+
 # C8051F326 MCU
 S: c8051f326
 

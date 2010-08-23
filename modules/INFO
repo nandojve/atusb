@@ -37,6 +37,9 @@ F: qfn
 #
 N: sot617-3-lp
 
+# "Generic" simple QFP (for now, just for Silabs' C8051F320)
+F: qfp
+
 # Common 4-pin crystal SMT package (pins 1 and 4 are on a short side, pin
 # numbering is counter-clockwise)
 F: xtal-4
