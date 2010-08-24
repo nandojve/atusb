@@ -63,9 +63,7 @@ static void init_io(void)
 	SLP_TR = 0;
 	SLP_TR_MODE |= 1 << SLP_TR_BIT;
 
-	P0 &=
-	    ~((1 << 0) | (1 << 3) | (1 << 4) | (1 << 5) | (1 << 6) | (1 << 7));
-	    /* change 1 << 0 to 1 << 2 once 100813 boards are reworked */
+	P0 = 1;	/* IRQ_RF = 1; LED = 0; the rest is unused */
 	P3 = 0;
 
 #if 0
