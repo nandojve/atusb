@@ -41,19 +41,22 @@ const uint8_t device_descriptor[18] = {
 /*
  * Our configuration
  *
- * While in DFU mode, we're always bus-powered.
+ * We're always bus-powered.
  */
 
 const uint8_t config_descriptor[] = {
 	9,			/* bLength */
 	USB_DT_CONFIG,		/* bDescriptorType */
+#if 0
 	LE(9+9+7+7),		/* wTotalLength */
+#else
+	LE(9+9),		/* wTotalLength */
+#endif
 	1,			/* bNumInterfaces */
 	1,			/* bConfigurationValue (> 0 !) */
 	0,			/* iConfiguration */
-//	USB_ATTR_SELF_POWERED | USB_ATTR_BUS_POWERED,
 	USB_ATTR_BUS_POWERED,	/* bmAttributes */
-	15,			/* bMaxPower */
+	50/2,			/* bMaxPower (50 mA) */
 
 	/* Interface #0 */
 
@@ -61,12 +64,17 @@ const uint8_t config_descriptor[] = {
 	USB_DT_INTERFACE,	/* bDescriptorType */
 	0,			/* bInterfaceNumber */
 	0,			/* bAlternateSetting */
+#if 0
 	2,			/* bNumEndpoints */
+#else
+	0,
+#endif
 	USB_CLASS_VENDOR_SPEC,	/* bInterfaceClass */
 	0,			/* bInterfaceSubClass */
 	0,			/* bInterfaceProtocol */
 	0,			/* iInterface */
 
+#if 0
 	/* EP OUT */
 
 	7,			/* bLength */
@@ -84,5 +92,5 @@ const uint8_t config_descriptor[] = {
 	0x02,			/* bmAttributes (bulk) */
 	LE(EP1_SIZE),		/* wMaxPacketSize */
 	0,			/* bInterval */
-
+#endif
 };

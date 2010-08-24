@@ -90,7 +90,15 @@ static void init_io(void)
 
 void main(void)
 {
+	int i;
+
 	init_io();
+
+	/*
+	 * Make sure the host has enough time (2.5 us) to detect that we reset
+	 * our USB stack.
+	 */
+	for (i = 0; i != 10; i++);
 
 	usb_init();
 	ep0_init();
