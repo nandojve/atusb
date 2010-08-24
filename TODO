@@ -1,0 +1,119 @@
+General
+=======
+
+Things not done yet
+-------------------
+
+- document directory hierarchy
+
+- make sure all files have a copyright header or are listed in AUTHORS
+
+- connect all the bits and pieces of the build system
+
+- combine io-parts.h generation
+
+- combine "standard" EP0 commands, such as *_ID and *_BUILD
+
+- implement return to DFU in application's EP0 protocol
+
+
+Bugs to fix
+-----------
+
+- builds fail if .version isn't there yet
+
+
+
+atrf
+====
+
+AT86RF230-based IEEE 802.15.4 transceiver. Two variantes: one to make a USB
+dongle for use with any Linux host, and one that connects with SPI directly
+inside a Ben.
+
+
+Things not done yet
+-------------------
+
+- define values for crystal load capacitors. Measurements with instruments not
+  quite precise enough (+/- 100 ppm) for the task (+/- 40 ppm, preferably
+  < +/- 10 ppm) suggest that we're about 300 ppm off with no capacitors at all
+  and can only correct about 150 ppm with the internal trim capacitors.
+
+- examine spectrum around carrier frequency and first harmonic to look for
+  obvious distortions.  Vary transmit power.
+
+- measure throughput as a function of placement/distance, carrier frequency,
+  and transmit power
+
+- atspi-txrx: suppport "extended mode" with IEEE 802.15.4 CSMA-CA for more
+  realistic throughput figures
+
+- measure full spectrum (ideally up to 25 GHz, but just 2nd and 3rd harmonic
+  will already tell most of the story) with calibrated antenna for FCC/ETSI
+  compliance assessment. Vary transmit power.
+
+- use IEEE 802.15.4 stack from linux-zigbee
+
+- verify that the Ben can output an a) 16 MHz clock, and b) with +/- 40 ppm
+
+- replace discrete balun and filter with integrated solution, to reduce BOM
+  size, maybe cost, insertion loss, and PCB space
+
+- check if we really need three DC blocking caps in the RF path
+
+- change layout of transceiver side of the board for placement inside Ben
+
+- define EMI filters for placement inside Ben
+
+- check USB standard for recommended USB dongle dimensions
+
+- change layout for straight USB dongle
+
+- generate proper BOM
+
+- implement sleep mode
+
+
+Bugs to fix
+-----------
+
+- two of my systems (tv and u1010) flat out refuse to talk to the board's USB
+  application, but have no problem talking to its DFU boot loader. Very
+  strange.
+
+- atrf vs. atspi naming is a bit confusing
+
+
+ccrf
+====
+
+Board similar to the atrf, but with the TI/Chipcon CC2520.
+
+
+cntr
+====
+
+Simple USB-based counter to measure a clock's long-time accuracy with
+arbitrarily high precision, by comparing it to an NTP time reference.
+
+
+Things not done yet
+-------------------
+
+- measure duty cycle
+
+- display activity on clock input and duty cycle
+
+- consider using a comparator and a DAC to allow for programmable logic levels
+
+- evaluate termination resistance
+
+- document circuit design
+
+
+Bugs to fix
+-----------
+
+- the firmware flashes okay and there are no outward signs of problems, yet the
+  board doesn't do anything so far, not even blink the LED. Kinda embarrassing.
