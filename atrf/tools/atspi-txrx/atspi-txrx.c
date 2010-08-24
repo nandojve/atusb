@@ -72,7 +72,7 @@ static void set_power(usb_dev_handle *dev, double power)
 {
 	int n;
 
-	for (n = 0; n != sizeof(tx_pwr)/sizeof(*tx_pwr); n++)
+	for (n = 0; n != sizeof(tx_pwr)/sizeof(*tx_pwr)-1; n++)
 		if (tx_pwr[n] <= power)
 			break;
 	atspi_reg_write(dev, REG_PHY_TX_PWR, TX_AUTO_CRC_ON | n);
