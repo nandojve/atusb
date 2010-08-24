@@ -21,10 +21,6 @@
 #include "atspi.h"
 
 
-#define	FROM_DEV	ATSPI_FROM_DEV(0)
-#define	TO_DEV		ATSPI_TO_DEV(0)
-
-
 static struct timeval t0;
 
 

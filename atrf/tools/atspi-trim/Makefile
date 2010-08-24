@@ -1,5 +1,5 @@
 #
-# tools/Makefile - Build the ATSPI-specific tools
+# atspi-trim/Makefile - Build the oscillator trim utility
 #
 # Written 2010 by Werner Almesberger
 # Copyright 2010 Werner Almesberger
@@ -11,6 +11,11 @@
 #
 
 
-DIRS=atspi-id atspi-reset atspi-rssi atspi-trim
+F32XBASE = ../../../../f32xbase
 
-include ../../Makefile.recurse
+MAIN = atspi-trim
+
+include $(F32XBASE)/lib/Makefile.common
+
+CFLAGS += -I../../fw/include -I../include
+LDLIBS += -L../lib -latspi
