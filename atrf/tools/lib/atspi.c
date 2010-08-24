@@ -141,3 +141,41 @@ uint8_t atspi_reg_read(usb_dev_handle *dev, uint8_t reg)
 	}
 	return value;
 }
+
+
+/* ----- frame buffer access ----------------------------------------------- */
+
+
+void atspi_buf_write(usb_dev_handle *dev, const void *buf, int size)
+{
+	int res;
+
+	if (error)
+		return;
+
+	res = usb_control_msg(dev, TO_DEV, ATSPI_BUF_WRITE, 0, 0,
+	    (void *) buf, size, 1000);
+	if (res < 0) {
+		fprintf(stderr, "ATSPI_BUF_WRITE: %d\n", res);
+		error = 1;
+	}
+
+}
+
+
+int atspi_buf_read(usb_dev_handle *dev, void *buf, int size)
+{
+	int res;
+
+	if (error)
+		return -1;
+
+	res = usb_control_msg(dev, FROM_DEV, ATSPI_BUF_READ, 0, 0,
+	    buf, size, 1000);
+	if (res < 0) {
+		fprintf(stderr, "ATSPI_BUF_READ: %d\n", res);
+		error = 1;
+	}
+
+	return res;
+}

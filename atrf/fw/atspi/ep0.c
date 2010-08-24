@@ -94,7 +94,6 @@ static void do_buf_write(void *user)
 
 	user; /* suppress warning */
 	nSS = 0;
-	spi_send(AT86RF230_BUF_WRITE);
 	for (i = 0; i != size; i++)
 		spi_send(buf[i]);
 	nSS = 1;
@@ -164,13 +163,14 @@ static __bit my_setup(struct setup_request *setup) __reentrant
 		debug("ATSPI_BUF_WRITE\n");
 		if (setup->wLength < 1)
 			return 0;
-		if (setup->wLength > MAX_PSDU+1)	/* PHR+PSDU */
+		if (setup->wLength > MAX_PSDU)
 			return 0;
 		buf[0] = AT86RF230_BUF_WRITE;
-		size = setup->wLength+1;
-		usb_recv(&ep0, buf+1, setup->wLength, do_buf_write, NULL);
+		buf[1] = setup->wLength;
+		size = setup->wLength+2;
+		usb_recv(&ep0, buf+2, setup->wLength, do_buf_write, NULL);
 		return 1;
-	case ATSPI_TO_DEV(ATSPI_BUF_READ):
+	case ATSPI_FROM_DEV(ATSPI_BUF_READ):
 		debug("ATSPI_BUF_READ\n");
 		if (setup->wLength < 2)			/* PHR+LQ */
 			return 0;
@@ -178,11 +178,11 @@ static __bit my_setup(struct setup_request *setup) __reentrant
 			return 0;
 		nSS = 0;
 		spi_send(AT86RF230_BUF_READ);
-		size = *buf = spi_recv();
-		if (size+2 > setup->wLength)
-			size = setup->wLength-2;
+		size = spi_recv();
+		if (size >= setup->wLength)
+			size = setup->wLength-1;
 		for (i = 0; i != size+1; i++)
-			buf[i+1] = spi_recv();
+			buf[i] = spi_recv();
 		nSS = 1;
 		usb_send(&ep0, buf, size+1, NULL, NULL);
 		return 1;
