@@ -1,4 +1,4 @@
-PCBNEW-BOARD Version 1 date Mon Aug 23 00:51:37 2010
+PCBNEW-BOARD Version 1 date Wed Aug 25 06:34:28 2010
 
 # Created by Pcbnew(2010-08-11 BZR 2448)-unstable
 
@@ -20,7 +20,7 @@ $EndGENERAL
 $SHEETDESCR
 Sheet A4 11700 8267
 Title ""
-Date "23 aug 2010"
+Date "25 aug 2010"
 Rev ""
 Comp ""
 Comment1 ""
@@ -350,7 +350,7 @@ AR /4C71B06B
 Op 0 0 0
 At SMD 
 T0 0 -150 200 200 0 40 N V 25 N"R1"
-T1 0 150 200 200 0 40 N I 25 N"100k"
+T1 0 150 200 200 0 40 N I 25 N"1k"
 DS -443 227 -443 -227 50 21
 DS -443 -227 443 -227 50 21
 DS 443 -227 443 227 50 21

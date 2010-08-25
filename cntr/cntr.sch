@@ -1,15 +1,16 @@
-EESchema Schematic File Version 2  date Sun Aug 22 21:08:12 2010
+EESchema Schematic File Version 2  date Wed Aug 25 06:34:07 2010
 LIBS:power
 LIBS:device
 LIBS:conn
 LIBS:c8051f320
 LIBS:mini_usb_b
+LIBS:cntr-cache
 EELAYER 24  0
 EELAYER END
 $Descr A4 11700 8267
 Sheet 1 1
 Title ""
-Date "23 aug 2010"
+Date "25 aug 2010"
 Rev ""
 Comp ""
 Comment1 ""
@@ -266,7 +267,7 @@ L R R1
 U 1 1 4C71B06B
 P 8650 1650
 F 0 "R1" V 8730 1650 50  0000 C CNN
-F 1 "100k" V 8650 1650 50  0000 C CNN
+F 1 "1k" V 8650 1650 50  0000 C CNN
 F 2 "0603" H 8650 1650 60  0001 C CNN
 	1    8650 1650
 	0    -1   -1   0   
