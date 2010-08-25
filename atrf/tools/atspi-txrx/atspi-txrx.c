@@ -82,7 +82,7 @@ static void set_power(usb_dev_handle *dev, double power)
 static void receive(usb_dev_handle *dev)
 {
 	uint8_t irq;
-	uint8_t buf[MAX_PSDU+1]; /* PSDU+LQ */
+	uint8_t buf[MAX_PSDU+1]; /* PSDU+LQI */
 	int n, ok, i;
 	uint8_t lq;
 
@@ -124,7 +124,7 @@ static void receive(usb_dev_handle *dev)
 	}
 	ok = !!(atspi_reg_read(dev, REG_PHY_RSSI) & RX_CRC_VALID);
 	lq = buf[n-1];
-	fprintf(stderr, "%d bytes payload, CRC %s, LQ %u\n",
+	fprintf(stderr, "%d bytes payload, CRC %s, LQI %u\n",
 	    n-3, ok ? "OK" : "BAD", lq);
 	for (i = 0; i != n-3; i++)
 		putchar(buf[i] < ' ' || buf[i] > '~' ? '?' : buf[i]);

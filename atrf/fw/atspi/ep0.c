@@ -58,7 +58,7 @@ extern void reset_rf(void);
 
 
 static const uint8_t id[] = { EP0ATSPI_MAJOR, EP0ATSPI_MINOR, HW_TYPE };
-static __xdata uint8_t buf[MAX_PSDU+3]; /* command, PHDR, and LQ */
+static __xdata uint8_t buf[MAX_PSDU+3]; /* command, PHDR, and LQI */
 static uint8_t size;
 
 
@@ -172,9 +172,9 @@ static __bit my_setup(struct setup_request *setup) __reentrant
 		return 1;
 	case ATSPI_FROM_DEV(ATSPI_BUF_READ):
 		debug("ATSPI_BUF_READ\n");
-		if (setup->wLength < 2)			/* PHR+LQ */
+		if (setup->wLength < 2)			/* PHR+LQI */
 			return 0;
-		if (setup->wLength > MAX_PSDU+2)	/* PHR+PSDU+LQ */
+		if (setup->wLength > MAX_PSDU+2)	/* PHR+PSDU+LQI */
 			return 0;
 		nSS = 0;
 		spi_send(AT86RF230_BUF_READ);
