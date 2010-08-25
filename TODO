@@ -105,10 +105,30 @@ Things not done yet
 
 - measure duty cycle
 
-- display activity on clock input and duty cycle
+- use the LED to display activity on clock input and duty cycle
 
 - consider using a comparator and a DAC to allow for programmable logic levels
 
 - evaluate termination resistance
 
 - document circuit design
+
+- record beats between 16 bit counter polls and use them for the estimate
+  of lost cycles (2*1 is way too optimistic)
+
+- include system clock resolution in accuracy calculation
+
+- consider running shorter sliding windows to estimate drift
+
+- consider detecting unusual half-periods
+
+- consider using a reversed USB connector, to avoid having to cross D+/D- and,
+  worse, VBUS and GND
+
+- test input performance by counting a source that emits a known number of
+  cycles
+
+- consider using historical margins to sanity-check the current margin (if any
+  old.max < curr.min or old.min > curr.max, we have a problem) and to further
+  narrow the effective margin, thus achieving faster convergence. We would have
+  to consider temperature drift of the frequency source in this case.

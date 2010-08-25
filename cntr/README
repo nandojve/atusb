@@ -1,0 +1,66 @@
+Arbitrary-precision counter
+===========================
+
+Theory of operation
+-------------------
+
+The arbitrary-precision counter counts clock cycles of a frequency
+source that is assumed to be free from drift. It compares the count
+with the host's system clock. If the system clock is synchronized with
+an accurate NTP reference, measurements with arbitrarily high accuracy
+can be obtained.
+
+In practice, this is limited by the the frequency source's drift and
+the time one is willing to wait. If NTP maintains the system time
+with an accuracy of +/- 100 ms, obtaining measurements with an
+accuracy of +/- 1 ppm would take about 28 hours.
+
+Additional error sources, such as the round-trip time when requesting
+a sample from the microcontroller, are also considered in the accuracy
+calculation.
+
+The counter consists of a board based on a C8051F320 microcontroller
+and the control software on the host. The microcontroller counts
+events in a free-running 16 bit counter that is regularly read and
+extended to 32 bits. The 32 bit counter is periodically queried by
+the host.
+
+The microcontroller's counter can count at a frequency of up to 3 MHz.
+(SYSCLK/4)
+
+In order to protect against transmission errors not detected by USB's
+CRC, which are occur relatively often, each packet is protected by a
+CRC-32 and an inverted copy of the payload. Corrupted packets are
+rejected by the host.
+
+The 32 bit counter wraps around at most once very 21.8 ms. The 32 bit
+counter wraps around at most every 1431 s. The host extends the 32 bit
+counter to 64 bits, and calculates frequency and accuracy from the
+count and the run time of the measurement application.
+
+
+Performing a measurement
+------------------------
+
+To perform a measurement, connect the CNTR board's probe input to the
+clock source and then run the "cntr" application on the host. An
+accuracy goal (in ppm) can be specified on the command line (see
+below).
+
+The host polls the microcontroller every 100 ms and displays the run
+time (in seconds), the measured frequency, and the accuracy achieved
+so far.
+
+Measurements can be stopped by pressing ^C or by specifying an
+accuracy goal. At the end, the total number of events counted and
+communication statistics are displayed.
+
+
+Updating the firmware
+---------------------
+
+The protocol revision and the build date of the firmware of the CNTR
+board can be queried with "cntr -i".
+
+To update the firmware, run
+cntr -r && sleep 1 && dfu-util -d 0x20b7:0xcb72 -D cntr.bin

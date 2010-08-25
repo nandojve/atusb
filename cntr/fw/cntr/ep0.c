@@ -22,7 +22,6 @@
 #include "cntr/ep0.h"
 #include "version.h"
 
-
 #define debug(...)
 #define error(...)
 
@@ -61,9 +60,13 @@ static __xdata uint8_t buf[128];
 #define	BUILD_OFFSET	7	/* '#' plus "65535" plus ' ' */
 
 
+/* crc32() */
+#include "cntr/crc32.c"
+
+
 static __bit my_setup(struct setup_request *setup) __reentrant
 {
-	unsigned tmp;
+	uint32_t tmp;
 	uint8_t size, i;
 
 	switch (setup->bmRequestType | setup->bRequest << 8) {
@@ -102,7 +105,18 @@ static __bit my_setup(struct setup_request *setup) __reentrant
 		buf[1] = cntr[1];
 		buf[2] = cntr[2];
 		buf[3] = cntr[3];
-		usb_send(&ep0, buf, 4, NULL, NULL);
+		tmp = (uint32_t) buf[0] | ((uint32_t) buf[1] << 8) |
+		    ((uint32_t) buf[2] << 16) | ((uint32_t) buf[3] << 24);
+		tmp = crc32(tmp, 0xffffffff);
+		buf[4] = tmp;
+		buf[5] = tmp >> 8;
+		buf[6] = tmp >> 16;
+		buf[7] = tmp >> 24;
+		buf[8] = ~cntr[0];
+		buf[9] = ~cntr[1];
+		buf[10] = ~cntr[2];
+		buf[11] = ~cntr[3];
+		usb_send(&ep0, buf, 12, NULL, NULL);
 		return 1;
 
 	default:

@@ -13,6 +13,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <signal.h>
 #include <usb.h>
 #include <sys/time.h>
 
@@ -28,6 +29,20 @@
 #define	BUF_SIZE		256
 
 
+static int debug = 0;
+static int verbose = 0;
+
+
+/* ----- CRC, shared with firmware ----------------------------------------- */
+
+
+/* crc32() */
+
+#include "cntr/crc32.c"
+
+
+/* ----- reset ------------------------------------------------------------- */
+
 
 static void reset_cntr(usb_dev_handle *dev)
 {
@@ -39,6 +54,9 @@ static void reset_cntr(usb_dev_handle *dev)
 		exit(1);
 	}
 }
+
+
+/* ----- identify ---------------------------------------------------------- */
 
 
 static void identify_cntr(usb_dev_handle *dev)
@@ -71,19 +89,32 @@ static void identify_cntr(usb_dev_handle *dev)
 }
 
 
+/* ----- measurements ------------------------------------------------------ */
+
+
 struct sample {
 	double t0, t1;
 	uint64_t cntr;
 };
 
 
-static void get_sample(usb_dev_handle *dev, struct sample *s)
+static unsigned packets = 0, crc_errors = 0, inv_errors = 0;
+static volatile int stop = 0;
+
+
+static void set_stop(int sig)
+{
+	stop = 1;
+}
+
+
+static int get_sample(usb_dev_handle *dev, struct sample *s)
 {
 	static uint32_t last = 0, high = 0;
 	struct timeval t0, t1;
-	int res;
-	uint8_t buf[4];
-	uint32_t cntr;
+	int res, bad;
+	uint8_t buf[12];
+	uint32_t cntr, inv, crc, expect;
 
 	gettimeofday(&t0, NULL);
 	res = usb_control_msg(dev, FROM_DEV, CNTR_READ, 0, 0,
@@ -93,27 +124,73 @@ static void get_sample(usb_dev_handle *dev, struct sample *s)
 		fprintf(stderr, "CNTR_READ: %s\n", usb_strerror());
 		exit(1);
 	}
+	packets++;
 	cntr = buf[0] | (buf[1] << 8) | (buf[2] << 16) | (buf[3] << 24);
+	crc = buf[4] | (buf[5] << 8) | (buf[6] << 16) | (buf[7] << 24);
+	inv = buf[8] | (buf[9] << 8) | (buf[10] << 16) | (buf[11] << 24);
+	expect = crc32(cntr, ~0);
+	bad = 0;
+	if (crc != expect) {
+		if (verbose)
+			fprintf(stderr, "\nCRC error (count 0x%08x->0x%08x "
+			    "CRC 0x%08x/0x%08x)\n",
+			    (unsigned) last, (unsigned) cntr, (unsigned) crc,
+			    (unsigned) expect);
+		bad = 1;
+		crc_errors++;
+	}
+	if (cntr != (inv ^ 0xffffffff)) {
+		if (verbose)
+			fprintf(stderr,
+			    "\ninverted counter error (0x%08x->0x%08x, "
+			    "inv 0x%08x)\n",
+			    (unsigned) last, (unsigned) cntr, (unsigned) inv);
+		bad = 1;
+		inv_errors++;
+	}
+	if (bad)
+		return 0;
 	if (last > cntr)
 		high++;
 	last = cntr;
 	s->t0 = t0.tv_sec+t0.tv_usec/1000000.0;
 	s->t1 = t1.tv_sec+t1.tv_usec/1000000.0;
 	s->cntr = (uint64_t) high << 32 | cntr;
+	if (debug)
+		printf("0x%llx 0x%lx\n", 
+		    (unsigned long long ) s->cntr, (unsigned long) cntr);
+	return 1;
 }
 
 
-static void measure(usb_dev_handle *dev, double clock_dev_s)
+static void measure(usb_dev_handle *dev, double clock_dev_s, double error_goal)
 {
 	struct sample start, now;
 	uint64_t dc;
 	double dt, f, error;
-	char *f_exp, error_exp;
+	char *f_exp, *error_exp;
+	int i;
 
-	get_sample(dev, &start);
-	while (1) {
+	signal(SIGINT, set_stop);
+
+	/*
+	 * The round-trip time for getting the first sample is one of the
+	 * error terms. The smaller we can make it, the better. Thus, we try a
+	 * few times to improve our first result.
+	 */
+	while (!get_sample(dev, &start));
+	for (i = 0; i != 10; i++) {
+		while (!get_sample(dev, &now));
+		if (now.t1-now.t0 < start.t1-start.t0) {
+			if (debug)
+				fprintf(stderr, "improve %g -> %g\n",
+				    start.t1-start.t0, now.t1-now.t0);
+			start = now;
+		}
+	}
+	while (!stop) {
 		usleep(100000);
-		get_sample(dev, &now);
+		while (!get_sample(dev, &now));
 		dc = now.cntr-start.cntr;
 		dt = now.t0-start.t0;
 		f = dc/dt;
@@ -133,40 +210,54 @@ static void measure(usb_dev_handle *dev, double clock_dev_s)
 		error += (start.t1-start.t0)/dt;/* start sample read */
 		error += (now.t1-now.t0)/dt;	/* last sample read */
 		error += clock_dev_s/dt;	/* system clock deviation */
-		if (error > 1) {
+		if (error >= 1) {
 			printf("\r(wait) ");
 			fflush(stdout);
 			continue;
 		}
+		if (dc && error <= error_goal)
+			stop = 1;
 
-		error_exp = 'k';
-		error *= 1000.0;	/* ppm */
-		if (error < 1.0) {
-			error_exp = 'm'; /* ppm */
-			error *= 1000.0;
-		}
-		if (error < 1.0) {
-			error_exp = 'b'; /* ppb */
-			error *= 1000.0;
+		error_exp = "%";
+		error *= 100.0;
+		if (error < 0.1) {
+			error_exp = " ppm";
+			error *= 10000.0;
+			if (error < 1.0) {
+				error_exp = " ppb";
+				error *= 1000.0;
+			}
 		}
 		
-		printf("\r%6.1f %1.9f %sHz %3.3f pp%c ",
+		printf("\r%6.1f %1.9f %sHz %3.3f%s ",
 		    dt, f, f_exp, error, error_exp);
 		fflush(stdout);
 	}
+	printf(
+	    "\n%llu counts, %u packets, %u CRC error%s, %u invert error%s\n",
+	    (unsigned long long) (now.cntr-start.cntr),
+	    packets, crc_errors, crc_errors == 1 ? "" : "s",
+	    inv_errors, inv_errors == 1 ? "" : "s");
 }
+
+
+/* ----- command-line parsing ---------------------------------------------- */
 
 
 static void usage(const char *name)
 {
 	fprintf(stderr, 
-"usage: %s [clock_dev_s]\n"
+"usage: %s [-c clock_dev] [-d] [-v] [accuracy_ppm]\n"
 "%6s %s -i\n"
-"%6s %s r\n\n"
-"    clock_dev_s  is the maximum deviation of the system clock, in seconds\n"
-"                 (default: %g s)\n"
+"%6s %s -r\n\n"
+"    accuracy_ppm stop when specified accuracy is reached (default: never\n"
+"                 stop)\n"
+"    -c clock_dev maximum deviation of the system clock, in seconds\n"
+"		  (default: %g s)\n"
+"    -d           debug mode. Print counter values.\n"
 "    -i           identify the CNTR board\n"
 "    -r           reset the CNTR board\n"
+"    -v           verbose reporting of communication errors\n"
     , name, "", name, "", name, DEFAULT_CLOCK_DEV_S);
 	exit(1);
 }
@@ -177,10 +268,19 @@ int main(int argc, char *const *argv)
 	usb_dev_handle *dev;
 	int c, identify = 0, reset = 0;
 	double clock_dev_s = DEFAULT_CLOCK_DEV_S;
+	double error_goal = 0;
 	char *end;
 
-	while ((c = getopt(argc, argv, "ir")) != EOF)
+	while ((c = getopt(argc, argv, "c:dir")) != EOF)
 		switch (c) {
+		case 'c':
+			clock_dev_s = strtod(argv[optind], &end);
+			if (*end)
+				usage(*argv);
+			break;
+		case 'd':
+			debug = 1;
+			break;
 		case 'i':
 			identify = 1;
 			break;
@@ -190,12 +290,14 @@ int main(int argc, char *const *argv)
 		default:
 			usage(*argv);
 		}
+	if (identify && reset)
+		usage(*argv);
 
 	switch (argc-optind) {
 	case 0:
 		break;
 	case 1:
-		clock_dev_s = strtod(argv[optind], &end);
+		error_goal = strtod(argv[optind], &end)/1000000.0;
 		if (*end)
 			usage(*argv);
 		break;
@@ -219,7 +321,7 @@ int main(int argc, char *const *argv)
 		return 0;
 	}
 
-	measure(dev, clock_dev_s);
+	measure(dev, clock_dev_s, error_goal);
 
 	return 0;
 }
