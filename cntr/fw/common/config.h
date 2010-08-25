@@ -21,11 +21,20 @@
 /* ----- Boot loader configuration ----------------------------------------- */
 
 /*
- * Make LED output push-pull so that we can output a high voltage.
- * This turns on the LED, to indicate that we're in the boot loader.
+ * Disable the watchdog.
  */
 
-#define PLATFORM_SETUP			\
+#define PLATFORM_SETUP \
+	PCA0MD = 0;
+
+
+/*
+ * Make LED output push-pull so that we can output a high voltag, then enable
+ * the crossbar. This turns on the LED, to indicate that we're in the boot
+ * loader.
+ */
+
+#define PLATFORM_ENTER			\
 	LED_MODE |= 1 << LED_BIT;	\
 	XBR1 = XBARE;
 

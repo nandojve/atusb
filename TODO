@@ -16,6 +16,8 @@ Things not done yet
 
 - implement return to DFU in application's EP0 protocol
 
+- consider removing *_ID and using bcdDevice instead
+
 
 Bugs to fix
 -----------
@@ -110,10 +112,3 @@ Things not done yet
 - evaluate termination resistance
 
 - document circuit design
-
-
-Bugs to fix
------------
-
-- the firmware flashes okay and there are no outward signs of problems, yet the
-  board doesn't do anything so far, not even blink the LED. Kinda embarrassing.
