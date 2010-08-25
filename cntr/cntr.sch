@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Wed Aug 25 06:34:07 2010
+EESchema Schematic File Version 2  date Wed Aug 25 19:36:56 2010
 LIBS:power
 LIBS:device
 LIBS:conn
@@ -9,10 +9,10 @@ EELAYER 24  0
 EELAYER END
 $Descr A4 11700 8267
 Sheet 1 1
-Title ""
+Title "Arbitrary-precision Counter (3 MHz)"
 Date "25 aug 2010"
-Rev ""
-Comp ""
+Rev "1"
+Comp "Werner Almesberger"
 Comment1 ""
 Comment2 ""
 Comment3 ""

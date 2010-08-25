@@ -1,4 +1,4 @@
-PCBNEW-BOARD Version 1 date Wed Aug 25 06:34:28 2010
+PCBNEW-BOARD Version 1 date Wed Aug 25 19:37:57 2010
 
 # Created by Pcbnew(2010-08-11 BZR 2448)-unstable
 
@@ -19,10 +19,10 @@ $EndGENERAL
 
 $SHEETDESCR
 Sheet A4 11700 8267
-Title ""
+Title "Arbitrary-precision Counter (3 MHz)"
 Date "25 aug 2010"
-Rev ""
-Comp ""
+Rev "1"
+Comp "Werner Almesberger"
 Comment1 ""
 Comment2 ""
 Comment3 ""
