@@ -192,7 +192,7 @@ static void measure(usb_dev_handle *dev, double clock_dev_s, double error_goal)
 		usleep(100000);
 		while (!get_sample(dev, &now));
 		dc = now.cntr-start.cntr;
-		dt = now.t0-start.t0;
+		dt = (now.t0+now.t1)/2.0-(start.t0+start.t1)/2.0;
 		f = dc/dt;
 		if (f > 1000000.0) {
 			f /= 1000000.0;
@@ -207,9 +207,9 @@ static void measure(usb_dev_handle *dev, double clock_dev_s, double error_goal)
 			error = 1.0/dc;			/* one count */
 		else
 			error = 0;
-		error += (start.t1-start.t0)/dt;/* start sample read */
-		error += (now.t1-now.t0)/dt;	/* last sample read */
-		error += clock_dev_s/dt;	/* system clock deviation */
+		error += (start.t1-start.t0)/dt/2.0;	/* start sample read */
+		error += (now.t1-now.t0)/dt/2.0;	/* last sample read */
+		error += clock_dev_s/dt;		/* system clock dev. */
 		if (error >= 1) {
 			printf("\r(wait) ");
 			fflush(stdout);
