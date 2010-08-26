@@ -23,6 +23,8 @@ Board		Error		Meas. accuracy	C14/C15		Trim
 		- 14		100.0		15		0
 		+ 11		 99.9		12		0
 		+ 11		 99.6		12		0
+(cleanup)	+ 14		100.0		12		0
+		+ 14		100.0		12		0
 
 1, "red"	+263		 99.7		NC		0
 		+263		100.0		NC		0
@@ -32,6 +34,8 @@ Board		Error		Meas. accuracy	C14/C15		Trim
 		+ 24		100.0		10		0
 		-  9		 99.7		10		4.5
 		-  9		100.0		10		4.5
+(cleanup)	+ 14		100.0		12		0
+		+ 14		100.0		12		0
 
 (Multiple measurements to assess CNTR performance and drift. Note that
 CNTR measurements are repeatable within 1 ppm, so the nominal accuracy
