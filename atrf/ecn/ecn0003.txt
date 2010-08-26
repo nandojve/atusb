@@ -1,3 +1,58 @@
 Replace balun and filter with integrated balun
 
-(pick suitable balun)
+
+We consider the balun needs for the AT86RF230 and the TI/Chipcon
+CC2520 we may try as a design alternative.
+
+For the AT86RF230, Atmel recommend baluns with integrated filter,
+namely the Wuerth 748421245 and the Johanson 2450FB15L0001, both in the
+AR86RF230 data sheet.
+
+For the CC2520, TI recommend a microstrip-based design for the balun,
+both in the CC2420/CC243x/CC2480 application note [1] and the reference
+design [2], without fully characterizing neither the transceiver's RF
+output nor all the components in the balun.
+
+Johanson lists the 2450FB15L0001 [3] and even a 2450BM15B0002 [3] for
+the TI/Chipcon CC2520, but not even Octoparts is able to find a
+distributor for these parts.
+
+Digging deeper, TI reveal more information about the balun in [5].
+
+Finally, TI somewhat hesitatingly acknowledge that the Murata balun
+LDB182G4510C-110 can be used for the CC2520 [6], with a 3.9 nH inductor
+connecting RF_P and RF_N, the balun coupled to GND not directly but via
+10 nF, and finally an LC low-pass filter with 1.5 nH and 2.2 pF at the
+output, for EMI compliance.
+
+Note that this also means that CC2520 and AT86RF230 both have an
+impedance of 100 Ohm.
+
+A balun without filter similar to the Murata part would be the Johanson
+2450BL15K100.
+
+Manufacturer	Part number		Package	Digi-Key	Price/Qty
+---------------	-----------------------	-------	---------------	---------------
+Wuerth		748421245		0805-6	732-2230-1-ND	2.15/25
+						732-2230-2-ND	0.753/4000
+Johanson	2450FB15L0001		0805-6	-		-
+Johanson	2450BM15B0002		0805-6	-		-
+Johanson	2450BL15K100		0805-6	712-1045-1-ND	0.488/10
+						712-1045-2-ND	0.225/4000
+Murata		LDB182G4510C-110	0603-6	490-5023-1-ND	0.325/10
+						490-5023-2-ND	0.114/4000
+
+[1] http://www.ti.com/litv/pdf/swra098d
+[2] http://focus.ti.com/docs/toolsw/folders/print/cc2520em_refdes.html
+[3] http://www.johansontechnology.com/images/stories/ip/baluns/Balun_Filter_Combo_Matched_2450FB15L0001_v11.pdf
+[4] http://www.johansontechnology.com/images/stories/ip/baluns/balun_filter_combo_matched_2450bm15b0002_v2.pdf
+[5] http://www.ti.com/litv/pdf/swra236a
+[6] http://e2e.ti.com/support/low_power_rf/f/155/t/15910.aspx
+
+
+Conclusion: the Wurth balun appears to be the safest choice for
+prototyping the AT86RF230. Due to its high cost, a circuit with a
+discrete filter may be considered for larger quantities.
+
+For the CC2520, it's probably safest to directly try the Muarta balun
+with the recommended discrete filtering circuit.

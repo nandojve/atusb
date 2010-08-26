@@ -1,0 +1,73 @@
+Take into account layout considerations for RF
+
+
+There are a number of layout considerationg when designing RF systems
+that were not taken into account or not quantified when making the
+first design.
+
+- transmission line width
+
+  The microstrip [1] transmission line connecting the balun and filter
+  circuit with the antenna must be impedance-matched with the antenna.
+  The rule of thumb according to [2] is to make its width twice the
+  board thickness, in this case 0.8 mm or 31.5 mil.
+
+  The microstrip calculator at [3] also takes into account the
+  thickness of the copper, 1 oz, and yields a slightly narrower 57.5
+  mil or 1.46 mm.
+
+  A more elaborate calculator can be found at [4].
+
+- via spacing
+
+  Section 4.2 of [5] recommends a via spacing of no more than
+  Lvia = C/sqrt(Er)/Fres
+  where
+  C = the speed of light, 3*10^8 m/s
+  Er = the board's dielectric constant, 4.5 for FR-4
+  Fres = the resonance frequency, at least 24.5 GHz
+
+  We thus obtain Lvia = 5 mm.
+
+- component placing
+
+  [5] places DC blocking, balun, and filter close to the transceiver,
+  with only the feed line between the RF circuit and the antenna. Thus,
+  no changes are needed.
+
+- feed line termination
+
+  Point 12 of [6] warns us that we may need to terminate the
+  transmission line if it is longer than 20% of the signal's rise time.
+
+  Point 1 of [6] gives the rise time as 1/(10*Fclk), which looks as if
+  it's meant for digital signals. But we'll use it anyway.
+
+  [2] gives us the typical propagation delay for a microstrip as
+  150 pS/in.
+
+  This means that Lmax = 0.2*tr*v
+  with
+  tr = 1/24.5 GHz
+  v = 1 in/150 pS
+
+  We thus obtain Lmax = 1.4 mm
+
+  [2] suggests that the maximum unterminated stub is L(in) = tr(nS).
+
+  With tr = 1/(10*Fclk), we thus obtain Lmax = 1.04 mm.
+
+  Not sure if all this even applies to antennas. This needs looking to by
+  someone who understands about RF.
+
+[1] http://en.wikipedia.org/wiki/Microstrip
+[2] http://www.hottconsultants.com/techtips/rulesofthumb.html
+[3] http://www.cepdinc.com/calculators/microstrip.htm
+[4] http://mcalc.sourceforge.net/
+[5] http://www.ti.com/litv/pdf/swra236a
+[6] http://www.pcbmotif.com/home/index.php?option=com_content&view=article&id=104&Itemid=137
+
+
+Conclusion: the antenna feed line needs to be revised. The via spacing
+of the RF area needs to be examined. The recommended spacing may be
+beyond the capabilities of a DIY process, though.

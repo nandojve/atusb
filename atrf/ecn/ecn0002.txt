@@ -1,5 +1,6 @@
 Add load capacitors to 16 MHz crystal (C14, C15)
 
+
 The crystal has a specified load capacitance of 8 pF. The AT86RF230 has
 an internal capacitor array that can be trimmed in 16 steps from 0 pF to
 4.5 pF.
@@ -41,6 +42,7 @@ Board		Error		Meas. accuracy	C14/C15		Trim
 CNTR measurements are repeatable within 1 ppm, so the nominal accuracy
 appears to be far too pessimistic.)
 
-These measurements suggest that, combined with parasitic capacitance,
-load capacitors of 12 pF make the crystal roughly half the trim range
-faster than 16 MHz.
+
+Conclusion: these measurements suggest that, combined with parasitic
+capacitance, load capacitors of 12 pF make the crystal roughly half the
+trim range faster than 16 MHz.

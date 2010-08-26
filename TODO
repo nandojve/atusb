@@ -37,11 +37,6 @@ inside a Ben.
 Things not done yet
 -------------------
 
-- define values for crystal load capacitors. Measurements with instruments not
-  quite precise enough (+/- 100 ppm) for the task (+/- 40 ppm, preferably
-  < +/- 10 ppm) suggest that we're about 300 ppm off with no capacitors at all
-  and can only correct about 150 ppm with the internal trim capacitors.
-
 - examine spectrum around carrier frequency and first harmonic to look for
   obvious distortions.  Vary transmit power.
 
@@ -60,7 +55,7 @@ Things not done yet
 - verify that the Ben can output an a) 16 MHz clock, and b) with +/- 40 ppm
 
 - replace discrete balun and filter with integrated solution, to reduce BOM
-  size, maybe cost, insertion loss, and PCB space
+  size, maybe cost, insertion loss, and PCB space (see ECN0003)
 
 - check if we really need three DC blocking caps in the RF path
 
@@ -79,10 +74,6 @@ Things not done yet
 
 Bugs to fix
 -----------
-
-- two of my systems (tv and u1010) flat out refuse to talk to the board's USB
-  application, but have no problem talking to its DFU boot loader. Very
-  strange.
 
 - atrf vs. atspi naming is a bit confusing
 
