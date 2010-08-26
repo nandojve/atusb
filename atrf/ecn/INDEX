@@ -1,0 +1,5 @@
+Number	Status	Description
+------	-------	---------------------------------------------------------------
+0001	Edit	Adjust balun component values
+0002	Done	Add load capacitors to 16 MHz crystal
+0003	Edit	Replace balun and filter with integrated balun

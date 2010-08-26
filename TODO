@@ -132,3 +132,6 @@ Things not done yet
   old.max < curr.min or old.min > curr.max, we have a problem) and to further
   narrow the effective margin, thus achieving faster convergence. We would have
   to consider temperature drift of the frequency source in this case.
+
+- find out why frequency measurements always seem to start high and then slowly
+  drop

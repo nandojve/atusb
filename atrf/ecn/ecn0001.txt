@@ -1,0 +1,15 @@
+Adjust balun component values
+
+Some of the components specified in the schematics were not at hand
+in my lab and were thus replaced with similar parts. Furthermore, the
+LED color was changed to ease visual identification:
+
+Component	Norminal	Board 1		Board 2
+---------------	---------------	---------------	-------------------
+LED (D1)	red		red		red-orange
+C6/C7		0.82 pF		0.7 pF		0.9 pF
+L2/L3		4.3 nH		4.7 nH		4.7 nH
+
+The resulting spectrum should be examined to determine which variant
+performs better. Note that the discrete balun circuit shall be
+replaced with an integrated balun later on.

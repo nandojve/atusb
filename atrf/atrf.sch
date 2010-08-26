@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Wed Aug 25 19:40:58 2010
+EESchema Schematic File Version 2  date Thu Aug 26 00:07:13 2010
 LIBS:power
 LIBS:device
 LIBS:conn
@@ -7,12 +7,13 @@ LIBS:c8051f326
 LIBS:mini_usb_b
 LIBS:xtal-4
 LIBS:antenna
+LIBS:wpan-atrf-cache
 EELAYER 24  0
 EELAYER END
 $Descr A4 11700 8267
 Sheet 3 3
 Title "IEEE 802.15.4 USB Transceiver (AT86RF230)"
-Date "20 aug 2010"
+Date "26 aug 2010"
 Rev "100820"
 Comp "Werner Almesberger"
 Comment1 ""
@@ -619,7 +620,7 @@ L C C15
 U 1 1 4C640A7B
 P 10100 2450
 F 0 "C15" H 10150 2550 50  0000 L CNN
-F 1 "NC" H 10150 2350 50  0000 L CNN
+F 1 "12pF" H 10150 2350 50  0000 L CNN
 F 2 "0402" H 10100 2450 60  0001 C CNN
 	1    10100 2450
 	0    -1   1    0   
@@ -639,7 +640,7 @@ L C C14
 U 1 1 4C640A73
 P 10100 1150
 F 0 "C14" H 10150 1250 50  0000 L CNN
-F 1 "NC" H 10150 1050 50  0000 L CNN
+F 1 "12pF" H 10150 1050 50  0000 L CNN
 F 2 "0402" H 10100 1150 60  0001 C CNN
 	1    10100 1150
 	0    -1   1    0   

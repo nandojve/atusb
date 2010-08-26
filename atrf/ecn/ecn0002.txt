@@ -1,0 +1,42 @@
+Add load capacitors to 16 MHz crystal (C14, C15)
+
+The crystal has a specified load capacitance of 8 pF. The AT86RF230 has
+an internal capacitor array that can be trimmed in 16 steps from 0 pF to
+4.5 pF.
+
+The crystal has a nominal tolerance of 15 ppm at 25 C plus a temperature
+tolerance of 15 ppm. The following deviations from 1 MHz at CLKM were
+measured with the CNTR board, roughly at 20-25 C:
+
+Board		Error		Meas. accuracy	C14/C15		Trim
+		(f, ppm)	(ppm, nom.)	(pF)		(pF)
+---------------	---------------	---------------	------------	--------
+2, "orange"	+268		 99.6		NC		0
+		+266		 99.5		NC		0
+		+266		 40.0		NC		0
+		+148		 99.8		NC		3.0
+		+147		 99.7		NC		3.0
+		+147		 40.0		NC		3.0
+		+111		100.0		NC		4.5
+		+110		 99.8		NC		4.5
+		- 13		 99.9		15		0
+		- 14		100.0		15		0
+		+ 11		 99.9		12		0
+		+ 11		 99.6		12		0
+
+1, "red"	+263		 99.7		NC		0
+		+263		100.0		NC		0
+		+107		 99.3		NC		4.5
+		+108		100.0		NC		4.5
+		+ 24		 99.8		10		0
+		+ 24		100.0		10		0
+		-  9		 99.7		10		4.5
+		-  9		100.0		10		4.5
+
+(Multiple measurements to assess CNTR performance and drift. Note that
+CNTR measurements are repeatable within 1 ppm, so the nominal accuracy
+appears to be far too pessimistic.)
+
+These measurements suggest that, combined with parasitic capacitance,
+load capacitors of 12 pF make the crystal roughly half the trim range
+faster than 16 MHz.
