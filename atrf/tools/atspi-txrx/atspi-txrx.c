@@ -57,6 +57,7 @@ static usb_dev_handle *init_txrx(int trim)
 	atspi_reg_write(dev, REG_TRX_STATE, TRX_CMD_TRX_OFF);
 	atspi_reg_write(dev, REG_XOSC_CTRL,
 	    (XTAL_MODE_INT << XTAL_MODE_SHIFT) | trim);
+	atspi_reg_write(dev, REG_TRX_CTRL_0, 0); /* disable CLKM */
 
 	return dev;
 }

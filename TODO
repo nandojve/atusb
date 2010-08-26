@@ -55,7 +55,7 @@ Things not done yet
 - verify that the Ben can output an a) 16 MHz clock, and b) with +/- 40 ppm
 
 - replace discrete balun and filter with integrated solution, to reduce BOM
-  size, maybe cost, insertion loss, and PCB space (see ECN0003)
+  size, maybe cost, insertion loss, and PCB space (see ATRF/ECN0003)
 
 - check if we really need three DC blocking caps in the RF path
 
