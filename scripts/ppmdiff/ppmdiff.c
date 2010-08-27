@@ -185,6 +185,20 @@ static uint8_t *diff(const uint8_t *a, const uint8_t *b, int xres, int yres)
 }
 
 
+static void shadow_diff(const uint8_t *a, const uint8_t *b, int xres, int yres)
+{
+	int x, y;
+
+	for (y = 0; y != yres; y++)
+		for (x = 0; x != xres; x++) {
+			if (memcmp(a, b, 3))
+				change(x, y);
+			a += 3;
+			b += 3;
+		}
+}
+
+
 static void point(uint8_t *img, int x, int y, int xres, int yres)
 {
 	uint8_t *p;
@@ -267,6 +281,10 @@ static void usage(const char *name)
 	fprintf(stderr,
 "usage: %s [-f] [-a color] [-b color] [-c color] [-d pixels]\n"
 "%6s %*s [-m color] [-n color] [-w pixels] file_a.ppm file_b.ppm\n\n"
+"%6s %*s [file_a'.ppm file_b'.ppm] [out.ppm]\n\n"
+"  file_a.ppm and file_b.ppm   are two input images\n"
+"  file_a'.ppm and file_b'.ppm if present, are searched for changes as well\n"
+"  out.ppm                     output file (default: standard output)\n\n"
 "  -f         generate output (and return success) even if there is no change\n"
 "  -a color   color of items only in image A\n"
 "  -b color   color of items only in image B\n"
@@ -279,7 +297,7 @@ static void usage(const char *name)
 "  value from 0 to 1. E.g., 1,1,1 is white.\n\n"
 "  The images are expected to have dark colors on a perfectly white\n"
 "  background.\n"
-	    , name, "", (int) strlen(name), "");
+	    , name, "", (int) strlen(name), "", "", (int) strlen(name), "");
 	exit(1);
 }
 
@@ -300,7 +318,9 @@ int main(int argc, char *const *argv)
 {
 	int force = 0;
 	int x = 0, y = 0;
-	uint8_t *old, *new, *d;
+	uint8_t *old, *new, *d, *a, *b;
+	char *shadow_old = NULL, *shadow_new = NULL, *out_name = NULL;
+	FILE *out;
 	char *end;
 	int c;
 
@@ -337,18 +357,48 @@ int main(int argc, char *const *argv)
 		default:
 			usage(*argv);
 		}
-	if (argc-optind != 2)
+	switch (argc-optind) {
+	case 2:
+		break;
+	case 3:
+		out_name = argv[optind+2];
+		break;
+	case 5:
+		out_name = argv[optind+4];
+		/* fall through */
+	case 4:
+		shadow_old = argv[optind+2];
+		shadow_new = argv[optind+3];
+		break;
+	default:
 		usage(*argv);
+	}
+
 	old = load_ppm(argv[optind], &x, &y);
 	new = load_ppm(argv[optind+1], &x, &y);
 	d = diff(old, new, x, y);
+	if (shadow_old) {
+		a = load_ppm(shadow_old, &x, &y);
+		b = load_ppm(shadow_new, &x, &y);
+		shadow_diff(a, b, x, y);
+	}
 	if (frame_dist)
 		mark_areas(d, x, y);
 	if (!areas && !force)
 		return 1;
-	printf("P6\n%d %d\n255\n", x, y);
-	fwrite(d, 1, x*y*3, stdout);
-	if (fclose(stdout) == EOF) {
+
+	if (out_name) {
+		out = fopen(out_name, "w");
+		if (!out) {
+			perror(out_name);
+			exit(1);
+		}
+	} else {
+		out = stdout;
+	}
+	fprintf(out, "P6\n%d %d\n255\n", x, y);
+	fwrite(d, 1, x*y*3, out);
+	if (fclose(out) == EOF) {
 		perror("fclose");
 		exit(1);
 	}

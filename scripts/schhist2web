@@ -15,12 +15,12 @@ pngdiff()
     pp="$1"
     of="$2"
     shift 2
-    if ! PATH=$PATH:`dirname $0`/ppmdiff ppmdiff "$@" >"$out/_tmp"; then
-	rm "$out/_tmp"
+    if ! PATH=$PATH:`dirname $0`/ppmdiff ppmdiff "$@" "$out/_tmp"; then
+	rm -f "$out/_tmp"
 	return 1
     fi
     $pp "$out/_tmp" | pnmtopng >"$of"
-    rm -f "$out/_tmp"
+    rm "$out/_tmp"
 }
 
 
@@ -128,7 +128,8 @@ for n in `git rev-list $first..HEAD~1` $first; do
 	if [ -f "$a" -a -f "$b" ]; then
 	    s="$s<TD>"
 	    pngdiff cat "$diff" "$a" "$b" || continue
-	    pngdiff shrink "$thumb" -f $THUMB_OPTS "$fat_a" "$fat_b" || exit
+	    pngdiff shrink "$thumb" -f $THUMB_OPTS "$fat_a" "$fat_b" \
+	      "$a" "$b" || exit
 	elif [ -f "$a" ]; then
 	    s="$s<TD>"
 	    pngdiff cat "$diff" -f -c 1,0,0 "$a" "$a" || exit
