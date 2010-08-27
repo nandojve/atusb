@@ -40,6 +40,8 @@ usage()
     cat <<EOF 1>&2
 usage: $0 [options] top-dir top-schem [commit] outdir
 
+  -c         use cached Postscript files (from previous run, with -k)
+  -k         keep checked-out tree (for immediate reuse with -c)
   -r XxY     image resolution (default: $RES)
   -w points  Postscript line width (default: $LINEWIDTH)
 EOF
@@ -47,16 +49,20 @@ EOF
 }
 
 
+cache=false
+keep=false
 while true; do
     case "$1" in
+    -c)	cache=true
+	shift;;
+    -k)	keep=true
+	shift;;
     -r)	[ -z "$2" ] && usage
 	RES="$2"
-	shift 2
-	break;;
+	shift 2;;
     -w)	[ -z "$2" ] && usage
 	LINEWIDTH="$2"
-	shift 2
-	break;;
+	shift 2;;
     -*)
 	usage;;
     *)
@@ -84,25 +90,27 @@ fi
 tmp="$dir/../_gitsch2ppm"
 sch="$tmp/$sdir"
 
-rm -rf "$tmp"
+if ! $cache; then
+    rm -rf "$tmp"
+    rm -rf "$outdir"
 
-git clone -s -n "$dir/.git" "$tmp" || exit
-( cd "$tmp" && git checkout -q "$commit"; ) || exit
+    git clone -s -n "$dir/.git" "$tmp" || exit
+    ( cd "$tmp" && git checkout -q "$commit"; ) || exit
 
-if [ ! -f "$tmp/$schem" ]; then
-    echo "$schem not found (checked out into $tmp)" 1>&2
-    exit 1
+    if [ ! -f "$tmp/$schem" ]; then
+        echo "$schem not found (checked out into $tmp)" 1>&2
+        exit 1
+    fi
+
+    ( cd "$sch" && rm -f *.ps *.ppm && eeschema --plot "$tmp/$schem"; ) || exit
 fi
-
-( cd "$sch" && rm -f *.ps *.ppm && eeschema --plot "$tmp/$schem"; ) || exit
 
 for n in "$sch"/*.ps; do
     ps2ppm "$n"
 done
 
-rm -rf "$outdir"
 mkdir -p "$outdir"
 
 mv "$sch"/*.ppm "$outdir"
 
-rm -rf "$tmp"
+$keep || rm -rf "$tmp"
