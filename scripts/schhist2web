@@ -122,8 +122,11 @@ $no_cache && rm -rf "$cache"
 mkdir -p "$out/names"
 mkdir -p "$cache"
 
+head=
 for n in $first `git rev-list --reverse $first..HEAD`; do
-echo Processing $n
+    git show  --pretty=format:'' --name-only $n |
+      egrep -q '\.sch$|\.pro$|\.lib$' || continue
+    echo Processing $n
     new=`gitenealogy "$dir/$sch" | sed "/^$n /s///p;d"`
     if [ ! -z "$new" ]; then
 	echo Name change $schname to $new 1>&2
@@ -141,7 +144,13 @@ echo Processing $n
 	touch "$out/names/"`basename "$m" .ppm`
     done
     trap 0
+    head=$n
 done
+
+if [ -z "$head" ]; then
+    echo "no usable head found" 2>&1
+    exit 1
+fi
 
 index="$out/index.html"
 cat <<EOF >"$index"
@@ -155,9 +164,9 @@ for m in `ls -1 "$out/names"`; do
     echo "<TD><B>$m</B>" >>"$index"
 done
 
-head=`git rev-list HEAD~1..HEAD`
 next="$head"
 for n in `git rev-list $first..HEAD~1` $first; do
+    [ -d "$cache/ppm_$n" ] || continue
     empty=true
     s="<TR><TR>"
     mkdir -p "$out/diff_$next" "$out/thumb_$next"
@@ -201,7 +210,7 @@ $s<TD valign="middle">
 EOF
     mkdir -p "$out/diff_$next" "$out/thumb_$next"
 	    echo "<PRE>"
-	    git log --pretty=short $n..$next |
+	    git log --pretty=short $next~1..$next |
 	      sed 's/&/&amp;/g;s/</\&lt;/g;s/>/\&gt;/g'
 	    echo "</PRE>"
 	) >>"$index"
