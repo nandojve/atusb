@@ -1,0 +1,29 @@
+#!/bin/sh
+#
+# gitenealogy - Trace the ancestry of a file in git across renames
+#
+# Written 2010 by Werner Almesberger
+# Copyright 2010 Werner Almesberger
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+
+
+usage()
+{
+    echo "usage: $0 path" 2>&1
+    exit 1
+}
+
+
+[ -z "$1" -o ! -z "$2" ] && usage
+[ ! -f "$1" ] && usage
+
+git log --follow --name-status "$1" |
+    awk '
+/^commit /{ if (c) print c, n; c = $2 }
+{ if (NF) n = $(NF) }
+END { if (c) print c, n; }'

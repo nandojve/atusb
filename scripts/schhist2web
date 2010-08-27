@@ -1,0 +1,164 @@
+#!/bin/sh
+
+THUMB_OPTS="-w 3 -d 60 -n 1,1,0"
+
+
+shrink()
+{
+    pnmscale -width 120 "$@" || exit
+}
+
+
+pngdiff()
+{
+    # pngdiff preproc outfile arg ...
+    pp="$1"
+    of="$2"
+    shift 2
+    if ! PATH=$PATH:`dirname $0`/ppmdiff ppmdiff "$@" >"$out/_tmp"; then
+	rm "$out/_tmp"
+	return 1
+    fi
+    $pp "$out/_tmp" | pnmtopng >"$of"
+    rm -f "$out/_tmp"
+}
+
+
+usage()
+{
+    echo "usage: $0 [top-dir] [top-schem] [outdir]" 2>&1
+    exit 1
+}
+
+
+if [ ! -z "$1" -a -d "$1/.git" ]; then
+    dir="$1"
+    shift
+else
+    dir=.
+    while [ ! -d $dir/.git ]; do
+	if [ $dir -ef $dir/.. ]; then
+	    echo "no .git/ directory found in hierarchy" 1>&2
+	    exit 1
+	fi
+	dir=$dir/..
+    done
+fi
+
+if [ ! -z "$1" -a -f "$dir/$1" -a \
+  -f "$dir"/`dirname "$1"`/`basename "$1" .sch`.pro ]; then
+    sch="$1"
+    shift
+else
+    for n in "$dir"/*.sch; do
+	[ -f `dirname "$n"`/`basename "$n" .sch`.pro ] || continue
+	if [ ! -z "$sch" ]; then
+	    echo "multiple choices for top-level .sch file" 1>&2
+	    exit 1
+	fi
+	sch="$n"
+    done
+    if [ -z "$sch" -o "$sch" = "$dir/*.sch" ]; then
+	echo "no candidate for top-level .sch file found" 1>&2
+	exit 1
+    fi
+fi
+
+if [ ! -z "$1" ] && [ ! -e "$1" ] || [ -d "$1" -a ! -d "$1"/.git ]; then
+    out="$1"
+    shift
+else
+    out=_out
+fi
+
+[ -z "$1" ] || usage
+
+PATH=`dirname "$0"`:"$PATH"
+first=`gitenealogy "$dir/$sch" | sed '$s/ .*//p;d'`
+schname=`gitenealogy "$dir/$sch" | sed '$s/^.* //p;d'`
+
+# @@@ POOR MAN'S CACHE
+if true; then
+
+rm -rf "$out"
+mkdir -p "$out/names"
+
+for n in $first `git rev-list --reverse $first..HEAD`; do
+echo Processing $n
+    new=`gitenealogy "$dir/$sch" | sed "/^$n /s///p;d"`
+    if [ ! -z "$new" ]; then
+echo Name change $schname to $new
+	schname="$new"
+    fi
+    mkdir "$out/ppm_$n"
+    gitsch2ppm "$dir" "$schname" $n "$out/ppm_$n" || exit
+    gitsch2ppm -w 500 "$dir" "$schname" $n "$out/fat_$n" || exit
+    for m in "$out/ppm_$n/"*; do
+	[ "$m" = "$out/ppm_$n/*" ] && break
+	touch "$out/names/"`basename "$m" .ppm`
+    done
+done
+
+fi
+
+cat <<EOF >"$out/index.html"
+<HTML>
+<BODY>
+<TABLE bgcolor="#f0f0ff" callpadding=1>
+<TR>
+EOF
+for m in `ls -1 "$out/names"`; do
+    echo "<TD><B>$m</B>" >>"$out/index.html"
+done
+
+head=`git rev-list HEAD~1..HEAD`
+next="$head"
+for n in `git rev-list $first..HEAD~1` $first; do
+    empty=true
+    s="<TR><TR>"
+    mkdir -p "$out/diff_$next" "$out/thumb_$next"
+    for m in `ls -1 "$out/names"`; do
+	a="$out/ppm_$n/$m.ppm"
+	fat_a="$out/fat_$n/$m.ppm"
+	b="$out/ppm_$next/$m.ppm"
+	fat_b="$out/fat_$next/$m.ppm"
+	diff="$out/diff_$next/$m.png"
+	thumb="$out/thumb_$next/$m.png"
+
+	if [ -f "$a" -a -f "$b" ]; then
+	    s="$s<TD>"
+	    pngdiff cat "$diff" "$a" "$b" || continue
+	    pngdiff shrink "$thumb" -f $THUMB_OPTS "$fat_a" "$fat_b" || exit
+	elif [ -f "$a" ]; then
+	    s="$s<TD>"
+	    pngdiff cat "$diff" -f -c 1,0,0 "$a" || exit
+	    pngdiff shrink "$thumb" -f -c 1,0,0 $THUMB_OPTS "$fat_a" || exit
+	elif [ -f "$out/$next/$m.ppm" ]; then
+	    s="$s<TD>"
+	    pngdiff cat "$diff" -f -c 0,1,0 "$b" || exit
+	    pngdiff shrink "$thumb" -f -c 0,1,0 $THUMB_OPTS "$fat_b" || exit
+	else
+	    continue
+	fi
+	echo "$s" >>"$out/index.html"
+	s=
+	empty=false
+	echo "<A href=\"diff_$next/$m.png\"><IMG src=\"thumb_$next/$m.png\"></A>" >>"$out/index.html"
+    done
+    if ! $empty; then
+	(
+	    cat <<EOF
+$s<TD valign="middle">
+<TABLE bgcolor="#000000" cellspacing=0 width="100%"><TR><TD></TABLE>
+EOF
+    mkdir -p "$out/diff_$next" "$out/thumb_$next"
+	    echo "<PRE>"
+	    git log --pretty=short $n..$next
+	    echo "</PRE>"
+	) >>"$out/index.html"
+    fi
+    next=$n
+done
+
+echo "</TABLE>" >>"$out/index.html"
+exit 1

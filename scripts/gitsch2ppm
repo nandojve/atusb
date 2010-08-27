@@ -1,0 +1,108 @@
+#!/bin/sh
+#
+# gitsch2ppm - Generate PPM files for KiCad schematics in git
+#
+# Written 2010 by Werner Almesberger
+# Copyright 2010 Werner Almesberger
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+
+
+RES=1280x850
+LINEWIDTH=120
+
+
+ps2ppm()
+{
+    X=`echo $RES | sed 's/x.*//'`
+    Y=`echo $RES | sed 's/.*x//'`
+    IRES=${Y}x$X
+    res=`expr 72 \* $X / 800`
+
+    ( cat <<EOF
+%!PS-Adobe-3.0
+/setlinewidth { $LINEWIDTH 2 copy lt { exch } if pop setlinewidth } bind def
+EOF
+    sed 1d <"$1"; ) |
+	gs -sDEVICE=ppmraw -sOutputFile=- -g$IRES -r$res \
+	  -dTextAlphaBits=4 -dGraphicsAlphaBits=4 -q - |
+	  pnmflip -r270 |
+	  cat >`dirname "$1"`/`basename "$1" .ps`.ppm
+}
+
+
+usage()
+{
+    cat <<EOF 1>&2
+usage: $0 [options] top-dir top-schem [commit] outdir
+
+  -r XxY     image resolution (default: $RES)
+  -w points  Postscript line width (default: $LINEWIDTH)
+EOF
+    exit 1
+}
+
+
+while true; do
+    case "$1" in
+    -r)	[ -z "$2" ] && usage
+	RES="$2"
+	shift 2
+	break;;
+    -w)	[ -z "$2" ] && usage
+	LINEWIDTH="$2"
+	shift 2
+	break;;
+    -*)
+	usage;;
+    *)
+	break;;
+    esac
+done
+
+[ ! -z "$3" -a -z "$5" ] || usage
+dir="$1"
+schem="$2"
+sdir=`dirname "$schem"`
+if [ -z "$4" ]; then
+    commit=HEAD
+    outdir="$3"
+else
+    commit="$3"
+    outdir="$4"
+fi
+
+[ "$dir" != "${dir#/}" ] || dir=`pwd`/$dir
+
+[ "$commit" != HEAD -o -f "$dir/$schem" ] || usage
+[ -d "$dir/.git" ] || usage
+
+tmp="$dir/../_schdiff_a"
+sch="$tmp/$sdir"
+
+rm -rf "$tmp"
+
+git clone -s -n "$dir/.git" "$tmp" || exit
+( cd "$tmp" && git checkout -q "$commit"; ) || exit
+
+if [ ! -f "$tmp/$schem" ]; then
+    echo "$schem not found (checked out into $tmp)" 1>&2
+    exit 1
+fi
+
+( cd "$sch" && rm -f *.ps *.ppm && eeschema --plot "$tmp/$schem"; ) || exit
+
+for n in "$sch"/*.ps; do
+    ps2ppm "$n"
+done
+
+rm -rf "$outdir"
+mkdir -p "$outdir"
+
+mv "$sch"/*.ppm "$outdir"
+
+rm -rf "$tmp"
