@@ -376,16 +376,18 @@ int main(int argc, char *const *argv)
 
 	old = load_ppm(argv[optind], &x, &y);
 	new = load_ppm(argv[optind+1], &x, &y);
-	d = diff(old, new, x, y);
 	if (shadow_old) {
 		a = load_ppm(shadow_old, &x, &y);
 		b = load_ppm(shadow_new, &x, &y);
+		if (!force && !memcmp(a, b, x*y*3))
+			return 1;
 		shadow_diff(a, b, x, y);
 	}
+	if (!force && !areas && !memcmp(old, new, x*y*3))
+		return 1;
+	d = diff(old, new, x, y);
 	if (frame_dist)
 		mark_areas(d, x, y);
-	if (!areas && !force)
-		return 1;
 
 	if (out_name) {
 		out = fopen(out_name, "w");

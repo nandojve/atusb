@@ -1,4 +1,16 @@
 #!/bin/sh
+#
+# schhist2web - Web-browseable graphical revision history of schematics
+#
+# Written 2010 by Werner Almesberger
+# Copyright 2010 Werner Almesberger
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+
 
 OUTDIR=_out
 THUMB_OPTS="-w 3 -d 60 -c 0.5,0.5,0.5 -n 1,1,0"
@@ -46,10 +58,11 @@ EOF
 no_cache=false
 while true; do
     case "$1" in
-    -n)	no_cache=true;;
+    -n)	no_cache=true
+	shift;;
     -c)	[ -z "$1" ] && usage
 	cache="$1"
-	shift;;
+	shift 2;;
     -*) usage;;
     *)	break;;
     esac
@@ -105,8 +118,8 @@ first=`gitenealogy "$dir/$sch" | sed '$s/ .*//p;d'`
 schname=`gitenealogy "$dir/$sch" | sed '$s/^.* //p;d'`
 
 rm -rf "$out/diff_*" "$out/thumb_*" "$out/names"
-mkdir -p "$out/names"
 $no_cache && rm -rf "$cache"
+mkdir -p "$out/names"
 mkdir -p "$cache"
 
 for n in $first `git rev-list --reverse $first..HEAD`; do
@@ -116,16 +129,18 @@ echo Processing $n
 	echo Name change $schname to $new 1>&2
 	schname="$new"
     fi
+    trap "rm -rf \"$cache/ppm_$n\" \"$cache/fat_$n\"" 0
     if [ ! -d "$cache/ppm_$n" ]; then
 	rm -rf "$cache/ppm_$n"
 	mkdir "$cache/ppm_$n"
 	gitsch2ppm "$dir" "$schname" $n "$cache/ppm_$n" || exit
-	gitsch2ppm -w 500 "$dir" "$schname" $n "$out/fat_$n" || exit
+	gitsch2ppm -w 500 "$dir" "$schname" $n "$cache/fat_$n" || exit
     fi
     for m in "$cache/ppm_$n/"*; do
 	[ "$m" = "$cache/ppm_$n/*" ] && break
 	touch "$out/names/"`basename "$m" .ppm`
     done
+    trap 0
 done
 
 index="$out/index.html"
