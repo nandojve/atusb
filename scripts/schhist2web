@@ -131,13 +131,16 @@ for n in `git rev-list $first..HEAD~1` $first; do
 	    pngdiff shrink "$thumb" -f $THUMB_OPTS "$fat_a" "$fat_b" || exit
 	elif [ -f "$a" ]; then
 	    s="$s<TD>"
-	    pngdiff cat "$diff" -f -c 1,0,0 "$a" || exit
-	    pngdiff shrink "$thumb" -f -c 1,0,0 $THUMB_OPTS "$fat_a" || exit
+	    pngdiff cat "$diff" -f -c 1,0,0 "$a" "$a" || exit
+	    pngdiff shrink "$thumb" -f -c 1,0,0 $THUMB_OPTS "$fat_a" "$fat_a" \
+	      || exit
 	elif [ -f "$out/$next/$m.ppm" ]; then
 	    s="$s<TD>"
-	    pngdiff cat "$diff" -f -c 0,1,0 "$b" || exit
-	    pngdiff shrink "$thumb" -f -c 0,1,0 $THUMB_OPTS "$fat_b" || exit
+	    pngdiff cat "$diff" -f -c 0,1,0 "$b" "$b" || exit
+	    pngdiff shrink "$thumb" -f -c 0,1,0 $THUMB_OPTS "$fat_b" "$fat_b" \
+	      || exit
 	else
+	    s="$s<TD>"
 	    continue
 	fi
 	echo "$s" >>"$out/index.html"
