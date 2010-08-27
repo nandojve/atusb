@@ -81,7 +81,7 @@ fi
 [ "$commit" != HEAD -o -f "$dir/$schem" ] || usage
 [ -d "$dir/.git" ] || usage
 
-tmp="$dir/../_schdiff_a"
+tmp="$dir/../_gitsch2ppm"
 sch="$tmp/$sdir"
 
 rm -rf "$tmp"

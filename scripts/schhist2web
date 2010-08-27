@@ -1,6 +1,7 @@
 #!/bin/sh
 
-THUMB_OPTS="-w 3 -d 60 -n 1,1,0"
+OUTDIR=_out
+THUMB_OPTS="-w 3 -d 60 -c 0.5,0.5,0.5 -n 1,1,0"
 
 
 shrink()
@@ -26,10 +27,30 @@ pngdiff()
 
 usage()
 {
-    echo "usage: $0 [top-dir] [top-schem] [outdir]" 2>&1
+    cat <<EOF 2>&1
+usage: $0 [-c cache-dir] [-n] [top-dir] [top-schem] [out-dir]
+
+  top-dir       top-level directory of the git archive (default: locate it)
+  top-schem     root sheet of the schematics (default: locate it in top-dir)
+  out-dir       output directory (default: $OUTDIR)
+  -n            don't use previous cache content (rebuild the cache)
+  -c cache-dir  cache directory (default: same as out-dir)
+EOF
     exit 1
 }
 
+
+no_cache=false
+while true; do
+    case "$1" in
+    -n)	no_cache=true;;
+    -c)	[ -z "$1" ] && usage
+	cache="$1"
+	shift;;
+    -*) usage;;
+    *)	break;;
+    esac
+done
 
 if [ ! -z "$1" -a -d "$1/.git" ]; then
     dir="$1"
@@ -43,6 +64,7 @@ else
 	fi
 	dir=$dir/..
     done
+    echo "found top-dir: $dir" 1>&2
 fi
 
 if [ ! -z "$1" -a -f "$dir/$1" -a \
@@ -62,14 +84,16 @@ else
 	echo "no candidate for top-level .sch file found" 1>&2
 	exit 1
     fi
+    echo "found root sheet: $sch" 1>&2
 fi
 
 if [ ! -z "$1" ] && [ ! -e "$1" ] || [ -d "$1" -a ! -d "$1"/.git ]; then
     out="$1"
     shift
 else
-    out=_out
+    out=$OUTDIR
 fi
+[ -z "$cache" ] && cache="$out"
 
 [ -z "$1" ] || usage
 
@@ -77,38 +101,39 @@ PATH=`dirname "$0"`:"$PATH"
 first=`gitenealogy "$dir/$sch" | sed '$s/ .*//p;d'`
 schname=`gitenealogy "$dir/$sch" | sed '$s/^.* //p;d'`
 
-# @@@ POOR MAN'S CACHE
-if true; then
-
-rm -rf "$out"
+rm -rf "$out/diff_*" "$out/thumb_*" "$out/names"
 mkdir -p "$out/names"
+$no_cache && rm -rf "$cache"
+mkdir -p "$cache"
 
 for n in $first `git rev-list --reverse $first..HEAD`; do
 echo Processing $n
     new=`gitenealogy "$dir/$sch" | sed "/^$n /s///p;d"`
     if [ ! -z "$new" ]; then
-echo Name change $schname to $new
+	echo Name change $schname to $new 1>&2
 	schname="$new"
     fi
-    mkdir "$out/ppm_$n"
-    gitsch2ppm "$dir" "$schname" $n "$out/ppm_$n" || exit
-    gitsch2ppm -w 500 "$dir" "$schname" $n "$out/fat_$n" || exit
-    for m in "$out/ppm_$n/"*; do
-	[ "$m" = "$out/ppm_$n/*" ] && break
+    if [ ! -d "$cache/ppm_$n" ]; then
+	rm -rf "$cache/ppm_$n"
+	mkdir "$cache/ppm_$n"
+	gitsch2ppm "$dir" "$schname" $n "$cache/ppm_$n" || exit
+	gitsch2ppm -w 500 "$dir" "$schname" $n "$out/fat_$n" || exit
+    fi
+    for m in "$cache/ppm_$n/"*; do
+	[ "$m" = "$cache/ppm_$n/*" ] && break
 	touch "$out/names/"`basename "$m" .ppm`
     done
 done
 
-fi
-
-cat <<EOF >"$out/index.html"
+index="$out/index.html"
+cat <<EOF >"$index"
 <HTML>
 <BODY>
 <TABLE bgcolor="#f0f0ff" callpadding=1>
 <TR>
 EOF
 for m in `ls -1 "$out/names"`; do
-    echo "<TD><B>$m</B>" >>"$out/index.html"
+    echo "<TD><B>$m</B>" >>"$index"
 done
 
 head=`git rev-list HEAD~1..HEAD`
@@ -118,10 +143,10 @@ for n in `git rev-list $first..HEAD~1` $first; do
     s="<TR><TR>"
     mkdir -p "$out/diff_$next" "$out/thumb_$next"
     for m in `ls -1 "$out/names"`; do
-	a="$out/ppm_$n/$m.ppm"
-	fat_a="$out/fat_$n/$m.ppm"
-	b="$out/ppm_$next/$m.ppm"
-	fat_b="$out/fat_$next/$m.ppm"
+	a="$cache/ppm_$n/$m.ppm"
+	fat_a="$cache/fat_$n/$m.ppm"
+	b="$cache/ppm_$next/$m.ppm"
+	fat_b="$cache/fat_$next/$m.ppm"
 	diff="$out/diff_$next/$m.png"
 	thumb="$out/thumb_$next/$m.png"
 
@@ -135,7 +160,7 @@ for n in `git rev-list $first..HEAD~1` $first; do
 	    pngdiff cat "$diff" -f -c 1,0,0 "$a" "$a" || exit
 	    pngdiff shrink "$thumb" -f -c 1,0,0 $THUMB_OPTS "$fat_a" "$fat_a" \
 	      || exit
-	elif [ -f "$out/$next/$m.ppm" ]; then
+	elif [ -f "$b" ]; then
 	    s="$s<TD>"
 	    pngdiff cat "$diff" -f -c 0,1,0 "$b" "$b" || exit
 	    pngdiff shrink "$thumb" -f -c 0,1,0 $THUMB_OPTS "$fat_b" "$fat_b" \
@@ -144,10 +169,10 @@ for n in `git rev-list $first..HEAD~1` $first; do
 	    s="$s<TD>"
 	    continue
 	fi
-	echo "$s" >>"$out/index.html"
+	echo "$s" >>"$index"
 	s=
 	empty=false
-	echo "<A href=\"diff_$next/$m.png\"><IMG src=\"thumb_$next/$m.png\"></A>" >>"$out/index.html"
+	echo "<A href=\"diff_$next/$m.png\"><IMG src=\"thumb_$next/$m.png\"></A>" >>"$index"
     done
     if ! $empty; then
 	(
@@ -159,10 +184,10 @@ EOF
 	    echo "<PRE>"
 	    git log --pretty=short $n..$next
 	    echo "</PRE>"
-	) >>"$out/index.html"
+	) >>"$index"
     fi
     next=$n
 done
 
-echo "</TABLE>" >>"$out/index.html"
+echo "</TABLE>" >>"$index"
 exit 1
