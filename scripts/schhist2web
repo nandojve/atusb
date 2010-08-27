@@ -152,17 +152,33 @@ if [ -z "$head" ]; then
     exit 1
 fi
 
+ppmmake '#e0e0e0' 5 20 | pnmtopng >"$out"/unchanged.png
+
 index="$out/index.html"
-cat <<EOF >"$index"
+{
+    cat <<EOF
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <HTML>
-<BODY>
+EOF
+    if [ ! -z "$SCHHIST_TITLE" ]; then
+	echo "<TITLE>$SCHHIST_TITLE</TITLE>"
+    fi
+    echo "<BODY>"
+    if [ ! -z "$SCHHIST_TITLE" ]; then
+	echo "<H1>"
+	[ -z "$SCHHIST_HOME_URL" ] || echo "<A href=\"$SCHHIST_HOME_URL\">"
+	echo "$SCHHIST_TITLE"
+	[ -z "$SCHHIST_HOME_URL" ] || echo "</A>"
+	echo "</H1>"
+    fi
+    cat <<EOF
 <TABLE bgcolor="$BG_COLOR" callpadding=1>
 <TR bgcolor="$FNAME_COLOR">
 EOF
-for m in `ls -1 "$out/names"`; do
-    echo "<TD><B>$m</B>" >>"$index"
-done
+    for m in `ls -1 "$out/names"`; do
+	echo "<TD><B>$m</B>"
+    done
+} >"$index"
 
 next="$head"
 for n in `git rev-list $first..HEAD~1` $first; do
@@ -179,8 +195,11 @@ for n in `git rev-list $first..HEAD~1` $first; do
 	thumb="$out/thumb_$next/$m.png"
 
 	if [ -f "$a" -a -f "$b" ]; then
-	    s="$s<TD>"
-	    pngdiff cat "$diff" "$a" "$b" || continue
+	    s="$s<TD align=\"center\" valign=\"middle\">"
+	    if ! pngdiff cat "$diff" "$a" "$b"; then
+		s="$s<IMG src=\"unchanged.png\""
+		continue
+	    fi
 	    pngdiff shrink "$thumb" -f $THUMB_OPTS "$fat_a" "$fat_b" \
 	      "$a" "$b" || exit
 	elif [ -f "$a" ]; then
@@ -211,7 +230,13 @@ EOF
     mkdir -p "$out/diff_$next" "$out/thumb_$next"
 	    echo "<PRE>"
 	    git log --pretty=short $next~1..$next |
-	      sed 's/&/&amp;/g;s/</\&lt;/g;s/>/\&gt;/g'
+	      if [ -z "$SCHHIST_COMMIT_TEMPLATE" ]; then
+		cat
+	      else
+		url=`echo "$SCHHIST_COMMIT_TEMPLATE" | sed "s/{}/$next/g"`
+		sed "s|^commit |<A href=\"$url\">commit</a> |"
+	      fi |
+	      sed '/^<.*>commit</n;s/&/&amp;/g;s/</\&lt;/g;s/>/\&gt;/g'
 	    echo "</PRE>"
 	) >>"$index"
     fi
@@ -225,4 +250,3 @@ cat <<EOF >>"$index"
 </BODY>
 </HTML>
 EOF
-exit 1
