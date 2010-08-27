@@ -114,8 +114,8 @@ fi
 [ -z "$1" ] || usage
 
 PATH=`dirname "$0"`:"$PATH"
-first=`gitenealogy "$dir/$sch" | sed '$s/ .*//p;d'`
-schname=`gitenealogy "$dir/$sch" | sed '$s/^.* //p;d'`
+first=`gitenealogy "$dir" "$sch" | sed '$s/ .*//p;d'`
+schname=`gitenealogy "$dir" "$sch" | sed '$s/^.* //p;d'`
 
 rm -rf "$out/diff_*" "$out/thumb_*" "$out/names"
 $no_cache && rm -rf "$cache"
@@ -123,11 +123,11 @@ mkdir -p "$out/names"
 mkdir -p "$cache"
 
 head=
-for n in $first `git rev-list --reverse $first..HEAD`; do
-    git show  --pretty=format:'' --name-only $n |
+for n in $first `cd "$dir" && git rev-list --reverse $first..HEAD`; do
+    ( cd "$dir" && git show  --pretty=format:'' --name-only $n; ) |
       egrep -q '\.sch$|\.pro$|\.lib$' || continue
     echo Processing $n
-    new=`gitenealogy "$dir/$sch" | sed "/^$n /s///p;d"`
+    new=`gitenealogy "$dir" "$sch" | sed "/^$n /s///p;d"`
     if [ ! -z "$new" ]; then
 	echo Name change $schname to $new 1>&2
 	schname="$new"
@@ -181,7 +181,7 @@ EOF
 } >"$index"
 
 next="$head"
-for n in `git rev-list $first..HEAD~1` $first; do
+for n in `cd "$dir" && git rev-list $first..HEAD~1` $first; do
     [ -d "$cache/ppm_$n" ] || continue
     empty=true
     s="<TR><TR>"
@@ -229,7 +229,7 @@ $s<TD valign="middle">
 EOF
     mkdir -p "$out/diff_$next" "$out/thumb_$next"
 	    echo "<PRE>"
-	    git log --pretty=short $next~1..$next |
+	    ( cd "$dir" && git log --pretty=short $next~1..$next; ) |
 	      if [ -z "$SCHHIST_COMMIT_TEMPLATE" ]; then
 		cat
 	      else

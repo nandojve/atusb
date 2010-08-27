@@ -14,15 +14,30 @@
 
 usage()
 {
-    echo "usage: $0 path" 2>&1
+    cat <<EOF 2>&1
+usage: $0 repo-dir path
+
+  The file to trace must be at repo-dir/path
+EOF
     exit 1
 }
 
 
-[ -z "$1" -o ! -z "$2" ] && usage
-[ ! -f "$1" ] && usage
+if [ -z "$2" -o ! -z "$3" ]; then
+    usage
+fi
 
-git log --follow --name-status "$1" |
+if [ ! -d "$1" -o ! -d "$1/.git" ]; then
+    echo "no git repository at $1" 1>&2
+    exit 1
+fi
+if [ ! -f "$1/$2" ]; then
+    echo "cannot find $2" 2>&1
+    exit 1
+fi
+
+cd "$1" || exit
+git log --follow --name-status "$2" |
     awk '
 /^commit /{ if (c) print c, n; c = $2 }
 { if (NF) n = $(NF) }
