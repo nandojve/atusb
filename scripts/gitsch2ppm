@@ -43,6 +43,7 @@ usage: $0 [options] top-dir top-schem [commit] outdir
   -c         use cached Postscript files (from previous run, with -k)
   -k         keep checked-out tree (for immediate reuse with -c)
   -r XxY     image resolution (default: $RES)
+  -S         sanitize the KiCad profile
   -w points  Postscript line width (default: $LINEWIDTH)
 EOF
     exit 1
@@ -51,6 +52,7 @@ EOF
 
 cache=false
 keep=false
+sanitize=true
 while true; do
     case "$1" in
     -c)	cache=true
@@ -60,6 +62,9 @@ while true; do
     -r)	[ -z "$2" ] && usage
 	RES="$2"
 	shift 2;;
+    -S) sanitize=`PATH="$PATH":\`dirname "$0"\` which sanitize-profile`
+	[ "$sanitize" = "${sanitize#/}" ] && sanitize=`pwd`/"$sanitize"
+	shift;;
     -w)	[ -z "$2" ] && usage
 	LINEWIDTH="$2"
 	shift 2;;
@@ -102,7 +107,13 @@ if ! $cache; then
         exit 1
     fi
 
-    ( cd "$sch" && rm -f *.ps *.ppm && eeschema --plot "$tmp/$schem"; ) || exit
+    (
+	cd "$sch" || exit
+	rm -f *.ps *.ppm
+	$sanitize "$tmp"/`dirname "$schem"`/`basename "$schem" .sch`.pro ||
+	  exit
+	eeschema --plot "$tmp/$schem"
+    ) || exit
 fi
 
 for n in "$sch"/*.ps; do

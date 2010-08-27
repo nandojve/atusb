@@ -43,19 +43,22 @@ pngdiff()
 usage()
 {
     cat <<EOF 2>&1
-usage: $0 [-c cache-dir] [-n] [top-dir] [top-schem] [out-dir]
+usage: $0 [-c cache-dir] [-n] [-S] [top-dir] [top-schem] [out-dir]
 
   top-dir       top-level directory of the git archive (default: locate it)
   top-schem     root sheet of the schematics (default: locate it in top-dir)
   out-dir       output directory (default: $OUTDIR)
-  -n            don't use previous cache content (rebuild the cache)
   -c cache-dir  cache directory (default: same as out-dir)
+  -n            don't use previous cache content (rebuild the cache)
+  -S            sanitize KiCad profile
 EOF
     exit 1
 }
 
 
 no_cache=false
+sanitize=
+
 while true; do
     case "$1" in
     -n)	no_cache=true
@@ -63,6 +66,8 @@ while true; do
     -c)	[ -z "$1" ] && usage
 	cache="$1"
 	shift 2;;
+    -S)	sanitize=-S
+	shift;;
     -*) usage;;
     *)	break;;
     esac
@@ -136,7 +141,7 @@ for n in $first `cd "$dir" && git rev-list --reverse $first..HEAD`; do
     if [ ! -d "$cache/ppm_$n" ]; then
 	rm -rf "$cache/ppm_$n"
 	mkdir "$cache/ppm_$n"
-	gitsch2ppm -k "$dir" "$schname" $n "$cache/ppm_$n" || exit
+	gitsch2ppm $sanitize -k "$dir" "$schname" $n "$cache/ppm_$n" || exit
 	gitsch2ppm -c -w 500 "$dir" "$schname" $n "$cache/fat_$n" || exit
     fi
     for m in "$cache/ppm_$n/"*; do

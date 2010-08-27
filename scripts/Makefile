@@ -24,7 +24,7 @@ xue-schhist:
 	SCHHIST_TITLE=Xue \
 	  SCHHIST_HOME_URL=http://projects.qi-hardware.com/index.php/p/xue/ \
 	  SCHHIST_COMMIT_TEMPLATE='http://projects.qi-hardware.com/index.php/p/xue/source/commit/{}/' \
-	  ./schhist2web ../../xue kicad/xue-rnc/xue-rnc.sch _xue
+	  ./schhist2web -S ../../xue kicad/xue-rnc/xue-rnc.sch _xue
 
 xue-schhist-upload:
 	 rsync -a --progress _xue/{index.html,unchanged.png,thum*,diff*} \
