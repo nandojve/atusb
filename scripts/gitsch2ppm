@@ -26,6 +26,7 @@ ps2ppm()
     ( cat <<EOF
 %!PS-Adobe-3.0
 /setlinewidth { $LINEWIDTH 2 copy lt { exch } if pop setlinewidth } bind def
+/rectfill { rectstroke } bind def
 EOF
     sed 1d <"$1"; ) |
 	gs -sDEVICE=ppmraw -sOutputFile=- -g$IRES -r$res \
