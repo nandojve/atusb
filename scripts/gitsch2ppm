@@ -28,7 +28,13 @@ ps2ppm()
 /setlinewidth { $LINEWIDTH 2 copy lt { exch } if pop setlinewidth } bind def
 /rectfill { rectstroke } bind def
 EOF
-    sed 1d <"$1"; ) |
+    sed <"$1" '1d
+/%%DocumentMedia: A4.*/a-20 -10 translate
+/%%DocumentMedia: A3.*/{s/A3/A4/;a-20 -10 translate 0.70 dup scale
+}
+/%%DocumentMedia: A2.*/{s/A2/A4/;a-18 -12 translate 0.49 dup scale
+}
+/%%Orientation: Landscape/d'; ) |
 	gs -sDEVICE=ppmraw -sOutputFile=- -g$IRES -r$res \
 	  -dTextAlphaBits=4 -dGraphicsAlphaBits=4 -q - |
 	  pnmflip -r270 |
