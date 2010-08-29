@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # schhist2web - Web-browseable graphical revision history of schematics
 #
@@ -208,12 +208,12 @@ for n in $first `cd "$dir" && git rev-list --reverse $first..HEAD`; do
 	if [ ! -z "$head" ]; then
 	    prev="$cache/ppm_$head"/`basename "$m"`
 	    if [ -r "$prev" ] && cmp -s "$prev" "$m"; then
-		symlink "../ppm_$head"/`basename "$m"` "$m"
-		symlink "../fat_$head"/`basename "$m"` \
-		  "$cache/fat_$n"/`basename "$m"`
+		symlink "../ppm_$head/`basename \"$m\"`" "$m"
+		symlink "../fat_$head/`basename \"$m\"`" \
+		  "$cache/fat_$n/`basename \"$m\"`"
 	    fi
 	fi
-	touch "$out/names/"`basename "$m" .ppm`
+	touch "$out/names/`basename \"$m\" .ppm`"
     done
     trap 0
     head=$n
@@ -249,9 +249,9 @@ EOF
 <TABLE bgcolor="$BG_COLOR" callpadding=1>
 <TR bgcolor="$FNAME_COLOR">
 EOF
-    for m in `ls -1 "$out/names"`; do
+    while read m; do
 	echo "<TD><B>$m</B>"
-    done
+    done < <(ls -1 "$out/names")
 } >"$index"
 
 
@@ -264,7 +264,7 @@ for n in `cd "$dir" && git rev-list $first..HEAD~1` $first; do
     empty=true
     s="<TR>"
     mkdir -p "$out/diff_$next" "$out/thumb_$next"
-    for m in `ls -1 "$out/names"`; do
+    while read m; do
 	a="$cache/ppm_$n/$m.ppm"
 	fat_a="$cache/fat_$n/$m.ppm"
 	b="$cache/ppm_$next/$m.ppm"
@@ -298,7 +298,7 @@ for n in `cd "$dir" && git rev-list $first..HEAD~1` $first; do
 	s=
 	empty=false
 	echo "<A href=\"diff_$next/$m.png\"><IMG src=\"thumb_$next/$m.png\"></A>" >>"$index"
-    done
+    done < <(ls -1 "$out/names")
     if ! $empty; then
  	echo "$s<TD valign=\"middle\">" >>"$index"
 	commit_entry "$dir" $next >>"$index"
@@ -314,7 +314,7 @@ if [ -d "$cache/ppm_$next" ]; then	# could this ever be false ?
     empty=true
     echo "<TR>" >>"$index"
     mkdir -p "$out/diff_$next" "$out/thumb_$next"
-    for m in `ls -1 "$out/names"`; do
+    while read m; do
 	ppm="$cache/ppm_$next/$m.ppm"
 	fat="$cache/fat_$next/$m.ppm"
 	diff="$out/diff_$next/$m.png"
@@ -327,7 +327,7 @@ if [ -d "$cache/ppm_$next" ]; then	# could this ever be false ?
 	      || exit
 	empty=false
 	echo "<A href=\"diff_$next/$m.png\"><IMG src=\"thumb_$next/$m.png\"></A>" >>"$index"
-    done
+    done < <(ls -1 "$out/names")
     if ! $empty; then
  	echo "<TD valign=\"middle\">" >>"$index"
 	commit_entry "$dir" $next >>"$index"
