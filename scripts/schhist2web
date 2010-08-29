@@ -40,6 +40,19 @@ pngdiff()
 }
 
 
+symlink()
+{
+    local old=$1 new=$2
+    local src=`dirname "$new"`/$old
+
+    if [ -L "$src" ]; then
+	ln -sf "`readlink \"$src\"`" "$new"
+    else
+	ln -sf "$old" "$new"
+    fi
+}
+
+
 commit_entry()
 {
     # usage: commit_entry <base-dir> <commit>
@@ -181,11 +194,25 @@ for n in $first `cd "$dir" && git rev-list --reverse $first..HEAD`; do
     if [ ! -d "$cache/ppm_$n" ]; then
 	rm -rf "$cache/ppm_$n"
 	mkdir "$cache/ppm_$n"
+	#
+	# potential optimization here: remember Postscript files from previous
+	# run (or their md5sum) and check if they have changed. If not, skip
+	# the ghostscript run and just put a symlink, replacing the less
+	# efficient optimization below.
+	#
 	gitsch2ppm $sanitize -k "$dir" "$schname" $n "$cache/ppm_$n" || exit
 	gitsch2ppm -c -w 500 "$dir" "$schname" $n "$cache/fat_$n" || exit
     fi
     for m in "$cache/ppm_$n/"*; do
 	[ "$m" = "$cache/ppm_$n/*" ] && break
+	if [ ! -z "$head" ]; then
+	    prev="$cache/ppm_$head"/`basename "$m"`
+	    if [ -r "$prev" ] && cmp -s "$prev" "$m"; then
+		symlink "../ppm_$head"/`basename "$m"` "$m"
+		symlink "../fat_$head"/`basename "$m"` \
+		  "$cache/fat_$n"/`basename "$m"`
+	    fi
+	fi
 	touch "$out/names/"`basename "$m" .ppm`
     done
     trap 0
