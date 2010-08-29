@@ -40,6 +40,29 @@ pngdiff()
 }
 
 
+commit_entry()
+{
+    # usage: commit_entry <base-dir> <commit>
+    # note: the repository's base in $dir must be provided by the caller
+
+    local dir=$1 next=$2
+
+    cat <<EOF
+<TABLE bgcolor="$SEP_COLOR" cellspacing=0 width="100%"><TR><TD></TABLE>
+EOF
+    echo "<PRE>"
+    ( cd "$dir" && git show --pretty=short --quiet $next; ) |
+      if [ -z "$SCHHIST_COMMIT_TEMPLATE" ]; then
+	cat
+      else
+	url=`echo "$SCHHIST_COMMIT_TEMPLATE" | sed "s/{}/$next/g"`
+	sed "s|^commit |<A href=\"$url\">commit</a> |"
+      fi |
+      sed '/^<.*>commit</n;s/&/&amp;/g;s/</\&lt;/g;s/>/\&gt;/g'
+    echo "</PRE>"
+}
+
+
 usage()
 {
     cat <<EOF 2>&1
@@ -54,6 +77,9 @@ usage: $0 [-c cache-dir] [-n] [-S] [top-dir] [top-schem] [out-dir]
 EOF
     exit 1
 }
+
+
+# --- Parse command-line options ----------------------------------------------
 
 
 no_cache=false
@@ -72,6 +98,10 @@ while true; do
     *)	break;;
     esac
 done
+
+
+# --- Interpret the command-line arguments ------------------------------------
+
 
 if [ ! -z "$1" -a -d "$1/.git" ]; then
     dir="$1"
@@ -118,6 +148,10 @@ fi
 
 [ -z "$1" ] || usage
 
+
+# --- Set up some variables and the directories for cache and output ----------
+
+
 PATH=`dirname "$0"`:"$PATH"
 first=`gitenealogy "$dir" "$sch" | sed '$s/ .*//p;d'`
 schname=`gitenealogy "$dir" "$sch" | sed '$s/^.* //p;d'`
@@ -126,6 +160,12 @@ rm -rf "$out/diff_*" "$out/thumb_*" "$out/names"
 $no_cache && rm -rf "$cache"
 mkdir -p "$out/names"
 mkdir -p "$cache"
+
+ppmmake '#e0e0e0' 5 30 | pnmtopng >"$out"/unchanged.png
+
+
+# --- Generate/update the cache -----------------------------------------------
+
 
 head=
 for n in $first `cd "$dir" && git rev-list --reverse $first..HEAD`; do
@@ -157,7 +197,9 @@ if [ -z "$head" ]; then
     exit 1
 fi
 
-ppmmake '#e0e0e0' 5 30 | pnmtopng >"$out"/unchanged.png
+
+# --- Title of the Web page and table header ----------------------------------
+
 
 index="$out/index.html"
 {
@@ -185,11 +227,15 @@ EOF
     done
 } >"$index"
 
+
+# --- Diff all the revisions, newest to oldest --------------------------------
+
+
 next="$head"
 for n in `cd "$dir" && git rev-list $first..HEAD~1` $first; do
     [ -d "$cache/ppm_$n" ] || continue
     empty=true
-    s="<TR><TR>"
+    s="<TR>"
     mkdir -p "$out/diff_$next" "$out/thumb_$next"
     for m in `ls -1 "$out/names"`; do
 	a="$cache/ppm_$n/$m.ppm"
@@ -227,26 +273,43 @@ for n in `cd "$dir" && git rev-list $first..HEAD~1` $first; do
 	echo "<A href=\"diff_$next/$m.png\"><IMG src=\"thumb_$next/$m.png\"></A>" >>"$index"
     done
     if ! $empty; then
-	(
-	    cat <<EOF
-$s<TD valign="middle">
-<TABLE bgcolor="$SEP_COLOR" cellspacing=0 width="100%"><TR><TD></TABLE>
-EOF
-    mkdir -p "$out/diff_$next" "$out/thumb_$next"
-	    echo "<PRE>"
-	    ( cd "$dir" && git log --pretty=short $next~1..$next; ) |
-	      if [ -z "$SCHHIST_COMMIT_TEMPLATE" ]; then
-		cat
-	      else
-		url=`echo "$SCHHIST_COMMIT_TEMPLATE" | sed "s/{}/$next/g"`
-		sed "s|^commit |<A href=\"$url\">commit</a> |"
-	      fi |
-	      sed '/^<.*>commit</n;s/&/&amp;/g;s/</\&lt;/g;s/>/\&gt;/g'
-	    echo "</PRE>"
-	) >>"$index"
+ 	echo "$s<TD valign=\"middle\">" >>"$index"
+	commit_entry "$dir" $next >>"$index"
     fi
     next=$n
 done
+
+
+# --- Add creation entries for all files in the first commit ------------------
+
+
+if [ -d "$cache/ppm_$next" ]; then	# could this ever be false ?
+    empty=true
+    echo "<TR>" >>"$index"
+    mkdir -p "$out/diff_$next" "$out/thumb_$next"
+    for m in `ls -1 "$out/names"`; do
+	ppm="$cache/ppm_$next/$m.ppm"
+	fat="$cache/fat_$next/$m.ppm"
+	diff="$out/diff_$next/$m.png"
+	thumb="$out/thumb_$next/$m.png"
+
+	echo "<TD>" >>"$index"
+	[ -f "$ppm" ] || continue
+	pngdiff cat "$diff" -f -c 0,1,0 "$ppm" "$ppm" || exit
+	pngdiff shrink "$thumb" -f $THUMB_OPTS -c 0,1,0 "$fat" "$fat" \
+	      || exit
+	empty=false
+	echo "<A href=\"diff_$next/$m.png\"><IMG src=\"thumb_$next/$m.png\"></A>" >>"$index"
+    done
+    if ! $empty; then
+ 	echo "<TD valign=\"middle\">" >>"$index"
+	commit_entry "$dir" $next >>"$index"
+    fi
+fi
+
+
+# --- Finish ------------------------------------------------------------------
+
 
 cat <<EOF >>"$index"
 </TABLE>
