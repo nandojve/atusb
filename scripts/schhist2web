@@ -89,12 +89,12 @@ else
 fi
 
 if [ ! -z "$1" -a -f "$dir/$1" -a \
-  -f "$dir"/`dirname "$1"`/`basename "$1" .sch`.pro ]; then
+  -f "$dir/${1%.sch}.pro" ]; then
     sch="$1"
     shift
 else
     for n in "$dir"/*.sch; do
-	[ -f `dirname "$n"`/`basename "$n" .sch`.pro ] || continue
+	[ -f "${n%.sch}.pro" ] || continue
 	if [ ! -z "$sch" ]; then
 	    echo "multiple choices for top-level .sch file" 1>&2
 	    exit 1

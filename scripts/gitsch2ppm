@@ -32,7 +32,7 @@ EOF
 	gs -sDEVICE=ppmraw -sOutputFile=- -g$IRES -r$res \
 	  -dTextAlphaBits=4 -dGraphicsAlphaBits=4 -q - |
 	  pnmflip -r270 |
-	  cat >`dirname "$1"`/`basename "$1" .ps`.ppm
+	  cat >"${1%.ps}.ppm"
 }
 
 
@@ -111,7 +111,7 @@ if ! $cache; then
     (
 	cd "$sch" || exit
 	rm -f *.ps *.ppm
-	$sanitize "$tmp"/`dirname "$schem"`/`basename "$schem" .sch`.pro ||
+	$sanitize "$tmp/${schem%.sch}.pro" ||
 	  exit
 	eeschema --plot "$tmp/$schem"
     ) || exit

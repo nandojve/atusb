@@ -37,7 +37,7 @@ if [ ! -f "$1/$2" ]; then
 fi
 
 cd "$1" || exit
-git log --follow --name-status "$2" |
+git log --follow --name-status -- "$2" |
     awk '
 /^commit /{ if (c) print c, n; c = $2 }
 { if (NF) n = $(NF) }
