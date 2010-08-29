@@ -1,5 +1,9 @@
 SHELL = /bin/bash
 
+UPLOAD = {index.html,unchanged.png,thum*,diff*}
+DEST = werner@host:/home/httpd/almesberger/misc/ben/
+RSYNC = rsync -a --progress
+
 .PHONY:		all ben-wpan-schhist ben-wpan-schhist-upload
 .PHONY:		xue-schhist xue-schhist-upload
 .PHONY:		cntr-schhist cntr-schhist-upload
@@ -20,8 +24,7 @@ ben-wpan-schhist:
 	  ./schhist2web atrf/wpan-atrf.sch
 
 ben-wpan-schhist-upload:
-	 rsync -a --progress _out/{index.html,unchanged.png,thum*,diff*} \
-	   werner@host:/home/httpd/almesberger/misc/ben/demo/
+	 $(RSYNC) _out/$(UPLOAD) $(DEST)/demo/
 
 xue-schhist:
 	SCHHIST_TITLE=Xue \
@@ -30,8 +33,7 @@ xue-schhist:
 	  ./schhist2web -S ../../xue kicad/xue-rnc/xue-rnc.sch _xue
 
 xue-schhist-upload:
-	 rsync -a --progress _xue/{index.html,unchanged.png,thum*,diff*} \
-	   werner@host:/home/httpd/almesberger/misc/ben/demo2/
+	 $(RSYNC) _xue/$(UPLOAD) $(DEST)/demo2/
 
 cntr-schhist:
 	SCHHIST_TITLE=ben-wpan/cntr \
@@ -40,5 +42,4 @@ cntr-schhist:
 	  ./schhist2web cntr/cntr.sch _cntr
 
 cntr-schhist-upload:
-	 rsync -a --progress _cntr/{index.html,unchanged.png,thum*,diff*} \
-	   werner@host:/home/httpd/almesberger/misc/ben/demo3/
+	$(RSYNC) _cntr/$(UPLOAD) $(DEST)/demo3/
