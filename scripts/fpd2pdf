@@ -14,14 +14,23 @@
 
 usage()
 {
-    echo "usage: $0 [-o out.pdf] file.pdf ..." 1>&2
+    cat <<EOF 1>&2
+usage: $0 [-a] [-o out.pdf] file.pdf ...
+
+  -a          also include files whose name contains a tilde (backup files)
+  -o out.pdf  write to the specified file (default: standard output)
+EOF
     exit 1
 }
 
 
 out=-
+all=false
+
 while true; do
     case "$1" in
+    -a)	all=true
+	shift;;
     -o)	[ -z "$2" ] && usage
 	out="$2"
 	shift 2;;
@@ -33,4 +42,5 @@ done
 [ -z "$1" ] && usage
 
 eval gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile=$out -f \
-    `for n in "$@"; do echo "<(fped -p \"$n\" -)"; done`
+  `for n in "$@"; do $all || [ "$n" = "${n/\~/}" ] && \
+  echo "<(fped -p \"$n\" -)"; done`
