@@ -18,9 +18,6 @@ S: mini_usb_b
 # Atmel AT86RF230 2.4 GHz Transceiver for IEEE 802.15.4
 S: at86rf230
 
-# TI CC2520 2.4 GHz IEEE 802.15.4 RF Transceiver
-S: cc2520
-
 # Fairly generic crystal package with 4 pins (crystal connects pins 1 and 3,
 # the rest is ground)
 S: xtal-4

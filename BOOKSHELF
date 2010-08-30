@@ -12,10 +12,6 @@ A: txrx
 A: atrf
 D: http://www.atmel.com/dyn/resources/prod_documents/doc5131.pdf
 
-N: cc2520
-A: ccrf
-D: http://focus.ti.com/lit/ds/symlink/cc2520.pdf
-
 N: c8051f326
 A: mcu
 A: f326
