@@ -150,11 +150,12 @@ static void set_pixel(uint8_t *p, const uint8_t *color, const uint8_t *value)
 }
 
 
-static uint8_t *diff(const uint8_t *a, const uint8_t *b, int xres, int yres)
+static uint8_t *diff(const uint8_t *a, const uint8_t *b, int xres, int yres,
+    int mark_areas)
 {
 	uint8_t *res, *p;
 	int x, y;
-	int has_a, has_b;
+	unsigned val_a, val_b;
 
 	res = p = malloc(xres*yres*3);
 	if (!res) {
@@ -163,17 +164,20 @@ static uint8_t *diff(const uint8_t *a, const uint8_t *b, int xres, int yres)
 	}
 	for (y = 0; y != yres; y++)
 		for (x = 0; x != xres; x++) {
-			has_a = (a[0] & a[1] & a[2]) != 255;
-			has_b = (b[0] & b[1] & b[2]) != 255;
-			if (has_a && has_b) {
+			val_a = a[0]+a[1]+a[2];
+			val_b = b[0]+b[1]+b[2];
+			if (val_a == val_b) {
 				set_pixel(p, both, b);
-			} else if (has_a) {
+			} else if (val_a < val_b) {
 				set_pixel(p, a_only, a);
-				change(x, y);
-			} else if (has_b) {
+				if (mark_areas)
+					change(x, y);
+			} else if (val_a > val_b) {
 				set_pixel(p, b_only, b);
-				change(x, y);
+				if (mark_areas)
+					change(x, y);
 			} else {
+				abort();	/* no longer used */
 				memset(p, 255, 3);
 //				memcpy(p, "\0\0\xff", 3);
 			}
@@ -280,7 +284,7 @@ static void usage(const char *name)
 {
 	fprintf(stderr,
 "usage: %s [-f] [-a color] [-b color] [-c color] [-d pixels]\n"
-"%6s %*s [-m color] [-n color] [-w pixels] file_a.ppm file_b.ppm\n\n"
+"%6s %*s [-m color] [-n color] [-w pixels] file_a.ppm file_b.ppm\n"
 "%6s %*s [file_a'.ppm file_b'.ppm] [out.ppm]\n\n"
 "  file_a.ppm and file_b.ppm   are two input images\n"
 "  file_a'.ppm and file_b'.ppm if present, are searched for changes as well\n"
@@ -385,7 +389,7 @@ int main(int argc, char *const *argv)
 	}
 	if (!force && !areas && !memcmp(old, new, x*y*3))
 		return 1;
-	d = diff(old, new, x, y);
+	d = diff(old, new, x, y, !shadow_old);
 	if (frame_dist)
 		mark_areas(d, x, y);
 

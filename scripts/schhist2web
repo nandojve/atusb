@@ -193,10 +193,11 @@ for n in $first `cd "$dir" && git rev-list --reverse $first..HEAD`; do
 	schname="$new"
     fi
     tmp=`pwd`/_schhist2web
-    trap "rm -rf \"$cache/ppm_$n\" \"$cache/fat_$n\" \"$tmp\"" 0
+    trap "rm -rf \"$cache/ppm_$n\" \"$cache/fat_$n\" \"$cache/ps_$n\" \
+      \"$cache/hard_$n\" \"$tmp\"" 0
     if [ ! -d "$cache/ppm_$n" ]; then
-	rm -rf "$cache/ppm_$n" "$cache/fat_$n" "$cache/ps_$n"
-	mkdir "$cache/ppm_$n" "$cache/fat_$n" "$cache/ps_$n"
+	rm -rf "$cache/ppm_$n" "$cache/fat_$n" "$cache/ps_$n" "$cache/hard_$n"
+	mkdir "$cache/ppm_$n" "$cache/fat_$n" "$cache/ps_$n" "$cache/hard_$n"
 	#
 	# potential optimization here: remember Postscript files from previous
 	# run (or their md5sum) and check if they have changed. If not, skip
@@ -205,12 +206,21 @@ for n in $first `cd "$dir" && git rev-list --reverse $first..HEAD`; do
 	#
 	gitsch2ps $sanitize  "$dir" "$schname" $n "$tmp" || exit
 	for m in "$tmp"/*.ps; do
-	    ppm="$cache/ppm_$n/`basename "$m" .ps`.ppm"
-	    normalizeschps -w 120 "$m" | schps2ppm - "$ppm" || exit
-	    ppm="$cache/fat_$n/`basename "$m" .ps`.ppm"
-	    normalizeschps -w 500 "$m" | schps2ppm - "$ppm" || exit
+	    # Postscript, for making PDFs later
 	    ps="$cache/ps_$n/`basename "$m"`"
 	    normalizeschps "$m" "$ps" || exit
+
+	    # Unadorned pixmap, for comparison
+	    ppm="$cache/hard_$n/`basename "$m" .ps`.ppm"
+	    schps2ppm -n "$ps" "$ppm" || exit
+
+	    # Pixmap with thin lines, for the detail views
+	    ppm="$cache/ppm_$n/`basename "$m" .ps`.ppm"
+	    normalizeschps -w 120 "$m" | schps2ppm - "$ppm" || exit
+
+	    # Pixmap with thick lines, for the thumbnails
+	    ppm="$cache/fat_$n/`basename "$m" .ps`.ppm"
+	    normalizeschps -w 500 "$m" | schps2ppm - "$ppm" || exit
 	done
 	rm -rf "$tmp"
     fi
@@ -295,19 +305,21 @@ for n in `cd "$dir" && git rev-list $first..HEAD~1` $first; do
     while read m; do
 	a="$cache/ppm_$n/$m.ppm"
 	fat_a="$cache/fat_$n/$m.ppm"
+	hard_a="$cache/hard_$n/$m.ppm"
 	b="$cache/ppm_$next/$m.ppm"
 	fat_b="$cache/fat_$next/$m.ppm"
+	hard_b="$cache/hard_$next/$m.ppm"
 	diff="$out/diff_$next/$m.png"
 	thumb="$out/thumb_$next/$m.png"
 
 	if [ -f "$a" -a -f "$b" ]; then
 	    s="$s<TD align=\"center\" valign=\"middle\">"
-	    if ! pngdiff cat "$diff" "$a" "$b"; then
+	    if ! pngdiff cat "$diff" "$a" "$b" "$hard_a" "$hard_b"; then
 		s="$s<IMG src=\"unchanged.png\""
 		continue
 	    fi
 	    pngdiff shrink "$thumb" -f $THUMB_OPTS "$fat_a" "$fat_b" \
-	      "$a" "$b" || exit
+	      "$hard_a" "$hard_b" || exit
 	    mkdir -p "$out/pdf_$next"
 	    schps2pdf -T BEFORE -T AFTER -o "$out/pdf_$next/$m.pdf" \
 	      "$cache/ps_$n/$m.ps" "$cache/ps_$next/$m.ps" || exit
