@@ -64,14 +64,16 @@ commit_entry()
 <TABLE bgcolor="$SEP_COLOR" cellspacing=0 width="100%"><TR><TD></TABLE>
 EOF
     echo "<PRE>"
-    ( cd "$dir" && git show --pretty=short --quiet $next; ) |
+    ( cd "$dir" && git show \
+        --pretty=format:"%aN <%aE>%n%ad, %ar%n%n    %s" \
+	--quiet $next; ) |
+      sed 's/&/&amp;/g;s/</\&lt;/g;s/>/\&gt;/g' |
       if [ -z "$SCHHIST_COMMIT_TEMPLATE" ]; then
 	cat
       else
 	url=`echo "$SCHHIST_COMMIT_TEMPLATE" | sed "s/{}/$next/g"`
-	sed "s|^commit |<A href=\"$url\">commit</a> |"
-      fi |
-      sed '/^<.*>commit</n;s/&/&amp;/g;s/</\&lt;/g;s/>/\&gt;/g'
+	sed "1s|^|<A href=\"$url\"><B>\&gt;\&gt;\&gt;</B></a> |"
+      fi
     echo "</PRE>"
 }
 
