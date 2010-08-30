@@ -18,7 +18,7 @@ LINEWIDTH=120
 usage()
 {
     cat <<EOF 1>&2
-usage: $0 [options] file ...
+usage: $0 [options] [in.ps [out.ps]]
 
   -w points  Postscript line width (default: $LINEWIDTH)
 EOF
@@ -38,22 +38,24 @@ while true; do
     esac
 done
 
-for n in "$@"; do
-    sed -i '
-      1c%!PS-Adobe-3.0\
-      currentdict /DidNormalize known not { \
-          /setlinewidth { '$LINEWIDTH' 2 copy lt { exch } if pop \
-            setlinewidth } bind def \
-          /rectfill { rectstroke } bind def \
-	  /DidNormalize true def \
-      } if \
-      gsave
-      /%%DocumentMedia: A4.*/a-20 -10 translate
-      /%%DocumentMedia: A3.*/{s/A3/A4/;a-20 -10 translate 0.70 dup scale
-      }
-      /%%DocumentMedia: A2.*/{s/A2/A4/;a-18 -12 translate 0.49 dup scale
-      }
-      $agrestore' "$n"
-done
+[ -z "$3" ] || usage
+in=${1:--}
+out=${2:-/dev/stdout}
+
+sed '
+  1c%!PS-Adobe-3.0\
+  currentdict /DidNormalize known not { \
+      /setlinewidth { '$LINEWIDTH' 2 copy lt { exch } if pop \
+        setlinewidth } bind def \
+      /rectfill { rectstroke } bind def \
+      /DidNormalize true def \
+  } if \
+  gsave
+  /%%DocumentMedia: A4.*/a-20 -10 translate
+  /%%DocumentMedia: A3.*/{s/A3/A4/;a-20 -10 translate 0.70 dup scale
+  }
+  /%%DocumentMedia: A2.*/{s/A2/A4/;a-18 -12 translate 0.49 dup scale
+  }
+  $agrestore' "$in" >"$out"
 
 #      /%%Orientation: Landscape/d' "$n"

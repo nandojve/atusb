@@ -31,10 +31,9 @@ while true; do
     -r)	[ -z "$2" ] && usage
 	RES="$2"
 	shift 2;;
-    -*)
-	usage;;
-    *)
-	break;;
+    -)	break;;
+    -*) usage;;
+    *)	break;;
     esac
 done
 
