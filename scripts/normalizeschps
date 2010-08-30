@@ -12,24 +12,22 @@
 #
 
 
-LINEWIDTH=120
-
-
 usage()
 {
     cat <<EOF 1>&2
 usage: $0 [options] [in.ps [out.ps]]
 
-  -w points  Postscript line width (default: $LINEWIDTH)
+  -w points  Postscript line width (default: use the original)
 EOF
     exit 1
 }
 
 
+width=
 while true; do
     case "$1" in
     -w)	[ -z "$2" ] && usage
-	LINEWIDTH="$2"
+	width="$2"
 	shift 2;;
     -*)
 	usage;;
@@ -45,8 +43,9 @@ out=${2:-/dev/stdout}
 sed '
   1c%!PS-Adobe-3.0\
   currentdict /DidNormalize known not { \
-      /setlinewidth { '$LINEWIDTH' 2 copy lt { exch } if pop \
-        setlinewidth } bind def \
+      '"`[ -z \"$width\" ] ||
+        echo \"/setlinewidth { $width 2 copy lt { exch } if pop \
+        setlinewidth } bind def \"`"' \
       /rectfill { rectstroke } bind def \
       /DidNormalize true def \
   } if \

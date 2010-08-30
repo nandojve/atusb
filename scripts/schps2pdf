@@ -1,0 +1,52 @@
+#!/bin/bash
+#
+# schps2pdf - Generate PDF files from Eeschema Postscript
+#
+# Written 2010 by Werner Almesberger
+# Copyright 2010 Werner Almesberger
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+
+
+usage()
+{
+    cat <<EOF 1>&2
+usage: $0 [options] [-o file.pdf] [file.ps ...]
+
+  -t prefix  make a table of content. Remove prefix from file names.
+EOF
+    exit 1
+}
+
+
+toc=false
+out=-
+while true; do
+    case "$1" in
+    -o)	[ -z "$2" ] && usage
+	out=$2
+	shift 2;;
+    -t)	[ -z "$2" ] && usage
+	toc=true
+	prefix="$1"
+	shift 2;;
+    -*)
+	usage;;
+    *)
+	break;;
+    esac
+done
+
+in=${1:--}
+shift
+
+cat "$in" |
+  eval gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile=\""$out\"" -f \
+    `for n in "$in" "$@"; do \
+      name=\`basename "$n" .ps\` \
+      echo "<($toc && echo '[ /Title (${name#$prefix}) /OUT pdfmark';
+      cat \"$n\";)"; done`

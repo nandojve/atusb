@@ -193,8 +193,8 @@ for n in $first `cd "$dir" && git rev-list --reverse $first..HEAD`; do
     tmp=`pwd`/_schhist2web
     trap "rm -rf \"$cache/ppm_$n\" \"$cache/fat_$n\" \"$tmp\"" 0
     if [ ! -d "$cache/ppm_$n" ]; then
-	rm -rf "$cache/ppm_$n" "$cache/fat_$n"
-	mkdir "$cache/ppm_$n" "$cache/fat_$n"
+	rm -rf "$cache/ppm_$n" "$cache/fat_$n" "$cache/ps_$n"
+	mkdir "$cache/ppm_$n" "$cache/fat_$n" "$cache/ps_$n"
 	#
 	# potential optimization here: remember Postscript files from previous
 	# run (or their md5sum) and check if they have changed. If not, skip
@@ -204,9 +204,11 @@ for n in $first `cd "$dir" && git rev-list --reverse $first..HEAD`; do
 	gitsch2ps $sanitize  "$dir" "$schname" $n "$tmp" || exit
 	for m in "$tmp"/*.ps; do
 	    ppm="$cache/ppm_$n/`basename "$m" .ps`.ppm"
-	    normalizeschps "$m" | schps2ppm - "$ppm" || exit
+	    normalizeschps -w 120 "$m" | schps2ppm - "$ppm" || exit
 	    ppm="$cache/fat_$n/`basename "$m" .ps`.ppm"
 	    normalizeschps -w 500 "$m" | schps2ppm - "$ppm" || exit
+	    ps="$cache/ps_$n/`basename "$m"`"
+	    normalizeschps "$m" "$ps" || exit
 	done
 	rm -rf "$tmp"
     fi
@@ -257,7 +259,9 @@ EOF
 <TR bgcolor="$FNAME_COLOR">
 EOF
     while read m; do
-	echo "<TD><B>$m</B>"
+	mkdir -p "$out/pdf_$head"
+	schps2pdf -o "$out/pdf_$head/$m.pdf" "$cache/ps_$head/$m.ps" || exit
+	echo "<TD><A href="pdf_$head/$m.pdf"><B>$m</B></A>"
     done < <(ls -1 "$out/names")
 } >"$index"
 
