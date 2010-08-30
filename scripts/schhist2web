@@ -78,6 +78,23 @@ EOF
 }
 
 
+wrapped_png()
+{
+    local dir=$1 commit=$2 file=$3
+
+    mkdir -p "$dir/html_$commit"
+    echo "<A href=\"html_$commit/$file.html\"><IMG src=\"thumb_$commit/$file.png\"></A>"
+    cat <<EOF >"$dir/html_$commit/$file.html"
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<TITLE>$file</TITLE>
+<BODY>
+<A href="../pdf_$commit/$file.pdf"><IMG src="../diff_$commit/$file.png"></A>
+</BODY>
+EOF
+}
+
+
 usage()
 {
     cat <<EOF 2>&1
@@ -346,16 +363,7 @@ for n in `cd "$dir" && git rev-list $first..HEAD~1` $first; do
 	echo "$s" >>"$index"
 	s=
 	empty=false
-	mkdir -p "$out/html_$next"
-	echo "<A href=\"html_$next/$m.html\"><IMG src=\"thumb_$next/$m.png\"></A>" >>"$index"
-	cat <<EOF >"$out/html_$next/$m.html"
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<HTML>
-<TITLE>$m</TITLE>
-<BODY>
-<A href="../pdf_$next/$m.pdf"><IMG src="../diff_$next/$m.png"></A>
-</BODY>
-EOF
+        wrapped_png "$out" "$next" "$m" >>"$index"
     done < <(ls -1 "$out/names")
     if ! $empty; then
  	echo "$s<TD valign=\"middle\">" >>"$index"
@@ -384,7 +392,10 @@ if [ -d "$cache/ppm_$next" ]; then	# could this ever be false ?
 	pngdiff shrink "$thumb" -f $THUMB_OPTS -c 0,1,0 "$fat" "$fat" \
 	      || exit
 	empty=false
-	echo "<A href=\"diff_$next/$m.png\"><IMG src=\"thumb_$next/$m.png\"></A>" >>"$index"
+	mkdir -p "$out/pdf_$next"
+	schps2pdf -T NEW -o "$out/pdf_$next/$m.pdf" \
+	  "$cache/ps_$next/$m.ps" || exit
+	wrapped_png "$out" "$next" "$m" >>"$index"
     done < <(ls -1 "$out/names")
     if ! $empty; then
  	echo "<TD valign=\"middle\">" >>"$index"
