@@ -1,6 +1,6 @@
 SHELL = /bin/bash
 
-UPLOAD = {index.html,unchanged.png,thumb_*,diff_*,pdf_*}
+UPLOAD = {index.html,unchanged.png,thumb_*,diff_*,pdf_*,html_*}
 DEST = werner@host:/home/httpd/almesberger/misc/ben/
 RSYNC = rsync -a --progress
 

@@ -264,10 +264,15 @@ EOF
     while read m; do
 	ps="$cache/ps_$head/$m.ps"
 	if [ -r "$ps" ]; then
-	    mkdir -p "$out/pdf_$head"
-	    schps2pdf -o "$out/pdf_$head/$m.pdf" "$ps" || exit
+	    #
+	    # Note: we read from variable ps_$head but we write to constant
+	    # pdf_head. We can't use pdf_$head here, because that may just be a
+	    # commit with a change and we thus generate a delta PDF below.
+	    #
+	    mkdir -p "$out/pdf_head"
+	    schps2pdf -o "$out/pdf_head/$m.pdf" "$ps" || exit
 	    all="$all \"$ps\""
-	    echo "<TD><A href=\"pdf_$head/$m.pdf\"><B>$m</B></A>"
+	    echo "<TD><A href=\"pdf_head/$m.pdf\"><B>$m</B></A>"
 	else
 	    echo "<TD><B>$m</B>"
 	fi
@@ -303,16 +308,25 @@ for n in `cd "$dir" && git rev-list $first..HEAD~1` $first; do
 	    fi
 	    pngdiff shrink "$thumb" -f $THUMB_OPTS "$fat_a" "$fat_b" \
 	      "$a" "$b" || exit
+	    mkdir -p "$out/pdf_$next"
+	    schps2pdf -T BEFORE -T AFTER -o "$out/pdf_$next/$m.pdf" \
+	      "$cache/ps_$n/$m.ps" "$cache/ps_$next/$m.ps" || exit
 	elif [ -f "$a" ]; then
 	    s="$s<TD>"
 	    pngdiff cat "$diff" -f -c 1,0,0 "$a" "$a" || exit
 	    pngdiff shrink "$thumb" -f $THUMB_OPTS -c 1,0,0 "$fat_a" "$fat_a" \
 	      || exit
+	    mkdir -p "$out/pdf_$next"
+	    schps2pdf -T DELETED -o "$out/pdf_$next/$m.pdf" \
+	      "$cache/ps_$n/$m.ps" || exit
 	elif [ -f "$b" ]; then
 	    s="$s<TD>"
 	    pngdiff cat "$diff" -f -c 0,1,0 "$b" "$b" || exit
 	    pngdiff shrink "$thumb" -f $THUMB_OPTS -c 0,1,0 "$fat_b" "$fat_b" \
 	      || exit
+	    mkdir -p "$out/pdf_$next"
+	    schps2pdf -T NEW -o "$out/pdf_$next/$m.pdf" \
+	      "$cache/ps_$next/$m.ps" || exit
 	else
 	    s="$s<TD>"
 	    continue
@@ -320,7 +334,16 @@ for n in `cd "$dir" && git rev-list $first..HEAD~1` $first; do
 	echo "$s" >>"$index"
 	s=
 	empty=false
-	echo "<A href=\"diff_$next/$m.png\"><IMG src=\"thumb_$next/$m.png\"></A>" >>"$index"
+	mkdir -p "$out/html_$next"
+	echo "<A href=\"html_$next/$m.html\"><IMG src=\"thumb_$next/$m.png\"></A>" >>"$index"
+	cat <<EOF >"$out/html_$next/$m.html"
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML>
+<TITLE>$m</TITLE>
+<BODY>
+<A href="../pdf_$next/$m.pdf"><IMG src="../diff_$next/$m.png"></A>
+</BODY>
+EOF
     done < <(ls -1 "$out/names")
     if ! $empty; then
  	echo "$s<TD valign=\"middle\">" >>"$index"
