@@ -32,7 +32,7 @@ while true; do
 	shift 2;;
     -t)	[ -z "$2" ] && usage
 	toc=true
-	prefix="$1"
+	prefix="$2"
 	shift 2;;
     -*)
 	usage;;
@@ -44,9 +44,8 @@ done
 in=${1:--}
 shift
 
-cat "$in" |
-  eval gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile=\""$out\"" -f \
-    `for n in "$in" "$@"; do \
-      name=\`basename "$n" .ps\` \
-      echo "<($toc && echo '[ /Title (${name#$prefix}) /OUT pdfmark';
-      cat \"$n\";)"; done`
+eval gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile=\""$out\"" -f \
+  `for n in "$in" "$@"; do \
+    echo "<(sheet=\`basename \"$n\" .ps\`;
+      $toc && echo '[ /Title ('\"\\${sheet#$prefix}\"') /OUT pdfmark';
+    cat \"$n\";)"; done`

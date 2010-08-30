@@ -238,6 +238,7 @@ fi
 
 
 index="$out/index.html"
+all=
 {
     cat <<EOF
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -259,10 +260,19 @@ EOF
 <TR bgcolor="$FNAME_COLOR">
 EOF
     while read m; do
-	mkdir -p "$out/pdf_$head"
-	schps2pdf -o "$out/pdf_$head/$m.pdf" "$cache/ps_$head/$m.ps" || exit
-	echo "<TD><A href="pdf_$head/$m.pdf"><B>$m</B></A>"
+	ps="$cache/ps_$head/$m.ps"
+	if [ -r "$ps" ]; then
+	    mkdir -p "$out/pdf_$head"
+	    schps2pdf -o "$out/pdf_$head/$m.pdf" "$ps" || exit
+	    all="$all \"$ps\""
+	    echo "<TD><A href=\"pdf_$head/$m.pdf\"><B>$m</B></A>"
+	else
+	    echo "<TD><B>$m</B>"
+	fi
     done < <(ls -1 "$out/names")
+    proj=`basename "$sch" .sch`
+    eval schps2pdf -t \""$proj-"\" -o \""$out/pdf_$proj.pdf"\" $all
+    echo "<TD><A href=\"pdf_$proj.pdf\">All sheets</A>"
 } >"$index"
 
 
