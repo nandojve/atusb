@@ -1,8 +1,8 @@
-EESchema Schematic File Version 2  date Wed Aug 25 19:40:58 2010
+EESchema Schematic File Version 2  date Sun Aug 29 22:53:15 2010
 LIBS:power
 LIBS:device
 LIBS:conn
-LIBS:at86rf230
+LIBS:cc2520
 LIBS:c8051f326
 LIBS:mini_usb_b
 LIBS:xtal-4
@@ -11,8 +11,8 @@ EELAYER 24  0
 EELAYER END
 $Descr A4 11700 8267
 Sheet 1 3
-Title "IEEE 802.15.4 USB Transceiver (AT86RF230)"
-Date "20 aug 2010"
+Title "IEEE 802.15.4 USB Transceiver (CC2520)"
+Date "30 aug 2010"
 Rev "100820"
 Comp "Werner Almesberger"
 Comment1 ""
@@ -20,6 +20,12 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
+$Sheet
+S 7350 3450 1800 1950
+U 4C609C08
+F0 "RF" 60
+F1 "ccrf.sch" 60
+$EndSheet
 Wire Wire Line
 	10000 6100 10000 6300
 Wire Wire Line
@@ -205,18 +211,5 @@ F5 "nSS" O R 4350 4300 60
 F6 "SCLK" O R 4350 4150 60 
 F7 "MOSI" O R 4350 3850 60 
 F8 "MISO" I R 4350 4000 60 
-$EndSheet
-$Sheet
-S 7350 3450 1800 1950
-U 4C609C08
-F0 "RF" 60
-F1 "atrf.sch" 60
-F2 "SLP_TR" I L 7350 4850 60 
-F3 "nRST_RF" I L 7350 4700 60 
-F4 "SCLK" I L 7350 4150 60 
-F5 "MISO" O L 7350 4000 60 
-F6 "MOSI" I L 7350 3850 60 
-F7 "nSS" I L 7350 4300 60 
-F8 "IRQ_RF" O L 7350 4500 60 
 $EndSheet
 $EndSCHEMATC

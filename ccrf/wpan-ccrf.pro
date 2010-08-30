@@ -39,7 +39,7 @@ ShowSheetReferenceAndTitleBlock=1
 LibName1=power
 LibName2=device
 LibName3=conn
-LibName4=../components/at86rf230
+LibName4=../components/cc2520
 LibName5=../components/c8051f326
 LibName6=../components/mini_usb_b
 LibName7=../components/xtal-4
@@ -66,7 +66,6 @@ DrawLar=150
 EdgeLar=150
 TxtLar=120
 MSegLar=150
-LastNetListRead=wpan-atrf.net
 [pcbnew/libraries]
 LibDir=
 LibName1=../modules/meander
