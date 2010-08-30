@@ -53,7 +53,7 @@ shift
 eval gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile=\""$out\"" -f \
   `export i=1; for n in "$in" "$@"; do \
     i=\`expr $i + 1\`;
-    echo "<(sheet=\`basename \"$n\" .ps\`;
+    echo "<(sheet=\"\`basename \"$n\" .ps\`\";
     set x $titles; i=\`expr $i + 1\`; eval t='\\$$i';
       $toc && echo '[ /Title ('\"\\${t:-\\${sheet#$prefix}}\"') /OUT pdfmark';
     cat \"$n\";)"; done`
