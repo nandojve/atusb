@@ -1,8 +1,8 @@
 SHELL = /bin/bash
 
-UPLOAD = {index.html,unchanged.png,thumb_*,diff_*,pdf_*,html_*}
+CACHE_DIRS = {ppm0,ppm1,ppm2,ps}
 DEST = werner@host:/home/httpd/almesberger/misc/ben/
-RSYNC = rsync -a --progress
+RSYNC = eval rsync -a --progress "--exclude "$(CACHE_DIRS)/
 
 .PHONY:		all ben-wpan-schhist ben-wpan-schhist-upload
 .PHONY:		xue-schhist xue-schhist-upload
@@ -24,7 +24,7 @@ ben-wpan-schhist:
 	  ./schhist2web atrf/wpan-atrf.sch
 
 ben-wpan-schhist-upload:
-	 $(RSYNC) _out/$(UPLOAD) $(DEST)/demo/
+	 $(RSYNC) _out/* $(DEST)/demo/
 
 xue-schhist:
 	SCHHIST_TITLE=Xue \
@@ -33,7 +33,7 @@ xue-schhist:
 	  ./schhist2web -S ../../xue kicad/xue-rnc/xue-rnc.sch _xue
 
 xue-schhist-upload:
-	 $(RSYNC) _xue/$(UPLOAD) $(DEST)/demo2/
+	 $(RSYNC) _xue/* $(DEST)/demo2/
 
 cntr-schhist:
 	SCHHIST_TITLE=ben-wpan/cntr \
@@ -42,4 +42,4 @@ cntr-schhist:
 	  ./schhist2web cntr/cntr.sch _cntr
 
 cntr-schhist-upload:
-	$(RSYNC) _cntr/$(UPLOAD) $(DEST)/demo3/
+	$(RSYNC) _cntr/* $(DEST)/demo3/

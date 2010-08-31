@@ -250,7 +250,7 @@ for n in $first `cd "$dir" && git rev-list --reverse $first..HEAD`; do
 		    symlink "../../$head/$d/${m##*/}" "$cache/$n/$d/${m##*/}"
 		done
 		m_ps=${m%.ppm}.ps
-		symlink "../../$head/$d/${m_ps##*/}" "$cache/$n/$d/${m_ps##*/}"
+		symlink "../../$head/ps/${m_ps##*/}" "$cache/$n/ps/${m_ps##*/}"
 	    fi
 	fi
 	touch "$out/names/`basename \"$m\" .ppm`"
