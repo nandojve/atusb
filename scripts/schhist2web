@@ -82,14 +82,14 @@ wrapped_png()
 {
     local dir=$1 commit=$2 file=$3
 
-    mkdir -p "$dir/html_$commit"
-    echo "<A href=\"html_$commit/$file.html\"><IMG src=\"thumb_$commit/$file.png\"></A>"
-    cat <<EOF >"$dir/html_$commit/$file.html"
+    mkdir -p "$dir/$commit/html"
+    echo "<A href=\"$commit/html/$file.html\"><IMG src=\"$commit/thumb/$file.png\"></A>"
+    cat <<EOF >"$dir/$commit/html/$file.html"
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <HTML>
 <TITLE>$file</TITLE>
 <BODY>
-<A href="../pdf_$commit/$file.pdf"><IMG src="../diff_$commit/$file.png"></A>
+<A href="../pdf/$file.pdf"><IMG src="../diff/$file.png"></A>
 </BODY>
 EOF
 }
@@ -188,7 +188,7 @@ PATH=`dirname "$0"`:"$PATH"
 first=`gitenealogy "$dir" "$sch" | sed '$s/ .*//p;d'`
 schname=`gitenealogy "$dir" "$sch" | sed '$s/^.* //p;d'`
 
-rm -rf "$out/diff_*" "$out/thumb_*" "$out/html_*" "$out/pdf_*" "$out/names"
+rm -rf "$out/*/"{diff,thumb,html,pdf} "$out/names"
 $no_cache && rm -rf "$cache"
 mkdir -p "$out/names"
 mkdir -p "$cache"
@@ -210,11 +210,11 @@ for n in $first `cd "$dir" && git rev-list --reverse $first..HEAD`; do
 	schname="$new"
     fi
     tmp=`pwd`/_schhist2web
-    trap "rm -rf \"$cache/ppm_$n\" \"$cache/fat_$n\" \"$cache/ps_$n\" \
-      \"$cache/hard_$n\" \"$tmp\"" 0
-    if [ ! -d "$cache/ppm_$n" ]; then
-	rm -rf "$cache/ppm_$n" "$cache/fat_$n" "$cache/ps_$n" "$cache/hard_$n"
-	mkdir "$cache/ppm_$n" "$cache/fat_$n" "$cache/ps_$n" "$cache/hard_$n"
+    trap "rm -rf \"$cache/$n/ps\" \"$cache/$n/ppm0\" \"$cache/$n/ppm1\" \
+      \"$cache/$n/ppm2\" \"$tmp\"" 0
+    if [ ! -d "$cache/$n/ppm2" ]; then
+	rm -rf "$cache/$n/"{ps,ppm0,ppm1,ppm2}
+	mkdir -p "$cache/$n/"{ps,ppm0,ppm1,ppm2}
 	#
 	# potential optimization here: remember Postscript files from previous
 	# run (or their md5sum) and check if they have changed. If not, skip
@@ -224,31 +224,33 @@ for n in $first `cd "$dir" && git rev-list --reverse $first..HEAD`; do
 	gitsch2ps $sanitize  "$dir" "$schname" $n "$tmp" || exit
 	for m in "$tmp"/*.ps; do
 	    # Postscript, for making PDFs later
-	    ps="$cache/ps_$n/`basename "$m"`"
+	    ps="$cache/$n/ps/`basename "$m"`"
 	    normalizeschps "$m" "$ps" || exit
 
 	    # Unadorned pixmap, for comparison
-	    ppm="$cache/hard_$n/`basename "$m" .ps`.ppm"
+	    ppm="$cache/$n/ppm0/`basename "$m" .ps`.ppm"
 	    schps2ppm -n "$ps" "$ppm" || exit
 
 	    # Pixmap with thin lines, for the detail views
-	    ppm="$cache/ppm_$n/`basename "$m" .ps`.ppm"
+	    ppm="$cache/$n/ppm1/`basename "$m" .ps`.ppm"
 	    normalizeschps -w 120 "$m" | schps2ppm - "$ppm" || exit
 
 	    # Pixmap with thick lines, for the thumbnails
-	    ppm="$cache/fat_$n/`basename "$m" .ps`.ppm"
+	    ppm="$cache/$n/ppm2/`basename "$m" .ps`.ppm"
 	    normalizeschps -w 500 "$m" | schps2ppm - "$ppm" || exit
 	done
 	rm -rf "$tmp"
     fi
-    for m in "$cache/ppm_$n/"*; do
-	[ "$m" = "$cache/ppm_$n/*" ] && break
+    for m in "$cache/$n/ppm0/"*; do
+	[ "$m" = "$cache/$n/ppm0/*" ] && break
 	if [ ! -z "$head" ]; then
-	    prev="$cache/ppm_$head"/`basename "$m"`
+	    prev="$cache/$head/ppm0/${m##*/}"
 	    if [ -r "$prev" ] && cmp -s "$prev" "$m"; then
-		symlink "../ppm_$head/`basename \"$m\"`" "$m"
-		symlink "../fat_$head/`basename \"$m\"`" \
-		  "$cache/fat_$n/`basename \"$m\"`"
+		for d in ppm0 ppm1 ppm2; do
+		    symlink "../../$head/$d/${m##*/}" "$cache/$n/$d/${m##*/}"
+		done
+		m_ps=${m%.ppm}.ps
+		symlink "../../$head/$d/${m_ps##*/}" "$cache/$n/$d/${m_ps##*/}"
 	    fi
 	fi
 	touch "$out/names/`basename \"$m\" .ppm`"
@@ -289,7 +291,7 @@ EOF
 <TR bgcolor="$FNAME_COLOR">
 EOF
     while read m; do
-	ps="$cache/ps_$head/$m.ps"
+	ps="$cache/$head/ps/$m.ps"
 	if [ -r "$ps" ]; then
 	    #
 	    # Note: we read from variable ps_$head but we write to constant
@@ -315,55 +317,54 @@ EOF
 
 next="$head"
 for n in `cd "$dir" && git rev-list $first..HEAD~1` $first; do
-    [ -d "$cache/ppm_$n" ] || continue
+    [ -d "$cache/$n/ppm0" ] || continue
     empty=true
     s="<TR>"
-    mkdir -p "$out/diff_$next" "$out/thumb_$next"
+    mkdir -p "$out/$next/"{diff,thumb,html,pdf}
     while read m; do
-	a="$cache/ppm_$n/$m.ppm"
-	fat_a="$cache/fat_$n/$m.ppm"
-	hard_a="$cache/hard_$n/$m.ppm"
-	b="$cache/ppm_$next/$m.ppm"
-	fat_b="$cache/fat_$next/$m.ppm"
-	hard_b="$cache/hard_$next/$m.ppm"
-	diff="$out/diff_$next/$m.png"
-	thumb="$out/thumb_$next/$m.png"
+	a0="$cache/$n/ppm0/$m.ppm"
+	a1="$cache/$n/ppm1/$m.ppm"
+	a2="$cache/$n/ppm2/$m.ppm"
+	aps="$cache/$n/ps/$m.ps"
 
-	if [ -f "$a" -a -f "$b" ]; then
+	b0="$cache/$next/ppm0/$m.ppm"
+	b1="$cache/$next/ppm1/$m.ppm"
+	b2="$cache/$next/ppm2/$m.ppm"
+	bps="$cache/$next/ps/$m.ps"
+
+	diff="$out/$next/diff/$m.png"
+	thumb="$out/$next/thumb/$m.png"
+	pdf="$out/$next/pdf/$m.pdf"
+
+	if [ -f "$a0" -a -f "$b0" ]; then
 	    s="$s<TD align=\"center\" valign=\"middle\">"
-	    if ! pngdiff cat "$diff" "$a" "$b" "$hard_a" "$hard_b"; then
+	    if ! pngdiff cat "$diff" "$a1" "$b1" "$a0" "$b0"; then
 		s="$s<IMG src=\"unchanged.png\""
 		continue
 	    fi
-	    pngdiff shrink "$thumb" -f $THUMB_OPTS "$fat_a" "$fat_b" \
-	      "$hard_a" "$hard_b" || exit
-	    mkdir -p "$out/pdf_$next"
-	    schps2pdf -T BEFORE -T AFTER -o "$out/pdf_$next/$m.pdf" \
-	      "$cache/ps_$n/$m.ps" "$cache/ps_$next/$m.ps" || exit
-	elif [ -f "$a" ]; then
+	    pngdiff shrink "$thumb" -f $THUMB_OPTS "$a2" "$b2" "$a0" "$b0" ||
+	      exit
+	    schps2pdf -T BEFORE -T AFTER -o "$pdf" "$aps" "$bps" || exit
+	elif [ -f "$a0" ]; then
 	    s="$s<TD>"
-	    pngdiff cat "$diff" -f -c 1,0,0 "$a" "$a" || exit
-	    pngdiff shrink "$thumb" -f $THUMB_OPTS -c 1,0,0 "$fat_a" "$fat_a" \
-	      || exit
-	    mkdir -p "$out/pdf_$next"
-	    schps2pdf -T DELETED -o "$out/pdf_$next/$m.pdf" \
-	      "$cache/ps_$n/$m.ps" || exit
-	elif [ -f "$b" ]; then
+	    pngdiff cat "$diff" -f -c 1,0,0 "$a1" "$a1" || exit
+	    pngdiff shrink "$thumb" -f $THUMB_OPTS -c 1,0,0 "$a2" "$a2" ||
+	      exit
+	    schps2pdf -T DELETED -o "$pdf" "$aps" || exit
+	elif [ -f "$b0" ]; then
 	    s="$s<TD>"
-	    pngdiff cat "$diff" -f -c 0,1,0 "$b" "$b" || exit
-	    pngdiff shrink "$thumb" -f $THUMB_OPTS -c 0,1,0 "$fat_b" "$fat_b" \
-	      || exit
-	    mkdir -p "$out/pdf_$next"
-	    schps2pdf -T NEW -o "$out/pdf_$next/$m.pdf" \
-	      "$cache/ps_$next/$m.ps" || exit
+	    pngdiff cat "$diff" -f -c 0,1,0 "$b1" "$b1" || exit
+	    pngdiff shrink "$thumb" -f $THUMB_OPTS -c 0,1,0 "$b2" "$b2" ||
+	      exit
+	    schps2pdf -T NEW -o "$pdf" "$bps" || exit
 	else
 	    s="$s<TD>"
 	    continue
 	fi
 	echo "$s"
 	s=
-	empty=false
         wrapped_png "$out" "$next" "$m"
+	empty=false
     done < <(ls -1 "$out/names")
     if ! $empty; then
  	echo "$s<TD valign=\"middle\">"
@@ -376,26 +377,26 @@ done >>"$index"
 # --- Add creation entries for all files in the first commit ------------------
 
 
-if [ -d "$cache/ppm_$next" ]; then	# could this ever be false ?
+if [ -d "$cache/$next/ppm0" ]; then	# could this ever be false ?
     empty=true
     echo "<TR>"
-    mkdir -p "$out/diff_$next" "$out/thumb_$next"
+    mkdir -p "$out/$next/"{diff,thumb,html,pdf}
     while read m; do
-	ppm="$cache/ppm_$next/$m.ppm"
-	fat="$cache/fat_$next/$m.ppm"
-	diff="$out/diff_$next/$m.png"
-	thumb="$out/thumb_$next/$m.png"
+	p1="$cache/$next/ppm1/$m.ppm"
+	p2="$cache/$next/ppm2/$m.ppm"
+	ps="$cache/$next/ps/$m.ps"
+	diff="$out/$next/diff/$m.png"
+	thumb="$out/$next/thumb/$m.png"
+	pdf="$out/$next/pdf/$m.pdf"
 
 	echo "<TD>"
-	[ -f "$ppm" ] || continue
-	pngdiff cat "$diff" -f -c 0,1,0 "$ppm" "$ppm" || exit
-	pngdiff shrink "$thumb" -f $THUMB_OPTS -c 0,1,0 "$fat" "$fat" \
-	      || exit
-	empty=false
-	mkdir -p "$out/pdf_$next"
-	schps2pdf -T NEW -o "$out/pdf_$next/$m.pdf" \
-	  "$cache/ps_$next/$m.ps" || exit
+	[ -f "$p1" ] || continue
+	pngdiff cat "$diff" -f -c 0,1,0 "$p1" "$p1" || exit
+	pngdiff shrink "$thumb" -f $THUMB_OPTS -c 0,1,0 "$p2" "$p2" ||
+	  exit
+	schps2pdf -T NEW -o "$pdf" "$ps" || exit
 	wrapped_png "$out" "$next" "$m"
+	empty=false
     done < <(ls -1 "$out/names")
     if ! $empty; then
  	echo "<TD valign=\"middle\">"
