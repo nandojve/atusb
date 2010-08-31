@@ -360,17 +360,17 @@ for n in `cd "$dir" && git rev-list $first..HEAD~1` $first; do
 	    s="$s<TD>"
 	    continue
 	fi
-	echo "$s" >>"$index"
+	echo "$s"
 	s=
 	empty=false
-        wrapped_png "$out" "$next" "$m" >>"$index"
+        wrapped_png "$out" "$next" "$m"
     done < <(ls -1 "$out/names")
     if ! $empty; then
- 	echo "$s<TD valign=\"middle\">" >>"$index"
-	commit_entry "$dir" $next >>"$index"
+ 	echo "$s<TD valign=\"middle\">"
+	commit_entry "$dir" $next
     fi
     next=$n
-done
+done >>"$index"
 
 
 # --- Add creation entries for all files in the first commit ------------------
@@ -378,7 +378,7 @@ done
 
 if [ -d "$cache/ppm_$next" ]; then	# could this ever be false ?
     empty=true
-    echo "<TR>" >>"$index"
+    echo "<TR>"
     mkdir -p "$out/diff_$next" "$out/thumb_$next"
     while read m; do
 	ppm="$cache/ppm_$next/$m.ppm"
@@ -386,7 +386,7 @@ if [ -d "$cache/ppm_$next" ]; then	# could this ever be false ?
 	diff="$out/diff_$next/$m.png"
 	thumb="$out/thumb_$next/$m.png"
 
-	echo "<TD>" >>"$index"
+	echo "<TD>"
 	[ -f "$ppm" ] || continue
 	pngdiff cat "$diff" -f -c 0,1,0 "$ppm" "$ppm" || exit
 	pngdiff shrink "$thumb" -f $THUMB_OPTS -c 0,1,0 "$fat" "$fat" \
@@ -395,13 +395,13 @@ if [ -d "$cache/ppm_$next" ]; then	# could this ever be false ?
 	mkdir -p "$out/pdf_$next"
 	schps2pdf -T NEW -o "$out/pdf_$next/$m.pdf" \
 	  "$cache/ps_$next/$m.ps" || exit
-	wrapped_png "$out" "$next" "$m" >>"$index"
+	wrapped_png "$out" "$next" "$m"
     done < <(ls -1 "$out/names")
     if ! $empty; then
- 	echo "<TD valign=\"middle\">" >>"$index"
-	commit_entry "$dir" $next >>"$index"
+ 	echo "<TD valign=\"middle\">"
+	commit_entry "$dir" $next
     fi
-fi
+fi >>"$index"
 
 
 # --- Finish ------------------------------------------------------------------
