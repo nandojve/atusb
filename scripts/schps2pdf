@@ -50,10 +50,10 @@ done
 in=${1:--}
 shift
 
-eval gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile=\""$out\"" -f \
-  `export i=1; for n in "$in" "$@"; do \
+eval gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile=\"$out\" -f \
+  `i=1; for n in "$in" "$@"; do \
     i=\`expr $i + 1\`;
     echo "<(sheet=\"\`basename \"$n\" .ps\`\";
-    set x $titles; i=\`expr $i + 1\`; eval t='\\$$i';
+    set x $titles; eval t='\\${$i}';
       $toc && echo '[ /Title ('\"\\${t:-\\${sheet#$prefix}}\"') /OUT pdfmark';
     cat \"$n\";)"; done`
