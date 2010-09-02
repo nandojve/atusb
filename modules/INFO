@@ -47,3 +47,6 @@ N: nx3225sa
 
 # Solder pads and test points
 F: pads
+
+# 0805 package with six pads
+F: 0805-6

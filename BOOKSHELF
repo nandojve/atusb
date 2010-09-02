@@ -78,3 +78,12 @@ D: http://www.ndk.com/images/products/catalog/c_NX3225SA-STD-CSR-3_e.pdf
 N: ltst-c190krkt
 A: led
 D: http://optoelectronics.liteon.com/en-us/api/DwonloadFileHandler.ashx?txtSpecNo=DS-22-99-0151&txtPartNo=LTST-C190KRKT
+
+# MMST3904
+N: mmst3904
+D: http://www.diodes.com/datasheets/ds30082.pdf
+
+# Wuerth 748421245 balun/filter
+N: 748421245
+A: balun2
+D: http://katalog.we-online.de/kataloge/eisos/media/pdf/748421245.pdf

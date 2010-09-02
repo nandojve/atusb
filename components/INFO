@@ -25,3 +25,6 @@ N: nx3225sa
 
 # Generic antenna with ground on pin 1, feed on pin 2
 S: antenna
+
+# Typical SMT balun configuration
+S: balun
