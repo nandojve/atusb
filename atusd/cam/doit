@@ -1,0 +1,22 @@
+#!/bin/sh -e
+DIR=/home/moko/svn.openmoko.org/developers/werner/cncmap
+RECT=$DIR/rect/rect
+ALIGN=$DIR/align/align
+ZMAP=$DIR/zmap/zmap
+GP2RML=$DIR/gp2rml/gp2rml
+
+GEN=${1:-./pcb.pl}
+
+rdata="17.8 8.9 -55.7  72.0 9.6 -55.3  17.8 68.5 -55.5"
+rdata="12.4 9.8 -55.6  125.5 9.4 -55.4  12.9 83.6 -55.7"
+# we need quite a large Z adjustment due to the table's vertical flexibility
+Z=-55.80
+
+rect=`$RECT $rdata | awk '{$3 = ""; print}'`
+
+$GEN |
+  awk '{ if ($3 != "") $3 += '$Z'; print $0; }' |
+  $ALIGN 0 1 $rect |
+	# angle, reference (lower left corner), rect
+  $GP2RML 1.5 0.1 0.1
+	# clearance, xy speed, z speed
