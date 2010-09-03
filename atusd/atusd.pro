@@ -1,4 +1,4 @@
-update=Thu Sep  2 23:02:19 2010
+update=Fri Sep  3 08:00:46 2010
 last_client=pcbnew
 [eeschema]
 version=1
@@ -65,7 +65,7 @@ DrawLar=150
 EdgeLar=50
 TxtLar=100
 MSegLar=150
-LastNetListRead=wpan-atrf.net
+LastNetListRead=atusd.net
 [pcbnew/libraries]
 LibDir=
 LibName1=../modules/meander

@@ -3,7 +3,7 @@
 frame pad {
 	set l = a+0.1mm
 
-	set s = c+0.2mm
+	set s = c+0.4mm
 
 	__0: vec @(-l/2, -s/2)
 	__1: vec @(l/2, s/2)
@@ -29,7 +29,7 @@ frame pads {
 frame outline {
 	set L = A+2*clear
 
-	set W = B+2*clear+0.4mm
+	set W = B+2*clear+0.6mm
 
 	set clear = 5mil
 
