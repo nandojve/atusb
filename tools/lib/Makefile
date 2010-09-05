@@ -16,7 +16,7 @@ F32XBASE = ../../../f32xbase
 LIB = libatspi.a
 
 CFLAGS = -Wall -I$(F32XBASE)/include -I../../atrf/fw/include -I../include
-OBJS = $(F32XBASE)/lib/usb.o atspi.o
+OBJS = $(F32XBASE)/lib/usb.o atspi.o atusb.o
 
 .PHONY:		all clean spotless
 

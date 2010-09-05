@@ -11,171 +11,83 @@
  */
 
 
+#include <stdlib.h>
 #include <stdio.h>
-#include <usb.h>
 
-#include "f32xbase/usb.h"
-#include "atspi/ep0.h"
-#include "atspi/usb-ids.h"
-
+#include "driver.h"
 #include "atspi.h"
 
 
-#define FROM_DEV	ATSPI_FROM_DEV(0)
-#define TO_DEV		ATSPI_TO_DEV(0)
+extern struct atspi_driver atusb_driver;
 
 
-/* ----- error handling ---------------------------------------------------- */
+struct atspi_dsc {
+	struct atspi_driver *driver;
+	void *handle;
+};
 
 
-static int error;
-
-
-int atspi_error(void)
+struct atspi_dsc *atspi_open(void)
 {
-	return error;
-}
+	struct atspi_dsc *dsc;
+	struct atspi_driver *driver;
+	void *handle;
 
-
-int atspi_clear_error(void)
-{
-	int ret;
-
-	ret = error;
-	error = 0;
-	return ret;
-}
-
-
-/* ----- open/close -------------------------------------------------------- */
-
-
-usb_dev_handle *atspi_open(void)
-{
-	usb_dev_handle *dev;
-
-	dev = open_usb(USB_VENDOR, USB_PRODUCT);
-	if (dev) {
-		error = 0;
-	} else {
-		fprintf(stderr, ":-(\n");
-		error = 1;
+	driver = &atusb_driver;
+	handle = driver->open();
+	if (!handle)
+		return NULL;
+	dsc = malloc(sizeof(*dsc));
+	if (!dsc) {
+		perror("malloc");
+		exit(1);
 	}
-	return dev;
+	dsc->driver = driver;
+	dsc->handle = handle;
+	return dsc;
 }
 
 
-void atspi_close(usb_dev_handle *dev)
+void atspi_close(struct atspi_dsc *dsc)
 {
-	/* to do */
+	if (dsc->driver->close)
+		dsc->driver->close(dsc->handle);
+	free(dsc);
 }
 
 
-/* ----- device mode ------------------------------------------------------- */
-
-
-void atspi_reset(usb_dev_handle *dev)
+void atspi_reset(struct atspi_dsc *dsc)
 {
-	int res;
-
-	if (error)
-		return;
-
-	res =
-	    usb_control_msg(dev, TO_DEV, ATSPI_RESET, 0, 0, NULL, 0, 1000);
-	if (res < 0) {
-		fprintf(stderr, "ATSPI_RESET: %d\n", res);
-		error = 1;
-	}
+	if (dsc->driver->reset)
+		dsc->driver->reset(dsc->handle);
 }
 
 
-void atspi_reset_rf(usb_dev_handle *dev)
+void atspi_reset_rf(struct atspi_dsc *dsc)
 {
-	int res;
-
-	if (error)
-		return;
-
-	res =
-	    usb_control_msg(dev, TO_DEV, ATSPI_RF_RESET, 0, 0, NULL, 0, 1000);
-	if (res < 0) {
-		fprintf(stderr, "ATSPI_RF_RESET: %d\n", res);
-		error = 1;
-	}
+	dsc->driver->reset_rf(dsc->handle);
 }
 
 
-/* ----- register access --------------------------------------------------- */
-
-
-void atspi_reg_write(usb_dev_handle *dev, uint8_t reg, uint8_t value)
+void atspi_reg_write(struct atspi_dsc *dsc, uint8_t reg, uint8_t value)
 {
-	int res;
-
-	if (error)
-		return;
-
-	res = usb_control_msg(dev, TO_DEV, ATSPI_REG_WRITE, value, reg,
-	    NULL, 0, 1000);
-	if (res < 0) {
-		fprintf(stderr, "ATSPI_REG_WRITE: %d\n", res);
-		error = 1;
-	}
+	dsc->driver->reg_write(dsc->handle, reg, value);
 }
 
 
-uint8_t atspi_reg_read(usb_dev_handle *dev, uint8_t reg)
+uint8_t atspi_reg_read(struct atspi_dsc *dsc, uint8_t reg)
 {
-	uint8_t value = 0;
-	int res;
-
-	if (error)
-		return 0;
-
-	res = usb_control_msg(dev, FROM_DEV, ATSPI_REG_READ, 0, reg,
-	    (void *) &value, 1, 1000);
-	if (res < 0) {
-		fprintf(stderr, "ATSPI_REG_READ: %d\n", res);
-		error = 1;
-	}
-	return value;
+	return dsc->driver->reg_read(dsc->handle, reg);
 }
 
 
-/* ----- frame buffer access ----------------------------------------------- */
-
-
-void atspi_buf_write(usb_dev_handle *dev, const void *buf, int size)
+void atspi_buf_write(struct atspi_dsc *dsc, const void *buf, int size)
 {
-	int res;
-
-	if (error)
-		return;
-
-	res = usb_control_msg(dev, TO_DEV, ATSPI_BUF_WRITE, 0, 0,
-	    (void *) buf, size, 1000);
-	if (res < 0) {
-		fprintf(stderr, "ATSPI_BUF_WRITE: %d\n", res);
-		error = 1;
-	}
-
+	dsc->driver->buf_write(dsc->handle, buf, size);
 }
 
 
-int atspi_buf_read(usb_dev_handle *dev, void *buf, int size)
+int atspi_buf_read(struct atspi_dsc *dsc, void *buf, int size)
 {
-	int res;
-
-	if (error)
-		return -1;
-
-	res = usb_control_msg(dev, FROM_DEV, ATSPI_BUF_READ, 0, 0,
-	    buf, size, 1000);
-	if (res < 0) {
-		fprintf(stderr, "ATSPI_BUF_READ: %d\n", res);
-		error = 1;
-	}
-
-	return res;
+	return dsc->driver->buf_read(dsc->handle, buf, size);
 }
