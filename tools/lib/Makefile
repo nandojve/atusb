@@ -16,9 +16,9 @@ LIB = libatspi.a
 include ../Makefile.common
 
 CFLAGS += -Wall -I$(F32XBASE)/include
-OBJS_host = atusb.o
+OBJS_host = atusb.o $(F32XBASE)/lib/usb.o
 OBJS_ben = atusd.o
-OBJS = $(F32XBASE)/lib/usb.o atspi.o $(OBJS_$(TARGET))
+OBJS = atspi.o $(OBJS_$(TARGET))
 
 .PHONY:		all clean spotless
 
@@ -28,7 +28,7 @@ $(LIB):		$(OBJS)
 		$(AR) cr $@ $^
 
 clean:
-		rm -f $(OBJS)
+		rm -f $(OBJS) $(OBJS_ben) $(OBJS_host)
 
 spotless:	clean
 		rm -f $(LIB)

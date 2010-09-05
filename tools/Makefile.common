@@ -27,5 +27,6 @@ LDLIBS_ben =
 MACROS_host = -DHAVE_USB
 MACROS_ben = -DHAVE_USD
 
+CC = $(CC_$(TARGET))
 CFLAGS += -I../../atrf/fw/include -I../include $(MACROS_$(TARGET))
 LDLIBS = $(LDLIBS_$(TARGET)) -L../lib -latspi

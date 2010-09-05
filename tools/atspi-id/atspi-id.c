@@ -13,17 +13,21 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+
+#ifdef HAVE_USB
 #include <usb.h>
+#endif
 
 #include "at86rf230.h"
 #include "atspi/ep0.h"
 #include "atspi.h"
 
 
+#ifdef HAVE_USB
+
 #define	FROM_DEV	ATSPI_FROM_DEV(0)
 
 #define	BUF_SIZE	256
-
 
 
 static int get_id(usb_dev_handle *dev, void *data, int size)
@@ -67,12 +71,18 @@ static int get_build(usb_dev_handle *dev, char *buf, size_t size)
 }
 
 
-static void show_usb_info(usb_dev_handle *dev)
+static void show_usb_info(struct atspi_dsc *dsc)
 {
-	const struct usb_device *device = usb_device(dev);
+	usb_dev_handle *dev;
+	const struct usb_device *device;
 	uint8_t major, minor, target;
 	char buf[BUF_SIZE+1];	/* +1 for terminating \0 */
 	int len;
+
+	dev = atspi_usb_handle(dsc);
+	if (!dev)
+		return;
+	device = usb_device(dev);
 
 	printf("%04x:%04x ",
 	    device->descriptor.idVendor, device->descriptor.idProduct);
@@ -89,14 +99,22 @@ static void show_usb_info(usb_dev_handle *dev)
 }
 
 
+#else /* HAVE_USB */
+
+
+static void show_usb_info(struct atspi_dsc *dsc)
+{
+}
+
+
+#endif /* !HAVE_USB */
+
+
 static void show_info(struct atspi_dsc *dsc)
 {
-	usb_dev_handle *dev;
 	uint8_t part, version, man_id_0, man_id_1;
 
-	dev = atspi_usb_handle(dsc);
-	if (dev)
-		show_usb_info(dev);
+	show_usb_info(dsc);
 
 	part = atspi_reg_read(dsc, REG_PART_NUM);
 	version = atspi_reg_read(dsc, REG_VERSION_NUM);
