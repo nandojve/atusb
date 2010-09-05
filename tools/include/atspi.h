@@ -19,11 +19,13 @@
 struct atspi_dsc;
 
 
-int atspi_error(void);
-int atspi_clear_error(void);
+void *atspi_usb_handle(struct atspi_dsc *dsc); /* hack for atspi-id */
 
 struct atspi_dsc *atspi_open(void);
 void atspi_close(struct atspi_dsc *dsc);
+
+int atspi_error(struct atspi_dsc *dsc);
+int atspi_clear_error(struct atspi_dsc *dsc);
 
 void atspi_reset(struct atspi_dsc *dsc);
 void atspi_reset_rf(struct atspi_dsc *dsc);

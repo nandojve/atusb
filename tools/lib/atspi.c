@@ -19,6 +19,7 @@
 
 
 extern struct atspi_driver atusb_driver;
+extern struct atspi_driver atusd_driver;
 
 
 struct atspi_dsc {
@@ -27,13 +28,42 @@ struct atspi_dsc {
 };
 
 
+void *atspi_usb_handle(struct atspi_dsc *dsc)
+{
+#ifdef HAVE_USB
+	return dsc->handle;
+#else
+	return NULL;
+#endif
+}
+
+
+int atspi_error(struct atspi_dsc *dsc)
+{
+	return dsc->driver->error ? dsc->driver->error(dsc->handle) : 0;
+}
+
+
+int atspi_clear_error(struct atspi_dsc *dsc)
+{
+	return dsc->driver->clear_error ?
+	    dsc->driver->clear_error(dsc->handle) : 0;
+}
+
+
 struct atspi_dsc *atspi_open(void)
 {
 	struct atspi_dsc *dsc;
 	struct atspi_driver *driver;
 	void *handle;
 
+#ifdef HAVE_USB
 	driver = &atusb_driver;
+#elif HAVE_USD
+	driver = &atusd_driver;
+#else
+#error Need either HAVE_USB or HAVE_USD
+#endif
 	handle = driver->open();
 	if (!handle)
 		return NULL;

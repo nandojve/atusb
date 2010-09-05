@@ -11,12 +11,14 @@
 #
 
 
-F32XBASE = ../../../f32xbase
-
 LIB = libatspi.a
 
-CFLAGS = -Wall -I$(F32XBASE)/include -I../../atrf/fw/include -I../include
-OBJS = $(F32XBASE)/lib/usb.o atspi.o atusb.o
+include ../Makefile.common
+
+CFLAGS += -Wall -I$(F32XBASE)/include
+OBJS_host = atusb.o
+OBJS_ben = atusd.o
+OBJS = $(F32XBASE)/lib/usb.o atspi.o $(OBJS_$(TARGET))
 
 .PHONY:		all clean spotless
 

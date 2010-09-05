@@ -1,0 +1,31 @@
+#
+# tools/Makefile.common - Common items in ATSPI tool makefiles
+#
+# Written 2010 by Werner Almesberger
+# Copyright 2010 Werner Almesberger
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+
+ifeq ($(TARGET),)
+TARGET = host
+endif
+
+F32XBASE = ../../../f32xbase
+
+ifneq ($(MAIN),)
+include $(F32XBASE)/lib/Makefile.common
+endif
+
+CC_host = gcc
+CC_ben = mipsel-openwrt-linux-gcc
+LDLIBS_host = -lusb
+LDLIBS_ben =
+MACROS_host = -DHAVE_USB
+MACROS_ben = -DHAVE_USD
+
+CFLAGS += -I../../atrf/fw/include -I../include $(MACROS_$(TARGET))
+LDLIBS = $(LDLIBS_$(TARGET)) -L../lib -latspi

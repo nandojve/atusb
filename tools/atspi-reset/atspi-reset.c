@@ -1,5 +1,5 @@
 /*
- * atspi-rssi/atspi-rssi.c - ben-wpan AF86RF230 spectrum scan
+ * atspi-rssi/atspi-rssi.c - ben-wpan AT86RF230 spectrum scan
  *
  * Written 2010 by Werner Almesberger
  * Copyright 2010 Werner Almesberger
@@ -14,7 +14,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <usb.h>
 
 #include "atspi.h"
 
@@ -32,7 +31,7 @@ static void usage(const char *name)
 
 int main(int argc, const char **argv)
 {
-	usb_dev_handle *dev;
+	struct atspi_dsc *dsc;
 	int txrx = 1;
 
 	switch (argc) {
@@ -49,14 +48,14 @@ int main(int argc, const char **argv)
 		usage(*argv);
 	}
 
-	dev = atspi_open();
-	if (!dev)
+	dsc = atspi_open();
+	if (!dsc)
 		return 1;
 
         if (txrx)
-                atspi_reset_rf(dev);
+                atspi_reset_rf(dsc);
         else
-                atspi_reset(dev);
+                atspi_reset(dsc);
         return 0;
 }
 

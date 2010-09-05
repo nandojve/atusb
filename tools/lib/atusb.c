@@ -31,13 +31,13 @@
 static int error;
 
 
-int atusb_error(void)
+static int atusb_error(void *dsc)
 {
 	return error;
 }
 
 
-int atusb_clear_error(void)
+static int atusb_clear_error(void *dsc)
 {
 	int ret;
 
@@ -191,9 +191,11 @@ static int atusb_buf_read(void *dsc, void *buf, int size)
 
 
 struct atspi_driver atusb_driver = {
-	.name		= "atusb",
+	.name		= "USB",
 	.open		= atusb_open,
 	.close		= atusb_close,
+	.error		= atusb_error,
+	.clear_error	= atusb_clear_error,
 	.reset		= atusb_reset,
 	.reset_rf	= atusb_reset_rf,
 	.reg_write	= atusb_reg_write,

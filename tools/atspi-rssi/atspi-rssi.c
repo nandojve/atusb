@@ -1,5 +1,5 @@
 /*
- * atspi-rssi/atspi-rssi.c - ben-wpan AF86RF230 spectrum scan
+ * atspi-rssi/atspi-rssi.c - ben-wpan AT86RF230 spectrum scan
  *
  * Written 2010 by Werner Almesberger
  * Copyright 2010 Werner Almesberger
@@ -13,7 +13,6 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <usb.h>
 #include <sys/time.h>
 
 #include "at86rf230.h"
@@ -24,19 +23,19 @@
 static struct timeval t0;
 
 
-static void sweep(usb_dev_handle *dev)
+static void sweep(struct atspi_dsc *dsc)
 {
 	int chan, rssi;
 	struct timeval t;
 
 	for (chan = 11; chan <= 26; chan++) {
-		atspi_reg_write(dev, REG_PHY_CC_CCA, chan);
+		atspi_reg_write(dsc, REG_PHY_CC_CCA, chan);
 		/*
 		 * No need to explicitly wait for the PPL lock - going USB-SPI
 		 * is pretty slow, leaving the transceiver plenty of time.
 		 */
 		gettimeofday(&t, NULL);
-		rssi = atspi_reg_read(dev, REG_PHY_RSSI) & RSSI_MASK;
+		rssi = atspi_reg_read(dsc, REG_PHY_RSSI) & RSSI_MASK;
 		t.tv_sec -= t0.tv_sec;
 		t.tv_usec -= t0.tv_usec;
 		printf("%d %f %d\n",
@@ -57,7 +56,7 @@ static void usage(const char *name)
 
 int main(int argc, const char **argv)
 {
-	usb_dev_handle *dev;
+	struct atspi_dsc *dsc;
 	unsigned long sweeps, i;
 	char *end;
 
@@ -67,22 +66,22 @@ int main(int argc, const char **argv)
 	if (*end)
 		usage(*argv);
 
-	dev = atspi_open();
-	if (!dev)
+	dsc = atspi_open();
+	if (!dsc)
 		return 1;
 
-	atspi_reg_write(dev, REG_TRX_STATE, TRX_CMD_TRX_OFF);
+	atspi_reg_write(dsc, REG_TRX_STATE, TRX_CMD_TRX_OFF);
 	/*
 	 * No need to explicitly wait for things to stabilize - going USB-SPI
 	 * is pretty slow, leaving the transceiver more than enough time.
 	 */
-	atspi_reg_write(dev, REG_TRX_STATE, TRX_CMD_RX_ON);
+	atspi_reg_write(dsc, REG_TRX_STATE, TRX_CMD_RX_ON);
 
 	gettimeofday(&t0, NULL);
 	for (i = 0; i != sweeps; i++)
-		sweep(dev);
+		sweep(dsc);
 
-	atspi_reg_write(dev, REG_TRX_STATE, TRX_CMD_TRX_OFF);
+	atspi_reg_write(dsc, REG_TRX_STATE, TRX_CMD_TRX_OFF);
 
 	return 0;
 }

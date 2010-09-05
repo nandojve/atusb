@@ -1,3 +1,16 @@
+/*
+ * lib/atusd.c - ATSPI access functions library (uSD version)
+ *
+ * Written 2010 by Werner Almesberger
+ * Copyright 2010 Werner Almesberger
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ */
+
+
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -6,7 +19,7 @@
 #include <sys/mman.h>
 
 #include "at86rf230.h"
-#include "atusd.h"
+#include "driver.h"
 
 
 enum {
@@ -52,73 +65,10 @@ struct atusd_dsc {
 };
 
 
-struct atusd_dsc *atusd_open(void)
-{
-	struct atusd_dsc *dsc;
-
-	dsc = malloc(sizeof(*dsc));
-	if (!dsc) {
-		perror("malloc");
-		exit(1);
-	}
-
-	dsc->fd = open("/dev/mem", O_RDWR);
-	if (dsc->fd < 0) {
-		perror("/dev/mem");
-		exit(1);
-	}
-	dsc->mem = mmap(NULL, PAGE_SIZE*3*16, PROT_READ | PROT_WRITE,
-	    MAP_SHARED, dsc->fd, SOC_BASE);
-        if (dsc->mem == MAP_FAILED) {
-                perror("mmap");
-                exit(1);
-        }
-
-	/* set the output levels */
-	PDDATS = nSEL | VDD_OFF;
-	PDDATC = SCLK | SLP_TR;
-
-	/* take the GPIOs away from the MMC controller */
-	PDFUNC = MxSx | SCLK | SLP_TR | IRQ | nSEL;
-	PDFUNS = CLK;
-
-	/* set the pin directions */
-	PDDIRC = IRQ;
-	PDDIRS = MxSx | CLK | SCLK | SLP_TR | nSEL;
-
-	/* enable power */
-	PDDATC = VDD_OFF;
-
-	/* set the MSC clock to 316 MHz / 21 = 16 MHz */
-	MSCCDR = 20;
-	/*
-	 * Enable the MSC clock. We need to do this before accessing any
-	 * registers of the MSC block !
-	 */
-	CLKGR &= ~(1 << 7);
-	/* bus clock = MSC clock / 1 */
-	MSC_CLKRT = 0;
-	/* start MMC clock output */
-	MSC_STRPCL = 2;
-
-	return dsc;
-}
+/* ----- Reset functions --------------------------------------------------- */
 
 
-void atusd_close(struct atusd_dsc *dsc)
-{
-	/* stop the MMC bus clock */
-	MSC_STRPCL = 1;
-
-	/* cut the power */
-	PDDATS = VDD_OFF;
-
-	/* make all MMC pins inputs */
-	PDDIRC = MxSx | CLK | SCLK | SLP_TR | IRQ | nSEL;
-}
-
-
-void atusd_cycle(struct atusd_dsc *dsc)
+static void atusd_cycle(struct atusd_dsc *dsc)
 {
 	/* stop the MMC bus clock */
 	MSC_STRPCL = 1;
@@ -155,7 +105,8 @@ void atusd_cycle(struct atusd_dsc *dsc)
 }
 
 
-void atusd_reset(struct atusd_dsc *dsc)
+#if 0 /* we probably won't need this anymore */
+static void atusd_reset(struct atusd_dsc *dsc)
 {
 	/* activate reset */
 	PDDATS = SLP_TR;
@@ -171,6 +122,10 @@ void atusd_reset(struct atusd_dsc *dsc)
 	PDDATS = nSEL;
 	PDDATC = SLP_TR;
 }
+#endif
+
+
+/* ----- Low-level SPI operations ------------------------------------------ */
 
 
 static void spi_begin(struct atusd_dsc *dsc)
@@ -247,8 +202,89 @@ static void spi_send(struct atusd_dsc *dsc, uint8_t v)
 }
 
 
-void atusd_reg_write(struct atusd_dsc *dsc, uint8_t reg, uint8_t v)
+/* ----- Driver operations ------------------------------------------------- */
+
+
+static void *atusd_open(void)
 {
+	struct atusd_dsc *dsc;
+
+	dsc = malloc(sizeof(*dsc));
+	if (!dsc) {
+		perror("malloc");
+		exit(1);
+	}
+
+	dsc->fd = open("/dev/mem", O_RDWR);
+	if (dsc->fd < 0) {
+		perror("/dev/mem");
+		exit(1);
+	}
+	dsc->mem = mmap(NULL, PAGE_SIZE*3*16, PROT_READ | PROT_WRITE,
+	    MAP_SHARED, dsc->fd, SOC_BASE);
+        if (dsc->mem == MAP_FAILED) {
+                perror("mmap");
+                exit(1);
+        }
+
+	/* set the output levels */
+	PDDATS = nSEL | VDD_OFF;
+	PDDATC = SCLK | SLP_TR;
+
+	/* take the GPIOs away from the MMC controller */
+	PDFUNC = MxSx | SCLK | SLP_TR | IRQ | nSEL;
+	PDFUNS = CLK;
+
+	/* set the pin directions */
+	PDDIRC = IRQ;
+	PDDIRS = MxSx | CLK | SCLK | SLP_TR | nSEL;
+
+	/* enable power */
+	PDDATC = VDD_OFF;
+
+	/* set the MSC clock to 316 MHz / 21 = 16 MHz */
+	MSCCDR = 20;
+	/*
+	 * Enable the MSC clock. We need to do this before accessing any
+	 * registers of the MSC block !
+	 */
+	CLKGR &= ~(1 << 7);
+	/* bus clock = MSC clock / 1 */
+	MSC_CLKRT = 0;
+	/* start MMC clock output */
+	MSC_STRPCL = 2;
+
+	return dsc;
+}
+
+
+static void atusd_close(void *arg)
+{
+	struct atusd_dsc *dsc = arg;
+
+	/* stop the MMC bus clock */
+	MSC_STRPCL = 1;
+
+	/* cut the power */
+	PDDATS = VDD_OFF;
+
+	/* make all MMC pins inputs */
+	PDDIRC = MxSx | CLK | SCLK | SLP_TR | IRQ | nSEL;
+}
+
+
+static void atusd_reset_rf(void *handle)
+{
+	struct atusd_dsc *dsc = handle;
+
+	atusd_cycle(dsc);
+}
+
+
+static void atusd_reg_write(void *handle, uint8_t reg, uint8_t v)
+{
+	struct atusd_dsc *dsc = handle;
+
 	spi_begin(dsc);
 	spi_send(dsc, AT86RF230_REG_WRITE | reg);
 	spi_send(dsc, v);
@@ -256,8 +292,9 @@ void atusd_reg_write(struct atusd_dsc *dsc, uint8_t reg, uint8_t v)
 }
 
 
-uint8_t atusd_reg_read(struct atusd_dsc *dsc, uint8_t reg)
+static uint8_t atusd_reg_read(void *handle, uint8_t reg)
 {
+	struct atusd_dsc *dsc = handle;
 	uint8_t res;
 
 	spi_begin(dsc);
@@ -269,3 +306,21 @@ uint8_t atusd_reg_read(struct atusd_dsc *dsc, uint8_t reg)
 	spi_end(dsc);
 	return res;
 }
+
+
+/* ----- Driver interface -------------------------------------------------- */
+
+
+struct atspi_driver atusd_driver = {
+	.name		= "uSD",
+	.open		= atusd_open,
+	.close		= atusd_close,
+	.reset		= NULL,
+	.reset_rf	= atusd_reset_rf,
+	.reg_write	= atusd_reg_write,
+	.reg_read	= atusd_reg_read,
+#if 0
+	.buf_write	= atusd_buf_write,
+	.buf_read	= atusd_buf_read,
+#endif
+};

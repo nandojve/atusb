@@ -1,5 +1,5 @@
 /*
- * atspi-txrx/atspi-txrx.c - ben-wpan AF86RF230 TX/RX
+ * atspi-txrx/atspi-txrx.c - ben-wpan AT86RF230 TX/RX
  *
  * Written 2010 by Werner Almesberger
  * Copyright 2010 Werner Almesberger
@@ -13,8 +13,8 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
 #include <string.h>
-#include <usb.h>
 
 #include "at86rf230.h"
 #include "atspi/ep0.h"
@@ -45,56 +45,56 @@ static double tx_pwr[] = {
 };
 
 
-static usb_dev_handle *init_txrx(int trim)
+static struct atspi_dsc *init_txrx(int trim)
 {
-	usb_dev_handle *dev;
+	struct atspi_dsc *dsc;
 
-	dev = atspi_open();
-	if (!dev)
+	dsc = atspi_open();
+	if (!dsc)
 		exit(1);
 	
-	atspi_reset_rf(dev);
-	atspi_reg_write(dev, REG_TRX_STATE, TRX_CMD_TRX_OFF);
-	atspi_reg_write(dev, REG_XOSC_CTRL,
+	atspi_reset_rf(dsc);
+	atspi_reg_write(dsc, REG_TRX_STATE, TRX_CMD_TRX_OFF);
+	atspi_reg_write(dsc, REG_XOSC_CTRL,
 	    (XTAL_MODE_INT << XTAL_MODE_SHIFT) | trim);
-	atspi_reg_write(dev, REG_TRX_CTRL_0, 0); /* disable CLKM */
+	atspi_reg_write(dsc, REG_TRX_CTRL_0, 0); /* disable CLKM */
 
-	return dev;
+	return dsc;
 }
 
 
-static void set_channel(usb_dev_handle *dev, int channel)
+static void set_channel(struct atspi_dsc *dsc, int channel)
 {
-	atspi_reg_write(dev, REG_PHY_CC_CCA, (1 << CCA_MODE_SHIFT) | channel);
+	atspi_reg_write(dsc, REG_PHY_CC_CCA, (1 << CCA_MODE_SHIFT) | channel);
 }
 
 
-static void set_power(usb_dev_handle *dev, double power)
+static void set_power(struct atspi_dsc *dsc, double power)
 {
 	int n;
 
 	for (n = 0; n != sizeof(tx_pwr)/sizeof(*tx_pwr)-1; n++)
 		if (tx_pwr[n] <= power)
 			break;
-	atspi_reg_write(dev, REG_PHY_TX_PWR, TX_AUTO_CRC_ON | n);
+	atspi_reg_write(dsc, REG_PHY_TX_PWR, TX_AUTO_CRC_ON | n);
 }
 
 
-static void receive(usb_dev_handle *dev)
+static void receive(struct atspi_dsc *dsc)
 {
 	uint8_t irq;
 	uint8_t buf[MAX_PSDU+1]; /* PSDU+LQI */
 	int n, ok, i;
 	uint8_t lq;
 
-	atspi_reg_write(dev, REG_TRX_STATE, TRX_CMD_RX_ON);
+	atspi_reg_write(dsc, REG_TRX_STATE, TRX_CMD_RX_ON);
 
-	(void) atspi_reg_read(dev, REG_IRQ_STATUS);
+	(void) atspi_reg_read(dsc, REG_IRQ_STATUS);
 
 	fprintf(stderr, "Ready.\n");
 	while (1) {
-		irq = atspi_reg_read(dev, REG_IRQ_STATUS);
-		if (atspi_error())
+		irq = atspi_reg_read(dsc, REG_IRQ_STATUS);
+		if (atspi_error(dsc))
 			exit(1);
 		if (!irq)
 			continue;
@@ -116,14 +116,14 @@ static void receive(usb_dev_handle *dev)
 			break;
 	}
 
-	n = atspi_buf_read(dev, buf, sizeof(buf));
+	n = atspi_buf_read(dsc, buf, sizeof(buf));
 	if (n < 0)
 		exit(1);
 	if (n < 3) {
 		fprintf(stderr, "%d bytes received\n", n);
 		exit(1);
 	}
-	ok = !!(atspi_reg_read(dev, REG_PHY_RSSI) & RX_CRC_VALID);
+	ok = !!(atspi_reg_read(dsc, REG_PHY_RSSI) & RX_CRC_VALID);
 	lq = buf[n-1];
 	fprintf(stderr, "%d bytes payload, CRC %s, LQI %u\n",
 	    n-3, ok ? "OK" : "BAD", lq);
@@ -133,20 +133,20 @@ static void receive(usb_dev_handle *dev)
 }
 
 
-static void transmit(usb_dev_handle *dev, const char *msg)
+static void transmit(struct atspi_dsc *dsc, const char *msg)
 {
 	uint8_t buf[MAX_PSDU];
 
-	atspi_reg_write(dev, REG_TRX_STATE, TRX_CMD_PLL_ON);
+	atspi_reg_write(dsc, REG_TRX_STATE, TRX_CMD_PLL_ON);
 
 	/*
 	 * We need to copy the message to append the CRC placeholders.
 	 */
 	strcpy((void *) buf, msg);
-	atspi_buf_write(dev, buf, strlen(msg)+2);
+	atspi_buf_write(dsc, buf, strlen(msg)+2);
 
 	/* @@@ should wait for clear channel */
-	atspi_reg_write(dev, REG_TRX_STATE, TRX_CMD_TX_START);
+	atspi_reg_write(dsc, REG_TRX_STATE, TRX_CMD_TX_START);
 	/* @@@ should wait for TX done */
 }
 
@@ -170,7 +170,7 @@ int main(int argc, char *const *argv)
 	int trim = 0;
 	char *end;
 	int c;
-	usb_dev_handle *dev;
+	struct atspi_dsc *dsc;
 
 	while ((c = getopt(argc, argv, "c:p:t:")) != EOF)
 		switch (c) {
@@ -199,15 +199,15 @@ int main(int argc, char *const *argv)
 
 	switch (argc-optind) {
 	case 0:
-		dev = init_txrx(trim);
-		set_channel(dev, channel);
-		receive(dev);
+		dsc = init_txrx(trim);
+		set_channel(dsc, channel);
+		receive(dsc);
 		break;
 	case 1:
-		dev = init_txrx(trim);
-		set_channel(dev, channel);
-		set_power(dev, power);
-		transmit(dev, argv[optind]);
+		dsc = init_txrx(trim);
+		set_channel(dsc, channel);
+		set_power(dsc, power);
+		transmit(dsc, argv[optind]);
 		break;
 	default:
 		usage(*argv);

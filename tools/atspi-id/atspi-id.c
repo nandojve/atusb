@@ -1,5 +1,5 @@
 /*
- * atspi-id/atspi-id.c - Identify a ben-wpan AF86RF230 board
+ * atspi-id/atspi-id.c - Identify a ben-wpan AT86RF230 board
  *
  * Written 2010 by Werner Almesberger
  * Copyright 2010 Werner Almesberger
@@ -37,7 +37,7 @@ static int get_id(usb_dev_handle *dev, void *data, int size)
 }
 
 
-static int atspi_get_protocol(usb_dev_handle *dev,
+static int get_protocol(usb_dev_handle *dev,
     uint8_t *major, uint8_t *minor, uint8_t *target)
 {
 	uint8_t ids[3];
@@ -55,7 +55,7 @@ static int atspi_get_protocol(usb_dev_handle *dev,
 }
  
 
-static int atspi_get_build(usb_dev_handle *dev, char *buf, size_t size)
+static int get_build(usb_dev_handle *dev, char *buf, size_t size)
 {
 	int res;
 
@@ -67,31 +67,41 @@ static int atspi_get_build(usb_dev_handle *dev, char *buf, size_t size)
 }
 
 
-static void show_info(usb_dev_handle *dev)
+static void show_usb_info(usb_dev_handle *dev)
 {
 	const struct usb_device *device = usb_device(dev);
 	uint8_t major, minor, target;
 	char buf[BUF_SIZE+1];	/* +1 for terminating \0 */
 	int len;
-	uint8_t part, version, man_id_0, man_id_1;
 
 	printf("%04x:%04x ",
 	    device->descriptor.idVendor, device->descriptor.idProduct);
 
-	if (atspi_get_protocol(dev, &major, &minor, &target) < 0)
+	if (get_protocol(dev, &major, &minor, &target) < 0)
 		exit(1);
 	printf("protocol %u.%u hw %u\n", major, minor, target);
 
-	len = atspi_get_build(dev, buf, sizeof(buf)-1);
+	len = get_build(dev, buf, sizeof(buf)-1);
 	if (len < 0)
 		exit(1);
 	buf[len] = 0;
 	printf("%10s%s\n", "", buf);
+}
 
-	part = atspi_reg_read(dev, REG_PART_NUM);
-	version = atspi_reg_read(dev, REG_VERSION_NUM);
-	man_id_0 = atspi_reg_read(dev, REG_MAN_ID_0);
-	man_id_1 = atspi_reg_read(dev, REG_MAN_ID_1);
+
+static void show_info(struct atspi_dsc *dsc)
+{
+	usb_dev_handle *dev;
+	uint8_t part, version, man_id_0, man_id_1;
+
+	dev = atspi_usb_handle(dsc);
+	if (dev)
+		show_usb_info(dev);
+
+	part = atspi_reg_read(dsc, REG_PART_NUM);
+	version = atspi_reg_read(dsc, REG_VERSION_NUM);
+	man_id_0 = atspi_reg_read(dsc, REG_MAN_ID_0);
+	man_id_1 = atspi_reg_read(dsc, REG_MAN_ID_1);
 	printf("%10spart 0x%02x version %u manufacturer xxxx%02x%02x\n", "",
 	    part, version, man_id_1, man_id_0);
 }
@@ -106,15 +116,15 @@ static void usage(const char *name)
 
 int main(int argc, const char **argv)
 {
-	usb_dev_handle *dev;
+	struct atspi_dsc *dsc;
 
 	if (argc != 1)
 		usage(*argv);
-	dev = atspi_open();
-	if (!dev)
+	dsc = atspi_open();
+	if (!dsc)
 		return 1;
 
-	show_info(dev);
+	show_info(dsc);
 
 	return 0;
 }

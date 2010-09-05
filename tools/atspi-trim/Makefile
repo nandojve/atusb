@@ -11,11 +11,6 @@
 #
 
 
-F32XBASE = ../../../f32xbase
-
 MAIN = atspi-trim
 
-include $(F32XBASE)/lib/Makefile.common
-
-CFLAGS += -I../../atrf/fw/include -I../include
-LDLIBS += -L../lib -latspi
+include ../Makefile.common
