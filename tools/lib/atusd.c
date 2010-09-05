@@ -89,7 +89,7 @@ static void atusd_cycle(struct atusd_dsc *dsc)
 	PDDATS = nSEL;
 
 	/* supply power */
-	PDDATS = VDD_OFF;
+	PDDATC = VDD_OFF;
 
 	/* return the bus clock output to the MMC controller */
 	PDFUNS = CLK;
@@ -253,6 +253,8 @@ static void *atusd_open(void)
 	MSC_CLKRT = 0;
 	/* start MMC clock output */
 	MSC_STRPCL = 2;
+
+	atusd_cycle(dsc);
 
 	return dsc;
 }
