@@ -1,5 +1,5 @@
 #
-# atspi-id/Makefile - Build the ATSPI identification utility
+# atspi-trim/Makefile - Build the oscillator trim utility
 #
 # Written 2010 by Werner Almesberger
 # Copyright 2010 Werner Almesberger
@@ -11,11 +11,11 @@
 #
 
 
-F32XBASE = ../../../../f32xbase
+F32XBASE = ../../../f32xbase
 
-MAIN = atspi-id
+MAIN = atspi-trim
 
 include $(F32XBASE)/lib/Makefile.common
 
-CFLAGS += -I../../fw/include -I../include
+CFLAGS += -I../../atrf/fw/include -I../include
 LDLIBS += -L../lib -latspi

@@ -1,5 +1,5 @@
 #
-# lib/Makefile - Build the ATSPI library
+# atspi-txrx/Makefile - Build the TX/RX test utility
 #
 # Written 2010 by Werner Almesberger
 # Copyright 2010 Werner Almesberger
@@ -11,22 +11,11 @@
 #
 
 
-F32XBASE = ../../../../f32xbase
+F32XBASE = ../../../f32xbase
 
-LIB = libatspi.a
+MAIN = atspi-txrx
 
-CFLAGS = -Wall -I$(F32XBASE)/include -I../../fw/include -I../include
-OBJS = $(F32XBASE)/lib/usb.o atspi.o
+include $(F32XBASE)/lib/Makefile.common
 
-.PHONY:		all clean spotless
-
-all:		$(LIB)
-
-$(LIB):		$(OBJS)
-		$(AR) cr $@ $^
-
-clean:
-		rm -f $(OBJS)
-
-spotless:	clean
-		rm -f $(LIB)
+CFLAGS += -I../../atrf/fw/include -I../include
+LDLIBS += -L../lib -latspi

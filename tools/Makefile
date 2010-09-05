@@ -14,4 +14,4 @@
 DIRS=atspi-id atspi-reset atspi-rssi atspi-trim atspi-txrx
 TARGET_ONLY_DIRS=lib
 
-include ../../Makefile.recurse
+include ../Makefile.recurse

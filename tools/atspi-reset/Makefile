@@ -1,5 +1,5 @@
 #
-# atspi-txrx/Makefile - Build the TX/RX test utility
+# atspi-reset/Makefile - Reset the transceiver or the whole board
 #
 # Written 2010 by Werner Almesberger
 # Copyright 2010 Werner Almesberger
@@ -11,11 +11,11 @@
 #
 
 
-F32XBASE = ../../../../f32xbase
+F32XBASE = ../../../f32xbase
 
-MAIN = atspi-txrx
+MAIN = atspi-reset
 
 include $(F32XBASE)/lib/Makefile.common
 
-CFLAGS += -I../../fw/include -I../include
+CFLAGS += -I../../atrf/fw/include -I../include
 LDLIBS += -L../lib -latspi
