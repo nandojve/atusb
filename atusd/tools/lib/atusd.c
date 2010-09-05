@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
 #include <fcntl.h>
 #include <sys/mman.h>
 
@@ -102,7 +103,7 @@ struct atusd_dsc *atusd_open(void)
 
 void atusd_close(struct atusd_dsc *dsc)
 {
-	/* stop the MMC clock */
+	/* stop the MMC bus clock */
 	MSC_STRPCL = 1;
 
 	/* cut the power */
@@ -110,4 +111,53 @@ void atusd_close(struct atusd_dsc *dsc)
 
 	/* make all MMC pins inputs */
 	PDDIRC = MxSx | CLK | SCLK | SLP_TR | IRQ | nSEL;
+}
+
+
+void atusd_cycle(struct atusd_dsc *dsc)
+{
+	/* stop the MMC bus clock */
+	MSC_STRPCL = 1;
+
+	/* drive all outputs low (including the MMC bus clock) */
+	PDDATC = MxSx | CLK | SCLK | SLP_TR | nSEL;
+
+	/* make the MMC bus clock a regular output */
+	PDFUNC = CLK;
+
+	/* cut the power */
+	PDDATS = VDD_OFF;
+
+	/* Power drains within about 20 ms. Wait 100 ms to be sure. */
+	usleep(100*1000);
+
+	/* drive nSS high */
+	PDDATS = nSEL;
+
+	/* supply power */
+	PDDATS = VDD_OFF;
+
+	/* return the bus clock output to the MMC controller */
+	PDFUNS = CLK;
+
+	/* start MMC clock output */
+	MSC_STRPCL = 2;
+}
+
+
+void atusd_reset(struct atusd_dsc *dsc)
+{
+	/* activate reset */
+	PDDATS = SLP_TR;
+	PDDATC = nSEL;
+
+	/*
+	 * Data sheet says 625 ns, programmer's guide says 6 us. Whom do we
+	 * trust ?
+	 */
+	usleep(6);
+
+	/* release reset */
+	PDDATS = nSEL;
+	PDDATC = SLP_TR;
 }

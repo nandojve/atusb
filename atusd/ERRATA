@@ -3,3 +3,6 @@
 
 - added wire connecting uSD-side ground plane to ground plane at outer edge,
   to improve CLK signal return. (Probably unnecessary, too.)
+
+- the footprint of the transistor (Q1) is reversed :-( It works after
+  converting the chip from SOT to PLCC.
