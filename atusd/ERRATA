@@ -6,3 +6,7 @@
 
 - the footprint of the transistor (Q1) is reversed :-( It works after
   converting the chip from SOT to PLCC.
+
+- not an erratum, but with experiments showing power-on reset to be
+  reliable, we can consider removing the hardware reset circuit. This will
+  also simplify the layout.

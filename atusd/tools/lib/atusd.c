@@ -5,6 +5,9 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 
+#include "at86rf230.h"
+#include "atusd.h"
+
 
 enum {
 	VDD_OFF	= 1 << 6,	/* VDD disable, PD06 */
@@ -25,6 +28,7 @@ enum {
 #define GPIO(n)	REG(0x10000+(n))
 #define MSC(n)	REG(0x21000+(n))
 
+#define	PDPIN	GPIO(0x300)	/* port D pin level */
 #define PDDATS	GPIO(0x314)	/* port D data set */
 #define PDDATC	GPIO(0x318)	/* port D data clear */
 #define PDFUNS	GPIO(0x344)	/* port D function set */
@@ -142,6 +146,12 @@ void atusd_cycle(struct atusd_dsc *dsc)
 
 	/* start MMC clock output */
 	MSC_STRPCL = 2;
+
+	/*
+	 * Give power time to stabilize and the chip time to reset.
+	 * Experiments show that even usleep(0) is long enough.
+	 */
+	usleep(10*1000);
 }
 
 
@@ -160,4 +170,102 @@ void atusd_reset(struct atusd_dsc *dsc)
 	/* release reset */
 	PDDATS = nSEL;
 	PDDATC = SLP_TR;
+}
+
+
+static void spi_begin(struct atusd_dsc *dsc)
+{
+	PDDATC = nSEL;
+}
+
+
+static void spi_end(struct atusd_dsc *dsc)
+{
+	PDDATS = nSEL;
+}
+
+
+static void spi_data_in(struct atusd_dsc *dsc)
+{
+	PDDIRC = MxSx;
+}
+
+
+static void spi_data_out(struct atusd_dsc *dsc)
+{
+	PDDIRS = MxSx;
+}
+
+
+
+/*
+ * Send a sequence of bytes but leave the clock high on the last bit, so that
+ * we can turn around the data line for reads.
+ */
+
+static void spi_send_partial(struct atusd_dsc *dsc, uint8_t v)
+{
+	uint8_t mask;
+
+	for (mask = 0x80; mask; mask >>= 1) {
+		PDDATC = SCLK;
+		if (v & mask)
+			PDDATS = MxSx;
+		else
+			PDDATC = MxSx;
+		PDDATS = SCLK;
+	}
+}
+
+
+static uint8_t spi_recv(struct atusd_dsc *dsc)
+{
+	uint8_t res = 0;
+        uint8_t mask;
+
+	for (mask = 0x80; mask; mask >>= 1) {
+		PDDATC = SCLK;
+		if (PDPIN & MxSx)
+			res |= mask;
+		PDDATS = SCLK;
+	}
+	PDDATC = SCLK;
+        return res;
+}
+
+
+static void spi_finish(struct atusd_dsc *dsc)
+{
+	PDDATC = SCLK;
+}
+
+
+static void spi_send(struct atusd_dsc *dsc, uint8_t v)
+{
+	spi_send_partial(dsc, v);
+	spi_finish(dsc);
+}
+
+
+void atusd_reg_write(struct atusd_dsc *dsc, uint8_t reg, uint8_t v)
+{
+	spi_begin(dsc);
+	spi_send(dsc, AT86RF230_REG_WRITE | reg);
+	spi_send(dsc, v);
+	spi_end(dsc);
+}
+
+
+uint8_t atusd_reg_read(struct atusd_dsc *dsc, uint8_t reg)
+{
+	uint8_t res;
+
+	spi_begin(dsc);
+	spi_send_partial(dsc, AT86RF230_REG_READ| reg);
+	spi_data_in(dsc);
+	res = spi_recv(dsc);
+	spi_finish(dsc);
+	spi_data_out(dsc);
+	spi_end(dsc);
+	return res;
 }
