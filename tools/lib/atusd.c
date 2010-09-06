@@ -68,6 +68,16 @@ struct atusd_dsc {
 /* ----- Reset functions --------------------------------------------------- */
 
 
+static void wait_for_power(void)
+{
+	/*
+	 * Give power time to stabilize and the chip time to reset.
+	 * Experiments show that even usleep(0) is long enough.
+	 */
+	usleep(10*1000);
+}
+
+
 static void atusd_cycle(struct atusd_dsc *dsc)
 {
 	/* stop the MMC bus clock */
@@ -97,11 +107,7 @@ static void atusd_cycle(struct atusd_dsc *dsc)
 	/* start MMC clock output */
 	MSC_STRPCL = 2;
 
-	/*
-	 * Give power time to stabilize and the chip time to reset.
-	 * Experiments show that even usleep(0) is long enough.
-	 */
-	usleep(10*1000);
+	wait_for_power();
 }
 
 
@@ -205,6 +211,14 @@ static void spi_send(struct atusd_dsc *dsc, uint8_t v)
 /* ----- Driver operations ------------------------------------------------- */
 
 
+static void atusd_reset_rf(void *handle)
+{
+	struct atusd_dsc *dsc = handle;
+
+	atusd_cycle(dsc);
+}
+
+
 static void *atusd_open(void)
 {
 	struct atusd_dsc *dsc;
@@ -254,7 +268,8 @@ static void *atusd_open(void)
 	/* start MMC clock output */
 	MSC_STRPCL = 2;
 
-	atusd_cycle(dsc);
+	wait_for_power();
+	atusd_reset_rf(dsc);
 
 	return dsc;
 }
@@ -272,14 +287,6 @@ static void atusd_close(void *arg)
 
 	/* make all MMC pins inputs */
 	PDDIRC = MxSx | CLK | SCLK | SLP_TR | IRQ | nSEL;
-}
-
-
-static void atusd_reset_rf(void *handle)
-{
-	struct atusd_dsc *dsc = handle;
-
-	atusd_cycle(dsc);
 }
 
 

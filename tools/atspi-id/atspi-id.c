@@ -144,5 +144,7 @@ int main(int argc, const char **argv)
 
 	show_info(dsc);
 
+	atspi_close(dsc);
+
 	return 0;
 }
