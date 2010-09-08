@@ -32,7 +32,9 @@ sub rot
 sub cut
 {
     local (*fn) = $_[0];
+
     shift @_;
+    reverse @_;
     if (defined $x) {
 	if ($x == $_[0]+$x0 && $y == $_[1]+$y0) {
 	    shift @_;
@@ -76,7 +78,7 @@ sub one
 $z = -0.8;
 # x: corner offset, compensation for rotation, array position
 # y: corner offet
-&orig(5+40*0, 5+30*0)
+&orig(5+54*1, 5+30*0)
 &one(*same);
-&orig(5+40*0+15+&mil(1340), 5+30*0+&mil(1030));
+&orig(5+54*1+15+&mil(1340), 5+30*0+&mil(1030));
 &one(*rot);
