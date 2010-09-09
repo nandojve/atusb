@@ -18,7 +18,7 @@ include ../Makefile.common
 CFLAGS += -Wall -I$(F32XBASE)/include
 OBJS_host = atusb.o $(F32XBASE)/lib/usb.o
 OBJS_ben = atusd.o
-OBJS = atspi.o $(OBJS_$(TARGET))
+OBJS = atspi.o misctxrx.o $(OBJS_$(TARGET))
 
 .PHONY:		all clean spotless
 

@@ -11,14 +11,15 @@
  */
 
 
+#include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
 
 #include "at86rf230.h"
-#include "atspi/ep0.h"
 #include "atspi.h"
+#include "misctxrx.h"
 
 
 /*
@@ -66,46 +67,6 @@ static struct atspi_dsc *init_txrx(int trim)
 	(void) atspi_reg_read(dsc, REG_IRQ_STATUS);
 
 	return dsc;
-}
-
-
-static uint8_t wait_for_interrupt(struct atspi_dsc *dsc, uint8_t wait_for,
-    uint8_t ignore, int sleep_us, int timeout)
-{
-	uint8_t irq, show;
-
-	while (1) {
-		while (!atspi_interrupt(dsc)) {
-			usleep(sleep_us);
-			if (timeout && !--timeout)
-				return 0;
-		}
-		irq = atspi_reg_read(dsc, REG_IRQ_STATUS);
-		if (atspi_error(dsc))
-			exit(1);
-		if (!irq)
-			continue;
-		show = irq & ~ignore;
-		if ((irq & wait_for) && !show)
-			break;
-		fprintf(stderr, "IRQ (0x%02x):", irq);
-		if (irq & IRQ_PLL_LOCK)
-			fprintf(stderr, " PLL_LOCK");
-		if (irq & IRQ_PLL_UNLOCK)
-			fprintf(stderr, " PLL_UNLOCK");
-		if (irq & IRQ_RX_START)
-			fprintf(stderr, " RX_START");
-		if (irq & IRQ_TRX_END)
-			fprintf(stderr, " TRX_END");
-		if (irq & IRQ_TRX_UR)
-			fprintf(stderr, " TRX_UR");
-		if (irq & IRQ_BAT_LOW)
-			fprintf(stderr, " BAT_LOW");
-		fprintf(stderr, "\n");
-		if (irq & wait_for)
-			break;
-	}
-	return irq;
 }
 
 
