@@ -1,3 +1,5 @@
+Version 20100903:
+
 - changed C7 to 1 nF to debug a signal attenuation problem. Turned out to be
   a bad trace. According to simulations, 22 pF should be more than enough.
 
@@ -10,3 +12,8 @@
 - not an erratum, but with experiments showing power-on reset to be
   reliable, we can consider removing the hardware reset circuit. This will
   also simplify the layout.
+
+Version 20100908:
+
+- SPI activity causes the PLL to unlock. Specifically, toggling nSEL does
+  this.

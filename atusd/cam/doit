@@ -18,5 +18,5 @@ $GEN |
   awk '{ if ($3 != "") $3 += '$Z'; print $0; }' |
   $ALIGN 0 1 $rect |
 	# angle, reference (lower left corner), rect
-  $GP2RML 1.5 0.1 0.1
+  $GP2RML 2 0.2 0.2
 	# clearance, xy speed, z speed
