@@ -13,14 +13,16 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <signal.h>
 #include <sys/time.h>
 
 #include "at86rf230.h"
-#include "atspi/ep0.h"
 #include "atspi.h"
+#include "misctxrx.h"
 
 
 static struct timeval t0;
+static volatile int run = 1;
 
 
 static void sweep(struct atspi_dsc *dsc)
@@ -31,7 +33,8 @@ static void sweep(struct atspi_dsc *dsc)
 	for (chan = 11; chan <= 26; chan++) {
 		atspi_reg_write(dsc, REG_PHY_CC_CCA, chan);
 		/* 150 us, according to AVR2001 section 3.5 */
-		usleep(1000);
+		wait_for_interrupt(dsc, IRQ_PLL_LOCK, IRQ_PLL_LOCK, 10, 20);
+
 		/*
 		 * No need to explicitly wait for the PPL lock - going USB-SPI
 		 * is pretty slow, leaving the transceiver plenty of time.
@@ -49,9 +52,15 @@ static void sweep(struct atspi_dsc *dsc)
 }
 
 
+static void die(int sig)
+{
+	run = 0;
+}
+
+
 static void usage(const char *name)
 {
-	fprintf(stderr, "%s sweeps \n", name);
+	fprintf(stderr, "usage: %s sweeps \n", name);
 	exit(1);
 }
 
@@ -68,22 +77,25 @@ int main(int argc, const char **argv)
 	if (*end)
 		usage(*argv);
 
+	signal(SIGINT, die);
+
 	dsc = atspi_open();
 	if (!dsc)
 		return 1;
 
 	atspi_reg_write(dsc, REG_TRX_STATE, TRX_CMD_TRX_OFF);
-	/*
-	 * No need to explicitly wait for things to stabilize - going USB-SPI
-	 * is pretty slow, leaving the transceiver more than enough time.
-	 */
 	atspi_reg_write(dsc, REG_TRX_STATE, TRX_CMD_RX_ON);
+	/*
+	 * We'll wait for the PLL lock after selecting the channel.
+	 */
 
 	gettimeofday(&t0, NULL);
-	for (i = 0; i != sweeps; i++)
+	for (i = 0; run && i != sweeps; i++)
 		sweep(dsc);
 
 	atspi_reg_write(dsc, REG_TRX_STATE, TRX_CMD_TRX_OFF);
+
+	atspi_close(dsc);
 
 	return 0;
 }
