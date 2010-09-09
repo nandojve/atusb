@@ -63,18 +63,55 @@ static struct atspi_dsc *init_txrx(int trim)
 #endif
 	atspi_reg_write(dsc, REG_TRX_CTRL_0, 0); /* disable CLKM */
 
+	(void) atspi_reg_read(dsc, REG_IRQ_STATUS);
+
 	return dsc;
+}
+
+
+static uint8_t wait_for_interrupt(struct atspi_dsc *dsc, uint8_t wait_for,
+    uint8_t ignore, int sleep_us, int timeout)
+{
+	uint8_t irq, show;
+
+	while (1) {
+		while (!atspi_interrupt(dsc)) {
+			usleep(sleep_us);
+			if (timeout && !--timeout)
+				return 0;
+		}
+		irq = atspi_reg_read(dsc, REG_IRQ_STATUS);
+		if (atspi_error(dsc))
+			exit(1);
+		if (!irq)
+			continue;
+		show = irq & ~ignore;
+		if ((irq & wait_for) && !show)
+			break;
+		fprintf(stderr, "IRQ (0x%02x):", irq);
+		if (irq & IRQ_PLL_LOCK)
+			fprintf(stderr, " PLL_LOCK");
+		if (irq & IRQ_PLL_UNLOCK)
+			fprintf(stderr, " PLL_UNLOCK");
+		if (irq & IRQ_RX_START)
+			fprintf(stderr, " RX_START");
+		if (irq & IRQ_TRX_END)
+			fprintf(stderr, " TRX_END");
+		if (irq & IRQ_TRX_UR)
+			fprintf(stderr, " TRX_UR");
+		if (irq & IRQ_BAT_LOW)
+			fprintf(stderr, " BAT_LOW");
+		fprintf(stderr, "\n");
+		if (irq & wait_for)
+			break;
+	}
+	return irq;
 }
 
 
 static void set_channel(struct atspi_dsc *dsc, int channel)
 {
 	atspi_reg_write(dsc, REG_PHY_CC_CCA, (1 << CCA_MODE_SHIFT) | channel);
-	/*
-	 * 150 us, according to AVR2001 section 3.5. Note that we should just
-	 * wait for the PPL_LOCK interrupt.
-	 */
-	usleep(1000);
 }
 
 
@@ -91,41 +128,20 @@ static void set_power(struct atspi_dsc *dsc, double power)
 
 static void receive(struct atspi_dsc *dsc)
 {
-	uint8_t irq;
 	uint8_t buf[MAX_PSDU+1]; /* PSDU+LQI */
 	int n, ok, i;
-	uint8_t lq;
+	uint8_t ed, lqi;
 
 	atspi_reg_write(dsc, REG_TRX_STATE, TRX_CMD_RX_ON);
-
-	(void) atspi_reg_read(dsc, REG_IRQ_STATUS);
+	/*
+	 * 180 us, according to AVR2001 section 4.2. We time out after
+	 * nominally 200 us.
+	 */
+	wait_for_interrupt(dsc, IRQ_PLL_LOCK, IRQ_PLL_LOCK, 10, 20);
 
 	fprintf(stderr, "Ready.\n");
-	while (1) {
-		while (!atspi_interrupt(dsc))
-			usleep(10);
-		irq = atspi_reg_read(dsc, REG_IRQ_STATUS);
-		if (atspi_error(dsc))
-			exit(1);
-		if (!irq)
-			continue;
-		if (irq == IRQ_TRX_END)
-			break;
-		fprintf(stderr, "IRQ (0x%02x):", irq);
-		if (irq & IRQ_PLL_LOCK)
-			fprintf(stderr, " PLL_LOCK");
-		if (irq & IRQ_PLL_UNLOCK)
-			fprintf(stderr, " PLL_UNLOCK");
-		if (irq & IRQ_RX_START)
-			fprintf(stderr, " RX_START");
-		if (irq & IRQ_TRX_UR)
-			fprintf(stderr, " TRX_UR");
-		if (irq & IRQ_BAT_LOW)
-			fprintf(stderr, " BAT_LOW");
-		fprintf(stderr, "\n");
-		if (irq & IRQ_TRX_END)
-			break;
-	}
+	wait_for_interrupt(dsc, IRQ_TRX_END, IRQ_TRX_END | IRQ_RX_START,
+	    10, 0);
 
 	n = atspi_buf_read(dsc, buf, sizeof(buf));
 	if (n < 0)
@@ -134,10 +150,11 @@ static void receive(struct atspi_dsc *dsc)
 		fprintf(stderr, "%d bytes received\n", n);
 		exit(1);
 	}
+	ed = atspi_reg_read(dsc, REG_PHY_ED_LEVEL);
 	ok = !!(atspi_reg_read(dsc, REG_PHY_RSSI) & RX_CRC_VALID);
-	lq = buf[n-1];
-	fprintf(stderr, "%d bytes payload, CRC %s, LQI %u\n",
-	    n-3, ok ? "OK" : "BAD", lq);
+	lqi = buf[n-1];
+	fprintf(stderr, "%d bytes payload, CRC %s, LQI %u, ED %d dBm\n",
+	    n-3, ok ? "OK" : "BAD", lqi, -91+ed);
 	for (i = 0; i != n-3; i++)
 		putchar(buf[i] < ' ' || buf[i] > '~' ? '?' : buf[i]);
 	putchar('\n');
@@ -149,6 +166,11 @@ static void transmit(struct atspi_dsc *dsc, const char *msg)
 	uint8_t buf[MAX_PSDU];
 
 	atspi_reg_write(dsc, REG_TRX_STATE, TRX_CMD_PLL_ON);
+	/*
+	 * 180 us, according to AVR2001 section 4.3. We time out after
+	 * nominally 200 us.
+	 */
+	wait_for_interrupt(dsc, IRQ_PLL_LOCK, IRQ_PLL_LOCK, 10, 20);
 
 	/*
 	 * We need to copy the message to append the CRC placeholders.
@@ -158,7 +180,10 @@ static void transmit(struct atspi_dsc *dsc, const char *msg)
 
 	/* @@@ should wait for clear channel */
 	atspi_reg_write(dsc, REG_TRX_STATE, TRX_CMD_TX_START);
-	/* @@@ should wait for TX done */
+
+	/* wait up to 10 ms (nominally) */
+	wait_for_interrupt(dsc, IRQ_TRX_END, IRQ_TRX_END | IRQ_PLL_LOCK,
+	  10, 1000);
 }
 
 
@@ -223,6 +248,8 @@ int main(int argc, char *const *argv)
 	default:
 		usage(*argv);
 	}
+
+	atspi_close(dsc);
 
 	return 0;
 }
