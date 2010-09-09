@@ -27,6 +27,18 @@ LDLIBS_ben =
 MACROS_host = -DHAVE_USB
 MACROS_ben = -DHAVE_USD
 
-CC = $(CC_$(TARGET))
+CC_normal	:= $(CC_$(TARGET))
+AR_normal	:= $(AR)
+CC_quiet	= @echo "  CC " $@ && $(CC_normal)
+AR_quiet	= @echo "  AR " $@ && $(AR_normal)
+
+ifeq ($(V),1)
+    CC		= $(CC_normal)
+    AR		= $(AR_normal)
+else
+    CC		= $(CC_quiet)
+    AR		= $(AR_quiet)
+endif
+
 CFLAGS += -I../../atrf/fw/include -I../include $(MACROS_$(TARGET))
 LDLIBS = $(LDLIBS_$(TARGET)) -L../lib -latspi
