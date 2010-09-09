@@ -126,7 +126,7 @@ static __bit my_setup(struct setup_request *setup) __reentrant
 		buf[BUILD_OFFSET-1] = ' ';
 		for (size = 0; build_date[size]; size++)
 			buf[BUILD_OFFSET+size] = build_date[size];
-		size += BUILD_OFFSET-i+1;
+		size += BUILD_OFFSET-i;
 		SDCC_FORCE_EVAL(uint8_t, setup->bRequest);
 		if (size > setup->wLength)
 			return 0;
@@ -141,6 +141,14 @@ static __bit my_setup(struct setup_request *setup) __reentrant
 	case ATSPI_TO_DEV(ATSPI_RF_RESET):
 		debug("ATSPI_RF_RESET\n");
 		reset_rf();
+		return 1;
+
+	case ATSPI_FROM_DEV(ATSPI_POLL_INT):
+		debug("ATSPI_POLL_INT\n");
+		if (setup->wLength < 1)
+			return 0;
+		*buf = IRQ_RF;
+		usb_send(&ep0, buf, 1, NULL, NULL);
 		return 1;
 
 	case ATSPI_TO_DEV(ATSPI_REG_WRITE):

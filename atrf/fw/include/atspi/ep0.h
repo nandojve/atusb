@@ -21,7 +21,8 @@
  * ->host	ATSPI_BUILD		-		-	#bytes
  * host->	ATSPI_RESET		-		-	0
  *
- * host->	ATSPI_RF_RESET		-		-	
+ * host->	ATSPI_RF_RESET		-		-	0
+ * ->host	ATSPI_POLL_INT		-		-	1
  *
  * host->	ATSPI_REG_WRITE		value		addr	0
  * ->host	ATSPI_REG_READ		-		addr	1
@@ -63,6 +64,7 @@ enum atspi_requests {
 	ATSPI_BUILD,
 	ATSPI_RESET,
 	ATSPI_RF_RESET			= 0x10,
+	ATSPI_POLL_INT,
 	ATSPI_REG_WRITE			= 0x20,
 	ATSPI_REG_READ,
 	ATSPI_BUF_WRITE,

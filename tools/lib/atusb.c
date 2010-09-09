@@ -187,6 +187,29 @@ static int atusb_buf_read(void *dsc, void *buf, int size)
 }
 
 
+/* ----- RF interrupt ------------------------------------------------------ */
+
+
+static int atusd_interrupt(void *dsc)
+{
+	usb_dev_handle *dev = dsc;
+	uint8_t buf;
+	int res;
+
+	if (error)
+		return -1;
+	
+	res = usb_control_msg(dev, FROM_DEV, ATSPI_POLL_INT, 0, 0,
+	    (void *) &buf, 1, 1000);
+	if (res < 0) {
+		fprintf(stderr, "ATSPI_POLL_INT: %d\n", res);
+		error = 1;
+	}
+
+	return buf;
+}
+
+
 /* ----- driver interface -------------------------------------------------- */
 
 
@@ -202,4 +225,5 @@ struct atspi_driver atusb_driver = {
 	.reg_read	= atusb_reg_read,
 	.buf_write	= atusb_buf_write,
 	.buf_read	= atusb_buf_read,
+	.interrupt	= atusd_interrupt,
 };

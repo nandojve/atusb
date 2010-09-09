@@ -300,6 +300,9 @@ static int atusd_buf_read(void *handle, void *buf, int size)
 }
 
 
+/* ----- RF interrupt ------------------------------------------------------ */
+
+
 static int atusd_interrupt(void *handle)
 {
         struct atusd_dsc *dsc = handle;
