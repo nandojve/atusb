@@ -23,11 +23,11 @@
 
 
 enum {
-	VDD_OFF	= 1 << 6,	/* VDD disable, PD06 */
-	MxSx	= 1 << 8,	/* CMD, PD08 */
+	VDD_OFF	= 1 << 2,	/* VDD disable, PD02 */
+	MOSI	= 1 << 8,	/* CMD, PD08 */
 	CLK	= 1 << 9,	/* CLK, PD09 */
-	SCLK	= 1 << 10,	/* DAT0, PD10 */
-	SLP_TR	= 1 << 11,	/* DAT1, PD11 */
+	MISO	= 1 << 10,	/* DAT0, PD10 */
+	SCLK	= 1 << 11,	/* DAT1, PD11 */
 	IRQ	= 1 << 12,	/* DAT2, PD12 */
 	nSEL	= 1 << 13,	/* DAT3/CD, PD13 */
 };
@@ -72,7 +72,7 @@ static void wait_for_power(void)
 {
 	/*
 	 * Give power time to stabilize and the chip time to reset.
-	 * Experiments show that even usleep(0) is long enough.
+	 * Power takes about 2 ms to ramp up. We wait 10 ms to be sure.
 	 */
 	usleep(10*1000);
 }
@@ -84,7 +84,7 @@ static void atusd_cycle(struct atusd_dsc *dsc)
 	MSC_STRPCL = 1;
 
 	/* drive all outputs low (including the MMC bus clock) */
-	PDDATC = MxSx | CLK | SCLK | SLP_TR | nSEL;
+	PDDATC = MOSI | CLK | SCLK | nSEL;
 
 	/* make the MMC bus clock a regular output */
 	PDFUNC = CLK;
@@ -95,11 +95,11 @@ static void atusd_cycle(struct atusd_dsc *dsc)
 	/* Power drains within about 20 ms. Wait 100 ms to be sure. */
 	usleep(100*1000);
 
-	/* drive nSS high */
-	PDDATS = nSEL;
+	/* drive MOSI and nSS high */
+	PDDATS = MOSI | nSEL;
 
-	/* supply power */
-	PDDATC = VDD_OFF;
+	/* precharge the capacitors to avoid current surge */
+	wait_for_power();
 
 	/* return the bus clock output to the MMC controller */
 	PDFUNS = CLK;
@@ -107,28 +107,11 @@ static void atusd_cycle(struct atusd_dsc *dsc)
 	/* start MMC clock output */
 	MSC_STRPCL = 2;
 
+	/* supply power */
+	PDDATC = VDD_OFF;
+
 	wait_for_power();
 }
-
-
-#if 0 /* we probably won't need this anymore */
-static void atusd_reset(struct atusd_dsc *dsc)
-{
-	/* activate reset */
-	PDDATS = SLP_TR;
-	PDDATC = nSEL;
-
-	/*
-	 * Data sheet says 625 ns, programmer's guide says 6 us. Whom do we
-	 * trust ?
-	 */
-	usleep(6);
-
-	/* release reset */
-	PDDATS = nSEL;
-	PDDATC = SLP_TR;
-}
-#endif
 
 
 /* ----- Low-level SPI operations ------------------------------------------ */
@@ -146,35 +129,17 @@ static void spi_end(struct atusd_dsc *dsc)
 }
 
 
-static void spi_data_in(struct atusd_dsc *dsc)
-{
-	PDDIRC = MxSx;
-}
-
-
-static void spi_data_out(struct atusd_dsc *dsc)
-{
-	PDDIRS = MxSx;
-}
-
-
-
-/*
- * Send a sequence of bytes but leave the clock high on the last bit, so that
- * we can turn around the data line for reads.
- */
-
-static void spi_send_partial(struct atusd_dsc *dsc, uint8_t v)
+static void spi_send(struct atusd_dsc *dsc, uint8_t v)
 {
 	uint8_t mask;
 
 	for (mask = 0x80; mask; mask >>= 1) {
-		PDDATC = SCLK;
 		if (v & mask)
-			PDDATS = MxSx;
+			PDDATS = MOSI;
 		else
-			PDDATC = MxSx;
+			PDDATC = MOSI;
 		PDDATS = SCLK;
+		PDDATC = SCLK;
 	}
 }
 
@@ -185,26 +150,12 @@ static uint8_t spi_recv(struct atusd_dsc *dsc)
         uint8_t mask;
 
 	for (mask = 0x80; mask; mask >>= 1) {
-		PDDATC = SCLK;
-		if (PDPIN & MxSx)
+		if (PDPIN & MISO)
 			res |= mask;
 		PDDATS = SCLK;
+		PDDATC = SCLK;
 	}
-	PDDATC = SCLK;
         return res;
-}
-
-
-static void spi_finish(struct atusd_dsc *dsc)
-{
-	PDDATC = SCLK;
-}
-
-
-static void spi_send(struct atusd_dsc *dsc, uint8_t v)
-{
-	spi_send_partial(dsc, v);
-	spi_finish(dsc);
 }
 
 
@@ -216,6 +167,7 @@ static void atusd_reset_rf(void *handle)
 	struct atusd_dsc *dsc = handle;
 
 	atusd_cycle(dsc);
+	wait_for_power();
 }
 
 
@@ -243,15 +195,18 @@ static void *atusd_open(void)
 
 	/* set the output levels */
 	PDDATS = nSEL | VDD_OFF;
-	PDDATC = SCLK | SLP_TR;
+	PDDATC = SCLK;
 
 	/* take the GPIOs away from the MMC controller */
-	PDFUNC = MxSx | SCLK | SLP_TR | IRQ | nSEL;
+	PDFUNC = MOSI | MISO | SCLK | IRQ | nSEL;
 	PDFUNS = CLK;
 
 	/* set the pin directions */
-	PDDIRC = IRQ;
-	PDDIRS = MxSx | CLK | SCLK | SLP_TR | nSEL;
+	PDDIRC = MISO | IRQ;
+	PDDIRS = MOSI | CLK | SCLK | nSEL;
+
+	/* let capacitors precharge */
+	wait_for_power();
 
 	/* enable power */
 	PDDATC = VDD_OFF;
@@ -286,7 +241,7 @@ static void atusd_close(void *arg)
 	PDDATS = VDD_OFF;
 
 	/* make all MMC pins inputs */
-	PDDIRC = MxSx | CLK | SCLK | SLP_TR | IRQ | nSEL;
+	PDDIRC = MOSI | MISO | CLK | SCLK | IRQ | nSEL;
 }
 
 
@@ -307,13 +262,49 @@ static uint8_t atusd_reg_read(void *handle, uint8_t reg)
 	uint8_t res;
 
 	spi_begin(dsc);
-	spi_send_partial(dsc, AT86RF230_REG_READ| reg);
-	spi_data_in(dsc);
+	spi_send(dsc, AT86RF230_REG_READ | reg);
 	res = spi_recv(dsc);
-	spi_finish(dsc);
-	spi_data_out(dsc);
 	spi_end(dsc);
 	return res;
+}
+
+
+static void atusd_buf_write(void *handle, const void *buf, int size)
+{
+	struct atusd_dsc *dsc = handle;
+
+	spi_begin(dsc);
+	spi_send(dsc, AT86RF230_BUF_WRITE);
+	spi_send(dsc, size);
+	while (size--)
+		spi_send(dsc, *(uint8_t *) buf++);
+	spi_end(dsc);
+}
+
+
+static int atusd_buf_read(void *handle, void *buf, int size)
+{
+	struct atusd_dsc *dsc = handle;
+	uint8_t len, i;
+
+	spi_begin(dsc);
+	spi_send(dsc, AT86RF230_BUF_READ);
+	len = spi_recv(dsc);
+	len++; /* LQI */
+	if (len > size)
+		len = size;
+	for (i = 0; i != len; i++)
+		*(uint8_t *) buf++ = spi_recv(dsc);
+	spi_end(dsc);
+	return len;
+}
+
+
+static int atusd_interrupt(void *handle)
+{
+        struct atusd_dsc *dsc = handle;
+
+	return !!(PDPIN & IRQ);
 }
 
 
@@ -328,8 +319,7 @@ struct atspi_driver atusd_driver = {
 	.reset_rf	= atusd_reset_rf,
 	.reg_write	= atusd_reg_write,
 	.reg_read	= atusd_reg_read,
-#if 0
 	.buf_write	= atusd_buf_write,
 	.buf_read	= atusd_buf_read,
-#endif
+	.interrupt	= atusd_interrupt,
 };

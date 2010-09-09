@@ -55,8 +55,12 @@ static struct atspi_dsc *init_txrx(int trim)
 	
 	atspi_reset_rf(dsc);
 	atspi_reg_write(dsc, REG_TRX_STATE, TRX_CMD_TRX_OFF);
+#ifdef HAVE_USB /* @@@ yeah, ugly */
 	atspi_reg_write(dsc, REG_XOSC_CTRL,
 	    (XTAL_MODE_INT << XTAL_MODE_SHIFT) | trim);
+#else
+	atspi_reg_write(dsc, REG_XOSC_CTRL, XTAL_MODE_EXT << XTAL_MODE_SHIFT);
+#endif
 	atspi_reg_write(dsc, REG_TRX_CTRL_0, 0); /* disable CLKM */
 
 	return dsc;
@@ -66,6 +70,11 @@ static struct atspi_dsc *init_txrx(int trim)
 static void set_channel(struct atspi_dsc *dsc, int channel)
 {
 	atspi_reg_write(dsc, REG_PHY_CC_CCA, (1 << CCA_MODE_SHIFT) | channel);
+	/*
+	 * 150 us, according to AVR2001 section 3.5. Note that we should just
+	 * wait for the PPL_LOCK interrupt.
+	 */
+	usleep(1000);
 }
 
 
@@ -93,6 +102,8 @@ static void receive(struct atspi_dsc *dsc)
 
 	fprintf(stderr, "Ready.\n");
 	while (1) {
+		while (!atspi_interrupt(dsc))
+			usleep(10);
 		irq = atspi_reg_read(dsc, REG_IRQ_STATUS);
 		if (atspi_error(dsc))
 			exit(1);

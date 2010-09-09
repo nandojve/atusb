@@ -121,3 +121,10 @@ int atspi_buf_read(struct atspi_dsc *dsc, void *buf, int size)
 {
 	return dsc->driver->buf_read(dsc->handle, buf, size);
 }
+
+
+int atspi_interrupt(struct atspi_dsc *dsc)
+{
+	return
+	    dsc->driver->interrupt ? dsc->driver->interrupt(dsc->handle) : 1;
+}

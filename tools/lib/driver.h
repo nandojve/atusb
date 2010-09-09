@@ -29,6 +29,7 @@ struct atspi_driver {
 	uint8_t (*reg_read)(void *dsc, uint8_t reg);
 	void (*buf_write)(void *dsc, const void *buf, int size);
 	int (*buf_read)(void *dsc, void *buf, int size);
+	int (*interrupt)(void *dsc);
 };
 
 #endif /* !DRIVER_H */

@@ -36,4 +36,6 @@ uint8_t atspi_reg_read(struct atspi_dsc *dsc, uint8_t reg);
 void atspi_buf_write(struct atspi_dsc *dsc, const void *buf, int size);
 int atspi_buf_read(struct atspi_dsc *dsc, void *buf, int size);
 
+int atspi_interrupt(struct atspi_dsc *dsc);
+
 #endif /* !ATSPI_H */

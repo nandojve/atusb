@@ -15,3 +15,8 @@ DIRS=atspi-id atspi-reset atspi-rssi atspi-trim atspi-txrx
 TARGET_ONLY_DIRS=lib
 
 include ../Makefile.recurse
+
+.PHONY:		upload
+
+upload:		
+		scp `for n in $(DIRS); do echo $$n/$$n; done` ben:

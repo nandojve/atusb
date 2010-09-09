@@ -127,7 +127,7 @@ static void show_info(struct atspi_dsc *dsc)
 
 static void usage(const char *name)
 {
-	fprintf(stderr, "%s\n", name);
+	fprintf(stderr, "usage: %s\n", name);
 	exit(1);
 }
 

@@ -30,6 +30,8 @@ static void sweep(struct atspi_dsc *dsc)
 
 	for (chan = 11; chan <= 26; chan++) {
 		atspi_reg_write(dsc, REG_PHY_CC_CCA, chan);
+		/* 150 us, according to AVR2001 section 3.5 */
+		usleep(1000);
 		/*
 		 * No need to explicitly wait for the PPL lock - going USB-SPI
 		 * is pretty slow, leaving the transceiver plenty of time.
