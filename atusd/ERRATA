@@ -17,3 +17,16 @@ Version 20100908:
 
 - SPI activity causes the PLL to unlock. Specifically, toggling nSEL does
   this.
+
+- work-around on second 20100908 board: replace the resistive divider with
+  a capacitative divider. See sim/cdiv.sch. This is a simple BOM change:
+
+  C7 -> 0 R
+  R3 -> 33 pF
+  R4 -> 220 pF
+
+- considering that the clock input has a Vpp of only 400-500 mV, we should
+  have a ground plane also under as much of the the clock circuit as
+  possible.
+
+- via between pins 1 and 32 is too close to the chip for DIY PCBs
