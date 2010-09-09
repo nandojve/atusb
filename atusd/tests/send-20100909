@@ -1,0 +1,86 @@
+Signal strength tests. "Local" devices are on lab bench, about 5 cm apart.
+"Distant" device is in the adjacent room, separated by one thin brick wall
+and 4 m of air.
+
+TX is requested 0 dBm (effectively -0.2 dBm). Transmission is without
+CSMA-CA and ARQ. Results are LQI and ED (dBm). "garbled" is a bad CRC and
+corrupted frame content. "-" is no reception.
+
+Distant		Local
+---------------	---------------	---------------
+100903-red	100903-orange	100908-B
+
+TX		255, -90	255, -90
+TX		255, -90	garbled
+TX		255, -90	255, -90
+TX		255, -90	255, -90
+TX		255, -90	255, -90
+
+-		TX		garbled
+garbled		TX		255, -52
+255, -89	TX		255, -52
+255, -89	TX		255, -53
+-		TX		255, -53
+
+255, -88	255, -48	TX
+255, -86	255, -46	TX
+255, -86	255, -49	TX
+255, -86	255, -49	TX
+255, -87	255, -49	TX
+
+100903-red	100903-orange	100908-A
+
+TX		255, -90	garbled
+TX		255, -89	180, -89
+TX		255, -87	196, -89
+TX		255, -87	148, -89
+TX		255, -87	-
+
+255, -86	TX		garbled
+255, -87	TX		255, -49
+255, -86	TX		255, -49
+255, -87	TX		255, -49
+255, -86	TX		255, -49
+
+-		garbled (-44)	TX
+-		-		TX
+-		-		TX
+-		-		TX
+-		-		TX
+
+100903-red	100903-orange	100908-A (reworked)
+
+TX		255, -87	255, -87
+TX		255, -87	255, -88
+TX		255, -87	255, -87
+TX		255, -87	255, -88
+TX		255, -87	255, -88
+
+255, -86	TX		255, -56
+255, -86	TX		255, -57
+255, -86	TX		255, -58
+255, -86	TX		255, -58
+255, -86	TX		255, -58
+
+255, -85	255, -52	TX
+255, -85	255, -52	TX
+255, -85	255, -52	TX
+255, -86	255, -52	TX
+255, -86	255, -52	TX
+
+
+Conclusions
+-----------
+
+- 20100902 (atusb) and 20100908 (atusd) board show similar performance when
+  at least one station is an atusb
+
+- resistive divider doesn't work
+
+- no clear indication of whether capacitative divider causes interferences.
+  Marked difference in one series of tests but the others look the same.
+
+- reception level is about 4 dB above workable minimum. (Specified receiver
+  sensitivity is -101 dBm, but things start to deteriorate around -90 dBm.)
+  We have a reserve of 3.2 dB for transmission (used -0.2 dBm, maximum is
+  +3.0 dBm).

@@ -25,6 +25,9 @@ Version 20100908:
   R3 -> 33 pF
   R4 -> 220 pF
 
+  Applied work-around also to first 20100908 board after confirming dismal
+  performance caused by clock instability.
+
 - considering that the clock input has a Vpp of only 400-500 mV, we should
   have a ground plane also under as much of the the clock circuit as
   possible.
