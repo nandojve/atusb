@@ -29,9 +29,32 @@ Bugs to fix
 atrf
 ====
 
-AT86RF230-based IEEE 802.15.4 transceiver. Two variantes: one to make a USB
+AT86RF230-based IEEE 802.15.4 transceiver. Two variants: one to make a USB
 dongle for use with any Linux host, and one that connects with SPI directly
 inside a Ben.
+
+Update: following Rikard Lindstrom's revelation that we can use the uSD slot
+also just as general GPIOs, the variant that goes inside the Ben can wait a
+bit and the atusd board for insertion into the uSD slot is being worked on
+first. We can verify most of the design of a fully integrated board with the
+atusd board and the latter will be of greater immediate use.
+
+
+Things done
+-----------
+
+- verify that the Ben can output an a) 16 MHz clock, and b) with +/- 40 ppm
+
+  Done, see ecn/ecn0005.txt. Works fine.
+
+- replace discrete balun and filter with integrated solution, to reduce BOM
+  size, maybe cost, insertion loss, and PCB space (see ATRF/ECN0003)
+
+  Done for atusd. At a first glamce, does not seem to affect performance.
+
+- check if we really need three DC blocking caps in the RF path
+
+  Reduced to two in atusd without apparent ill effects.
 
 
 Things not done yet
@@ -50,14 +73,9 @@ Things not done yet
   will already tell most of the story) with calibrated antenna for FCC/ETSI
   compliance assessment. Vary transmit power.
 
-- use IEEE 802.15.4 stack from linux-zigbee
-
-- verify that the Ben can output an a) 16 MHz clock, and b) with +/- 40 ppm
-
-- replace discrete balun and filter with integrated solution, to reduce BOM
-  size, maybe cost, insertion loss, and PCB space (see ATRF/ECN0003)
-
-- check if we really need three DC blocking caps in the RF path
+- use IEEE 802.15.4 stack from linux-zigbee. The linux-zigbee kernel is
+  currently at 2.6.35. Once 2.6.36 is released, we should have Ben and
+  IEEE 802.15.4 support in the same kernel without further ado.
 
 - change layout of transceiver side of the board for placement inside Ben
 
@@ -71,17 +89,23 @@ Things not done yet
 
 - implement sleep mode
 
+- (atusd) verify SPI signal timing, particularly the data clock
+
 
 Bugs to fix
 -----------
 
-- atrf vs. atspi naming is a bit confusing
+- atrf vs. atspi naming is a bit confusing. Rename atrf hardware to atusb,
+  and maybe the tools from atspi to atrf ?
 
 
 ccrf
 ====
 
 Board similar to the atrf, but with the TI/Chipcon CC2520.
+
+Cancelled. The CC2520 falls under US export restrictions, apparently because
+it contains an AES engine.
 
 
 cntr
