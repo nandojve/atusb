@@ -1,0 +1,37 @@
+Correct atusd clock voltage divider
+
+
+According to section 9.6.3 of the data sheet, an external clock supplied
+to the AT86RF230 has a minimum peak-to-peak voltage of 400 mV and a
+maximum of only 500 mV. Furthermore, the signal must be DC-free.
+
+The voltage divider in the 20100903 and 20100908 designs is too sensitive
+to interference and the PLL constantly unlocks, rendering the device
+dysfunctional.
+
+A more robust divider circuit can be obtained with the following
+replacements: C7 -> 0R, R3 -> 33 pF, R4 -> 220 pF. After reworking the
+20100908 boards, they no longer suffer PLL unlocks.
+
+A Qucs simulation of the circuit can be found in ../atusd/sim/cdiv.sim
+
+Frequency measurements yield the following results:
+
+Host	Board		Error		Meas. accuracy
+			(f, ppm)	(ppm, nom.)
+-------	---------------	---------------	---------------
+Ben #2	20100908-A	+2		99.7
+			+1		99.6
+Ben #1	20100908-A	+23		99.7
+			+24		99.9
+Ben #1	20100908-B	+24		99.4
+			+24		99.7
+Ben #2	20100908-B	+2		99.8
+			+2		99.9
+
+The Ben's 12 MHz crystal has a tolerance of +/- 30 ppm, which is better
+than the +/- 40 ppm required by IEEE 802.15.4.
+
+What remains to be verified is whether this change causes interferences
+that may affect transceiver performance and may also violate emission
+regulations.

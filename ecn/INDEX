@@ -4,3 +4,4 @@ Number	Status	Description
 0002	Done	Add load capacitors to 16 MHz crystal
 0003	Edit	Replace balun and filter with integrated balun
 0004	Edit	Take into account layout considerations for RF
+0005	Edit	Correct atusd clock voltage divider

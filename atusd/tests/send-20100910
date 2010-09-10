@@ -1,0 +1,66 @@
+Same test setup as for send-20100909. Board 100908-A was modified to have
+a 220 nH inductor in the C7 position, instead of a 0R resistor.
+
+Distant		Local
+---------------	---------------	---------------
+100813-red	100813-orange	100908-A	(with inductor)
+
+TX		255, -91	255, -85
+TX		255, -90	255, -85
+TX		255, -91	-
+TX		255, -90	255, -85
+TX		255, -91	garbled
+
+-		TX		255, -47
+-		TX		255, -47
+-		TX		255, -47
+-		TX		255, -47
+garbled (-90)	TX		255, -47
+
+255, -82	255, -43	TX
+255, -82	255, -43	TX
+255, -82	255, -43	TX
+255, -82	255, -43	TX
+255, -82	255, -43	TX
+
+Control experiment:
+
+100813-red	100813-orange	100908-B	(unmodified)
+
+TX		-		255, -83
+TX		garbled (-91)	255, -86
+TX		-		255, -86
+TX		garbled (-91)	255, -86
+TX		-		255, -86
+
+255, -83	255, -43	TX
+255, -84	255, -43	TX
+255, -85	255, -43	TX
+255, -84	255, -43	TX
+255, -84	255, -43	TX
+
+
+Summary
+-------
+
+Direction			No inductor (1)	With ind. (2)	Change
+-------------------------------	---------------	------------	------
+100813-red -> 100813-orange	255, -87	255, -91	-4 dB
+100813-red -> 100908-A		255, -88	255, -85	+3 dB
+100908-A -> 100813-red		255, -85	255, -82	+3 dB
+
+100813-red -> 100813-orange	255, -90	-		?
+100813-red -> 100908-B		255, -90	255, -86	+4 dB
+100908-B -> 100813-red		255, -87	255, -84	+3 dB
+
+(1) Data from send-20100909
+(2) Only 100908-A was modified. Changes in the measurements with
+    100908-B show inaccuracies of the test setup.
+
+
+Conclusion
+----------
+
+The differences observed are the same for the modified 100908-A board
+and the unmodified 100908-B board. The inductor therefore does not seem
+to have a significant effect on transceiver performance.
