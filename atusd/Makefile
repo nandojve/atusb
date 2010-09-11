@@ -18,6 +18,3 @@ brd:
 
 xpdf:
 		xpdf atusd.pdf
-
-dtc123je.mod:	dtc123je.fpd
-		fped -k $< >$@ || { rm -f $@; exit 1; }

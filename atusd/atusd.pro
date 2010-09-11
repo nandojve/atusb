@@ -42,7 +42,6 @@ LibName3=conn
 LibName4=../components/at86rf230
 LibName5=../components/antenna
 LibName6=../components/balun
-LibName7=./dtc123
 [cvpcb]
 version=1
 NetIExt=net
@@ -74,4 +73,3 @@ LibName3=../modules/qfn
 LibName4=../../kicad-libs/modules/stdpass
 LibName5=../../kicad-libs/modules/usd-card
 LibName6=../modules/0805-6
-LibName7=./dtc123je

@@ -1,10 +1,5 @@
-Dave Ball <openmoko@daveball.org.uk>
-
-  atusd/dtc123je.fpd
-  
 Alvaro Lopes <alvieboy@alvie.com>
 
-  atusd/dtc123.lib
   components/mini_usb_b.lib
   components/xtal-4.lib (originally tas4025a.lib)
 
