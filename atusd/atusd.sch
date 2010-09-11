@@ -1,25 +1,34 @@
-EESchema Schematic File Version 2  date Wed Sep  8 16:37:04 2010
+EESchema Schematic File Version 2  date Sat Sep 11 16:58:26 2010
 LIBS:power
 LIBS:device
 LIBS:conn
 LIBS:at86rf230
 LIBS:antenna
 LIBS:balun
-LIBS:dtc123
 LIBS:atusd-cache
 EELAYER 24  0
 EELAYER END
 $Descr A4 11700 8267
 Sheet 1 1
 Title "IEEE 802.15.4 uSD Transceiver (AT86RF230)"
-Date "8 sep 2010"
-Rev "100908"
+Date "11 sep 2010"
+Rev "100911"
 Comp "Werner Almesberger"
 Comment1 ""
 Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
+$Comp
+L C C8
+U 1 1 4C8BDEB3
+P 8150 2400
+F 0 "C8" H 8200 2500 50  0000 L CNN
+F 1 "220pF" H 8200 2300 50  0000 L CNN
+F 2 "0402" H 8150 2400 60  0001 C CNN
+	1    8150 2400
+	1    0    0    -1  
+$EndComp
 Wire Wire Line
 	6150 5350 6150 6050
 Wire Wire Line
@@ -53,16 +62,16 @@ Wire Wire Line
 Wire Wire Line
 	1400 3700 1000 3700
 Wire Wire Line
-	8150 2900 8150 2700
+	8150 2800 8150 2600
 Connection ~ 8150 2000
 Wire Wire Line
 	8150 2000 6900 2000
 Wire Wire Line
 	6900 2000 6900 2550
 Wire Wire Line
-	8350 1100 8150 1100
+	8350 1200 8150 1200
 Wire Wire Line
-	8150 1100 8150 1300
+	8150 1200 8150 1400
 Wire Wire Line
 	9100 3950 10400 3950
 Wire Wire Line
@@ -162,7 +171,7 @@ Wire Wire Line
 Wire Wire Line
 	8150 1800 8150 2200
 Wire Wire Line
-	8750 1100 8950 1100
+	8850 1200 9050 1200
 Wire Wire Line
 	1200 3800 1200 4000
 Wire Wire Line
@@ -322,44 +331,34 @@ $EndComp
 $Comp
 L DGND #PWR20
 U 1 1 4C7FBE4B
-P 8150 2900
-F 0 "#PWR20" H 8150 2900 40  0001 C CNN
-F 1 "DGND" H 8150 2830 40  0000 C CNN
-	1    8150 2900
+P 8150 2800
+F 0 "#PWR20" H 8150 2800 40  0001 C CNN
+F 1 "DGND" H 8150 2730 40  0000 C CNN
+	1    8150 2800
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R4
-U 1 1 4C7FBDBF
-P 8150 2450
-F 0 "R4" V 8230 2450 50  0000 C CNN
-F 1 "10k" V 8150 2450 50  0000 C CNN
-F 2 "0402" H 8150 2450 60  0001 C CNN
-	1    8150 2450
-	-1   0    0    1   
-$EndComp
-$Comp
-L R R3
+L R R1
 U 1 1 4C7FBDBD
-P 8150 1550
-F 0 "R3" V 8230 1550 50  0000 C CNN
-F 1 "56k" V 8150 1550 50  0000 C CNN
-F 2 "0402" H 8150 1550 60  0001 C CNN
-	1    8150 1550
-	-1   0    0    1   
+P 8600 1200
+F 0 "R1" V 8680 1200 50  0000 C CNN
+F 1 "0R" V 8600 1200 50  0000 C CNN
+F 2 "0402" H 8600 1200 60  0001 C CNN
+	1    8600 1200
+	0    -1   -1   0   
 $EndComp
-Text GLabel 8950 1100 2    60   Input ~ 0
+Text GLabel 9050 1200 2    60   Input ~ 0
 CLK_16M
 NoConn ~ 6750 2550
 $Comp
 L C C7
 U 1 1 4C7FBD45
-P 8550 1100
-F 0 "C7" H 8600 1200 50  0000 L CNN
-F 1 "22pF" H 8600 1000 50  0000 L CNN
-F 2 "0402" H 8550 1100 60  0001 C CNN
-	1    8550 1100
-	0    -1   -1   0   
+P 8150 1600
+F 0 "C7" H 8200 1700 50  0000 L CNN
+F 1 "33pF" H 8200 1500 50  0000 L CNN
+F 2 "0402" H 8150 1600 60  0001 C CNN
+	1    8150 1600
+	1    0    0    -1  
 $EndComp
 $Comp
 L VDD #PWR07
