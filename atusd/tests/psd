@@ -1,0 +1,11 @@
+Transmit Power Spectral Density
+
+IEEE 702.15.4-2006 specifies in section 6.5.3.1 that spectral products
+further away from the carrier frequency than 3.5 MHz have to be at least
+20 dB below the highest average within 1 MHz of the carrier.
+
+File		Frequency	TX power set.	Pickup
+psd-2430.png	2430 MHz	-12.2 dBm	Cable
+
+Cable pickup:
+http://downloads.qi-hardware.com/people/werner/wpan/atusd/tethered.jpg
