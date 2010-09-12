@@ -61,11 +61,13 @@ frame antenna {
 	__31: vec .(-W2, 0mm)
 	__32: vec __30(0mm, -L1)
 	pad "X" __31 .
-	__35: vec __29(D3, D2)
+	__38: vec __32(tail, W2)
+	pad "X" __32 .
+	__35: vec __29(D3+tail, D2)
 	line . __34 w
 	__36: vec .(0mm, -(D2+W2+L6-D4))
 	line __35 . w
-	__37: vec .(-(W2+L5+L2+L5+L2+D3), 0mm)
+	__37: vec .(-(W2+L5+L2+L5+L2+D3+tail), 0mm)
 	line __36 . w
 	frame via @
 }
@@ -85,6 +87,8 @@ table
 table
     { D1, D2, D3, D4, D5, D6 }
     { 0.5mm, 0.3mm, 0.3mm, 0.5mm, 1.4mm, 1.7mm }
+
+set tail = 3*W2
 
 __0: vec @(0mm, 0.1mm)
 frame antenna .
@@ -110,9 +114,10 @@ measy antenna.__6 >> antenna.__33 1mm
 measx antenna.__31 >> antenna.__32 -L1-1mm
 measy antenna.__8 >> antenna.__9 -1mm
 measy antenna.__20 >> antenna.__19 -1mm
-measy antenna.__30 >> antenna.__29 -1mm
+measy antenna.__30 >> antenna.__29 -1mm-tail
 measy antenna.__21 >> antenna.__25 0.5mm
 measy antenna.__12 >> antenna.__7 0.5mm
-measy antenna.__32 >> antenna.__30 -1mm
+measy antenna.__32 >> antenna.__30 -1mm-tail
 measx antenna.__34 >> antenna.__35 1.5mm-D2
 measy antenna.__5 >> antenna.__34 1.5mm-D1
+measx antenna.__32 >> antenna.__38 -1mm
