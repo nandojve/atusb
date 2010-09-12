@@ -1,0 +1,14 @@
+#CHR
+
+#
+# Stackpole are changing their part numbers, with a transition period from
+# 2011-01-03 to 2011-12-31. Digi-Key already went ahead and switched, so we use
+# the new style here as well.
+#
+# Since there's no complete reference for the Stackpole parts with new numbers
+# yet, we just put the parts we need here and defer generation until later.
+#
+# http://www.seielect.com/news/20100730_PartNumberChange.htm
+#
+
+STACKPOLE RMCF0402ZT0R00 T=R R=0R FP=0402 P=1/16W V=50V

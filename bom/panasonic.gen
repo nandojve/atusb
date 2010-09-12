@@ -1,0 +1,22 @@
+#GEN
+
+# http://industrial.panasonic.com/www-data/pdf/AOA0000/AOA0000CE1.pdf
+
+ERJ* -> T=R {
+    ERJ-(???)(Y|)(?)([0-9R][0-9R][0-9])* ->
+	_FP=$REF:1 _TOL=$REF:3 _E12_1=$REF:4
+
+    _TOL=J -> TOL=5%
+
+    _FP=XGN -> FP=01005 P=1/32W V=15V
+    _FP=1GE -> FP=0201 P=1/20W V=25V
+    _FP=2GE -> FP=0402 P=1/10W V=50V
+    _FP=3GE -> FP=0603 P=1/10W V=75V
+    _FP=6GE -> FP=0805 P=1/8W V=150V
+    _FP=8GE -> FP=1206 P=1/4W V=200V
+    # @@@ handle 1210 and beyond later
+}
+
+include lib/e12.inc
+
+T=R -> R=${_E12}R !

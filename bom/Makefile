@@ -4,8 +4,8 @@ KITS=1
 
 EQU=atrf.equ dk/digi-key.equ
 INV=atrf.inv dk/digi-key.inv
-GEN=avx.gen johanson.gen murata.gen tdk.gen yageo.gen
-CHR=$(GEN:%.gen=%.chr)
+GEN=avx.gen johanson.gen murata.gen panasonic.gen tdk.gen yageo.gen
+CHR=$(GEN:%.gen=%.chr) stackpole.chr
 
 
 .PHONY:		all again show-atusd spotless
@@ -35,6 +35,10 @@ johanson.chr:	dk/digi-key.equ johanson.gen
 
 murata.chr:	dk/digi-key.equ murata.gen
 		$(BOOM) gen2chr MURATA dk/digi-key.equ murata.gen >$@ || \
+		  { rm -f $@; exit 1; }
+
+panasonic.chr:	dk/digi-key.equ panasonic.gen
+		$(BOOM) gen2chr PANASONIC dk/digi-key.equ panasonic.gen >$@ || \
 		  { rm -f $@; exit 1; }
 
 tdk.chr:	dk/digi-key.equ tdk.gen
