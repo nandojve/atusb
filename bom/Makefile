@@ -4,7 +4,7 @@ KITS=1
 
 EQU=atrf.equ dk/digi-key.equ
 INV=atrf.inv dk/digi-key.inv
-GEN=avx.gen johanson.gen murata.gen tdk.gen yageo-cap.gen
+GEN=avx.gen johanson.gen murata.gen tdk.gen yageo.gen
 CHR=$(GEN:%.gen=%.chr)
 
 
@@ -41,8 +41,8 @@ tdk.chr:	dk/digi-key.equ tdk.gen
 		$(BOOM) gen2chr TDK dk/digi-key.equ tdk.gen >$@ || \
 		  { rm -f $@; exit 1; }
 
-yageo-cap.chr:	dk/digi-key.equ yageo-cap.gen
-		$(BOOM) gen2chr YAGEO dk/digi-key.equ yageo-cap.gen >$@ || \
+yageo.chr:	dk/digi-key.equ yageo.gen
+		$(BOOM) gen2chr YAGEO dk/digi-key.equ yageo.gen >$@ || \
 		  { rm -f $@; exit 1; }
 
 dk/digi-key.inv:
