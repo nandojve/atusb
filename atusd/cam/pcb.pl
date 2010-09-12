@@ -59,9 +59,9 @@ sub one
 
     &cut($fn,
       &mil(   0)-$r,	&mil(   0)-$r,
-      &mil(   0)-$r,	&mil(1030)+$r,
-      &mil(1340)+$r,	&mil(1030)+$r,
-      &mil(1340)+$r,	&mil( 640)-$r,
+      &mil(   0)-$r,	&mil(1010)+$r,
+      &mil(1400)+$r,	&mil(1010)+$r,
+      &mil(1400)+$r,	&mil( 640)-$r,
       &mil( 440)+$r,	&mil( 640)-$r,
       &mil( 440)+$r,	&mil( 390)-$r,
       &mil( 410)+$r,	&mil( 360)-$r,
@@ -75,11 +75,11 @@ sub one
 
 
 $z = -0.8;
-$col = 0;
+$col = 1;
 $row = 1;
 # x: corner offset, compensation for rotation, array position
 # y: corner offet
-&orig(5+54*$col, 5+33*$row)
+&orig(5+53.5*$col, 5+33*$row)
 &one(*same);
-&orig(5+54*$col+15+&mil(1340), 5+33*$row+&mil(1030));
+&orig(5+53.5*$col+15+&mil(1400), 5+33*$row+&mil(1010));
 &one(*rot);
