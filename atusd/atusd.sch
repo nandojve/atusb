@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Sat Sep 11 16:58:26 2010
+EESchema Schematic File Version 2  date Sat Sep 11 20:52:13 2010
 LIBS:power
 LIBS:device
 LIBS:conn
@@ -19,6 +19,16 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
+$Comp
+L R R2
+U 1 1 4C8C121C
+P 1750 3700
+F 0 "R2" V 1830 3700 50  0000 C CNN
+F 1 "0R" V 1750 3700 50  0000 C CNN
+F 2 "0402" H 1750 3700 60  0001 C CNN
+	1    1750 3700
+	0    -1   -1   0   
+$EndComp
 $Comp
 L C C8
 U 1 1 4C8BDEB3
@@ -60,7 +70,7 @@ Wire Wire Line
 Wire Wire Line
 	2450 3700 2000 3700
 Wire Wire Line
-	1400 3700 1000 3700
+	1500 3700 1100 3700
 Wire Wire Line
 	8150 2800 8150 2600
 Connection ~ 8150 2000
@@ -79,7 +89,7 @@ Wire Wire Line
 Wire Wire Line
 	9300 4050 10400 4050
 Wire Wire Line
-	1000 3800 1200 3800
+	1100 3800 1300 3800
 Connection ~ 6200 1150
 Wire Wire Line
 	6200 950  6200 1150
@@ -173,7 +183,7 @@ Wire Wire Line
 Wire Wire Line
 	8850 1200 9050 1200
 Wire Wire Line
-	1200 3800 1200 4000
+	1300 3800 1300 4000
 Wire Wire Line
 	2450 4100 2250 4100
 Wire Wire Line
@@ -276,7 +286,7 @@ U 1 1 4C7FE8A6
 P 2850 3900
 F 0 "B1" H 2850 4250 60  0000 C CNN
 F 1 "748421245" H 2850 3500 60  0000 C CNN
-F 2 "805-6" H 2850 3900 60  0001 C CNN
+F 2 "0805-6" H 2850 3900 60  0001 C CNN
 	1    2850 3900
 	1    0    0    -1  
 $EndComp
@@ -297,16 +307,6 @@ F 0 "#PWR06" H 2250 4300 40  0001 C CNN
 F 1 "AGND" H 2250 4230 50  0000 C CNN
 	1    2250 4300
 	1    0    0    -1  
-$EndComp
-$Comp
-L INDUCTOR L1
-U 1 1 4C7FCA54
-P 1700 3700
-F 0 "L1" V 1650 3700 40  0000 C CNN
-F 1 "0R" V 1800 3700 40  0000 C CNN
-F 2 "0402" V 1700 3700 60  0001 C CNN
-	1    1700 3700
-	0    1    1    0   
 $EndComp
 $Comp
 L C C2
@@ -433,10 +433,10 @@ $EndComp
 $Comp
 L AGND #PWR010
 U 1 1 4C641731
-P 1200 4000
-F 0 "#PWR010" H 1200 4000 40  0001 C CNN
-F 1 "AGND" H 1200 3930 50  0000 C CNN
-	1    1200 4000
+P 1300 4000
+F 0 "#PWR010" H 1300 4000 40  0001 C CNN
+F 1 "AGND" H 1300 3930 50  0000 C CNN
+	1    1300 4000
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -584,7 +584,7 @@ F 0 "C5" H 6500 6550 50  0000 L CNN
 F 1 "1uF" H 6500 6350 50  0000 L CNN
 F 2 "0402" H 6450 6450 60  0001 C CNN
 	1    6450 6450
-	1    0    0    -1  
+	-1   0    0    -1  
 $EndComp
 $Comp
 L C C6
@@ -609,11 +609,11 @@ $EndComp
 $Comp
 L ANTENNA ANT1
 U 1 1 4C63FE17
-P 700 3750
-F 0 "ANT1" H 700 4000 60  0000 C CNN
-F 1 "50R" H 700 3500 60  0000 C CNN
-F 2 "meander" H 700 3750 60  0001 C CNN
-	1    700  3750
+P 800 3750
+F 0 "ANT1" H 800 4000 60  0000 C CNN
+F 1 "50R" H 800 3500 60  0000 C CNN
+F 2 "meander" H 800 3750 60  0001 C CNN
+	1    800  3750
 	1    0    0    -1  
 $EndComp
 $EndSCHEMATC
