@@ -1,12 +1,14 @@
 #GEN
 
 # http://www.avx.com/docs/Catalogs/ccog.pdf
+# http://www.avx.com/docs/Catalogs/cx5r.pdf
 
-C* -> T=C {
-    (????)(?)(???)([0-9][0-9][0-9])(?)(?)* ->
-        FP=$REF:1 _V=$REF:2 M=$REF:3 _E12_P=$REF:4 _TOL=$REF:5
+* -> T=C {
+    (????)(?)(?)([0-9][0-9][0-9])(?)* ->
+        FP=$REF:1 _V=$REF:2 _M=$REF:3 _E12_P=$REF:4 _TOL=$REF:5
 
-    M=C0G -> M=NP0		# normalize
+    _M=A -> M=NP0
+    _M=D -> M=X5R
 
     _TOL=B -> TOL=0.10pF
     _TOL=C -> TOL=0.25pF
@@ -17,10 +19,12 @@ C* -> T=C {
     _TOL=M -> TOL=20%
     _TOL=Z -> TOL=80/20%
 
+    _V=4 -> V=4V
     _V=6 -> V=6.3V
     _V=Z -> V=10V
     _V=Y -> V=16V
     _V=3 -> V=25V
+    _V=D -> V=35V
     _V=5 -> V=50V
     _V=1 -> V=100V
     _V=2 -> V=200V
