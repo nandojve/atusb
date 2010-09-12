@@ -1,5 +1,17 @@
 #GEN
 
+# http://www.yageo.com/pdf/Pu-RC0402_51_PbFree_L_2.pdf
+
+RC* -> T=R {
+    RC(????)(?)?-??(*)L ->
+        FP=$REF:1 _TOL=$REF:2 _R=$REF:3
+
+    include lib/captol.inc
+
+    FP=0402 -> P=1/16W V=50V
+    _R=$R -> R=$_R !
+}
+
 # http://www.yageo.com/pdf/yageo/NP0_16V-to-100V_6.pdf
 # http://www.yageo.com/pdf/UPY-GPHC_X7R_6.3V-to-50V_3.pdf
 
