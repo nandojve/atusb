@@ -1,6 +1,6 @@
 #SUB
 
-# Taked from gta02-core. Left in the hacks, since we may use similar components
+# Taken from gta02-core. Left in the hacks, since we may use similar components
 # in the future.
 
 -> T=unknown
@@ -20,13 +20,13 @@ RP[0-9]* {
 
 C[0-9]* {
     -> T=C
-    VAL=$F -> C=$VAL
+    VAL=*F -> C=$VAL
     FN=*V -> V=>=$FN
 }
 
 L[0-9]* {
     -> T=L
-    VAL=$H -> L=$VAL
+    VAL=*H -> L=$VAL
     FN=*A -> I=>=$FN
 }
 
