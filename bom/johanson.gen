@@ -1,0 +1,62 @@
+#GEN
+
+# http://www.johansontechnology.com/images/stories/rfcaps/mlhqcaps/jti_high-q-mlcc_2008-11.pdf
+
+C* -> T=C {
+    (???)([RS][0-9][0-9])(?)([0-9][0-9][0-9])(?)* ->
+	_V=$REF:1 _FP=$REF:2 _M=$REF:3 _E12=$REF:4 _TOL=$REF:5
+
+    _V=6R3 -> V=6.3V
+    _V=160 -> V=16V
+    _V=250 -> V=25V
+    _V=500 -> V=50V
+    _V=251 -> V=250V
+    _V=501 -> V=500V
+    _V=102 -> V=1000V
+    _V=152 -> V=1500V
+    _V=202 -> V=2000V
+    _V=252 -> V=2500V
+
+    _M=S -> M=NP0/RF
+    _M=L -> M=NP0/RF
+    _M=E -> M=NP0/RF
+    _M=W -> M=X7R/RF
+
+    _TOL=A -> TOL=0.05pF
+    _TOL=B -> TOL=0.10pF
+    _TOL=C -> TOL=0.25pF
+    _TOL=D -> TOL=0.5pF
+    _TOL=F -> TOL=1%
+    _TOL=G -> TOL=2%
+    _TOL=J -> TOL=5%
+    _TOL=K -> TOL=10%
+
+    _V=6 -> V=6.3V
+    _V=Z -> V=10V
+    _V=Y -> V=16V
+    _V=3 -> V=25V
+    _V=5 -> V=50V
+    _V=1 -> V=100V
+    _V=2 -> V=200V
+    _V=7 -> V=500V
+}
+
+# E12 scale, base multiplier is 10^-12 (pico)
+
+_E12_P=(??)8	-> _E12=${_E12_P:1}0f
+_E12_P=(?)(?)9	-> _E12=$_E12_P:1.${_E12_P:2}p
+_E12_P=(??)0	-> _E12=${_E12_P:1}p
+_E12_P=(??)1	-> _E12=${_E12_P:1}0p
+_E12_P=(?)(?)2	-> _E12=$_E12_P:1.${_E12_P:2}n
+_E12_P=(??)3	-> _E12=${_E12_P:1}n
+_E12_P=(??)4	-> _E12=${_E12_P:1}0n
+_E12_P=(?)(?)5	-> _E12=$_E12_P:1.${_E12_P:2}u
+_E12_P=(??)6	-> _E12=${_E12_P:1}u
+_E12_P=(??)7	-> _E12=${_E12_P:1}0u
+
+# remove trailing zeroes
+
+_E12=(*).0([fpnu]) -> _E12=$_E12:1$_E12:2
+_E12=(*).0	   -> _E12=$_E12:1
+
+T=C -> C=${_E12}F !

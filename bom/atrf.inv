@@ -1,0 +1,7 @@
+#INV
+
+# Pseudo-inventory for PCB features.
+
+ATRF meander	999999 USD 1 0
+ATRF uSD-Card	999999 USD 1 0
+ATRF PAD_60x60	999999 USD 1 0
