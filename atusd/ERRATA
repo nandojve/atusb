@@ -33,3 +33,8 @@ Version 20100908:
   possible.
 
 - via between pins 1 and 32 is too close to the chip for DIY PCBs
+
+Version 20100912:
+
+- zone fill did not reach upper GND end of antenna. This was not intended,
+  but may be harmless or even an improvement.
