@@ -15,19 +15,32 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <signal.h>
 
 #include "at86rf230.h"
 #include "atspi.h"
 #include "misctxrx.h"
 
 
+static volatile int run = 1;
+
+
+static void die(int sig)
+{
+	run = 0;
+}
+
+
 uint8_t wait_for_interrupt(struct atspi_dsc *dsc, uint8_t wait_for,
     uint8_t ignore, int sleep_us, int timeout)
 {
-	uint8_t irq, show;
+	uint8_t irq = 0, show;
+	void (*old_sig)(int);
 
-	while (1) {
-		while (!atspi_interrupt(dsc)) {
+	run = 1;
+	old_sig = signal(SIGINT, die);
+	while (run) {
+		while (run && !atspi_interrupt(dsc)) {
 			usleep(sleep_us);
 			if (timeout && !--timeout)
 				return 0;
@@ -57,5 +70,8 @@ uint8_t wait_for_interrupt(struct atspi_dsc *dsc, uint8_t wait_for,
 		if (irq & wait_for)
 			break;
 	}
+	signal(SIGINT, old_sig);
+	if (!run)
+		raise(SIGINT);
 	return irq;
 }

@@ -16,6 +16,8 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
+#include <math.h>
+#include <signal.h>
 
 #include "at86rf230.h"
 #include "atspi.h"
@@ -44,6 +46,9 @@ static double tx_pwr[] = {
 	-2.2,	-3.2,	-4.2,	-5.2,
 	-7.2,	-9.2,	-12.2,	-17.2
 };
+
+
+static volatile int run = 1;
 
 
 static struct atspi_dsc *init_txrx(int trim)
@@ -83,6 +88,8 @@ static void set_power(struct atspi_dsc *dsc, double power)
 	for (n = 0; n != sizeof(tx_pwr)/sizeof(*tx_pwr)-1; n++)
 		if (tx_pwr[n] <= power)
 			break;
+	if (fabs(tx_pwr[n]-power) > 0.01)
+		fprintf(stderr, "TX power %.1f dBm\n", tx_pwr[n]);
 	atspi_reg_write(dsc, REG_PHY_TX_PWR, TX_AUTO_CRC_ON | n);
 }
 
@@ -103,6 +110,8 @@ static void receive(struct atspi_dsc *dsc)
 	fprintf(stderr, "Ready.\n");
 	wait_for_interrupt(dsc, IRQ_TRX_END, IRQ_TRX_END | IRQ_RX_START,
 	    10, 0);
+	if (!run)
+		return;
 
 	n = atspi_buf_read(dsc, buf, sizeof(buf));
 	if (n < 0)
@@ -122,7 +131,7 @@ static void receive(struct atspi_dsc *dsc)
 }
 
 
-static void transmit(struct atspi_dsc *dsc, const char *msg)
+static void transmit(struct atspi_dsc *dsc, const char *msg, int times)
 {
 	uint8_t buf[MAX_PSDU];
 
@@ -139,19 +148,27 @@ static void transmit(struct atspi_dsc *dsc, const char *msg)
 	strcpy((void *) buf, msg);
 	atspi_buf_write(dsc, buf, strlen(msg)+2);
 
-	/* @@@ should wait for clear channel */
-	atspi_reg_write(dsc, REG_TRX_STATE, TRX_CMD_TX_START);
+	while (run && times--) {
+		/* @@@ should wait for clear channel */
+		atspi_reg_write(dsc, REG_TRX_STATE, TRX_CMD_TX_START);
 
-	/* wait up to 10 ms (nominally) */
-	wait_for_interrupt(dsc, IRQ_TRX_END, IRQ_TRX_END | IRQ_PLL_LOCK,
-	  10, 1000);
+		/* wait up to 10 ms (nominally) */
+		wait_for_interrupt(dsc, IRQ_TRX_END,
+		   IRQ_TRX_END | IRQ_PLL_LOCK, 10, 1000);
+	}
+}
+
+
+static void die(int sig)
+{
+	run = 0;
 }
 
 
 static void usage(const char *name)
 {
 	fprintf(stderr,
-"usage: %s [-c channel] [-p power] [-t trim] [message]\n"
+"usage: %s [-c channel] [-p power] [-t trim] [message [repetitions]]\n"
 "    -c channel  channel number, 11 to 26 (default %d)\n"
 "    -p power    transmit power, -17.2 to 3.0 dBm (default %.1f)\n"
 "    -t trim     trim capacitor, 0 to 15 (default 0)\n"
@@ -164,7 +181,7 @@ int main(int argc, char *const *argv)
 {
 	int channel = DEFAULT_CHANNEL;
 	double power = DEFAULT_POWER;
-	int trim = 0;
+	int trim = 0, times = 1;
 	char *end;
 	int c;
 	struct atspi_dsc *dsc;
@@ -194,17 +211,24 @@ int main(int argc, char *const *argv)
 			usage(*argv);
 		}
 
+	signal(SIGINT, die);
+
 	switch (argc-optind) {
 	case 0:
 		dsc = init_txrx(trim);
 		set_channel(dsc, channel);
 		receive(dsc);
 		break;
+	case 2:
+		times = strtoul(argv[optind+1], &end, 0);
+		if (*end)
+			usage(*argv);
+		/* fall through */
 	case 1:
 		dsc = init_txrx(trim);
 		set_channel(dsc, channel);
 		set_power(dsc, power);
-		transmit(dsc, argv[optind]);
+		transmit(dsc, argv[optind], times);
 		break;
 	default:
 		usage(*argv);

@@ -14,3 +14,5 @@
 MAIN = atspi-txrx
 
 include ../Makefile.common
+
+LDLIBS += -lm
