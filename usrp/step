@@ -1,0 +1,36 @@
+#!/bin/sh -x
+
+CH_FIRST=11
+CH_LAST=26
+RUNS=10
+
+m10=0123456789
+m20=$m10$m10
+MSG=$m20$m20$m20$m20$m20
+
+
+mhz()
+{
+    expr 2405 + 5 \* \( $1 - 11 \)
+}
+
+rm -f out
+run=0
+while [ $run -lt $RUNS ]; do
+    c=$CH_FIRST
+    while [ $c -le $CH_LAST ]; do
+	echo "Run $run, ch $c (`mhz $c` MHz)" 1>&2
+        mhz $c | tr '\n' ' ' >>out
+	( ssh ben ./atspi-txrx -c $c -p 4 $MSG 1500; echo DONE 1>&2; ) &
+	sleep 3
+	usrp2_rx_cfile.py -d 4 -f `mhz $c`M -g 40 -N 100M tmp
+	sync
+	./p <tmp >>out
+	rm -f tmp
+	sync
+	sleep 2
+	c=`expr $c + 1`
+    done
+    run=`expr $run + 1`
+    echo >>out
+done
