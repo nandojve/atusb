@@ -87,3 +87,8 @@ D: http://www.diodes.com/datasheets/ds30082.pdf
 N: 748421245
 A: balun2
 D: http://katalog.we-online.de/kataloge/eisos/media/pdf/748421245.pdf
+
+# Johanson 2450FB15L0001 balun/filter
+N: 2450FB15L0001
+A: balun3
+D: http://www.johansontechnology.com/images/stories/ip/balun-filters/Balun_Filter_Combo_Matched_2450FB15L0001_v12.pdf
