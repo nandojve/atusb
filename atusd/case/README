@@ -1,6 +1,10 @@
 You'll need a working Heekscad [1] to open the cad file provided,
 all file are licended under GPLv3
 
+In kicad export/generate the PCB as gerber, note the extension is not .brd by default so you'll need to 
+fix it manually to heekcad "see it".
+
+
 Copyleft 2010 Cristian Paul Peñaranda  Rojas paul@kristianpaul.org
 
 [1] http://code.google.com/p/heekscad/
