@@ -5,4 +5,4 @@ all:
 		@exit 1
 
 dsv:
-		scripts/dsv setup BOOKSHELF
+		../eda-tools/dsv/dsv setup BOOKSHELF
