@@ -34,14 +34,9 @@ dk/digi-key.inv:
 dk/digi-key.dsc:
 		$(MAKE) -C dk digi-key.dsc
 
-SHOW_PRETTY = (echo '\#ORD'; grep '^$(2) ' $(1).ord ; ) | \
-		$(BOOM) prettyord - $(3) | \
-		sed 's/^...  //' | \
-		awk '{ s += $$(NF); if ($$(NF)+0) n++; print; } \
-		END { print "$(4)", s, "items:", n }'
-
 show-atusd:	atusd.ord $(DSC)
-		$(call SHOW_PRETTY,atusd,DIGI-KEY,$(DSC),USD)
+		grep -vw ATRF atusd.ord | $(BOOM) prettyord -t - $(DSC) | \
+		  sed 's/^...  //'
 
 spotless:
 		$(MAKE) -C dk spotless
