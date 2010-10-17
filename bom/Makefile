@@ -1,11 +1,14 @@
 BOOM=PATH=/home/moko/svn.openmoko.org/trunk/eda/boom:../boom:$$PATH boom
 
+BOOM2=../../eda-tools/boom
+BOOM_CONFIG=$(BOOM2)/boom-config
+
 KITS=1
 
-EQU=atrf.equ dk/digi-key.equ
-INV=atrf.inv dk/digi-key.inv
-GEN=avx.gen johanson.gen murata.gen panasonic.gen tdk.gen yageo.gen
-CHR=$(GEN:%.gen=%.chr) stackpole.chr
+EQU=atrf.equ dk/digi-key.equ $(shell $(BOOM_CONFIG) equ)
+INV=atrf.inv dk/digi-key.inv $(shell $(BOOM_CONFIG) inv)
+DSC=dk/digi-key.dsc $(shell $(BOOM_CONFIG) dsc)
+CHR=$(shell $(BOOM_CONFIG) chr)
 
 
 .PHONY:		all again show-atusd spotless
@@ -25,30 +28,6 @@ atusd.par:	$(EQU) $(INV) $(CHR) ../atusd/atusd.lst atrf.sub
 		  ../atusd/atusd.lst atrf.sub \
 		  >$@ || { rm -rf $@; exit 1; }
 
-avx.chr:	dk/digi-key.equ avx.gen
-		$(BOOM) gen2chr AVX dk/digi-key.equ avx.gen >$@ || \
-		  { rm -f $@; exit 1; }
-
-johanson.chr:	dk/digi-key.equ johanson.gen
-		$(BOOM) gen2chr JOHANSON dk/digi-key.equ johanson.gen >$@ || \
-		  { rm -f $@; exit 1; }
-
-murata.chr:	dk/digi-key.equ murata.gen
-		$(BOOM) gen2chr MURATA dk/digi-key.equ murata.gen >$@ || \
-		  { rm -f $@; exit 1; }
-
-panasonic.chr:	dk/digi-key.equ panasonic.gen
-		$(BOOM) gen2chr PANASONIC dk/digi-key.equ panasonic.gen >$@ || \
-		  { rm -f $@; exit 1; }
-
-tdk.chr:	dk/digi-key.equ tdk.gen
-		$(BOOM) gen2chr TDK dk/digi-key.equ tdk.gen >$@ || \
-		  { rm -f $@; exit 1; }
-
-yageo.chr:	dk/digi-key.equ yageo.gen
-		$(BOOM) gen2chr YAGEO dk/digi-key.equ yageo.gen >$@ || \
-		  { rm -f $@; exit 1; }
-
 dk/digi-key.inv:
 		$(MAKE) -C dk digi-key.inv
 
@@ -61,10 +40,9 @@ SHOW_PRETTY = (echo '\#ORD'; grep '^$(2) ' $(1).ord ; ) | \
 		awk '{ s += $$(NF); if ($$(NF)+0) n++; print; } \
 		END { print "$(4)", s, "items:", n }'
 
-show-atusd:	atusd.ord dk/digi-key.dsc
-		$(call SHOW_PRETTY,atusd,DIGI-KEY,dk/digi-key.dsc,USD)
+show-atusd:	atusd.ord $(DSC)
+		$(call SHOW_PRETTY,atusd,DIGI-KEY,$(DSC),USD)
 
 spotless:
 		$(MAKE) -C dk spotless
 		rm -f atusd.par atusd.ord
-		rm -f $(GEN:%.gen=%.chr)
