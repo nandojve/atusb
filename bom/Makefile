@@ -21,12 +21,12 @@ again:
 
 atusd.ord:	atusd.par $(INV) $(EQU)
 		$(BOOM) part2order $(KITS) $(INV) $(EQU) atusd.par >$@ || \
-		  { rm -rf $@; exit 1; }
+		  { rm -f $@; exit 1; }
 
 atusd.par:	$(EQU) $(INV) $(CHR) ../atusd/atusd.lst atrf.sub
 		$(BOOM) bom2part $(EQU) $(INV) $(CHR) \
 		  ../atusd/atusd.lst atrf.sub \
-		  >$@ || { rm -rf $@; exit 1; }
+		  >$@ || { rm -f $@; exit 1; }
 
 dk/digi-key.inv:
 		$(MAKE) -C dk digi-key.inv
