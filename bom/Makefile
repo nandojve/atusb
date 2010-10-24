@@ -11,7 +11,7 @@ DSC=dk/digi-key.dsc $(shell $(BOOM_CONFIG) dsc)
 CHR=$(shell $(BOOM_CONFIG) chr)
 
 
-.PHONY:		all again show-atusd spotless
+.PHONY:		all again spotless
 
 all:		atusd.ord
 
@@ -19,14 +19,13 @@ again:
 		$(MAKE) spotless
 		$(MAKE) all
 
-atusd.ord:	atusd.par $(INV) $(EQU)
-		$(BOOM) part2order $(KITS) $(INV) $(EQU) atusd.par >$@ || \
-		  { rm -f $@; exit 1; }
+%.ord:		%.par $(INV) $(EQU)
+		$(BOOM) part2order $(KITS) $^ >$@ || { rm -f $@; exit 1; }
 
-atusd.par:	$(EQU) $(INV) $(CHR) ../atusd/atusd.lst atrf.sub
-		$(BOOM) bom2part $(EQU) $(INV) $(CHR) \
-		  ../atusd/atusd.lst atrf.sub \
-		  >$@ || { rm -f $@; exit 1; }
+vpath atusd.lst ../atusd
+
+%.par:		$(EQU) $(INV) $(CHR) %.lst atrf.sub
+		$(BOOM) bom2part $^ >$@ || { rm -f $@; exit 1; }
 
 dk/digi-key.inv:
 		$(MAKE) -C dk digi-key.inv
@@ -34,8 +33,8 @@ dk/digi-key.inv:
 dk/digi-key.dsc:
 		$(MAKE) -C dk digi-key.dsc
 
-show-atusd:	atusd.ord $(DSC)
-		grep -vw ATRF atusd.ord | $(BOOM) prettyord -t - $(DSC) | \
+show-%:		%.ord $(DSC)
+		grep -vw ATRF $< | $(BOOM) prettyord -t - $(DSC) | \
 		  sed 's/^...  //'
 
 spotless:
