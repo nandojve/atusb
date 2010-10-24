@@ -1,0 +1,61 @@
+/* MACHINE-GENERATED ! */
+
+frame signal {
+	__0: vec @(A, 0mm)
+	__1: vec .(0mm, sw/2)
+	__2: vec @(lo-li, 0mm)
+	__3: vec .(0mm, -sw/2)
+	pad "2" __1 .
+}
+
+frame ground {
+	table
+	    { dy }
+	    { 1 }
+	    { -1 }
+
+	__0: vec @(-li, 0mm)
+	__1: vec .(0mm, dy*wi/2)
+	__2: vec @(0mm, dy*wo/2)
+	pad "1" __1 .
+	__3: vec @(lo-li, 0mm)
+	__4: vec .(0mm, dy*E/2)
+	pad "1" __2 .
+}
+
+frame keepout_bottom {
+	__0: vec @(D, 0mm)
+	__1: vec .(0mm, wi/2)
+	__2: vec __0(0mm, -wi/2)
+	line __1 . w
+}
+
+package "MMCX-F-EDGE-$PCB"
+unit mm
+allow touch
+
+table
+    { PCB, A, D, E }
+    { 0.8mm, 1mm, 1.1mm, 1.8mm }
+    { 1mm, 0.9mm, 1.2mm, 1.64mm }
+    { 1.6mm, 0.4mm, 2.3mm, 1.5mm }
+
+table
+    { wo, wi, li, lo }
+    { 4.6mm, 3.5mm, 4.5mm, 7.5mm }
+
+set sw = 1.1mm
+
+set w = 5mil
+
+frame ground @
+frame signal @
+frame keepout_bottom @
+measy ground.__2 >> ground.__2 li+0.5mm
+measy ground.__1 >> ground.__1
+measx ground.__3 << ground.__1 1.7mm
+measx ground.__2 << ground.__1 -wo
+measx ground.__2 >> keepout_bottom.__2 -0.5mm
+measx signal.__0 << ground.__2 0.5mm
+measy ground.__4 >> ground.__4 lo-li+2mm
+measy signal.__3 >> signal.__1 lo-li+1mm

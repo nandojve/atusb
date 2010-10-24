@@ -14,6 +14,7 @@ Werner Almesberger <werner@openmoko.org>
   components/c8051f320.lib
   components/c8051f326.lib
   modules/meander.fpd
+  modules/mmcx-f-edge.fpd
   modules/pads.fpd
   modules/qfn.fpd
   modules/qfp.fpd

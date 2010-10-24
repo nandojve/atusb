@@ -92,3 +92,8 @@ D: http://katalog.we-online.de/kataloge/eisos/media/pdf/748421245.pdf
 N: 2450FB15L0001
 A: balun3
 D: http://www.johansontechnology.com/images/stories/ip/balun-filters/Balun_Filter_Combo_Matched_2450FB15L0001_v12.pdf
+
+# Molex 73415-0961
+N: 73415-0961
+A: mmcx-f-edge
+D: http://www.molex.com/pdm_docs/sd/734150961_sd.pdf

@@ -50,3 +50,23 @@ F: pads
 
 # 0805 package with six pads
 F: 0805-6
+
+#
+# MMCX board-edge (SMT) female jack
+#
+# Design based on Molex 73415-0961, This is also compatible with:
+#
+# Tyco 1408152-1
+# Emerson 135-3711-801
+# Molex 73415-1261
+# Amphenol 262107
+#
+# Note: footprint changes with PCB thickness !
+#
+# Known bugs:
+# - keepout area marker should be on comment layer
+# - pin 2 should be off-center and extend such that proper trace can be
+#   connected directly
+#
+F: mmcx-f-edge
+N: 73415-0961
