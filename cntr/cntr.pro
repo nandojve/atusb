@@ -1,4 +1,4 @@
-update=Mon Oct 25 08:12:10 2010
+update=Mon Oct 25 18:09:10 2010
 last_client=pcbnew
 [eeschema]
 version=1
@@ -61,7 +61,7 @@ TxtModH=600
 TxtModW=120
 VEgarde=100
 DrawLar=150
-EdgeLar=150
+EdgeLar=50
 TxtLar=120
 MSegLar=150
 LastNetListRead=cntr.net
