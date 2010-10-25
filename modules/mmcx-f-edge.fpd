@@ -5,7 +5,7 @@ frame signal {
 	__1: vec .(0mm, sw/2)
 	__2: vec @(lo-li, 0mm)
 	__3: vec .(0mm, -sw/2)
-	pad "2" __1 .
+	pad "1" __1 .
 }
 
 frame ground {
@@ -17,10 +17,10 @@ frame ground {
 	__0: vec @(-li, 0mm)
 	__1: vec .(0mm, dy*wi/2)
 	__2: vec @(0mm, dy*wo/2)
-	pad "1" __1 .
+	pad "2" __1 .
 	__3: vec @(lo-li, 0mm)
 	__4: vec .(0mm, dy*E/2)
-	pad "1" __2 .
+	pad "2" __2 .
 }
 
 frame keepout_bottom {

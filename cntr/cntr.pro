@@ -1,4 +1,4 @@
-update=Wed Aug 25 06:34:30 2010
+update=Mon Oct 25 08:12:10 2010
 last_client=pcbnew
 [eeschema]
 version=1
@@ -41,6 +41,7 @@ LibName2=device
 LibName3=conn
 LibName4=../components/c8051f320
 LibName5=../components/mini_usb_b
+LibName6=../components/usb_a_plug
 [cvpcb]
 version=1
 NetIExt=net
@@ -70,3 +71,6 @@ LibName1=../modules/mini-usb
 LibName2=../../kicad-libs/modules/pads
 LibName3=../modules/qfp
 LibName4=../../kicad-libs/modules/stdpass
+LibName5=../modules/mmcx-f-edge
+LibName6=../modules/usb_a_plug_smt
+LibName7=../modules/sot-323
