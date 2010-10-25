@@ -66,6 +66,17 @@ VR[0-9]* -> T=D M=TVS {
 	VAL=$V -> Vdc=$VAL	# neither clean nor consistent with the above
 }
 
+X[0-9]* {
+    -> T=XTAL
+    VAL=*Hz -> F=$VAL
+    FN=*F -> C=$FN
+    FN=*ppm -> TOL=<=$FN
+}
+
+
+T=C C=820fF -> C=800fF	# we can't get 0.82 pF, but there's plenty of 0.8 pF :)
+
 FP=meander -> VAL=meander
 FP=uSD-Card -> VAL=uSD-Card
 FP=PAD_120x60 -> VAL=PAD_120x60
+FP=PAD_2mm -> VAL=PAD_2mm

@@ -14,7 +14,7 @@ CHR=atrf.chr $(shell $(BOOM_CONFIG) chr)
 .PHONY:		all again spotless
 .PRECIOUS:	%.par
 
-all:		atusd.ord cntr.ord
+all:		atusb.ord atusd.ord cntr.ord
 
 again:
 		$(MAKE) spotless
@@ -23,6 +23,7 @@ again:
 %.ord:		%.par $(INV) $(EQU)
 		$(BOOM) part2order $(KITS) $^ >$@ || { rm -f $@; exit 1; }
 
+vpath atusb.lst ../atusb
 vpath atusd.lst ../atusd
 vpath cntr.lst ../cntr
 
@@ -41,4 +42,4 @@ show-%:		%.ord $(DSC)
 
 spotless:
 		$(MAKE) -C dk spotless
-		rm -f atusd.par atusd.ord
+		rm -f atusb.par arusb.ord atusd.par atusd.ord cntr.par cntr.ord
