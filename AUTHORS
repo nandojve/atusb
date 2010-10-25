@@ -13,8 +13,10 @@ Werner Almesberger <werner@openmoko.org>
   components/at86rf230.lib
   components/c8051f320.lib
   components/c8051f326.lib
+  components/usb_a_plug.lib (based on mini_usb_b.lib by Alvaro Lopes)
   modules/meander.fpd
   modules/mmcx-f-edge.fpd
   modules/qfn.fpd
   modules/qfp.fpd
-  modules/xtal-4.fpg
+  moduled/usb_a_plug_smt.fpd
+  modules/xtal-4.fpd

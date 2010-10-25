@@ -1,4 +1,4 @@
-MODULES=0805-6 meander mini-usb mmcx-f-edge qfn qfp xtal-4
+MODULES=0805-6 meander mini-usb mmcx-f-edge qfn qfp usb_a_plug_smt xtal-4
 
 .SUFFIXES:	.fpd .mod
 .PHONY:		all clean

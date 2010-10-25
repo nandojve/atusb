@@ -28,3 +28,7 @@ S: antenna
 
 # Typical SMT balun configuration
 S: balun
+
+# USB A plug
+S: usb_a_plug
+N: usb_a_plug_smt

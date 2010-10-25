@@ -64,3 +64,6 @@ F: 0805-6
 #
 F: mmcx-f-edge
 N: 73415-0961
+
+# USB A plug for SMT
+F: usb_a_plug_smt
