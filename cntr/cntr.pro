@@ -67,6 +67,6 @@ LastNetListRead=cntr.net
 [pcbnew/libraries]
 LibDir=
 LibName1=../modules/mini-usb
-LibName2=../modules/pads
+LibName2=../../kicad-libs/modules/pads
 LibName3=../modules/qfp
-LibName4=../modules/stdpass
+LibName4=../../kicad-libs/modules/stdpass
