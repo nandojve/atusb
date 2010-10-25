@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Mon Oct 25 18:05:41 2010
+EESchema Schematic File Version 2  date Mon Oct 25 18:33:18 2010
 LIBS:power
 LIBS:device
 LIBS:conn
@@ -157,8 +157,8 @@ L BNC P5
 U 1 1 4CC53249
 P 10900 1900
 F 0 "P5" H 10910 2020 60  0000 C CNN
-F 1 "BNC" V 11010 1840 40  0000 C CNN
-F 2 "MMCX-F-PLUG-1.6mm" H 10900 1900 60  0001 C CNN
+F 1 "MMCX" H 11050 1750 40  0000 C CNN
+F 2 "MMCX-F-EDGE-1.6mm" H 10900 1900 60  0001 C CNN
 	1    10900 1900
 	1    0    0    -1  
 $EndComp
