@@ -5,14 +5,14 @@ all:
 		@exit 1
 
 gen generate:
-		eeschema --plot `pwd`/wpan-atrf.sch
+		eeschema --plot `pwd`/atusb.sch
 		# need scripts
 
 sch:
-		eeschema `pwd`/wpan-atrf.sch
+		eeschema `pwd`/atusb.sch
 
 brd:
-		pcbnew `pwd`/wpan-atrf.brd
+		pcbnew `pwd`/atusb.brd
 
 xpdf:
-		xpdf wpan-atrf.pdf
+		xpdf atusb.pdf

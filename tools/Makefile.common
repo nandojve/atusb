@@ -40,5 +40,5 @@ else
     AR		= $(AR_quiet)
 endif
 
-CFLAGS += -I../../atrf/fw/include -I../include $(MACROS_$(TARGET))
+CFLAGS += -I../../atusb/fw/include -I../include $(MACROS_$(TARGET))
 LDLIBS = $(LDLIBS_$(TARGET)) -L../lib -latspi
