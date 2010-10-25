@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Mon Oct 25 00:20:15 2010
+EESchema Schematic File Version 2  date Mon Oct 25 00:40:19 2010
 LIBS:power
 LIBS:device
 LIBS:conn
@@ -663,7 +663,7 @@ F 0 "X1" V 9950 2400 60  0000 C CNN
 F 1 "16MHz" V 9800 2300 60  0000 C CNN
 F 2 "xtal4-3.2mmx2.5mm" H 9700 1800 60  0001 C CNN
 F 4 "8pF" V 9650 2350 60  0000 C CNN "Field1"
-F 5 "<40ppm" V 9550 2300 60  0000 C CNN "Field2"
+F 5 "40ppm" V 9550 2300 60  0000 C CNN "Field2"
 F 6 "ESR=80R" V 9450 2250 60  0000 C CNN "Field3"
 	1    9700 1800
 	0    -1   -1   0   
