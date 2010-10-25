@@ -33,9 +33,11 @@ frame shield {
 	    { hi, wi }
 	    { 2.5mm, 1mm }
 
-	set ho = hi*1.5
+	set ratio = 2
 
-	set wo = wi*1.5
+	set ho = hi*ratio
+
+	set wo = wi*ratio
 
 	__0: vec @(x, 0mm)
 	__1: vec .(wo/2, ho/2)
@@ -70,7 +72,7 @@ frame edge {
 }
 
 package "USB-A-PLUG-SMT"
-unit mm
+unit auto
 
 table
     { A, B, C }
