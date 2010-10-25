@@ -67,3 +67,7 @@ N: 73415-0961
 
 # USB A plug for SMT
 F: usb_a_plug_smt
+
+# SOT-323 package with counter-clockweise or clockwise pin assignment
+F: sot-323
+N: mmst3904

@@ -18,5 +18,6 @@ Werner Almesberger <werner@openmoko.org>
   modules/mmcx-f-edge.fpd
   modules/qfn.fpd
   modules/qfp.fpd
+  modules/sot-323.fpd
   moduled/usb_a_plug_smt.fpd
   modules/xtal-4.fpd
