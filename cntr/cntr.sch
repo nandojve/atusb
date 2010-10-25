@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Sun Oct 24 19:13:30 2010
+EESchema Schematic File Version 2  date Sun Oct 24 23:53:16 2010
 LIBS:power
 LIBS:device
 LIBS:conn
@@ -10,7 +10,7 @@ EELAYER END
 $Descr A4 11700 8267
 Sheet 1 1
 Title "Arbitrary-precision Counter (3 MHz)"
-Date "24 oct 2010"
+Date "25 oct 2010"
 Rev "1"
 Comp "Werner Almesberger"
 Comment1 ""
@@ -395,8 +395,8 @@ L VR VR3
 U 1 1 4C64034D
 P 3950 4450
 F 0 "VR3" V 4030 4450 50  0000 C CNN
-F 1 "5V6" V 3950 4450 50  0000 C CNN
-F 2 "0402" H 3950 4450 60  0001 C CNN
+F 1 "5V5" V 3950 4450 50  0000 C CNN
+F 2 "0603" H 3950 4450 60  0001 C CNN
 	1    3950 4450
 	-1   0    0    -1  
 $EndComp
@@ -405,8 +405,8 @@ L VR VR2
 U 1 1 4C640343
 P 3650 4450
 F 0 "VR2" V 3730 4450 50  0000 C CNN
-F 1 "5V6" V 3650 4450 50  0000 C CNN
-F 2 "0402" H 3650 4450 60  0001 C CNN
+F 1 "5V5" V 3650 4450 50  0000 C CNN
+F 2 "0603" H 3650 4450 60  0001 C CNN
 	1    3650 4450
 	-1   0    0    -1  
 $EndComp
@@ -415,8 +415,8 @@ L VR VR1
 U 1 1 4C6402FB
 P 3350 4450
 F 0 "VR1" V 3430 4450 50  0000 C CNN
-F 1 "5V6" V 3350 4450 50  0000 C CNN
-F 2 "0402" H 3350 4450 60  0001 C CNN
+F 1 "5V5" V 3350 4450 50  0000 C CNN
+F 2 "0603" H 3350 4450 60  0001 C CNN
 	1    3350 4450
 	-1   0    0    -1  
 $EndComp
