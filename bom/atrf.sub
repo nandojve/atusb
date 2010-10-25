@@ -62,6 +62,10 @@ D[0-9]* {
     }
 }
 
+VR[0-9]* -> T=D M=TVS {
+	VAL=$V -> Vdc=$VAL	# neither clean nor consistent with the above
+}
 
 FP=meander -> VAL=meander
 FP=uSD-Card -> VAL=uSD-Card
+FP=PAD_120x60 -> VAL=PAD_120x60

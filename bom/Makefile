@@ -8,12 +8,13 @@ KITS=1
 EQU=atrf.equ dk/digi-key.equ $(shell $(BOOM_CONFIG) equ)
 INV=atrf.inv dk/digi-key.inv $(shell $(BOOM_CONFIG) inv)
 DSC=dk/digi-key.dsc $(shell $(BOOM_CONFIG) dsc)
-CHR=$(shell $(BOOM_CONFIG) chr)
+CHR=atrf.chr $(shell $(BOOM_CONFIG) chr)
 
 
 .PHONY:		all again spotless
+.PRECIOUS:	%.par
 
-all:		atusd.ord
+all:		atusd.ord cntr.ord
 
 again:
 		$(MAKE) spotless
@@ -23,6 +24,7 @@ again:
 		$(BOOM) part2order $(KITS) $^ >$@ || { rm -f $@; exit 1; }
 
 vpath atusd.lst ../atusd
+vpath cntr.lst ../cntr
 
 %.par:		$(EQU) $(INV) $(CHR) %.lst atrf.sub
 		$(BOOM) bom2part $^ >$@ || { rm -f $@; exit 1; }
