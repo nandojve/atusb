@@ -1,5 +1,7 @@
 #!/usr/bin/perl
 
+$PI = atan2(1, 1)*4;
+
 $d = 25.4/1000*35;
 $r = $d/2-0.1;	# compensate deflection of board
 $steps = 24;
@@ -44,12 +46,12 @@ sub cut
 sub arc 
 {
     local ($xc, $yc, $d, $a0, $a1) = @_;
-    local ($rr) = $d/2-$r;
+    local ($rr) = $d/2;
     local $n = int(abs($a1-$a0)/360*$steps+0.5);
 
     $rr = 0 if $rr < 0;
     for ($i = 0; $i <= $n; $i++) {
-	my $a = ($a0+($a1-$a0)/$n*$i)*3.1415926/180;
+	my $a = ($a0+($a1-$a0)/$n*$i)*$PI/180;
 	$x = $x0+$xc-$rr*sin($a);
 	$y = $y0+$yc+$rr*cos($a);
 	print "$x $y $z\n";
@@ -70,10 +72,11 @@ sub circ
 sub hhole
 {
     local ($xc0, $xc1, $yc, $d) = @_;
-    local ($rr) = $d/2-$r;
+    local ($rr) = $d/2;
 
     &cut($xc0, $yc+$rr, $xc1, $yc+$rr);
     &arc($xc1, $yc, $d, 0, -180);
+    undef $x;
     &cut($xc1, $yc-$rr, $xc0, $yc-$rr);
     &arc($xc0, $yc, $d, 180, 0);
 }
@@ -82,15 +85,15 @@ sub hhole
 sub pcb
 {
     &cut(
-      &mil(   0)-$r,	&mil(   0)-$r,
-      &mil(1180)+$r,	&mil(   0)-$r,
-      &mil(1180)+$r,	&mil( 240)+$r,
-      &mil(1000)+$r,	&mil( 240)+$r,
-      &mil(1000)+$r,	&mil( 380)-$r,
-      &mil(1180)+$r,	&mil( 380)-$r,
-      &mil(1180)+$r,	&mil( 620)+$r,
-      &mil(   0)-$r,	&mil( 620)+$r,
-      &mil(   0)-$r,	&mil(   0)-$r);
+      &mil(   0), &mil(   0),
+      &mil(1180), &mil(   0),
+      &mil(1180), &mil( 240),
+      &mil(1000), &mil( 240),
+      &mil(1000), &mil( 380),
+      &mil(1180), &mil( 380),
+      &mil(1180), &mil( 620),
+      &mil(   0), &mil( 620),
+      &mil(   0), &mil(   0));
 }
 
 
@@ -111,7 +114,7 @@ $z = -0.8;	# full thickness of board
 # x: corner offset, compensation for rotation, array position
 # y: corner offet
 
-&orig(35*0, 45);
+&orig(35*1, 45);
 
 $r = $d/2;	# no compensation. don't wanna risk making holes too big.
 &holes;
