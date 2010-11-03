@@ -16,7 +16,8 @@
 
 /* Diagnostic LED */
 
-#define	LED	P1_3
+#define	LEDv1	P1_3
+#define	LEDv2	P2_2
 
 /* Probe input */
 
@@ -24,7 +25,12 @@
 #define	PROBE_ECI	P1_1
 #define	PROBE_INT0	P0_7
 
-/* Probe termination */
+/*
+ * Probe termination
+ *
+ * - v1: 100 kOhm termination (not very useful)
+ * - v2: pull-up for input amplifier
+ */
 
 #define	PROBE_TERM	P1_2
 

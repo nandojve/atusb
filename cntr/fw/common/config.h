@@ -35,16 +35,18 @@
  */
 
 #define PLATFORM_ENTER			\
-	LED_MODE |= 1 << LED_BIT;	\
-	XBR1 = XBARE;
+	LEDv1_MODE |= 1 << LEDv1_BIT;	\
+	LEDv2_MODE |= 1 << LEDv2_BIT;	\
+	XBR1 = XBARE
 
 
 /*
  * Turn off the LED when we exit the boot loader.
  */
 
-#define PLATFORM_EXIT \
-	LED = 0
+#define PLATFORM_EXIT	\
+	LEDv1 = 0;	\
+	LEDv2 = 0
 
 
 /* ----- Application configuration ----------------------------------------- */
