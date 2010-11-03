@@ -21,6 +21,7 @@
 #include "usb.h"
 #include "cntr/ep0.h"
 #include "version.h"
+#include "cntr.h"
 
 #define debug(...)
 #define error(...)
@@ -51,9 +52,11 @@
     } while (0)
 
 
-extern uint8_t cntr[8];
+static uint8_t id[3] = {
+	EP0CNTR_MAJOR, EP0CNTR_MINOR,
+	/* hw type is set at run time */
+};
 
-static const uint8_t id[] = { EP0CNTR_MAJOR, EP0CNTR_MINOR, HW_TYPE };
 static __xdata uint8_t buf[128];
 
 
@@ -74,6 +77,7 @@ static __bit my_setup(struct setup_request *setup) __reentrant
 		debug("CNTR_ID\n");
 		if (setup->wLength > 3)
 			return 0;
+		id[2] = hw_type;
 		usb_send(&ep0, id, setup->wLength, NULL, NULL);
 		return 1;
 	case CNTR_FROM_DEV(CNTR_BUILD):

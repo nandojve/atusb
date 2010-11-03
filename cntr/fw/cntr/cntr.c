@@ -18,20 +18,37 @@
 #include "usb.h"
 #include "cntr/ep0.h"
 #include "version.h"
+#include "cntr.h"
 
-
-/*
- * Free-running 32 bit counter. The lower two bytes are from hardware Timer 0.
- * The upper two bytes are maintained by software. At the maximum input clock
- * frequency of 6 MHz, it wraps around every 11.9 minutes, leaving the host
- * plenty of time to read it.
- */
 
 uint8_t cntr[4];
+enum hw_type hw_type = HW_TYPE_V1;
+
+
+static void delay(unsigned ms)
+{
+        int x;
+
+	while (ms--)
+	        for (x = 0; x < 1488; x)
+	       	         x++;
+}
 
 
 static void init_io(void)
 {
+	if (VERSION_ID) {
+		/* flash LED a second time */
+		LEDv2 = 0;
+		delay(250);
+		LEDv2 = 1;
+		delay(250);
+
+		PROBE_TERM_MODE |= 1 << PROBE_TERM_BIT;
+
+		hw_type = HW_TYPE_V2;
+	}
+
 	/*
 	 * Signal	Mode		Value
 	 *
@@ -39,9 +56,11 @@ static void init_io(void)
 	 * PROBE_ECI	open drain	1	(input)
 	 * PROBE_INT0	open drain	1	(input)
 	 *
-	 * PROBE_TERM	open drain	0
+	 * PROBE_TERM	open drain	0	version 1
+	 * PROBE_TERM	push-pull	1	version 2
 	 *
-	 * LED		push-pull	0	(set up by boot loader)
+	 * LEDv1	push-pull	0	(set up by boot loader)
+	 * LEDv2	push-pull	0	(set up by boot loader)
 	 *
 	 * all unused	open drain 	0
 	 */
@@ -50,6 +69,9 @@ static void init_io(void)
 	P1 = (1 << PROBE_T0_BIT) | (1 << PROBE_ECI_BIT);
 	P2 = 0;
 	P3 = 0;
+
+	if (hw_type == HW_TYPE_V2)
+		PROBE_TERM = 1;
 
 	/*
 	 * Disable pull-ups

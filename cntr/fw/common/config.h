@@ -48,9 +48,4 @@
 	LEDv1 = 0;	\
 	LEDv2 = 0
 
-
-/* ----- Application configuration ----------------------------------------- */
-
-#define	HW_TYPE		0
-
 #endif /* !CONFIG_H */

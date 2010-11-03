@@ -34,4 +34,14 @@
 
 #define	PROBE_TERM	P1_2
 
+/*
+ * Version ID
+ *
+ * In version 1, P2_1 is used to provide ground to the input side. In version
+ * 2, we use a ground place for this and P2_1 is unconnected. We can therefore
+ * use it to identify the hardware version.
+ */
+
+#define	VERSION_ID	P2_1
+
 #endif /* !IO_H */
