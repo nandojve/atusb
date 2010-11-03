@@ -114,7 +114,7 @@ $z = -0.8;	# full thickness of board
 # x: corner offset, compensation for rotation, array position
 # y: corner offet
 
-&orig(35*1, 45);
+&orig(34*1+3, 3);
 
 $r = $d/2;	# no compensation. don't wanna risk making holes too big.
 &holes;
