@@ -1,14 +1,14 @@
-Arbitrary-precision counter
-===========================
+Arbitrary-precision frequency counter
+=====================================
 
 Theory of operation
 -------------------
 
-The arbitrary-precision counter counts clock cycles of a frequency
-source that is assumed to be free from drift. It compares the count
-with the host's system clock. If the system clock is synchronized with
-an accurate NTP reference, measurements with arbitrarily high accuracy
-can be obtained.
+The arbitrary-precision frequency counter counts clock cycles of a
+frequency source that is assumed to be free from drift. It compares the
+count with the host's system clock. If the system clock is synchronized
+with an accurate NTP reference, measurements with arbitrarily high
+accuracy can be obtained.
 
 In practice, this is limited by the the frequency source's drift and
 the time one is willing to wait. If NTP maintains the system time
@@ -64,3 +64,15 @@ board can be queried with "cntr -i".
 
 To update the firmware, run
 cntr -r && sleep 1 && dfu-util -d 0x20b7:0xcb72 -D cntr.bin
+
+
+Known issues (hardware)
+-----------------------
+
+- the MMCX connector is hard to solder because of its large thermal
+  capacitance and surface
+- the lateral pads of the MMCX connector could be wider
+- manufacturing tolerances can push the USB connector a bit inside
+  the board, making its signal pins overshoot the pads
+- the ground fill under the LED causes a secondary cathode contact
+  (which is harmless on this case)
