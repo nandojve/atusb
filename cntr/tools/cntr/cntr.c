@@ -89,7 +89,7 @@ static void identify_cntr(usb_dev_handle *dev)
 }
 
 
-/* ----- measurements ------------------------------------------------------ */
+/* ---- packet reception --------------------------------------------------- */
 
 
 struct sample {
@@ -99,13 +99,6 @@ struct sample {
 
 
 static unsigned packets = 0, crc_errors = 0, inv_errors = 0;
-static volatile int stop = 0;
-
-
-static void set_stop(int sig)
-{
-	stop = 1;
-}
 
 
 static int get_sample(usb_dev_handle *dev, struct sample *s)
@@ -163,6 +156,56 @@ static int get_sample(usb_dev_handle *dev, struct sample *s)
 }
 
 
+/* ---- SIGINT (Ctrl-C) ---------------------------------------------------- */
+
+
+static volatile int stop = 0;
+
+
+static void set_stop(int sig)
+{
+	stop = 1;
+}
+
+
+static void arm_stop(void)
+{
+	signal(SIGINT, set_stop);
+}
+
+
+/* ---- burst counter ------------------------------------------------------ */
+
+
+static void count_bursts(usb_dev_handle *dev, double timeout)
+{
+	struct sample start, stable, now;
+
+	arm_stop();
+
+	while (!get_sample(dev, &start));
+	stable = start;
+	while (!stop) {
+		while (!get_sample(dev, &now))
+			if (stop)
+				break;
+		if (stable.cntr != now.cntr) {
+			stable = now;
+			continue;
+		}
+		if (now.t0-stable.t1 < timeout)
+			continue;
+		if (now.cntr == start.cntr)
+			continue;
+		printf("%llu\n", (unsigned long long) now.cntr-start.cntr);
+		start = now;
+	}
+}
+
+
+/* ----- measurements ------------------------------------------------------ */
+
+
 static void measure(usb_dev_handle *dev, double clock_dev_s, double error_goal)
 {
 	struct sample start, now;
@@ -171,7 +214,7 @@ static void measure(usb_dev_handle *dev, double clock_dev_s, double error_goal)
 	char *f_exp, *error_exp;
 	int i;
 
-	signal(SIGINT, set_stop);
+	arm_stop();
 
 	/*
 	 * The round-trip time for getting the first sample is one of the
@@ -190,7 +233,9 @@ static void measure(usb_dev_handle *dev, double clock_dev_s, double error_goal)
 	}
 	while (!stop) {
 		usleep(100000);
-		while (!get_sample(dev, &now));
+		while (!get_sample(dev, &now))
+			if (stop)
+				break;
 		dc = now.cntr-start.cntr;
 		dt = (now.t0+now.t1)/2.0-(start.t0+start.t1)/2.0;
 		f = dc/dt;
@@ -248,17 +293,20 @@ static void usage(const char *name)
 {
 	fprintf(stderr, 
 "usage: %s [-c clock_dev] [-d] [-v] [accuracy_ppm]\n"
+"%6s %s -b [-d] [-v] [timeout_s]\n"
 "%6s %s -i\n"
 "%6s %s -r\n\n"
 "    accuracy_ppm stop when specified accuracy is reached (default: never\n"
 "                 stop)\n"
+"    timeout_s    silence period between bursts, in seconds (default: 1s )\n"
+"    -b           count bursts separated by silence periods\n"
 "    -c clock_dev maximum deviation of the system clock, in seconds\n"
 "		  (default: %g s)\n"
 "    -d           debug mode. Print counter values.\n"
 "    -i           identify the CNTR board\n"
 "    -r           reset the CNTR board\n"
 "    -v           verbose reporting of communication errors\n"
-    , name, "", name, "", name, DEFAULT_CLOCK_DEV_S);
+    , name, "", name, "", name, "", name, DEFAULT_CLOCK_DEV_S);
 	exit(1);
 }
 
@@ -266,13 +314,16 @@ static void usage(const char *name)
 int main(int argc, char *const *argv)
 {
 	usb_dev_handle *dev;
-	int c, identify = 0, reset = 0;
+	int c, burst = 0, identify = 0, reset = 0;
 	double clock_dev_s = DEFAULT_CLOCK_DEV_S;
 	double error_goal = 0;
 	char *end;
 
-	while ((c = getopt(argc, argv, "c:dir")) != EOF)
+	while ((c = getopt(argc, argv, "bc:dir")) != EOF)
 		switch (c) {
+		case 'b':
+			burst = 1;
+			break;
 		case 'c':
 			clock_dev_s = strtod(argv[optind], &end);
 			if (*end)
@@ -290,13 +341,15 @@ int main(int argc, char *const *argv)
 		default:
 			usage(*argv);
 		}
-	if (identify && reset)
+	if (burst+identify+reset > 1)
 		usage(*argv);
 
 	switch (argc-optind) {
 	case 0:
 		break;
 	case 1:
+		if (identify || reset)
+			usage(*argv);
 		error_goal = strtod(argv[optind], &end)/1000000.0;
 		if (*end)
 			usage(*argv);
@@ -318,6 +371,11 @@ int main(int argc, char *const *argv)
 
 	if (reset) {
 		reset_cntr(dev);
+		return 0;
+	}
+
+	if (burst) {
+		count_bursts(dev, error_goal ? error_goal : 1);
 		return 0;
 	}
 
