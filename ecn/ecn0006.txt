@@ -1,0 +1,132 @@
+CNTR version 2 input circuit
+
+
+Problem description
+-------------------
+
+The input circuit only works up to about 1 or 2 MHz. The problem is that
+we discharge too slowly though the base of Q1, which in turn keeps the
+transistor turned on too long.
+
+
+Attempted solutions
+-------------------
+
+The following alternative designs have been tried:
+
+- Alternative 1: set R2 to zero, add a 47 Ohm termination resistor in
+  parallel with VR4, and place a 1 kOhm resistor between VR4 and Q1.
+  Works up to about 2 MHz, but accepts a lot of HF noise and is very
+  sensitive to the signal amplitude.
+
+- Alternative 2: increase R2 to 100 Ohm and add a 100 Ohm resistor
+  between the input (P5) and ground. This works up to 3 MHz, but only
+  for a very limited amplitude range.
+
+- Alternative 3: set R2 to zero, add a 100 Ohm resistor in parallel
+  with VR4, and add a 100 Ohm resistor between VR4 and Q1.
+
+
+Experimental results
+--------------------
+
+Lab test were performed on all version 2 variants and also on a version
+1 device. The counters were connected with a ~1.95 m RG-174 cable to a
+Picotest G5100A function generator. The version 1 counter was also
+tested with an unshielded 0.1" ribbon cable of 2.2 m.
+
+The signal consisted of square wave bursts with a 50% duty cycle and
+~ 5 ns raise/fall time.
+
+
+Design         Frequency   Source amplitude  Probe input am-  V range
+               (nominal)   (nominal)         pli. (measured)  acceptable
+-------------  ----------  ----------------  ---------------  ----------
+Version 1      3 MHz       2.3 -  5.5 V *    2.35 - 5.65 V    Y/Y
+(RG-174)       2 MHz       2.1 -  5.5 V *    2.15 - 5.7  V    Y/Y
+               1 MHz       1.8 -  5.5 V *    1.85 - 5.7  V    Y/Y
+
+Version 1      3 MHz       1.9 -  5.5 V *    2.2  - 6.5  V +  Y/(Y)
+(ribbon)       2 MHz       1.9 -  5.5 V *    1.9  - 6    V +  Y/(Y)
+               1 MHz       1.8 -  5.5 V *    1.9  - 5.7  V +  Y/(Y)
+
+Version 2      3 MHz       0.8 -  1.2 V      0.8  - 1.0  V    Y/N
+               2 MHz       0.8 -  1.6 V      0.8  - 1.0  V    Y/N
+               1 MHz       0.8 -  5.1 V      0.8  - 2.8  V    Y/Y
+
+Version 2,     3 MHz       1.7 -  2.8 V      0.85 - 1.4  V    N/N
+alternative 1  2 MHz       1.6 -  3.5 V      0.80 - 1.75 V    Y/Y
+               1 MHz       1.5 -  7.2 V      0.75 - 3.6  V    Y/Y
+
+Version 2,     3 MHz       1.2 -  2.0 V      0.77 - 1.1  V    Y/N
+alternative 2  2 MHz       1.2 -  2.6 V      0.80 - 1.4  V    Y/N
+               1 MHz       1.1 -  7.3 V      0.75 - 3.9  V    Y/Y
+
+Version 2,     3 MHz       1.1 -  1.7 V      0.74 - 1.0  V    Y/N
+alternative 3  2 MHz       1.1 -  2.4 V      0.74 - 1.3  V    Y/N
+               1 MHz       1.1 -  7.3 V      0.74 - 3.8  V    Y/Y
+
+* = range limited by maximum input voltage
++ = considerable overshoot, reaching about 6.7 V
+
+
+The following drawing illustrates the setup:
+
+Source ----- 50 R ----- Probe -----[1.8 m]----- Cntr
+         ^   (internal)   ^
+         |                |
+     Source, nominal  Probe input, measured
+
+
+In each test the frequency was set and then the nominal source voltage
+was adjusted in increments of 100 mV to find the range at which ten
+consecutive bursts of 50000 cycles each were all received correctly.
+
+The source has an output impedance of 50 Ohm, so voltage at the probe
+input (indicated in the table) is roughly half the nominal source
+voltage in the first alternative design, which has a fixed impedance.
+
+With version 1, which has a high-impedance input, source and probe
+voltage are roughly the same.
+
+The amplitude range of version 2 was considered acceptable if the
+minimum source amplitude was less than 1.65 V and the maximum probe
+input amplitude was greater than 1.65 V.
+
+Version 1 amplitudes were considered acceptable if the minimum source
+amplitude was less than or equal to 2.5 V and the maximum source
+amplitude was at least 5.0 V. The ribbon had a better amplitude range
+than the coax cable but produced about 20% overshoot. (Only about
+10-15% can be considered safe at TTL levels.)
+
+
+Analysis
+--------
+
+None of the attempts at rearranging the resistors produced a
+significantly better input circuit. Perhaps a reduction of the
+capacitance of VR4 or could have helped, but this was not tried.
+
+I "clean" solution would require a fast comparator. This would also
+allow the implementation of a settable threshold voltage, e.g, for
+compatibility with 1.8 V logic.
+
+The version 1 board performs extremely well at 3.3 V and 5 V logic
+levels, particularly when using a coax cable. For shorter distances,
+also a ribbon cable should be adequate.
+
+
+Conclusion
+----------
+
+Revert the input circuit to version 1, with the following changes:
+
+- change R2 from useless 100 kOhm to 1 kOhm or less. Consider
+  adding a second switchable resistor that can be put in parallel.
+
+- use the same TVS VR4 as for VR1 through VR3, to reduce the BOM
+  count
+
+- use a 0.1" connector with three contacts instead of two, so that
+  the signal is in the middle. This will prevent accidental shorts
+  and it makes it easy to build an adapter to an MMCX jack.

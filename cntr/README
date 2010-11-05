@@ -69,34 +69,7 @@ cntr -r; sleep 1 && dfu-util -d 0x20b7:0xcb72 -D cntr.bin
 Known issues (version 2 hardware)
 ---------------------------------
 
-- the input circuit only works up to about 1 MHz. The problem is that
-  we discharge too slowly though the base of Q1, which in turn keeps
-  the transistor turned on too long.
-
-  An alternative design that sets R2 to zero, adds a 47 Ohm termination
-  resistor in parallel to VR4, and places a 1 kOhm resistor between
-  VR4 and Q1 works up to about 2 MHz, but accepts a lot of HF noise
-  and is very sensitive to the signal amplitude.
-
-  Some test results with a ~1.8 m RG-174 cable, square wave bursts
-  with a 50% duty cycle and ~ 5 ns raise/fall time:
-
-  Design       Frequency  Source amplitude Input amplitude
-               (nominal)  (nominal)        (measured)
-  ------------ ---------- ---------------- ---------------
-  Original     1 MHz        700 mV         ~700 mV
-  Alternative  2 MHz      1.6 V            ~800 mV
-               1 MHz      1.5 V            ~750 mV
-
-  The test consisted of setting the frequency and adjusting the nominal
-  source voltage in increments of 100 mV for the lowest voltage at
-  which which ten consecutive bursts of 50000 cycles each were all
-  received correctly.
-
-  The source has an output impedance of 50 Ohm, so voltage at the probe
-  input (indicated in the table) is roughly half the nominal source
-  voltage in the alternative design.
-
+- the input circuit does not perform well. See ECN0006 for details.
 - the MMCX connector is hard to solder because of its large thermal
   capacitance and surface
 - the lateral pads of the MMCX connector could be wider

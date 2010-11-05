@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Thu Nov  4 21:28:19 2010
+EESchema Schematic File Version 2  date Fri Nov  5 14:44:54 2010
 LIBS:power
 LIBS:device
 LIBS:conn
@@ -19,7 +19,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 Text Notes 8250 1000 0    100  ~ 20
-Input circuit has known bugs.\nSee README for details.
+Input circuit has known bugs.\nSee ECN0006 for details.
 NoConn ~ 8400 3800
 NoConn ~ 8400 2900
 Wire Wire Line
