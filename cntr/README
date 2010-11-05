@@ -63,7 +63,7 @@ The protocol revision and the build date of the firmware of the CNTR
 board can be queried with "cntr -i".
 
 To update the firmware, run
-cntr -r && sleep 1 && dfu-util -d 0x20b7:0xcb72 -D cntr.bin
+cntr -r; sleep 1 && dfu-util -d 0x20b7:0xcb72 -D cntr.bin
 
 
 Known issues (version 2 hardware)
