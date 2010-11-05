@@ -358,7 +358,7 @@ int main(int argc, char *const *argv)
 	double error_goal = 0;
 	char *end;
 
-	while ((c = getopt(argc, argv, "bc:dir")) != EOF)
+	while ((c = getopt(argc, argv, "bc:dirv")) != EOF)
 		switch (c) {
 		case 'b':
 			burst = 1;
@@ -376,6 +376,9 @@ int main(int argc, char *const *argv)
 			break;
 		case 'r':
 			reset = 1;
+			break;
+		case 'v':
+			verbose = 1;
 			break;
 		default:
 			usage(*argv);
