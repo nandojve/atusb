@@ -174,30 +174,77 @@ static void arm_stop(void)
 }
 
 
+/* ---- output ------------------------------------------------------------- */
+
+
+static void print_f(double f, int digits)
+{
+	char *f_exp;
+
+	if (f > 1000000.0) {
+		f /= 1000000.0;
+		f_exp = "M";
+	} else if (f > 1000.0) {
+		f /= 1000.0;
+		f_exp = "k";
+	} else {
+		f_exp = "";
+	}
+	printf("%1.*f %sHz", digits, f, f_exp);
+}
+
+
 /* ---- burst counter ------------------------------------------------------ */
 
 
+/*
+ * Here is when the various samples are taken:
+ *
+ * Activity --------XXXXXXXXXXXXX-------------
+ *                 ^             ^          ^^
+ *                 |             |      last||
+ *               start         stable       now
+ *                               |<-t(idle)->|
+ *
+ * "start" is the sample before counter activity
+ * "stable" is the first sample after counter activity
+ * "last" is the sample immediately preceding "now"
+ * "now" is the sample currently being processed
+ *
+ * The count is printed if t(idle) >= timeout.
+ */
+
 static void count_bursts(usb_dev_handle *dev, double timeout)
 {
-	struct sample start, stable, now;
-
+	struct sample start, stable, now, last;
+	uint64_t dc, delta_n = 0;
+	double delta_sum = 0, dt;
 	arm_stop();
 
 	while (!get_sample(dev, &start));
-	stable = start;
+	stable = last = start;
 	while (!stop) {
 		while (!get_sample(dev, &now))
 			if (stop)
 				break;
+		delta_sum += now.t1-last.t1;
+		delta_n++;
+		last = now;
 		if (stable.cntr != now.cntr) {
 			stable = now;
 			continue;
 		}
 		if (now.t0-stable.t1 < timeout)
 			continue;
-		if (now.cntr == start.cntr)
-			continue;
-		printf("%llu\n", (unsigned long long) now.cntr-start.cntr);
+		if (now.cntr != start.cntr) {
+			dc = now.cntr-start.cntr;
+			dt = stable.t1-start.t1-delta_sum/delta_n;
+			printf("%llu ~ ", (unsigned long long) dc);
+			if (dt > 0)
+				print_f(dc/dt, 3);
+			printf("\n");
+			fflush(stdout);
+		}
 		start = now;
 	}
 }
@@ -211,7 +258,7 @@ static void measure(usb_dev_handle *dev, double clock_dev_s, double error_goal)
 	struct sample start, now;
 	uint64_t dc;
 	double dt, f, error;
-	char *f_exp, *error_exp;
+	char *error_exp;
 	int i;
 
 	arm_stop();
@@ -239,15 +286,6 @@ static void measure(usb_dev_handle *dev, double clock_dev_s, double error_goal)
 		dc = now.cntr-start.cntr;
 		dt = (now.t0+now.t1)/2.0-(start.t0+start.t1)/2.0;
 		f = dc/dt;
-		if (f > 1000000.0) {
-			f /= 1000000.0;
-			f_exp = "M";
-		} else if (f > 1000.0) {
-			f /= 1000.0;
-			f_exp = "k";
-		} else {
-			f_exp = "";
-		}
 		if (dc)
 			error = 1.0/dc;			/* one count */
 		else
@@ -274,8 +312,9 @@ static void measure(usb_dev_handle *dev, double clock_dev_s, double error_goal)
 			}
 		}
 		
-		printf("\r%6.1f %1.9f %sHz %3.3f%s ",
-		    dt, f, f_exp, error, error_exp);
+		printf("\r%6.1f ", dt);
+		print_f(f, 9);
+		printf(" %3.3f%s ", error, error_exp);
 		fflush(stdout);
 	}
 	printf(
