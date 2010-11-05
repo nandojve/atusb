@@ -1,17 +1,16 @@
-EESchema Schematic File Version 2  date Mon Oct 25 18:33:18 2010
+EESchema Schematic File Version 2  date Thu Nov  4 21:28:19 2010
 LIBS:power
 LIBS:device
 LIBS:conn
 LIBS:c8051f320
 LIBS:mini_usb_b
 LIBS:usb_a_plug
-LIBS:cntr-cache
 EELAYER 24  0
 EELAYER END
 $Descr A4 11700 8267
 Sheet 1 1
 Title "Arbitrary-precision Counter (3 MHz)"
-Date "25 oct 2010"
+Date "5 nov 2010"
 Rev "2"
 Comp "Werner Almesberger"
 Comment1 ""
@@ -19,6 +18,8 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
+Text Notes 8250 1000 0    100  ~ 20
+Input circuit has known bugs.\nSee README for details.
 NoConn ~ 8400 3800
 NoConn ~ 8400 2900
 Wire Wire Line
