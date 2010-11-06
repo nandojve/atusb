@@ -3,7 +3,7 @@
 frame pad {
 	table
 	    { h, w }
-	    { 2mm, 1.2mm }
+	    { 2mm+2*enlarge, 1.2mm }
 
 	__0: vec @(w/2, h/2)
 	__1: vec @(-w/2, -h/2)
@@ -18,7 +18,9 @@ frame pads {
 	    { 3, -1mm }
 	    { 4, -3.5mm }
 
-	__0: vec @(0mm, 2.6mm)
+	set enlarge = 0.1mm
+
+	__0: vec @(0mm, 2.6mm+enlarge)
 	__1: vec .(x, 0mm)
 	frame pad .
 }
