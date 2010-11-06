@@ -25,6 +25,7 @@ extern uint8_t cntr[4];
 extern enum hw_type {
 	HW_TYPE_V1 = 0,
 	HW_TYPE_V2 = 1,
+	HW_TYPE_V3 = 2,
 } hw_type;
 
 #endif /* !CNTR_H */

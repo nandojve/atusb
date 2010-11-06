@@ -22,7 +22,7 @@
 
 
 uint8_t cntr[4];
-enum hw_type hw_type = HW_TYPE_V1;
+enum hw_type hw_type;
 
 
 static void delay(unsigned ms)
@@ -37,17 +37,22 @@ static void delay(unsigned ms)
 
 static void init_io(void)
 {
-	if (VERSION_ID) {
-		/* flash LED a second time */
+	int i;
+
+	/* SDCC bug - needs parentheses here */
+	hw_type = VERSION_ID1 ?
+	    (VERSION_ID2 ? HW_TYPE_V2 : HW_TYPE_V3) :
+	    HW_TYPE_V1;
+
+	for (i = HW_TYPE_V1; i != hw_type; i++) {
+		/* flash LED a second or third time */
 		LEDv2 = 0;
 		delay(250);
 		LEDv2 = 1;
 		delay(250);
-
-		PROBE_TERM_MODE |= 1 << PROBE_TERM_BIT;
-
-		hw_type = HW_TYPE_V2;
 	}
+	if (hw_type == HW_TYPE_V2)
+		PROBE_TERM_MODE |= 1 << PROBE_TERM_BIT;
 
 	/*
 	 * Signal	Mode		Value
@@ -70,7 +75,7 @@ static void init_io(void)
 	P2 = 0;
 	P3 = 0;
 
-	if (hw_type == HW_TYPE_V2)
+	if (hw_type == HW_TYPE_V2 || hw_type == HW_TYPE_V3)
 		PROBE_TERM = 1;
 
 	/*
