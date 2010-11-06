@@ -86,12 +86,8 @@ sub pcb
 {
     &cut(
       &mil(   0), &mil(   0),
-      &mil(1180), &mil(   0),
-      &mil(1180), &mil( 240),
-      &mil(1000), &mil( 240),
-      &mil(1000), &mil( 380),
-      &mil(1180), &mil( 380),
-      &mil(1180), &mil( 620),
+      &mil(1080), &mil(   0),
+      &mil(1080), &mil( 620),
       &mil(   0), &mil( 620),
       &mil(   0), &mil(   0));
 }
@@ -114,7 +110,7 @@ $z = -0.8;	# full thickness of board
 # x: corner offset, compensation for rotation, array position
 # y: corner offet
 
-&orig(34*1+3, 3);
+&orig(34*2+3, 3);
 
 $r = $d/2;	# no compensation. don't wanna risk making holes too big.
 &holes;

@@ -1,0 +1,136 @@
+Cmp-Mod V01 Created by CvPCB (2010-08-11 BZR 2448)-unstable date = Sat Nov  6 02:05:09 2010
+
+BeginCmp
+TimeStamp = /4C6401B3;
+Reference = C1;
+ValeurCmp = 100nF;
+IdModule  = 0603-M;
+EndCmp
+
+BeginCmp
+TimeStamp = /4C6401AA;
+Reference = C2;
+ValeurCmp = 1uF;
+IdModule  = 0603-M;
+EndCmp
+
+BeginCmp
+TimeStamp = /4CC53108;
+Reference = CON1;
+ValeurCmp = USB_A_PLUG_;
+IdModule  = USB-A-PLUG-SMT;
+EndCmp
+
+BeginCmp
+TimeStamp = /4C6402EE;
+Reference = D1;
+ValeurCmp = LTST-C190KRKT;
+IdModule  = 0603-M;
+EndCmp
+
+BeginCmp
+TimeStamp = /4C640203;
+Reference = P1;
+ValeurCmp = CONN_1;
+IdModule  = PAD_120x60;
+EndCmp
+
+BeginCmp
+TimeStamp = /4C6401FE;
+Reference = P2;
+ValeurCmp = CONN_1;
+IdModule  = PAD_120x60;
+EndCmp
+
+BeginCmp
+TimeStamp = /4C640200;
+Reference = P3;
+ValeurCmp = CONN_1;
+IdModule  = PAD_120x60;
+EndCmp
+
+BeginCmp
+TimeStamp = /4C640202;
+Reference = P4;
+ValeurCmp = CONN_1;
+IdModule  = PAD_120x60;
+EndCmp
+
+BeginCmp
+TimeStamp = /4CD4DF6F;
+Reference = P5;
+ValeurCmp = CONN_1;
+IdModule  = PAD_120x60;
+EndCmp
+
+BeginCmp
+TimeStamp = /4CD4DF72;
+Reference = P6;
+ValeurCmp = CONN_1;
+IdModule  = PAD_120x60;
+EndCmp
+
+BeginCmp
+TimeStamp = /4CD4DF74;
+Reference = P7;
+ValeurCmp = CONN_1;
+IdModule  = PAD_120x60;
+EndCmp
+
+BeginCmp
+TimeStamp = /4C71B06B;
+Reference = R1;
+ValeurCmp = 1k;
+IdModule  = 0603-M;
+EndCmp
+
+BeginCmp
+TimeStamp = /4CC5326F;
+Reference = R2;
+ValeurCmp = 330;
+IdModule  = 0603-M;
+EndCmp
+
+BeginCmp
+TimeStamp = /4C6402F2;
+Reference = R3;
+ValeurCmp = 68;
+IdModule  = 0603-M;
+EndCmp
+
+BeginCmp
+TimeStamp = /4C71AEC6;
+Reference = U1;
+ValeurCmp = C8051F320;
+IdModule  = LQFP32;
+EndCmp
+
+BeginCmp
+TimeStamp = /4C6402FB;
+Reference = VR1;
+ValeurCmp = 5V6;
+IdModule  = 0402-M;
+EndCmp
+
+BeginCmp
+TimeStamp = /4C640343;
+Reference = VR2;
+ValeurCmp = 5V6;
+IdModule  = 0402-M;
+EndCmp
+
+BeginCmp
+TimeStamp = /4C64034D;
+Reference = VR3;
+ValeurCmp = 5V6;
+IdModule  = 0402-M;
+EndCmp
+
+BeginCmp
+TimeStamp = /4C71BA9B;
+Reference = VR4;
+ValeurCmp = 5V6;
+IdModule  = 0402-M;
+EndCmp
+
+EndListe
