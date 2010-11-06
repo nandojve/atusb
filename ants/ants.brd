@@ -1,4 +1,4 @@
-PCBNEW-BOARD Version 1 date Sat Nov  6 01:22:17 2010
+PCBNEW-BOARD Version 1 date Sat Nov  6 11:04:24 2010
 
 # Created by Pcbnew(2010-08-11 BZR 2448)-unstable
 
@@ -8,9 +8,9 @@ Ly 1FFF8001
 EnabledLayers 1FFF8001
 Links 4
 NoConn 1
-Di 51016 22944 59015 28726
+Di 50459 22944 59541 28726
 Ndraw 5
-Ntrack 17
+Ntrack 19
 Nzone 0
 BoardThickness 630
 Nmodule 3
@@ -36,10 +36,11 @@ Layers 2
 Layer[0] Back signal
 Layer[15] Front signal
 TrackWidth 80
+TrackWidthList 50
 TrackWidthList 580
 TrackClearence 100
 ZoneClearence 200
-TrackMinWidth 80
+TrackMinWidth 50
 DrawSegmWidth 150
 EdgeSegmWidth 150
 ViaSize 300
@@ -292,6 +293,10 @@ Po 0 51600 23800 58400 23800 50
 De 28 0 900 0 0
 $EndDRAWSEGMENT
 $TRACK
+Po 0 51500 25875 50500 25875 80 -1
+De 15 0 0 0 0
+Po 0 58500 25875 59500 25875 80 -1
+De 15 0 0 0 0
 Po 0 53380 27900 53380 26620 80 -1
 De 15 0 1 0 800
 Po 3 54300 28200 54300 28200 300 -1
