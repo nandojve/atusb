@@ -106,3 +106,8 @@ D: http://www.molex.com/pdm_docs/sd/480371000_sd.pdf
 N: mmst3904
 A: npn
 D: http://61.222.192.61/mccsemi/up_pdf/MMST3904(SOT-323).PDF
+
+#  Molex 73412-0110 (micro coaxial connector, receptacle) aka U.FL (Hirose)
+N: 73412-0110
+A: u.fl-receptacle
+D: http://www.molex.com/pdm_docs/sd/734120110_sd.pdf

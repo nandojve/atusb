@@ -1,0 +1,40 @@
+/* MACHINE-GENERATED ! */
+
+frame signal {
+	__0: vec @(0mm, xo)
+	__1: vec .(-x/2, 0mm)
+	__2: vec __0(x/2, y)
+	pad "1" __1 .
+}
+
+frame ground {
+	table
+	    { dx }
+	    { -1 }
+	    { 1 }
+
+	__0: vec @(dx*wo/2, -h/2)
+	__1: vec @(dx*wi/2, h/2)
+	pad "2" __0 .
+}
+
+package "U.FL-RECEPTACLE"
+unit mm
+
+table
+    { h, wo, wi }
+    { 2.2mm, 4mm, 1.9mm }
+
+table
+    { x, y, xo }
+    { 1mm, 1.05mm, 1mm }
+
+__0: vec @(0mm, 0mm)
+frame ground @
+frame signal @
+measy ground.__0 -> ground.__1 0.5mm
+measx ground.__0 >> ground.__0 -0.5mm
+measx ground.__1 >> ground.__1 -h
+measy __0 >> signal.__0
+measy signal.__1 >> signal.__2 0.2mm
+measx signal.__1 >> signal.__2 y+0.5mm

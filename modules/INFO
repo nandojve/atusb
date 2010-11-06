@@ -71,3 +71,6 @@ F: usb_a_plug_smt
 # SOT-323 package with counter-clockweise or clockwise pin assignment
 F: sot-323
 N: mmst3904
+
+# U.FL/Micro Coax/... receptacle
+F: u.fl-receptacle
