@@ -73,4 +73,5 @@ F: sot-323
 N: mmst3904
 
 # U.FL/Micro Coax/... receptacle
-F: u.fl-receptacle
+F: u-fl-receptacle
+N: u.fl-receptacle

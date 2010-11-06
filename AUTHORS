@@ -19,6 +19,6 @@ Werner Almesberger <werner@openmoko.org>
   modules/qfn.fpd
   modules/qfp.fpd
   modules/sot-323.fpd
-  modules/u.fl-receptacle.fpd
+  modules/u-fl-receptacle.fpd
   moduled/usb_a_plug_smt.fpd
   modules/xtal-4.fpd

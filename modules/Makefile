@@ -1,5 +1,5 @@
 MODULES=0805-6 meander mini-usb mmcx-f-edge qfn qfp sot-323 \
-	u.fl-receptacle usb_a_plug_smt xtal-4
+	u-fl-receptacle usb_a_plug_smt xtal-4
 
 .SUFFIXES:	.fpd .mod
 .PHONY:		all clean
