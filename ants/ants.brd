@@ -1,4 +1,4 @@
-PCBNEW-BOARD Version 1 date Sat Nov  6 00:27:27 2010
+PCBNEW-BOARD Version 1 date Sat Nov  6 00:55:35 2010
 
 # Created by Pcbnew(2010-08-11 BZR 2448)-unstable
 
@@ -9,7 +9,7 @@ EnabledLayers 1FFF8001
 Links 4
 NoConn 1
 Di 51016 22944 59015 28726
-Ndraw 4
+Ndraw 5
 Ntrack 17
 Nzone 0
 BoardThickness 630
@@ -270,6 +270,11 @@ Ne 0 ""
 Po 6232 -416
 $EndPAD
 $EndMODULE  MEANDER-120
+$TEXTPCB
+Te "17.3 x 12.5 mm"
+Po 55000 29700 600 800 120 0
+De 25 1 0 Normal
+$EndTEXTPCB
 $DRAWSEGMENT
 Po 0 51600 28700 51600 23800 50
 De 28 0 900 0 0
@@ -330,7 +335,7 @@ ZLayer 0
 ZAux 4 E
 ZClearance 200 T
 ZMinThickness 100
-ZOptions 1 16 F 200 120
+ZOptions 1 16 S 200 120
 ZCorner 58400 28700 0
 ZCorner 58400 25850 0
 ZCorner 51600 25850 0
@@ -408,7 +413,7 @@ ZLayer 15
 ZAux 4 E
 ZClearance 200 T
 ZMinThickness 100
-ZOptions 1 16 F 200 120
+ZOptions 1 16 S 200 120
 ZCorner 58400 28700 0
 ZCorner 58400 25850 0
 ZCorner 51600 25850 0
