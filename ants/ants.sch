@@ -1,0 +1,97 @@
+EESchema Schematic File Version 2  date Sat Nov  6 00:15:56 2010
+LIBS:power
+LIBS:device
+LIBS:conn
+LIBS:antenna
+EELAYER 43  0
+EELAYER END
+$Descr A4 11700 8267
+Sheet 1 1
+Title "Antenna test board"
+Date "6 nov 2010"
+Rev "0"
+Comp "Werner Almesberger"
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+Wire Wire Line
+	7050 4250 7050 4450
+Wire Wire Line
+	5850 4050 6050 4050
+Wire Wire Line
+	5350 4450 5350 4150
+Wire Wire Line
+	5350 4150 5150 4150
+Wire Wire Line
+	5150 4050 5350 4050
+Wire Wire Line
+	6200 4250 6200 4450
+$Comp
+L PWR_FLAG #FLG01
+U 1 1 4CD4C6CB
+P 7050 4250
+F 0 "#FLG01" H 7050 4520 30  0001 C CNN
+F 1 "PWR_FLAG" H 7050 4480 30  0000 C CNN
+	1    7050 4250
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR02
+U 1 1 4CD4C6BE
+P 7050 4450
+F 0 "#PWR02" H 7050 4450 30  0001 C CNN
+F 1 "GND" H 7050 4380 30  0001 C CNN
+	1    7050 4450
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR03
+U 1 1 4CD4C660
+P 5350 4450
+F 0 "#PWR03" H 5350 4450 30  0001 C CNN
+F 1 "GND" H 5350 4380 30  0001 C CNN
+	1    5350 4450
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR04
+U 1 1 4CD4C65A
+P 6200 4450
+F 0 "#PWR04" H 6200 4450 30  0001 C CNN
+F 1 "GND" H 6200 4380 30  0001 C CNN
+	1    6200 4450
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R1
+U 1 1 4CD4C636
+P 5600 4050
+F 0 "R1" V 5680 4050 50  0000 C CNN
+F 1 "0" V 5600 4050 50  0000 C CNN
+F 2 "0402" H 5600 4050 60  0001 C CNN
+	1    5600 4050
+	0    -1   -1   0   
+$EndComp
+$Comp
+L BNC P1
+U 1 1 4CD4C615
+P 6200 4050
+F 0 "P1" H 6210 4170 60  0000 C CNN
+F 1 "U.FL" H 6400 4050 50  0000 C CNN
+F 2 "u.fl-receptacle" H 6200 4050 60  0001 C CNN
+	1    6200 4050
+	1    0    0    -1  
+$EndComp
+$Comp
+L ANTENNA ANT1
+U 1 1 4CD4C5EF
+P 4850 4100
+F 0 "ANT1" H 4850 4350 60  0000 C CNN
+F 1 "50R" H 4850 3850 60  0000 C CNN
+F 2 "meander" H 4850 4100 60  0001 C CNN
+	1    4850 4100
+	1    0    0    -1  
+$EndComp
+$EndSCHEMATC

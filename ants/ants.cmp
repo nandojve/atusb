@@ -1,0 +1,24 @@
+Cmp-Mod V01 Created by CvPCB (2010-08-11 BZR 2448)-unstable date = Sat Nov  6 00:19:02 2010
+
+BeginCmp
+TimeStamp = /4CD4C5EF;
+Reference = ANT1;
+ValeurCmp = 50R;
+IdModule  = MEANDER-120;
+EndCmp
+
+BeginCmp
+TimeStamp = /4CD4C615;
+Reference = P1;
+ValeurCmp = U.FL;
+IdModule  = U.FL-RECEPTACLE;
+EndCmp
+
+BeginCmp
+TimeStamp = /4CD4C636;
+Reference = R1;
+ValeurCmp = 0;
+IdModule  = 0402-M;
+EndCmp
+
+EndListe
