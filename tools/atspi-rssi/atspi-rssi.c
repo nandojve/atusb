@@ -21,6 +21,12 @@
 #include "atspi.h"
 #include "misctxrx.h"
 
+#ifdef HAVE_GFX
+#include "gui.h"
+#else
+#define	gui(dsc) abort()
+#endif
+
 
 static struct timeval t0;
 static volatile int run = 1;
@@ -59,6 +65,12 @@ static void usage(const char *name)
 {
 	fprintf(stderr,
 "usage: %s [-n] sweeps\n", name);
+
+#ifdef HAVE_GFX
+	fprintf(stderr,
+"%6s %s -g\n", "", name);
+#endif
+
 	exit(1);
 }
 
@@ -66,12 +78,19 @@ static void usage(const char *name)
 int main(int argc, char **argv)
 {
 	struct atspi_dsc *dsc;
-	unsigned long sweeps, i;
+	unsigned long arg = 0, i;
 	char *end;
 	int c;
+	int graphical = 0;
 
-	while ((c = getopt(argc, argv, "n")) != EOF)
+	while ((c = getopt(argc, argv, "gn")) != EOF)
 		switch (c) {
+#ifdef HAVE_GFX
+		case 'g':
+			graphical = 1;
+
+			break;
+#endif
 		case 'n':
 			break;
 		default:
@@ -79,8 +98,14 @@ int main(int argc, char **argv)
 		}
 
 	switch (argc-optind) {
+	case 0:
+		if (!graphical)
+			usage(*argv);
+		break;
 	case 1:
-		sweeps = strtoul(argv[optind], &end, 0);
+		if (graphical)
+			usage(*argv);
+		arg = strtoul(argv[optind], &end, 0);
 		if (*end)
 			usage(*argv);
 		break;
@@ -100,9 +125,13 @@ int main(int argc, char **argv)
 	 * We'll wait for the PLL lock after selecting the channel.
 	 */
 
-	gettimeofday(&t0, NULL);
-	for (i = 0; run && i != sweeps; i++)
-		sweep(dsc);
+	if (graphical)
+		gui(dsc);
+	else {
+		gettimeofday(&t0, NULL);
+		for (i = 0; run && i != arg; i++)
+			sweep(dsc);
+	}
 
 	atspi_reg_write(dsc, REG_TRX_STATE, TRX_CMD_TRX_OFF);
 

@@ -22,6 +22,8 @@ endif
 
 CC_host = gcc
 CC_ben = mipsel-openwrt-linux-gcc
+CFLAGS_host =
+CFLAGS_ben =
 LDLIBS_host = -lusb
 LDLIBS_ben =
 MACROS_host = -DHAVE_USB
@@ -40,5 +42,7 @@ else
     AR		= $(AR_quiet)
 endif
 
-CFLAGS += -I../../atusb/fw/include -I../include $(MACROS_$(TARGET))
+CFLAGS += $(CFLAGS_$(TARGET)) -I../../atusb/fw/include -I../include \
+          $(MACROS_$(TARGET))
 LDLIBS = $(LDLIBS_$(TARGET)) -L../lib -latspi
+OBJS += $(OBJS_$(TARGET))

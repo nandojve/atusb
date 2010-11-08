@@ -14,3 +14,10 @@
 MAIN = atspi-rssi
 
 include ../Makefile.common
+
+CFLAGS_host += $(shell sdl-config --cflags)
+MACROS_host += -DHAVE_GFX
+LDLIBS_host += $(shell sdl-config --libs) -lSDL_gfx
+OBJS_host = gui.o zgrid.o digit.o
+
+$(MAIN):	$(OBJS_$(TARGET))
