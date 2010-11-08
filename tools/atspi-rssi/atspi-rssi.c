@@ -13,6 +13,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
 #include <signal.h>
 #include <sys/time.h>
 
@@ -35,10 +36,6 @@ static void sweep(struct atspi_dsc *dsc)
 		/* 150 us, according to AVR2001 section 3.5 */
 		wait_for_interrupt(dsc, IRQ_PLL_LOCK, IRQ_PLL_LOCK, 10, 20);
 
-		/*
-		 * No need to explicitly wait for the PPL lock - going USB-SPI
-		 * is pretty slow, leaving the transceiver plenty of time.
-		 */
 		gettimeofday(&t, NULL);
 		rssi = atspi_reg_read(dsc, REG_PHY_RSSI) & RSSI_MASK;
 		t.tv_sec -= t0.tv_sec;
@@ -60,22 +57,36 @@ static void die(int sig)
 
 static void usage(const char *name)
 {
-	fprintf(stderr, "usage: %s sweeps \n", name);
+	fprintf(stderr,
+"usage: %s [-n] sweeps\n", name);
 	exit(1);
 }
 
 
-int main(int argc, const char **argv)
+int main(int argc, char **argv)
 {
 	struct atspi_dsc *dsc;
 	unsigned long sweeps, i;
 	char *end;
+	int c;
 
-	if (argc != 2)
+	while ((c = getopt(argc, argv, "n")) != EOF)
+		switch (c) {
+		case 'n':
+			break;
+		default:
+			usage(*argv);
+		}
+
+	switch (argc-optind) {
+	case 1:
+		sweeps = strtoul(argv[optind], &end, 0);
+		if (*end)
+			usage(*argv);
+		break;
+	default:
 		usage(*argv);
-	sweeps = strtoul(argv[1], &end, 0);
-	if (*end)
-		usage(*argv);
+	}
 
 	signal(SIGINT, die);
 
