@@ -112,6 +112,7 @@ void gui(struct atspi_dsc *dsc)
 {
 	SDL_Surface *surf;
 	int z[N_CHAN*N_TIME];
+	SDL_Event event;
 
 	memset(z, 0, sizeof(z));
 	gettimeofday(&t0, NULL);
@@ -129,6 +130,11 @@ void gui(struct atspi_dsc *dsc)
 	}
 
 	while (1) {
+		while (SDL_PollEvent(&event))
+			if (event.type == SDL_KEYDOWN ||
+			    event.type == SDL_QUIT)
+				return;
+
 		shift_grid(z, N_CHAN, N_TIME);
 		sweep(dsc, z);
 
