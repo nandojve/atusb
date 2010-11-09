@@ -36,6 +36,19 @@
 #define	N_TIME	64
 
 
+#define	FG_RGBA		0xffffff00	/* grid foreround color */
+#define	BG_RGBA		0x00408080	/* grid background color */
+#define CHAN_RGBA	0xff4040ff	/* channel number color */
+#define	FREQ_RGBA	0x20ff00ff	/* frequency color */
+
+#define	X_STEP		17	/* grid x step */
+#define	Y_STEP		 2	/* grid y step */
+#define	Z_STEP		 3	/* z multiplier */
+#define	X_STEP_Y	 1	/* x shift for each y step */
+#define	X_OFFSET	 7	/* x coordinate of lower left grid corner */
+#define	Y_OFFSET	40	/* y coordinate of lower left grid corner */
+
+
 static struct timeval t0;
 
 
@@ -63,7 +76,7 @@ static void sweep(struct atspi_dsc *dsc, int *z)
 		/* 150 us, according to AVR2001 section 3.5 */
 		wait_for_interrupt(dsc, IRQ_PLL_LOCK, IRQ_PLL_LOCK, 10, 20);
 
-		*z++ = 3*atspi_reg_read(dsc, REG_PHY_RSSI) & RSSI_MASK;
+		*z++ = Z_STEP*atspi_reg_read(dsc, REG_PHY_RSSI) & RSSI_MASK;
 #if 0
 		if (chan >= 13 && chan <= 19 )
 			z[-1] = 3*28-(chan-16)*(chan-16)*(chan-16)*(chan-16);
@@ -79,9 +92,9 @@ static void clear(SDL_Surface *s)
 
 
 #define	CBIG(pos) \
-	x-5+(pos)*6, x-1+(pos)*6, y+8, y+4, y, 0xff4040ff
+	x-5+(pos)*6, x-1+(pos)*6, y+8, y+4, y, CHAN_RGBA
 #define	CSMALL(pos) \
-	x-7+(pos)*4, x-5+(pos)*4, y+15, y+13, y+11, 0x20ff00ff
+	x-7+(pos)*4, x-5+(pos)*4, y+15, y+13, y+11, FREQ_RGBA
 
 
 static void label_channels(SDL_Surface *s, int sx, int x0, int y0)
@@ -142,10 +155,10 @@ void gui(struct atspi_dsc *dsc)
 
 		clear(surf);
 		zgrid_draw(surf, z, N_CHAN, N_TIME,
-		    17, 2, 1,
-		    7, 40,
-		    0xffffff00, 0x00408080);
-		label_channels(surf, 17, 7, 40);
+		    X_STEP, Y_STEP, X_STEP_Y,
+		    X_OFFSET, Y_OFFSET,
+		    FG_RGBA, BG_RGBA);
+		label_channels(surf, X_STEP, X_OFFSET, Y_OFFSET);
 
 		SDL_UnlockSurface(surf);
 		SDL_UpdateRect(surf, 0, 0, 0, 0);
