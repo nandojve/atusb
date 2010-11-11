@@ -207,7 +207,7 @@ static int atusb_buf_read(void *dsc, void *buf, int size)
 /* ----- RF interrupt ------------------------------------------------------ */
 
 
-static int atusd_interrupt(void *dsc)
+static int atusb_interrupt(void *dsc)
 {
 	usb_dev_handle *dev = dsc;
 	uint8_t buf;
@@ -243,5 +243,5 @@ struct atrf_driver atusb_driver = {
 	.reg_read	= atusb_reg_read,
 	.buf_write	= atusb_buf_write,
 	.buf_read	= atusb_buf_read,
-	.interrupt	= atusd_interrupt,
+	.interrupt	= atusb_interrupt,
 };
