@@ -320,6 +320,7 @@ struct atspi_driver atusd_driver = {
 	.close		= atusd_close,
 	.reset		= NULL,
 	.reset_rf	= atusd_reset_rf,
+	.test_mode	= NULL,
 	.reg_write	= atusd_reg_write,
 	.reg_read	= atusd_reg_read,
 	.buf_write	= atusd_buf_write,

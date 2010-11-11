@@ -99,6 +99,15 @@ void atspi_reset_rf(struct atspi_dsc *dsc)
 }
 
 
+int atspi_test_mode(struct atspi_dsc *dsc)
+{
+	if (!dsc->driver->test_mode)
+		return 0;
+	dsc->driver->test_mode(dsc->handle);
+	return 1;
+}
+
+
 void atspi_reg_write(struct atspi_dsc *dsc, uint8_t reg, uint8_t value)
 {
 	dsc->driver->reg_write(dsc->handle, reg, value);

@@ -108,6 +108,23 @@ static void atusb_reset_rf(void *dsc)
 }
 
 
+static void atusb_test_mode(void *dsc)
+{
+	usb_dev_handle *dev = dsc;
+	int res;
+
+	if (error)
+		return;
+
+	res =
+	    usb_control_msg(dev, TO_DEV, ATSPI_TEST, 0, 0, NULL, 0, 1000);
+	if (res < 0) {
+		fprintf(stderr, "ATSPI_TEST: %d\n", res);
+		error = 1;
+	}
+}
+
+
 /* ----- register access --------------------------------------------------- */
 
 
@@ -221,6 +238,7 @@ struct atspi_driver atusb_driver = {
 	.clear_error	= atusb_clear_error,
 	.reset		= atusb_reset,
 	.reset_rf	= atusb_reset_rf,
+	.test_mode	= atusb_test_mode,
 	.reg_write	= atusb_reg_write,
 	.reg_read	= atusb_reg_read,
 	.buf_write	= atusb_buf_write,

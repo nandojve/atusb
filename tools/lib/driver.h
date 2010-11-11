@@ -25,6 +25,7 @@ struct atspi_driver {
 	int (*clear_error)(void *dsc);
 	void (*reset)(void *dsc);
 	void (*reset_rf)(void *dsc);
+	void (*test_mode)(void *dsc);
 	void (*reg_write)(void *dsc, uint8_t reg, uint8_t value);
 	uint8_t (*reg_read)(void *dsc, uint8_t reg);
 	void (*buf_write)(void *dsc, const void *buf, int size);

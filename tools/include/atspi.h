@@ -29,6 +29,7 @@ int atspi_clear_error(struct atspi_dsc *dsc);
 
 void atspi_reset(struct atspi_dsc *dsc);
 void atspi_reset_rf(struct atspi_dsc *dsc);
+int atspi_test_mode(struct atspi_dsc *dsc);
 
 void atspi_reg_write(struct atspi_dsc *dsc, uint8_t reg, uint8_t value);
 uint8_t atspi_reg_read(struct atspi_dsc *dsc, uint8_t reg);
