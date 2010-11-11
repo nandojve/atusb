@@ -81,7 +81,7 @@ static void set_channel(struct atspi_dsc *dsc, int channel)
 }
 
 
-static void set_power(struct atspi_dsc *dsc, double power)
+static void set_power(struct atspi_dsc *dsc, double power, int crc)
 {
 	int n;
 
@@ -90,7 +90,7 @@ static void set_power(struct atspi_dsc *dsc, double power)
 			break;
 	if (fabs(tx_pwr[n]-power) > 0.01)
 		fprintf(stderr, "TX power %.1f dBm\n", tx_pwr[n]);
-	atspi_reg_write(dsc, REG_PHY_TX_PWR, TX_AUTO_CRC_ON | n);
+	atspi_reg_write(dsc, REG_PHY_TX_PWR, (crc ? TX_AUTO_CRC_ON : 0) | n);
 }
 
 
@@ -159,6 +159,29 @@ static void transmit(struct atspi_dsc *dsc, const char *msg, int times)
 }
 
 
+static void test_mode(struct atspi_dsc *dsc, uint8_t cont_tx)
+{
+	atspi_buf_write(dsc, "", 1);
+	atspi_reg_write(dsc, REG_CONT_TX_0, CONT_TX_MAGIC);
+	atspi_reg_write(dsc, REG_CONT_TX_1, cont_tx);
+
+	if (!atspi_test_mode(dsc)) {
+		atspi_reset_rf(dsc);
+		fprintf(stderr, "device does not support test mode\n");
+		exit(1);
+	}
+
+	atspi_reg_write(dsc, REG_TRX_STATE, TRX_CMD_PLL_ON);
+	wait_for_interrupt(dsc, IRQ_PLL_LOCK, IRQ_PLL_LOCK, 10, 20);
+
+	atspi_reg_write(dsc, REG_TRX_STATE, TRX_CMD_TX_START);
+
+	while (run)
+		sleep(1);
+	atspi_reset_rf(dsc);
+}
+
+
 static void die(int sig)
 {
 	run = 0;
@@ -169,10 +192,13 @@ static void usage(const char *name)
 {
 	fprintf(stderr,
 "usage: %s [-c channel] [-p power] [-t trim] [message [repetitions]]\n"
-"    -c channel  channel number, 11 to 26 (default %d)\n"
-"    -p power    transmit power, -17.2 to 3.0 dBm (default %.1f)\n"
-"    -t trim     trim capacitor, 0 to 15 (default 0)\n"
-	    , name , DEFAULT_CHANNEL, DEFAULT_POWER);
+"       %s [-c channel] [-p power] [-t trim] -T delta\n"
+"    -c channel   channel number, 11 to 26 (default %d)\n"
+"    -p power     transmit power, -17.2 to 3.0 dBm (default %.1f)\n"
+"    -t trim      trim capacitor, 0 to 15 (default 0)\n"
+"    -t trim      trim capacitor, 0 to 15 (default 0)\n"
+"    -T delta_MHz test mode. delta_MHz is -2, -0.5, or +0.5\n"
+	    , name, name, DEFAULT_CHANNEL, DEFAULT_POWER);
 	exit(1);
 }
 
@@ -182,11 +208,12 @@ int main(int argc, char *const *argv)
 	int channel = DEFAULT_CHANNEL;
 	double power = DEFAULT_POWER;
 	int trim = 0, times = 1;
+	uint8_t cont_tx = 0;
 	char *end;
 	int c;
 	struct atspi_dsc *dsc;
 
-	while ((c = getopt(argc, argv, "c:p:t:")) != EOF)
+	while ((c = getopt(argc, argv, "c:p:t:T:")) != EOF)
 		switch (c) {
 		case 'c':
 			channel = strtoul(optarg, &end, 0);
@@ -207,6 +234,16 @@ int main(int argc, char *const *argv)
 			if (trim > 15)
 				usage(*argv);
 			break;
+		case 'T':
+			if (!strcmp(optarg, "-2"))
+				cont_tx = CONT_TX_M2M;
+			else if (!strcmp(optarg, "-0.5"))
+				cont_tx = CONT_TX_M500K;
+			else if (!strcmp(optarg, "+0.5"))
+				cont_tx = CONT_TX_P500K;
+			else
+				usage(*argv);
+			break;
 		default:
 			usage(*argv);
 		}
@@ -217,7 +254,12 @@ int main(int argc, char *const *argv)
 	case 0:
 		dsc = init_txrx(trim);
 		set_channel(dsc, channel);
-		receive(dsc);
+		if (!cont_tx)
+			receive(dsc);
+		else {
+			set_power(dsc, power, 0);
+			test_mode(dsc, cont_tx);
+		}
 		break;
 	case 2:
 		times = strtoul(argv[optind+1], &end, 0);
@@ -225,9 +267,11 @@ int main(int argc, char *const *argv)
 			usage(*argv);
 		/* fall through */
 	case 1:
+		if (cont_tx)
+			usage(*argv);
 		dsc = init_txrx(trim);
 		set_channel(dsc, channel);
-		set_power(dsc, power);
+		set_power(dsc, power, 1);
 		transmit(dsc, argv[optind], times);
 		break;
 	default:
