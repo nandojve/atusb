@@ -1,5 +1,5 @@
 #
-# fw/Makefile - ATSPI firmware build
+# fw/Makefile - ATUSB firmware build
 #
 # Written 2008-2010 by Werner Almesberger
 # Copyright 2008-2010 Werner Almesberger
@@ -11,7 +11,7 @@
 #
 
 
-DIRS=common boot atspi
+DIRS=common boot atusb
 
 
 .PHONY:		all depend install uninstall clean spotless

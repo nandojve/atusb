@@ -16,7 +16,6 @@
 #include <sys/time.h>
 
 #include "at86rf230.h"
-#include "atspi/ep0.h"
 #include "atspi.h"
 
 

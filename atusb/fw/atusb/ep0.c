@@ -20,7 +20,7 @@
 #include "regs.h"
 //#include "uart.h"
 #include "usb.h"
-#include "atspi/ep0.h"
+#include "atusb/ep0.h"
 #include "at86rf230.h"
 #include "version.h"
 

@@ -1,5 +1,5 @@
 /*
- * atspi/atspi.c - ATSPI initialization and main loop
+ * atusb/atusb.c - ATUSB initialization and main loop
  *
  * Written 2008-2010 by Werner Almesberger
  * Copyright 2008-2010 Werner Almesberger
@@ -14,7 +14,7 @@
 #include "regs.h"
 #include "io.h"
 #include "usb.h"
-#include "atspi/ep0.h"
+#include "atusb/ep0.h"
 #include "version.h"
 
 

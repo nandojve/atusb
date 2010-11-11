@@ -19,7 +19,7 @@
 #endif
 
 #include "at86rf230.h"
-#include "atspi/ep0.h"
+#include "atusb/ep0.h"
 #include "atspi.h"
 
 

@@ -1,5 +1,5 @@
 #
-# atspi/Makefile - Makefile for USB to SPI translator (for AT86RF230)
+# atusb/Makefile - Makefile for USB to SPI translator (for AT86RF230)
 #
 # Written 2010 by Werner Almesberger
 # Copyright 2010 Werner Almesberger
@@ -11,7 +11,7 @@
 #
 
 
-MAIN = atspi
+MAIN = atusb
 OBJS = $(MAIN) usb descr version ep0
 
 F32XBASE = ../../../../f32xbase

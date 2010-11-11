@@ -15,7 +15,7 @@
 
 #include "io.h"
 #include "io-parts.h"
-#include "atspi/usb-ids.h"
+#include "atusb/usb-ids.h"
 
 
 /* ----- Boot loader configuration ----------------------------------------- */

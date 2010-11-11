@@ -15,8 +15,8 @@
 #include <usb.h>
 
 #include "f32xbase/usb.h"
-#include "atspi/ep0.h"
-#include "atspi/usb-ids.h"
+#include "atusb/ep0.h"
+#include "atusb/usb-ids.h"
 
 #include "driver.h"
 
