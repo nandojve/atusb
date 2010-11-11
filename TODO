@@ -66,7 +66,7 @@ Things not done yet
 - measure throughput as a function of placement/distance, carrier frequency,
   and transmit power
 
-- atspi-txrx: suppport "extended mode" with IEEE 802.15.4 CSMA-CA for more
+- atrf-txrx: suppport "extended mode" with IEEE 802.15.4 CSMA-CA for more
   realistic throughput figures
 
 - measure full spectrum (ideally up to 25 GHz, but just 2nd and 3rd harmonic
@@ -90,13 +90,6 @@ Things not done yet
 - implement sleep mode
 
 - (atusd) verify SPI signal timing, particularly the data clock
-
-
-Bugs to fix
------------
-
-- atrf vs. atspi naming is a bit confusing. Rename atrf hardware to atusb,
-  and maybe the tools from atspi to atrf ?
 
 
 ccrf

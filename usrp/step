@@ -21,7 +21,7 @@ while [ $run -lt $RUNS ]; do
     while [ $c -le $CH_LAST ]; do
 	echo "Run $run, ch $c (`mhz $c` MHz)" 1>&2
         mhz $c | tr '\n' ' ' >>out
-	( ssh ben ./atspi-txrx -c $c -p 4 $MSG 1500; echo DONE 1>&2; ) &
+	( ssh ben ./atrf-txrx -c $c -p 4 $MSG 1500; echo DONE 1>&2; ) &
 	sleep 3
 	( ulimit -t 60;
 	  usrp2_rx_cfile.py -d 4 -f `mhz $c`M -g 40 -N 100M tmp; )
