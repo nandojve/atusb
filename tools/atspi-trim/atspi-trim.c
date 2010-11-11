@@ -16,7 +16,7 @@
 #include <sys/time.h>
 
 #include "at86rf230.h"
-#include "atspi.h"
+#include "atrf.h"
 
 
 static void usage(const char *name)

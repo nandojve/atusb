@@ -13,7 +13,7 @@
 #ifndef GUI_H
 #define GUI_H
 
-#include "atspi.h"
+#include "atrf.h"
 
 
 void gui(struct atspi_dsc *dsc);

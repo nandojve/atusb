@@ -18,7 +18,7 @@
 #include <signal.h>
 
 #include "at86rf230.h"
-#include "atspi.h"
+#include "atrf.h"
 #include "misctxrx.h"
 
 

@@ -15,7 +15,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "atspi.h"
+#include "atrf.h"
 
 
 static void usage(const char *name)

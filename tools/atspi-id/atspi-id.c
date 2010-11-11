@@ -20,7 +20,7 @@
 
 #include "at86rf230.h"
 #include "atusb/ep0.h"
-#include "atspi.h"
+#include "atrf.h"
 
 
 #ifdef HAVE_USB

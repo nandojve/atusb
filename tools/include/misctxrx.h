@@ -15,7 +15,7 @@
 
 #include <stdint.h>
 
-#include "atspi.h"
+#include "atrf.h"
 
 
 uint8_t wait_for_interrupt(struct atspi_dsc *dsc, uint8_t wait_for,

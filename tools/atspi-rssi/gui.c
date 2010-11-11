@@ -21,7 +21,7 @@
 #include "SDL_gfxPrimitives.h"
 
 #include "at86rf230.h"
-#include "atspi.h"
+#include "atrf.h"
 #include "misctxrx.h"
 
 #include "zgrid.h"

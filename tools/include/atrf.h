@@ -1,5 +1,5 @@
 /*
- * include/atspi.h - ATSPI access functions library
+ * include/atrf.h - ATRF access functions library
  *
  * Written 2010 by Werner Almesberger
  * Copyright 2010 Werner Almesberger
@@ -10,8 +10,8 @@
  * (at your option) any later version.
  */
 
-#ifndef ATSPI_H
-#define	ATSPI_H
+#ifndef ATRF_H
+#define	ATRF_H
 
 #include <stdint.h>
 
@@ -39,4 +39,4 @@ int atspi_buf_read(struct atspi_dsc *dsc, void *buf, int size);
 
 int atspi_interrupt(struct atspi_dsc *dsc);
 
-#endif /* !ATSPI_H */
+#endif /* !ATRF_H */
