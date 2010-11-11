@@ -314,7 +314,7 @@ static int atusd_interrupt(void *handle)
 /* ----- Driver interface -------------------------------------------------- */
 
 
-struct atspi_driver atusd_driver = {
+struct atrf_driver atusd_driver = {
 	.name		= "uSD",
 	.open		= atusd_open,
 	.close		= atusd_close,

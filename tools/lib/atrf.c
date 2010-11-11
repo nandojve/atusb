@@ -18,12 +18,12 @@
 #include "atrf.h"
 
 
-extern struct atspi_driver atusb_driver;
-extern struct atspi_driver atusd_driver;
+extern struct atrf_driver atusb_driver;
+extern struct atrf_driver atusd_driver;
 
 
 struct atspi_dsc {
-	struct atspi_driver *driver;
+	struct atrf_driver *driver;
 	void *handle;
 };
 
@@ -54,7 +54,7 @@ int atspi_clear_error(struct atspi_dsc *dsc)
 struct atspi_dsc *atspi_open(void)
 {
 	struct atspi_dsc *dsc;
-	struct atspi_driver *driver;
+	struct atrf_driver *driver;
 	void *handle;
 
 #ifdef HAVE_USB

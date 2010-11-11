@@ -230,7 +230,7 @@ static int atusd_interrupt(void *dsc)
 /* ----- driver interface -------------------------------------------------- */
 
 
-struct atspi_driver atusb_driver = {
+struct atrf_driver atusb_driver = {
 	.name		= "USB",
 	.open		= atusb_open,
 	.close		= atusb_close,

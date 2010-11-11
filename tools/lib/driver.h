@@ -1,5 +1,5 @@
 /*
- * lib/driver.h - ATSPI driver API
+ * lib/driver.h - ATRF driver API
  *
  * Written 2010 by Werner Almesberger
  * Copyright 2010 Werner Almesberger
@@ -17,7 +17,7 @@
 #include <stdint.h>
 
 
-struct atspi_driver {
+struct atrf_driver {
 	const char *name;
 	void *(*open)(void);
 	void (*close)(void *dsc);
