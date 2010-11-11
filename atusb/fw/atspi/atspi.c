@@ -18,9 +18,30 @@
 #include "version.h"
 
 
+static int in_test_mode = 0;
+
+
+static void set_test_mode(int on)
+{
+	in_test_mode = on;
+	if (on) {
+		TST_MODE |= 1 << TST_BIT;
+		TST = 1;
+		LED_MODE |= 1 << LED_BIT;
+	} else {
+		TST = 0;
+		TST_MODE &= ~(1 << TST_BIT);
+		LED_MODE &= ~(1 << LED_BIT);
+		LED = 0;
+	}
+}
+
+
 void reset_rf(void)
 {
 	int i;
+
+	set_test_mode(0);
 
 	nRST_RF = 0;
 	/*
@@ -29,6 +50,12 @@ void reset_rf(void)
 	 */
 	for (i = 0; i != 10; i++);
 	nRST_RF = 1;
+}
+
+
+void test_mode(void)
+{
+	set_test_mode(1);
 }
 
 
@@ -44,6 +71,7 @@ static void init_io(void)
 	 * nRST_RF	push-pull	1
 	 * IRQ_RF	open drain	1	(input)
 	 * SLP_TR	push-pull	0
+	 * TST		open drain 	0
 	 *
 	 * LED		push-pull	0	(set up by boot loader)
 	 *
@@ -63,7 +91,7 @@ static void init_io(void)
 	SLP_TR = 0;
 	SLP_TR_MODE |= 1 << SLP_TR_BIT;
 
-	P0 = 1;	/* IRQ_RF = 1; LED = 0; the rest is unused */
+	P0 = 1;	/* IRQ_RF = 1; LED = 0; TST = Z; the rest is unused */
 	P3 = 0;
 
 #if 0
@@ -104,6 +132,10 @@ void main(void)
 	ep0_init();
 
 	while (1) {
+		if (in_test_mode) {
+			i++;
+			LED = !(i >> 13);
+		}
 		usb_poll();
 	}
 }

@@ -67,6 +67,9 @@ enum {
 	REG_XAH_CTRL		= 0x2c,
 	REG_CSMA_SEED_0		= 0x2d,
 	REG_CSMA_SEED_1		= 0x2e,
+
+	REG_CONT_TX_0		= 0x36,
+	REG_CONT_TX_1		= 0x3d,
 };
 
 /* --- TRX_STATUS [7] ------------------------------------------------------ */
@@ -113,7 +116,7 @@ enum {
 	TRAC_STATUS_INVALID			= 7
 };
 
-/* --- TRX_CMD [4:0] ----------------------------------------------------- */
+/* --- TRX_STATE [4:0] ----------------------------------------------------- */
 
 #define	TRX_CMD_SHIFT	0
 #define	TRX_CMD_MASK	7
@@ -284,5 +287,16 @@ enum {
 
 #define CSMA_SEED_1_SHIFT	0
 #define	CSMA_SEED_1_MASK	7
+
+/* --- REG_CONT_TX_0 [7:0] ------------------------------------------------- */
+
+#define	CONT_TX_MAGIC		0x0f
+
+/* --- REG_CONT_TX_1 [7:0] ------------------------------------------------- */
+
+#define	CONT_TX_MOD		0x00	/* modulated */
+#define	CONT_TX_M2M		0x10	/* f_CH-2 MHz */
+#define	CONT_TX_M500K		0x80	/* f_CH-0.5 MHz */
+#define	CONT_TX_P500K		0xc0	/* f_CH+0.5 MHz */
 
 #endif /* !AT86RF230_H */

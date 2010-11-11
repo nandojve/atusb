@@ -26,6 +26,7 @@
 
 
 extern void reset_rf(void);
+extern void test_mode(void);
 
 
 #define debug(...)
@@ -149,6 +150,11 @@ static __bit my_setup(struct setup_request *setup) __reentrant
 			return 0;
 		*buf = IRQ_RF;
 		usb_send(&ep0, buf, 1, NULL, NULL);
+		return 1;
+
+	case ATSPI_TO_DEV(ATSPI_TEST):
+		debug("ATSPI_TEST\n");
+		test_mode();
 		return 1;
 
 	case ATSPI_TO_DEV(ATSPI_REG_WRITE):

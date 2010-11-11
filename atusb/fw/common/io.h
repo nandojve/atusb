@@ -30,5 +30,6 @@
 #define	nRST_RF	P2_0
 #define	IRQ_RF	P0_0
 #define	SLP_TR	P2_1
+#define	TST	P0_7
 
 #endif /* !IO_H */

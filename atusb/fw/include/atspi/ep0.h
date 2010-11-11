@@ -23,6 +23,7 @@
  *
  * host->	ATSPI_RF_RESET		-		-	0
  * ->host	ATSPI_POLL_INT		-		-	1
+ * host->	ATSPI_TEST		-		-	0
  *
  * host->	ATSPI_REG_WRITE		value		addr	0
  * ->host	ATSPI_REG_READ		-		addr	1
@@ -36,10 +37,11 @@
  * EP0 protocol:
  *
  * 0.0	initial release
+ * 0.1  addition of ATSPI_TEST
  */
 
 #define EP0ATSPI_MAJOR	0	/* EP0 protocol, major revision */
-#define EP0ATSPI_MINOR	0	/* EP0 protocol, minor revision */
+#define EP0ATSPI_MINOR	1	/* EP0 protocol, minor revision */
 
 #define	HW_TYPE_100813	0	/* 100813 */
 
@@ -65,6 +67,7 @@ enum atspi_requests {
 	ATSPI_RESET,
 	ATSPI_RF_RESET			= 0x10,
 	ATSPI_POLL_INT,
+	ATSPI_TEST,
 	ATSPI_REG_WRITE			= 0x20,
 	ATSPI_REG_READ,
 	ATSPI_BUF_WRITE,
