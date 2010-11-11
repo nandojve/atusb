@@ -1,5 +1,5 @@
 /*
- * atspi-rssi/zgrid.h - Display a surface in faux 3D with SDL/SDL_gfx
+ * atrf-rssi/zgrid.h - Display a surface in faux 3D with SDL/SDL_gfx
  *
  * Written 2010 by Werner Almesberger
  * Copyright 2010 Werner Almesberger

@@ -1,5 +1,5 @@
 /*
- * atspi-rssi/digit.h - Draw 7 segment style digits
+ * atrf-rssi/digit.h - Draw 7 segment style digits
  *
  * Written 2010 by Werner Almesberger
  * Copyright 2010 Werner Almesberger

@@ -1,5 +1,5 @@
 #
-# atspi-txrx/Makefile - Build the TX/RX test utility
+# atrf-txrx/Makefile - Build the TX/RX test utility
 #
 # Written 2010 by Werner Almesberger
 # Copyright 2010 Werner Almesberger
@@ -11,7 +11,7 @@
 #
 
 
-MAIN = atspi-txrx
+MAIN = atrf-txrx
 
 include ../Makefile.common
 

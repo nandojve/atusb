@@ -1,5 +1,5 @@
 /*
- * atspi-id/atspi-id.c - Identify a ben-wpan AT86RF230 board
+ * atrf-id/atrf-id.c - Identify a ben-wpan AT86RF230 board
  *
  * Written 2010 by Werner Almesberger
  * Copyright 2010 Werner Almesberger

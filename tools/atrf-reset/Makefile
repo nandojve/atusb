@@ -1,5 +1,5 @@
 #
-# atspi-reset/Makefile - Reset the transceiver or the whole board
+# atrf-reset/Makefile - Reset the transceiver or the whole board
 #
 # Written 2010 by Werner Almesberger
 # Copyright 2010 Werner Almesberger
@@ -11,6 +11,6 @@
 #
 
 
-MAIN = atspi-reset
+MAIN = atrf-reset
 
 include ../Makefile.common

@@ -1,5 +1,5 @@
 #
-# atspi-rssi/Makefile - Build the spectrum scan utility
+# atrf-rssi/Makefile - Build the spectrum scan utility
 #
 # Written 2010 by Werner Almesberger
 # Copyright 2010 Werner Almesberger
@@ -11,7 +11,7 @@
 #
 
 
-MAIN = atspi-rssi
+MAIN = atrf-rssi
 
 include ../Makefile.common
 

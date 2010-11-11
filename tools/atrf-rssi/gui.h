@@ -1,5 +1,5 @@
 /*
- * atspi-rssi/gui.h - Graphical output for atspi-rssi
+ * atrf-rssi/gui.h - Graphical output for atrf-rssi
  *
  * Written 2010 by Werner Almesberger
  * Copyright 2010 Werner Almesberger

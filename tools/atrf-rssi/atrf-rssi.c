@@ -1,5 +1,5 @@
 /*
- * atspi-rssi/atspi-rssi.c - ben-wpan AT86RF230 spectrum scan
+ * atrf-rssi/atrf-rssi.c - ben-wpan AT86RF230 spectrum scan
  *
  * Written 2010 by Werner Almesberger
  * Copyright 2010 Werner Almesberger

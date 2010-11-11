@@ -1,5 +1,5 @@
 /*
- * atspi-trim/atspi-trim.c - AT86RF230 oscillator trim utility
+ * atrf-rssi/atrf-rssi.c - ben-wpan AT86RF230 spectrum scan
  *
  * Written 2010 by Werner Almesberger
  * Copyright 2010 Werner Almesberger
@@ -13,15 +13,18 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <sys/time.h>
+#include <string.h>
 
-#include "at86rf230.h"
 #include "atrf.h"
 
 
 static void usage(const char *name)
 {
-	fprintf(stderr, "%s [trim_value]\n", name);
+	fprintf(stderr,
+"usage: %s [-a|-t]\n\n"
+"  -a  reset the MCU and transceiver\n"
+"  -t  reset transceiver (default)\n"
+    , name);
 	exit(1);
 }
 
@@ -29,17 +32,18 @@ static void usage(const char *name)
 int main(int argc, const char **argv)
 {
 	struct atrf_dsc *dsc;
-	int trim = -1;
-	char *end;
+	int txrx = 1;
 
 	switch (argc) {
 	case 1:
 		break;
 	case 2:
-		trim = strtoul(argv[1], &end, 0);
-		if (*end || trim > 15)
-			usage(*argv);
-		break;
+		if (!strcmp(argv[1], "-t"))
+			break;
+		txrx = 0;
+		if (!strcmp(argv[1], "-a"))
+			break;
+		/* fall through */
 	default:
 		usage(*argv);
 	}
@@ -48,13 +52,10 @@ int main(int argc, const char **argv)
 	if (!dsc)
 		return 1;
 
-	if (trim == -1) {
-		trim = atrf_reg_read(dsc, REG_XOSC_CTRL) & XTAL_TRIM_MASK;
-		printf("%d (%d.%d pF)\n", trim, trim*3/10, trim*3 % 10);
-	} else {
-		atrf_reg_write(dsc, REG_XOSC_CTRL,
-		    (XTAL_MODE_INT << XTAL_MODE_SHIFT) | trim);
-	}
-
-	return 0;
+        if (txrx)
+                atrf_reset_rf(dsc);
+        else
+                atrf_reset(dsc);
+        return 0;
 }
+

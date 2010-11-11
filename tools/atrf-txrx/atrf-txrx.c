@@ -1,5 +1,5 @@
 /*
- * atspi-txrx/atspi-txrx.c - ben-wpan AT86RF230 TX/RX
+ * atrf-txrx/atrf-txrx.c - ben-wpan AT86RF230 TX/RX
  *
  * Written 2010 by Werner Almesberger
  * Copyright 2010 Werner Almesberger

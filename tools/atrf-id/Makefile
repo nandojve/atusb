@@ -1,5 +1,5 @@
 #
-# atspi-id/Makefile - Build the ATSPI identification utility
+# atrf-id/Makefile - Build the ATRF identification utility
 #
 # Written 2010 by Werner Almesberger
 # Copyright 2010 Werner Almesberger
@@ -11,6 +11,6 @@
 #
 
 
-MAIN = atspi-id
+MAIN = atrf-id
 
 include ../Makefile.common
