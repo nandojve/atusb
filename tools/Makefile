@@ -1,5 +1,5 @@
 #
-# tools/Makefile - Build the ATSPI-specific tools
+# tools/Makefile - Build the ATRF-specific tools
 #
 # Written 2010 by Werner Almesberger
 # Copyright 2010 Werner Almesberger
@@ -11,7 +11,7 @@
 #
 
 
-DIRS=atspi-id atspi-reset atspi-rssi atspi-trim atspi-txrx
+DIRS=atrf-id atrf-reset atrf-rssi atrf-trim atrf-txrx
 TARGET_ONLY_DIRS=lib
 
 include ../Makefile.recurse
