@@ -1,5 +1,5 @@
 #
-# cntr/Makefile - Makefile for USB to SPI translator (for AT86RF230)
+# cntr/Makefile - Makefile for CNTR firmware
 #
 # Written 2010 by Werner Almesberger
 # Copyright 2010 Werner Almesberger

@@ -1,5 +1,5 @@
 #
-# tools/Makefile - Build the ATSPI-specific tools
+# tools/Makefile - Build the CNTR control tool
 #
 # Written 2010 by Werner Almesberger
 # Copyright 2010 Werner Almesberger
