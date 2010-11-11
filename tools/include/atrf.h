@@ -19,7 +19,7 @@
 struct atrf_dsc;
 
 
-void *atrf_usb_handle(struct atrf_dsc *dsc); /* hack for atspi-id */
+void *atrf_usb_handle(struct atrf_dsc *dsc); /* hack for atrf-id */
 
 struct atrf_dsc *atrf_open(void);
 void atrf_close(struct atrf_dsc *dsc);

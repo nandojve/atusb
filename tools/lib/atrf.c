@@ -1,5 +1,5 @@
 /*
- * lib/atrf.c - ATSPI access functions library
+ * lib/atrf.c - ATRF access functions library
  *
  * Written 2010 by Werner Almesberger
  * Copyright 2010 Werner Almesberger

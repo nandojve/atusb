@@ -1,5 +1,5 @@
 /*
- * lib/atusd.c - ATSPI access functions library (uSD version)
+ * lib/atusd.c - ATRF access functions library (uSD version)
  *
  * Written 2010 by Werner Almesberger
  * Copyright 2010 Werner Almesberger
