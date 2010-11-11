@@ -25,7 +25,7 @@
 
 #ifdef HAVE_USB
 
-#define	FROM_DEV	ATSPI_FROM_DEV(0)
+#define	FROM_DEV	ATUSB_FROM_DEV(0)
 
 #define	BUF_SIZE	256
 
@@ -34,9 +34,9 @@ static int get_id(usb_dev_handle *dev, void *data, int size)
 {
 	int res;
 
-	res = usb_control_msg(dev, FROM_DEV, ATSPI_ID, 0, 0, data, size, 1000);
+	res = usb_control_msg(dev, FROM_DEV, ATUSB_ID, 0, 0, data, size, 1000);
 	if (res < 0)
-		fprintf(stderr, "ATSPI_ID: %s\n", usb_strerror());
+		fprintf(stderr, "ATUSB_ID: %s\n", usb_strerror());
 	return res;
 }
 
@@ -63,10 +63,10 @@ static int get_build(usb_dev_handle *dev, char *buf, size_t size)
 {
 	int res;
 
-	res = usb_control_msg(dev, FROM_DEV, ATSPI_BUILD, 0, 0, buf, size,
+	res = usb_control_msg(dev, FROM_DEV, ATUSB_BUILD, 0, 0, buf, size,
 	    1000);
 	if (res < 0)
-		fprintf(stderr, "ATSPI_BUILD: %s\n", usb_strerror());
+		fprintf(stderr, "ATUSB_BUILD: %s\n", usb_strerror());
 	return res;
 }
 

@@ -17,31 +17,31 @@
 /*
  * Direction	bRequest		wValue		wIndex	wLength
  *
- * ->host	ATSPI_ID		-		-	3
- * ->host	ATSPI_BUILD		-		-	#bytes
- * host->	ATSPI_RESET		-		-	0
+ * ->host	ATUSB_ID		-		-	3
+ * ->host	ATUSB_BUILD		-		-	#bytes
+ * host->	ATUSB_RESET		-		-	0
  *
- * host->	ATSPI_RF_RESET		-		-	0
- * ->host	ATSPI_POLL_INT		-		-	1
- * host->	ATSPI_TEST		-		-	0
+ * host->	ATUSB_RF_RESET		-		-	0
+ * ->host	ATUSB_POLL_INT		-		-	1
+ * host->	ATUSB_TEST		-		-	0
  *
- * host->	ATSPI_REG_WRITE		value		addr	0
- * ->host	ATSPI_REG_READ		-		addr	1
- * host->	ATSPI_BUF_WRITE		-		-	#bytes
- * ->host	ATSPI_BUF_READ		-		-	#bytes
- * host->	ATSPI_SRAM_WRITE	-		addr	#bytes
- * ->host	ATSPI_SRAM_READ		-		addr	#bytes
+ * host->	ATUSB_REG_WRITE		value		addr	0
+ * ->host	ATUSB_REG_READ		-		addr	1
+ * host->	ATUSB_BUF_WRITE		-		-	#bytes
+ * ->host	ATUSB_BUF_READ		-		-	#bytes
+ * host->	ATUSB_SRAM_WRITE	-		addr	#bytes
+ * ->host	ATUSB_SRAM_READ		-		addr	#bytes
  */
 
 /*
  * EP0 protocol:
  *
  * 0.0	initial release
- * 0.1  addition of ATSPI_TEST
+ * 0.1  addition of ATUSB_TEST
  */
 
-#define EP0ATSPI_MAJOR	0	/* EP0 protocol, major revision */
-#define EP0ATSPI_MINOR	1	/* EP0 protocol, minor revision */
+#define EP0ATUSB_MAJOR	0	/* EP0 protocol, major revision */
+#define EP0ATUSB_MINOR	1	/* EP0 protocol, minor revision */
 
 #define	HW_TYPE_100813	0	/* 100813 */
 
@@ -57,23 +57,23 @@
  */
 
 
-#define	ATSPI_TO_DEV(req)	(0x40 | (req) << 8)
-#define	ATSPI_FROM_DEV(req)	(0xc0 | (req) << 8)
+#define	ATUSB_TO_DEV(req)	(0x40 | (req) << 8)
+#define	ATUSB_FROM_DEV(req)	(0xc0 | (req) << 8)
 
 
 enum atspi_requests {
-	ATSPI_ID			= 0x00,
-	ATSPI_BUILD,
-	ATSPI_RESET,
-	ATSPI_RF_RESET			= 0x10,
-	ATSPI_POLL_INT,
-	ATSPI_TEST,
-	ATSPI_REG_WRITE			= 0x20,
-	ATSPI_REG_READ,
-	ATSPI_BUF_WRITE,
-	ATSPI_BUF_READ,
-	ATSPI_SRAM_WRITE,
-	ATSPI_SRAM_READ,
+	ATUSB_ID			= 0x00,
+	ATUSB_BUILD,
+	ATUSB_RESET,
+	ATUSB_RF_RESET			= 0x10,
+	ATUSB_POLL_INT,
+	ATUSB_TEST,
+	ATUSB_REG_WRITE			= 0x20,
+	ATUSB_REG_READ,
+	ATUSB_BUF_WRITE,
+	ATUSB_BUF_READ,
+	ATUSB_SRAM_WRITE,
+	ATUSB_SRAM_READ,
 };
 
 

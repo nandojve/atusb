@@ -1,5 +1,5 @@
 /*
- * lib/atusb.c - ATSPI access functions library (USB version)
+ * lib/atusb.c - ATUSB access functions library (USB version)
  *
  * Written 2010 by Werner Almesberger
  * Copyright 2010 Werner Almesberger
@@ -21,8 +21,8 @@
 #include "driver.h"
 
 
-#define FROM_DEV	ATSPI_FROM_DEV(0)
-#define TO_DEV		ATSPI_TO_DEV(0)
+#define FROM_DEV	ATUSB_FROM_DEV(0)
+#define TO_DEV		ATUSB_TO_DEV(0)
 
 
 /* ----- error handling ---------------------------------------------------- */
@@ -83,9 +83,9 @@ static void atusb_reset(void *dsc)
 		return;
 
 	res =
-	    usb_control_msg(dev, TO_DEV, ATSPI_RESET, 0, 0, NULL, 0, 1000);
+	    usb_control_msg(dev, TO_DEV, ATUSB_RESET, 0, 0, NULL, 0, 1000);
 	if (res < 0) {
-		fprintf(stderr, "ATSPI_RESET: %d\n", res);
+		fprintf(stderr, "ATUSB_RESET: %d\n", res);
 		error = 1;
 	}
 }
@@ -100,9 +100,9 @@ static void atusb_reset_rf(void *dsc)
 		return;
 
 	res =
-	    usb_control_msg(dev, TO_DEV, ATSPI_RF_RESET, 0, 0, NULL, 0, 1000);
+	    usb_control_msg(dev, TO_DEV, ATUSB_RF_RESET, 0, 0, NULL, 0, 1000);
 	if (res < 0) {
-		fprintf(stderr, "ATSPI_RF_RESET: %d\n", res);
+		fprintf(stderr, "ATUSB_RF_RESET: %d\n", res);
 		error = 1;
 	}
 }
@@ -117,9 +117,9 @@ static void atusb_test_mode(void *dsc)
 		return;
 
 	res =
-	    usb_control_msg(dev, TO_DEV, ATSPI_TEST, 0, 0, NULL, 0, 1000);
+	    usb_control_msg(dev, TO_DEV, ATUSB_TEST, 0, 0, NULL, 0, 1000);
 	if (res < 0) {
-		fprintf(stderr, "ATSPI_TEST: %d\n", res);
+		fprintf(stderr, "ATUSB_TEST: %d\n", res);
 		error = 1;
 	}
 }
@@ -136,10 +136,10 @@ static void atusb_reg_write(void *dsc, uint8_t reg, uint8_t value)
 	if (error)
 		return;
 
-	res = usb_control_msg(dev, TO_DEV, ATSPI_REG_WRITE, value, reg,
+	res = usb_control_msg(dev, TO_DEV, ATUSB_REG_WRITE, value, reg,
 	    NULL, 0, 1000);
 	if (res < 0) {
-		fprintf(stderr, "ATSPI_REG_WRITE: %d\n", res);
+		fprintf(stderr, "ATUSB_REG_WRITE: %d\n", res);
 		error = 1;
 	}
 }
@@ -154,10 +154,10 @@ static uint8_t atusb_reg_read(void *dsc, uint8_t reg)
 	if (error)
 		return 0;
 
-	res = usb_control_msg(dev, FROM_DEV, ATSPI_REG_READ, 0, reg,
+	res = usb_control_msg(dev, FROM_DEV, ATUSB_REG_READ, 0, reg,
 	    (void *) &value, 1, 1000);
 	if (res < 0) {
-		fprintf(stderr, "ATSPI_REG_READ: %d\n", res);
+		fprintf(stderr, "ATUSB_REG_READ: %d\n", res);
 		error = 1;
 	}
 	return value;
@@ -175,10 +175,10 @@ static void atusb_buf_write(void *dsc, const void *buf, int size)
 	if (error)
 		return;
 
-	res = usb_control_msg(dev, TO_DEV, ATSPI_BUF_WRITE, 0, 0,
+	res = usb_control_msg(dev, TO_DEV, ATUSB_BUF_WRITE, 0, 0,
 	    (void *) buf, size, 1000);
 	if (res < 0) {
-		fprintf(stderr, "ATSPI_BUF_WRITE: %d\n", res);
+		fprintf(stderr, "ATUSB_BUF_WRITE: %d\n", res);
 		error = 1;
 	}
 
@@ -193,10 +193,10 @@ static int atusb_buf_read(void *dsc, void *buf, int size)
 	if (error)
 		return -1;
 
-	res = usb_control_msg(dev, FROM_DEV, ATSPI_BUF_READ, 0, 0,
+	res = usb_control_msg(dev, FROM_DEV, ATUSB_BUF_READ, 0, 0,
 	    buf, size, 1000);
 	if (res < 0) {
-		fprintf(stderr, "ATSPI_BUF_READ: %d\n", res);
+		fprintf(stderr, "ATUSB_BUF_READ: %d\n", res);
 		error = 1;
 	}
 
@@ -216,10 +216,10 @@ static int atusd_interrupt(void *dsc)
 	if (error)
 		return -1;
 	
-	res = usb_control_msg(dev, FROM_DEV, ATSPI_POLL_INT, 0, 0,
+	res = usb_control_msg(dev, FROM_DEV, ATUSB_POLL_INT, 0, 0,
 	    (void *) &buf, 1, 1000);
 	if (res < 0) {
-		fprintf(stderr, "ATSPI_POLL_INT: %d\n", res);
+		fprintf(stderr, "ATUSB_POLL_INT: %d\n", res);
 		error = 1;
 	}
 
