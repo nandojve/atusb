@@ -191,14 +191,17 @@ static void die(int sig)
 static void usage(const char *name)
 {
 	fprintf(stderr,
-"usage: %s [-c channel] [-p power] [-t trim] [message [repetitions]]\n"
-"       %s [-c channel] [-p power] [-t trim] -T delta\n"
+"usage: %s [-c channel|-f freq] [-p power] [-t trim] [message [repetitions]]\n"
+"       %s [-c channel|-f freq] [-p power] [-t trim] -T delta\n"
 "    -c channel   channel number, 11 to 26 (default %d)\n"
-"    -p power     transmit power, -17.2 to 3.0 dBm (default %.1f)\n"
-"    -t trim      trim capacitor, 0 to 15 (default 0)\n"
-"    -t trim      trim capacitor, 0 to 15 (default 0)\n"
-"    -T delta_MHz test mode. delta_MHz is -2, -0.5, or +0.5\n"
-	    , name, name, DEFAULT_CHANNEL, DEFAULT_POWER);
+"    -f freq   frequency in MHz, 2405 to 2480 (default %d)\n"
+"    -p power  transmit power, -17.2 to 3.0 dBm (default %.1f)\n"
+"    -t trim   trim capacitor, 0 to 15 (default 0)\n"
+"    -t trim   trim capacitor, 0 to 15 (default 0)\n"
+"    -T delta  test mode. delta is the frequency offset of the constant wave\n"
+"              in MHz: -2, -0.5, or +0.5\n"
+	    , name, name, DEFAULT_CHANNEL, 2405+5*(DEFAULT_CHANNEL-11),
+	    DEFAULT_POWER);
 	exit(1);
 }
 
@@ -210,15 +213,25 @@ int main(int argc, char *const *argv)
 	int trim = 0, times = 1;
 	uint8_t cont_tx = 0;
 	char *end;
-	int c;
+	int c, freq;
 	struct atspi_dsc *dsc;
 
-	while ((c = getopt(argc, argv, "c:p:t:T:")) != EOF)
+	while ((c = getopt(argc, argv, "c:f:p:t:T:")) != EOF)
 		switch (c) {
 		case 'c':
 			channel = strtoul(optarg, &end, 0);
 			if (*end)
 				usage(*argv);
+			if (channel < 11 || channel > 26)
+				usage(*argv);
+			break;
+		case 'f':
+			freq = strtoul(optarg, &end, 0);
+			if (*end)
+				usage(*argv);
+			if (freq % 5)
+				usage(*argv);
+			channel = (freq-2405)/5+11;
 			if (channel < 11 || channel > 26)
 				usage(*argv);
 			break;
