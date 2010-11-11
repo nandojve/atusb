@@ -1,5 +1,5 @@
 #
-# lib/Makefile - Build the ATSPI library
+# lib/Makefile - Build the ATRF library
 #
 # Written 2010 by Werner Almesberger
 # Copyright 2010 Werner Almesberger
@@ -11,14 +11,14 @@
 #
 
 
-LIB = libatspi.a
+LIB = libatrf.a
 
 include ../Makefile.common
 
 CFLAGS += -Wall -I$(F32XBASE)/include
 OBJS_host = atusb.o $(F32XBASE)/lib/usb.o
 OBJS_ben = atusd.o
-OBJS = atspi.o misctxrx.o $(OBJS_$(TARGET))
+OBJS = atrf.o misctxrx.o $(OBJS_$(TARGET))
 
 .PHONY:		all clean spotless
 
