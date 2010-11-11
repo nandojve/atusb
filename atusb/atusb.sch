@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Mon Oct 25 00:20:15 2010
+EESchema Schematic File Version 2  date Thu Nov 11 02:11:13 2010
 LIBS:power
 LIBS:device
 LIBS:conn
@@ -7,13 +7,12 @@ LIBS:c8051f326
 LIBS:mini_usb_b
 LIBS:xtal-4
 LIBS:antenna
-LIBS:atusb-cache
 EELAYER 24  0
 EELAYER END
 $Descr A4 11700 8267
 Sheet 1 3
 Title "IEEE 802.15.4 USB Transceiver (AT86RF230)"
-Date "25 oct 2010"
+Date "11 nov 2010"
 Rev "100820"
 Comp "Werner Almesberger"
 Comment1 ""
@@ -22,50 +21,52 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 Wire Wire Line
-	10000 6100 10000 6300
+	4350 5050 7350 5050
 Wire Wire Line
-	6550 3200 6550 3400
-Connection ~ 6350 4850
+	4750 3200 4750 3400
 Wire Wire Line
-	6350 3200 6350 4850
-Connection ~ 5950 4500
+	4750 3400 4950 3400
 Wire Wire Line
-	5950 3200 5950 4500
-Connection ~ 5550 4150
+	4950 3400 4950 3200
+Connection ~ 6150 4700
 Wire Wire Line
-	5550 3200 5550 4150
-Connection ~ 5150 3850
+	6150 3200 6150 4700
+Connection ~ 5750 4300
 Wire Wire Line
-	5150 3200 5150 3850
+	5750 3200 5750 4300
+Connection ~ 5350 4000
 Wire Wire Line
-	7350 4700 4350 4700
-Wire Wire Line
-	7350 4300 4350 4300
-Wire Wire Line
-	7350 4000 4350 4000
-Wire Wire Line
-	7350 3850 4350 3850
-Wire Wire Line
-	7350 4150 4350 4150
-Wire Wire Line
-	7350 4500 4350 4500
+	5350 3200 5350 4000
 Wire Wire Line
 	7350 4850 4350 4850
 Wire Wire Line
-	5350 3200 5350 4000
-Connection ~ 5350 4000
+	7350 4500 4350 4500
 Wire Wire Line
-	5750 3200 5750 4300
-Connection ~ 5750 4300
+	7350 4150 4350 4150
 Wire Wire Line
-	6150 3200 6150 4700
-Connection ~ 6150 4700
+	7350 3850 4350 3850
 Wire Wire Line
-	4950 3200 4950 3400
+	7350 4000 4350 4000
 Wire Wire Line
-	4950 3400 4750 3400
+	7350 4300 4350 4300
 Wire Wire Line
-	4750 3400 4750 3200
+	7350 4700 4350 4700
+Wire Wire Line
+	5150 3200 5150 3850
+Connection ~ 5150 3850
+Wire Wire Line
+	5550 3200 5550 4150
+Connection ~ 5550 4150
+Wire Wire Line
+	5950 3200 5950 4500
+Connection ~ 5950 4500
+Wire Wire Line
+	6350 3200 6350 4850
+Connection ~ 6350 4850
+Wire Wire Line
+	6550 3200 6550 3400
+Wire Wire Line
+	10000 6100 10000 6300
 $Comp
 L PWR_FLAG #FLG01
 U 1 1 4C641B9C
@@ -206,6 +207,7 @@ F5 "nSS" O R 4350 4300 60
 F6 "SCLK" O R 4350 4150 60 
 F7 "MOSI" O R 4350 3850 60 
 F8 "MISO" I R 4350 4000 60 
+F9 "TST" O R 4350 5050 60 
 $EndSheet
 $Sheet
 S 7350 3450 1800 1950
@@ -219,5 +221,6 @@ F5 "MISO" O L 7350 4000 60
 F6 "MOSI" I L 7350 3850 60 
 F7 "nSS" I L 7350 4300 60 
 F8 "IRQ_RF" O L 7350 4500 60 
+F9 "TST" I L 7350 5050 60 
 $EndSheet
 $EndSCHEMATC
