@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Thu Nov 11 02:11:13 2010
+EESchema Schematic File Version 2  date Thu Nov 11 10:36:47 2010
 LIBS:power
 LIBS:device
 LIBS:conn
@@ -7,6 +7,7 @@ LIBS:c8051f326
 LIBS:mini_usb_b
 LIBS:xtal-4
 LIBS:antenna
+LIBS:atusb-cache
 EELAYER 24  0
 EELAYER END
 $Descr A4 11700 8267
@@ -20,6 +21,8 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
+Text Notes 5000 5200 0    60   ~ 0
+TST connection is a rework item and\nnot yet included in the layout.
 Wire Wire Line
 	4350 5050 7350 5050
 Wire Wire Line
