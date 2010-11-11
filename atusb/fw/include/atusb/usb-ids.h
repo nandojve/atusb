@@ -1,5 +1,5 @@
 /*
- * include/atspi/usb-ids.h - USB vendor and product IDs
+ * include/atusb/usb-ids.h - USB vendor and product IDs
  *
  * Written 2009, 2010 by Werner Almesberger
  * Copyright 2009, 2010 Werner Almesberger

@@ -1,6 +1,6 @@
 #
-# boot/Makefile - Makefile for DFU-capable boot loader for ATSPI
-#
+# boot/Makefile - Makefile for DFU-capable boot loader for ATRF
+
 # Written 2008, 2010 by Werner Almesberger
 # Copyright 2008, 2010 Werner Almesberger
 #
