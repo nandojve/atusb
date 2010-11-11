@@ -18,7 +18,7 @@
 #include "atrf.h"
 
 
-uint8_t wait_for_interrupt(struct atspi_dsc *dsc, uint8_t wait_for,
+uint8_t wait_for_interrupt(struct atrf_dsc *dsc, uint8_t wait_for,
     uint8_t ignore, int sleep_us, int timeout);
 
 #endif /* !MISCTXRX_H */

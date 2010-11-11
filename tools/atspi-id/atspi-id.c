@@ -71,7 +71,7 @@ static int get_build(usb_dev_handle *dev, char *buf, size_t size)
 }
 
 
-static void show_usb_info(struct atspi_dsc *dsc)
+static void show_usb_info(struct atrf_dsc *dsc)
 {
 	usb_dev_handle *dev;
 	const struct usb_device *device;
@@ -79,7 +79,7 @@ static void show_usb_info(struct atspi_dsc *dsc)
 	char buf[BUF_SIZE+1];	/* +1 for terminating \0 */
 	int len;
 
-	dev = atspi_usb_handle(dsc);
+	dev = atrf_usb_handle(dsc);
 	if (!dev)
 		return;
 	device = usb_device(dev);
@@ -102,7 +102,7 @@ static void show_usb_info(struct atspi_dsc *dsc)
 #else /* HAVE_USB */
 
 
-static void show_usb_info(struct atspi_dsc *dsc)
+static void show_usb_info(struct atrf_dsc *dsc)
 {
 }
 
@@ -110,16 +110,16 @@ static void show_usb_info(struct atspi_dsc *dsc)
 #endif /* !HAVE_USB */
 
 
-static void show_info(struct atspi_dsc *dsc)
+static void show_info(struct atrf_dsc *dsc)
 {
 	uint8_t part, version, man_id_0, man_id_1;
 
 	show_usb_info(dsc);
 
-	part = atspi_reg_read(dsc, REG_PART_NUM);
-	version = atspi_reg_read(dsc, REG_VERSION_NUM);
-	man_id_0 = atspi_reg_read(dsc, REG_MAN_ID_0);
-	man_id_1 = atspi_reg_read(dsc, REG_MAN_ID_1);
+	part = atrf_reg_read(dsc, REG_PART_NUM);
+	version = atrf_reg_read(dsc, REG_VERSION_NUM);
+	man_id_0 = atrf_reg_read(dsc, REG_MAN_ID_0);
+	man_id_1 = atrf_reg_read(dsc, REG_MAN_ID_1);
 	printf("%10spart 0x%02x version %u manufacturer xxxx%02x%02x\n", "",
 	    part, version, man_id_1, man_id_0);
 }
@@ -134,17 +134,17 @@ static void usage(const char *name)
 
 int main(int argc, const char **argv)
 {
-	struct atspi_dsc *dsc;
+	struct atrf_dsc *dsc;
 
 	if (argc != 1)
 		usage(*argv);
-	dsc = atspi_open();
+	dsc = atrf_open();
 	if (!dsc)
 		return 1;
 
 	show_info(dsc);
 
-	atspi_close(dsc);
+	atrf_close(dsc);
 
 	return 0;
 }

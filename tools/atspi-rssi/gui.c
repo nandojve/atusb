@@ -67,16 +67,16 @@ static void shift_grid(int *z, int nx, int ny)
 }
 
 
-static void sweep(struct atspi_dsc *dsc, int *z)
+static void sweep(struct atrf_dsc *dsc, int *z)
 {
 	int chan;
 
 	for (chan = 11; chan <= 26; chan++) {
-		atspi_reg_write(dsc, REG_PHY_CC_CCA, chan);
+		atrf_reg_write(dsc, REG_PHY_CC_CCA, chan);
 		/* 150 us, according to AVR2001 section 3.5 */
 		wait_for_interrupt(dsc, IRQ_PLL_LOCK, IRQ_PLL_LOCK, 10, 20);
 
-		*z++ = Z_STEP*atspi_reg_read(dsc, REG_PHY_RSSI) & RSSI_MASK;
+		*z++ = Z_STEP*atrf_reg_read(dsc, REG_PHY_RSSI) & RSSI_MASK;
 #if 0
 		if (chan >= 13 && chan <= 19 )
 			z[-1] = 3*28-(chan-16)*(chan-16)*(chan-16)*(chan-16);
@@ -121,7 +121,7 @@ static void label_channels(SDL_Surface *s, int sx, int x0, int y0)
 }
 
 
-void gui(struct atspi_dsc *dsc)
+void gui(struct atrf_dsc *dsc)
 {
 	SDL_Surface *surf;
 	int z[N_CHAN*N_TIME];

@@ -32,18 +32,18 @@ static struct timeval t0;
 static volatile int run = 1;
 
 
-static void sweep(struct atspi_dsc *dsc)
+static void sweep(struct atrf_dsc *dsc)
 {
 	int chan, rssi;
 	struct timeval t;
 
 	for (chan = 11; chan <= 26; chan++) {
-		atspi_reg_write(dsc, REG_PHY_CC_CCA, chan);
+		atrf_reg_write(dsc, REG_PHY_CC_CCA, chan);
 		/* 150 us, according to AVR2001 section 3.5 */
 		wait_for_interrupt(dsc, IRQ_PLL_LOCK, IRQ_PLL_LOCK, 10, 20);
 
 		gettimeofday(&t, NULL);
-		rssi = atspi_reg_read(dsc, REG_PHY_RSSI) & RSSI_MASK;
+		rssi = atrf_reg_read(dsc, REG_PHY_RSSI) & RSSI_MASK;
 		t.tv_sec -= t0.tv_sec;
 		t.tv_usec -= t0.tv_usec;
 		printf("%d %f %d\n",
@@ -77,7 +77,7 @@ static void usage(const char *name)
 
 int main(int argc, char **argv)
 {
-	struct atspi_dsc *dsc;
+	struct atrf_dsc *dsc;
 	unsigned long arg = 0, i;
 	char *end;
 	int c;
@@ -115,12 +115,12 @@ int main(int argc, char **argv)
 
 	signal(SIGINT, die);
 
-	dsc = atspi_open();
+	dsc = atrf_open();
 	if (!dsc)
 		return 1;
 
-	atspi_reg_write(dsc, REG_TRX_STATE, TRX_CMD_TRX_OFF);
-	atspi_reg_write(dsc, REG_TRX_STATE, TRX_CMD_RX_ON);
+	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_TRX_OFF);
+	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_RX_ON);
 	/*
 	 * We'll wait for the PLL lock after selecting the channel.
 	 */
@@ -133,9 +133,9 @@ int main(int argc, char **argv)
 			sweep(dsc);
 	}
 
-	atspi_reg_write(dsc, REG_TRX_STATE, TRX_CMD_TRX_OFF);
+	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_TRX_OFF);
 
-	atspi_close(dsc);
+	atrf_close(dsc);
 
 	return 0;
 }

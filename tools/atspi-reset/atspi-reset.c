@@ -31,7 +31,7 @@ static void usage(const char *name)
 
 int main(int argc, const char **argv)
 {
-	struct atspi_dsc *dsc;
+	struct atrf_dsc *dsc;
 	int txrx = 1;
 
 	switch (argc) {
@@ -48,14 +48,14 @@ int main(int argc, const char **argv)
 		usage(*argv);
 	}
 
-	dsc = atspi_open();
+	dsc = atrf_open();
 	if (!dsc)
 		return 1;
 
         if (txrx)
-                atspi_reset_rf(dsc);
+                atrf_reset_rf(dsc);
         else
-                atspi_reset(dsc);
+                atrf_reset(dsc);
         return 0;
 }
 

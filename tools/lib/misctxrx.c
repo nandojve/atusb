@@ -31,7 +31,7 @@ static void die(int sig)
 }
 
 
-uint8_t wait_for_interrupt(struct atspi_dsc *dsc, uint8_t wait_for,
+uint8_t wait_for_interrupt(struct atrf_dsc *dsc, uint8_t wait_for,
     uint8_t ignore, int sleep_us, int timeout)
 {
 	uint8_t irq = 0, show;
@@ -40,13 +40,13 @@ uint8_t wait_for_interrupt(struct atspi_dsc *dsc, uint8_t wait_for,
 	run = 1;
 	old_sig = signal(SIGINT, die);
 	while (run) {
-		while (run && !atspi_interrupt(dsc)) {
+		while (run && !atrf_interrupt(dsc)) {
 			usleep(sleep_us);
 			if (timeout && !--timeout)
 				return 0;
 		}
-		irq = atspi_reg_read(dsc, REG_IRQ_STATUS);
-		if (atspi_error(dsc))
+		irq = atrf_reg_read(dsc, REG_IRQ_STATUS);
+		if (atrf_error(dsc))
 			exit(1);
 		if (!irq)
 			continue;

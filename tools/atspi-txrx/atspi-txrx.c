@@ -51,37 +51,37 @@ static double tx_pwr[] = {
 static volatile int run = 1;
 
 
-static struct atspi_dsc *init_txrx(int trim)
+static struct atrf_dsc *init_txrx(int trim)
 {
-	struct atspi_dsc *dsc;
+	struct atrf_dsc *dsc;
 
-	dsc = atspi_open();
+	dsc = atrf_open();
 	if (!dsc)
 		exit(1);
 	
-	atspi_reset_rf(dsc);
-	atspi_reg_write(dsc, REG_TRX_STATE, TRX_CMD_TRX_OFF);
+	atrf_reset_rf(dsc);
+	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_TRX_OFF);
 #ifdef HAVE_USB /* @@@ yeah, ugly */
-	atspi_reg_write(dsc, REG_XOSC_CTRL,
+	atrf_reg_write(dsc, REG_XOSC_CTRL,
 	    (XTAL_MODE_INT << XTAL_MODE_SHIFT) | trim);
 #else
-	atspi_reg_write(dsc, REG_XOSC_CTRL, XTAL_MODE_EXT << XTAL_MODE_SHIFT);
+	atrf_reg_write(dsc, REG_XOSC_CTRL, XTAL_MODE_EXT << XTAL_MODE_SHIFT);
 #endif
-	atspi_reg_write(dsc, REG_TRX_CTRL_0, 0); /* disable CLKM */
+	atrf_reg_write(dsc, REG_TRX_CTRL_0, 0); /* disable CLKM */
 
-	(void) atspi_reg_read(dsc, REG_IRQ_STATUS);
+	(void) atrf_reg_read(dsc, REG_IRQ_STATUS);
 
 	return dsc;
 }
 
 
-static void set_channel(struct atspi_dsc *dsc, int channel)
+static void set_channel(struct atrf_dsc *dsc, int channel)
 {
-	atspi_reg_write(dsc, REG_PHY_CC_CCA, (1 << CCA_MODE_SHIFT) | channel);
+	atrf_reg_write(dsc, REG_PHY_CC_CCA, (1 << CCA_MODE_SHIFT) | channel);
 }
 
 
-static void set_power(struct atspi_dsc *dsc, double power, int crc)
+static void set_power(struct atrf_dsc *dsc, double power, int crc)
 {
 	int n;
 
@@ -90,17 +90,17 @@ static void set_power(struct atspi_dsc *dsc, double power, int crc)
 			break;
 	if (fabs(tx_pwr[n]-power) > 0.01)
 		fprintf(stderr, "TX power %.1f dBm\n", tx_pwr[n]);
-	atspi_reg_write(dsc, REG_PHY_TX_PWR, (crc ? TX_AUTO_CRC_ON : 0) | n);
+	atrf_reg_write(dsc, REG_PHY_TX_PWR, (crc ? TX_AUTO_CRC_ON : 0) | n);
 }
 
 
-static void receive(struct atspi_dsc *dsc)
+static void receive(struct atrf_dsc *dsc)
 {
 	uint8_t buf[MAX_PSDU+1]; /* PSDU+LQI */
 	int n, ok, i;
 	uint8_t ed, lqi;
 
-	atspi_reg_write(dsc, REG_TRX_STATE, TRX_CMD_RX_ON);
+	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_RX_ON);
 	/*
 	 * 180 us, according to AVR2001 section 4.2. We time out after
 	 * nominally 200 us.
@@ -113,15 +113,15 @@ static void receive(struct atspi_dsc *dsc)
 	if (!run)
 		return;
 
-	n = atspi_buf_read(dsc, buf, sizeof(buf));
+	n = atrf_buf_read(dsc, buf, sizeof(buf));
 	if (n < 0)
 		exit(1);
 	if (n < 3) {
 		fprintf(stderr, "%d bytes received\n", n);
 		exit(1);
 	}
-	ed = atspi_reg_read(dsc, REG_PHY_ED_LEVEL);
-	ok = !!(atspi_reg_read(dsc, REG_PHY_RSSI) & RX_CRC_VALID);
+	ed = atrf_reg_read(dsc, REG_PHY_ED_LEVEL);
+	ok = !!(atrf_reg_read(dsc, REG_PHY_RSSI) & RX_CRC_VALID);
 	lqi = buf[n-1];
 	fprintf(stderr, "%d bytes payload, CRC %s, LQI %u, ED %d dBm\n",
 	    n-3, ok ? "OK" : "BAD", lqi, -91+ed);
@@ -131,11 +131,11 @@ static void receive(struct atspi_dsc *dsc)
 }
 
 
-static void transmit(struct atspi_dsc *dsc, const char *msg, int times)
+static void transmit(struct atrf_dsc *dsc, const char *msg, int times)
 {
 	uint8_t buf[MAX_PSDU];
 
-	atspi_reg_write(dsc, REG_TRX_STATE, TRX_CMD_PLL_ON);
+	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_PLL_ON);
 	/*
 	 * 180 us, according to AVR2001 section 4.3. We time out after
 	 * nominally 200 us.
@@ -146,11 +146,11 @@ static void transmit(struct atspi_dsc *dsc, const char *msg, int times)
 	 * We need to copy the message to append the CRC placeholders.
 	 */
 	strcpy((void *) buf, msg);
-	atspi_buf_write(dsc, buf, strlen(msg)+2);
+	atrf_buf_write(dsc, buf, strlen(msg)+2);
 
 	while (run && times--) {
 		/* @@@ should wait for clear channel */
-		atspi_reg_write(dsc, REG_TRX_STATE, TRX_CMD_TX_START);
+		atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_TX_START);
 
 		/* wait up to 10 ms (nominally) */
 		wait_for_interrupt(dsc, IRQ_TRX_END,
@@ -159,26 +159,26 @@ static void transmit(struct atspi_dsc *dsc, const char *msg, int times)
 }
 
 
-static void test_mode(struct atspi_dsc *dsc, uint8_t cont_tx)
+static void test_mode(struct atrf_dsc *dsc, uint8_t cont_tx)
 {
-	atspi_buf_write(dsc, "", 1);
-	atspi_reg_write(dsc, REG_CONT_TX_0, CONT_TX_MAGIC);
-	atspi_reg_write(dsc, REG_CONT_TX_1, cont_tx);
+	atrf_buf_write(dsc, "", 1);
+	atrf_reg_write(dsc, REG_CONT_TX_0, CONT_TX_MAGIC);
+	atrf_reg_write(dsc, REG_CONT_TX_1, cont_tx);
 
-	if (!atspi_test_mode(dsc)) {
-		atspi_reset_rf(dsc);
+	if (!atrf_test_mode(dsc)) {
+		atrf_reset_rf(dsc);
 		fprintf(stderr, "device does not support test mode\n");
 		exit(1);
 	}
 
-	atspi_reg_write(dsc, REG_TRX_STATE, TRX_CMD_PLL_ON);
+	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_PLL_ON);
 	wait_for_interrupt(dsc, IRQ_PLL_LOCK, IRQ_PLL_LOCK, 10, 20);
 
-	atspi_reg_write(dsc, REG_TRX_STATE, TRX_CMD_TX_START);
+	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_TX_START);
 
 	while (run)
 		sleep(1);
-	atspi_reset_rf(dsc);
+	atrf_reset_rf(dsc);
 }
 
 
@@ -214,7 +214,7 @@ int main(int argc, char *const *argv)
 	uint8_t cont_tx = 0;
 	char *end;
 	int c, freq;
-	struct atspi_dsc *dsc;
+	struct atrf_dsc *dsc;
 
 	while ((c = getopt(argc, argv, "c:f:p:t:T:")) != EOF)
 		switch (c) {
@@ -291,7 +291,7 @@ int main(int argc, char *const *argv)
 		usage(*argv);
 	}
 
-	atspi_close(dsc);
+	atrf_close(dsc);
 
 	return 0;
 }

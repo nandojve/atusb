@@ -16,27 +16,27 @@
 #include <stdint.h>
 
 
-struct atspi_dsc;
+struct atrf_dsc;
 
 
-void *atspi_usb_handle(struct atspi_dsc *dsc); /* hack for atspi-id */
+void *atrf_usb_handle(struct atrf_dsc *dsc); /* hack for atspi-id */
 
-struct atspi_dsc *atspi_open(void);
-void atspi_close(struct atspi_dsc *dsc);
+struct atrf_dsc *atrf_open(void);
+void atrf_close(struct atrf_dsc *dsc);
 
-int atspi_error(struct atspi_dsc *dsc);
-int atspi_clear_error(struct atspi_dsc *dsc);
+int atrf_error(struct atrf_dsc *dsc);
+int atrf_clear_error(struct atrf_dsc *dsc);
 
-void atspi_reset(struct atspi_dsc *dsc);
-void atspi_reset_rf(struct atspi_dsc *dsc);
-int atspi_test_mode(struct atspi_dsc *dsc);
+void atrf_reset(struct atrf_dsc *dsc);
+void atrf_reset_rf(struct atrf_dsc *dsc);
+int atrf_test_mode(struct atrf_dsc *dsc);
 
-void atspi_reg_write(struct atspi_dsc *dsc, uint8_t reg, uint8_t value);
-uint8_t atspi_reg_read(struct atspi_dsc *dsc, uint8_t reg);
+void atrf_reg_write(struct atrf_dsc *dsc, uint8_t reg, uint8_t value);
+uint8_t atrf_reg_read(struct atrf_dsc *dsc, uint8_t reg);
 
-void atspi_buf_write(struct atspi_dsc *dsc, const void *buf, int size);
-int atspi_buf_read(struct atspi_dsc *dsc, void *buf, int size);
+void atrf_buf_write(struct atrf_dsc *dsc, const void *buf, int size);
+int atrf_buf_read(struct atrf_dsc *dsc, void *buf, int size);
 
-int atspi_interrupt(struct atspi_dsc *dsc);
+int atrf_interrupt(struct atrf_dsc *dsc);
 
 #endif /* !ATRF_H */

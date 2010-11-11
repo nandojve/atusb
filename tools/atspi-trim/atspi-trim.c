@@ -28,7 +28,7 @@ static void usage(const char *name)
 
 int main(int argc, const char **argv)
 {
-	struct atspi_dsc *dsc;
+	struct atrf_dsc *dsc;
 	int trim = -1;
 	char *end;
 
@@ -44,15 +44,15 @@ int main(int argc, const char **argv)
 		usage(*argv);
 	}
 
-	dsc = atspi_open();
+	dsc = atrf_open();
 	if (!dsc)
 		return 1;
 
 	if (trim == -1) {
-		trim = atspi_reg_read(dsc, REG_XOSC_CTRL) & XTAL_TRIM_MASK;
+		trim = atrf_reg_read(dsc, REG_XOSC_CTRL) & XTAL_TRIM_MASK;
 		printf("%d (%d.%d pF)\n", trim, trim*3/10, trim*3 % 10);
 	} else {
-		atspi_reg_write(dsc, REG_XOSC_CTRL,
+		atrf_reg_write(dsc, REG_XOSC_CTRL,
 		    (XTAL_MODE_INT << XTAL_MODE_SHIFT) | trim);
 	}
 

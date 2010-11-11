@@ -16,6 +16,6 @@
 #include "atrf.h"
 
 
-void gui(struct atspi_dsc *dsc);
+void gui(struct atrf_dsc *dsc);
 
 #endif /* !GUI_H */

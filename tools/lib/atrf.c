@@ -1,5 +1,5 @@
 /*
- * lib/atspi.c - ATSPI access functions library
+ * lib/atrf.c - ATSPI access functions library
  *
  * Written 2010 by Werner Almesberger
  * Copyright 2010 Werner Almesberger
@@ -22,13 +22,13 @@ extern struct atrf_driver atusb_driver;
 extern struct atrf_driver atusd_driver;
 
 
-struct atspi_dsc {
+struct atrf_dsc {
 	struct atrf_driver *driver;
 	void *handle;
 };
 
 
-void *atspi_usb_handle(struct atspi_dsc *dsc)
+void *atrf_usb_handle(struct atrf_dsc *dsc)
 {
 #ifdef HAVE_USB
 	return dsc->handle;
@@ -38,22 +38,22 @@ void *atspi_usb_handle(struct atspi_dsc *dsc)
 }
 
 
-int atspi_error(struct atspi_dsc *dsc)
+int atrf_error(struct atrf_dsc *dsc)
 {
 	return dsc->driver->error ? dsc->driver->error(dsc->handle) : 0;
 }
 
 
-int atspi_clear_error(struct atspi_dsc *dsc)
+int atrf_clear_error(struct atrf_dsc *dsc)
 {
 	return dsc->driver->clear_error ?
 	    dsc->driver->clear_error(dsc->handle) : 0;
 }
 
 
-struct atspi_dsc *atspi_open(void)
+struct atrf_dsc *atrf_open(void)
 {
-	struct atspi_dsc *dsc;
+	struct atrf_dsc *dsc;
 	struct atrf_driver *driver;
 	void *handle;
 
@@ -78,7 +78,7 @@ struct atspi_dsc *atspi_open(void)
 }
 
 
-void atspi_close(struct atspi_dsc *dsc)
+void atrf_close(struct atrf_dsc *dsc)
 {
 	if (dsc->driver->close)
 		dsc->driver->close(dsc->handle);
@@ -86,20 +86,20 @@ void atspi_close(struct atspi_dsc *dsc)
 }
 
 
-void atspi_reset(struct atspi_dsc *dsc)
+void atrf_reset(struct atrf_dsc *dsc)
 {
 	if (dsc->driver->reset)
 		dsc->driver->reset(dsc->handle);
 }
 
 
-void atspi_reset_rf(struct atspi_dsc *dsc)
+void atrf_reset_rf(struct atrf_dsc *dsc)
 {
 	dsc->driver->reset_rf(dsc->handle);
 }
 
 
-int atspi_test_mode(struct atspi_dsc *dsc)
+int atrf_test_mode(struct atrf_dsc *dsc)
 {
 	if (!dsc->driver->test_mode)
 		return 0;
@@ -108,31 +108,31 @@ int atspi_test_mode(struct atspi_dsc *dsc)
 }
 
 
-void atspi_reg_write(struct atspi_dsc *dsc, uint8_t reg, uint8_t value)
+void atrf_reg_write(struct atrf_dsc *dsc, uint8_t reg, uint8_t value)
 {
 	dsc->driver->reg_write(dsc->handle, reg, value);
 }
 
 
-uint8_t atspi_reg_read(struct atspi_dsc *dsc, uint8_t reg)
+uint8_t atrf_reg_read(struct atrf_dsc *dsc, uint8_t reg)
 {
 	return dsc->driver->reg_read(dsc->handle, reg);
 }
 
 
-void atspi_buf_write(struct atspi_dsc *dsc, const void *buf, int size)
+void atrf_buf_write(struct atrf_dsc *dsc, const void *buf, int size)
 {
 	dsc->driver->buf_write(dsc->handle, buf, size);
 }
 
 
-int atspi_buf_read(struct atspi_dsc *dsc, void *buf, int size)
+int atrf_buf_read(struct atrf_dsc *dsc, void *buf, int size)
 {
 	return dsc->driver->buf_read(dsc->handle, buf, size);
 }
 
 
-int atspi_interrupt(struct atspi_dsc *dsc)
+int atrf_interrupt(struct atrf_dsc *dsc)
 {
 	return
 	    dsc->driver->interrupt ? dsc->driver->interrupt(dsc->handle) : 1;
