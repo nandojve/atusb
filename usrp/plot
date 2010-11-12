@@ -1,15 +1,20 @@
 #!/bin/sh
+
 if [ -z "$1" ]; then
-    echo "usage: $0 file" 1>&2
+    echo "usage: $0 file [center]" 1>&2
     exit 1
 fi
 if [ ! -f "$1" ]; then
     echo "$1: not found" 1>&2
     exit 1
 fi
+
+c=${2:--25}
+
 gnuplot -persist <<EOF
 set xlabel "MHz"
 set ylabel "dB"
-set yrange [-30:-20]
+set yrange [$c-5:$c+5]
+set grid
 plot "<sed '\$d' $1" using (\$1):(log(\$3)/log(10)*10) with lines notitle
 EOF
