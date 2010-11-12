@@ -1,11 +1,11 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
 #include <math.h>
 #include <sys/types.h>
 
 
-#define PERC	0.9
-#define	SKIP	1000000
+#define PERC_DEFAULT	0.9
 
 
 static int comp(const void *_a, const void *_b)
@@ -17,12 +17,12 @@ static int comp(const void *_a, const void *_b)
 }
 
 
-int main(int argc, char **argv)
+static void find_peak(int skip, float percentile, int dump)
 {
 	float max = 0;
 	float c[2], a;
 	float *rec = NULL;
-	int e = 0, n = 0, skip = SKIP;
+	int e = 0, n = 0;
 
 	while (1) {
 		size_t s;
@@ -33,7 +33,7 @@ int main(int argc, char **argv)
 				break;
 			if (s < 0) {
 				perror("read");
-				return 1;
+				exit(1);
 			}
 		}
 		if (skip) {
@@ -54,13 +54,71 @@ int main(int argc, char **argv)
 		rec[n] = a;
 		n++;
 	}
-	qsort(rec, n, sizeof(float), comp);
-	printf("%f %f\n", max, rec[(int) (PERC*n)]);
-#if 0
-int i;
 
-	for (i = 0; i < n; i += 1000)
-		printf("%f %f\n", (double) i/n, rec[i]);
-#endif
+	if (skip >= n) {
+		fprintf(stderr, "cannot skip %d of %d entries\n", skip, n);
+		exit(1);
+	}
+	rec += skip;
+	n -= skip;
+
+	qsort(rec, n, sizeof(float), comp);
+
+	if (!dump)
+		printf("%f %f\n", max, rec[(int) (percentile*n)]);
+	else {
+		int i;
+
+		for (i = 0; i < n; i += 1000)
+			printf("%f %f\n", (double) i/n, rec[i]);
+	}
+}
+
+
+static void usage(const char *name)
+{
+	fprintf(stderr,
+"usage: %s [-s skip] [percentile]\n"
+"       %s [-s skip] -d\n\n"
+"  percentile  select the specified percentile (default: %g)\n\n"
+"  -d          dump the histogram\n"
+"  -s skip     skip this number of samples from the beginning (default: 0)\n"
+    , name, name, PERC_DEFAULT);
+	exit(1);
+}
+
+
+int main(int argc, char **argv)
+{
+	int dump = 0, skip = 0;
+	float perc = PERC_DEFAULT;
+	int c;
+
+	while ((c = getopt(argc, argv, "ds:")) != EOF)
+		switch (c) {
+		case 'd':
+			dump = 1;
+			break;
+		case 's':
+			skip = atoi(optarg);
+			break;
+		default:
+			usage(*argv);
+		}
+
+	switch (argc-optind) {
+	case 0:
+		break;
+	case 1:
+		if (dump)
+			usage(*argv);
+		perc = atof(argv[optind]);
+		break;
+	default:
+		usage(*argv);
+	}
+
+	find_peak(skip, perc, dump);
+
 	return 0;
 }
