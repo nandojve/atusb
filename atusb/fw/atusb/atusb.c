@@ -134,7 +134,7 @@ void main(void)
 	while (1) {
 		if (in_test_mode) {
 			i++;
-			LED = !(i >> 13);
+			LED = !(i >> 11);
 		}
 		usb_poll();
 	}
