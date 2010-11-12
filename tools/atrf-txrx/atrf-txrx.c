@@ -18,6 +18,7 @@
 #include <string.h>
 #include <math.h>
 #include <signal.h>
+#include <sys/wait.h>
 
 #include "at86rf230.h"
 #include "atrf.h"
@@ -159,11 +160,12 @@ static void transmit(struct atrf_dsc *dsc, const char *msg, int times)
 }
 
 
-static void test_mode(struct atrf_dsc *dsc, uint8_t cont_tx)
+static int test_mode(struct atrf_dsc *dsc, uint8_t cont_tx, const char *cmd)
 {
 	atrf_buf_write(dsc, "", 1);
 	atrf_reg_write(dsc, REG_CONT_TX_0, CONT_TX_MAGIC);
 	atrf_reg_write(dsc, REG_CONT_TX_1, cont_tx);
+	int status = 0;
 
 	if (!atrf_test_mode(dsc)) {
 		atrf_reset_rf(dsc);
@@ -176,9 +178,16 @@ static void test_mode(struct atrf_dsc *dsc, uint8_t cont_tx)
 
 	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_TX_START);
 
-	while (run)
-		sleep(1);
+	if (cmd)
+		status = system(cmd);
+	else {
+		while (run)
+			sleep(1);
+	}
+
 	atrf_reset_rf(dsc);
+
+	return status;
 }
 
 
@@ -192,14 +201,18 @@ static void usage(const char *name)
 {
 	fprintf(stderr,
 "usage: %s [-c channel|-f freq] [-p power] [-t trim] [message [repetitions]]\n"
-"       %s [-c channel|-f freq] [-p power] [-t trim] -T delta\n"
-"    -c channel   channel number, 11 to 26 (default %d)\n"
-"    -f freq   frequency in MHz, 2405 to 2480 (default %d)\n"
-"    -p power  transmit power, -17.2 to 3.0 dBm (default %.1f)\n"
-"    -t trim   trim capacitor, 0 to 15 (default 0)\n"
-"    -t trim   trim capacitor, 0 to 15 (default 0)\n"
-"    -T delta  test mode. delta is the frequency offset of the constant wave\n"
-"              in MHz: -2, -0.5, or +0.5\n"
+"       %s [-c channel|-f freq] [-p power] [-t trim] -T offset [command]\n\n"
+"    message     message string to send (if absent, receive)\n"
+"    repetitions number of times the message is sent (default 1)\n"
+"    command     shell command to run while transmitting (default: wait for\n"
+"                SIGINT instead)\n\n"
+"    -c channel  channel number, 11 to 26 (default %d)\n"
+"    -f freq     frequency in MHz, 2405 to 2480 (default %d)\n"
+"    -p power    transmit power, -17.2 to 3.0 dBm (default %.1f)\n"
+"    -t trim     trim capacitor, 0 to 15 (default 0)\n"
+"    -t trim     trim capacitor, 0 to 15 (default 0)\n"
+"    -T offset   test mode. offset is the frequency offset of the constant\n"
+"                wave in MHz: -2, -0.5, or +0.5\n"
 	    , name, name, DEFAULT_CHANNEL, 2405+5*(DEFAULT_CHANNEL-11),
 	    DEFAULT_POWER);
 	exit(1);
@@ -214,6 +227,7 @@ int main(int argc, char *const *argv)
 	uint8_t cont_tx = 0;
 	char *end;
 	int c, freq;
+	int status = 0;
 	struct atrf_dsc *dsc;
 
 	while ((c = getopt(argc, argv, "c:f:p:t:T:")) != EOF)
@@ -271,21 +285,26 @@ int main(int argc, char *const *argv)
 			receive(dsc);
 		else {
 			set_power(dsc, power, 0);
-			test_mode(dsc, cont_tx);
+			status = test_mode(dsc, cont_tx, NULL);
 		}
 		break;
 	case 2:
+		if (cont_tx)
+			usage(*argv);
 		times = strtoul(argv[optind+1], &end, 0);
 		if (*end)
 			usage(*argv);
 		/* fall through */
 	case 1:
-		if (cont_tx)
-			usage(*argv);
 		dsc = init_txrx(trim);
 		set_channel(dsc, channel);
-		set_power(dsc, power, 1);
-		transmit(dsc, argv[optind], times);
+		if (!cont_tx) {
+			set_power(dsc, power, 1);
+			transmit(dsc, argv[optind], times);
+		} else {
+			set_power(dsc, power, 0);
+			status = test_mode(dsc, cont_tx, argv[optind]);
+		}
 		break;
 	default:
 		usage(*argv);
@@ -293,5 +312,13 @@ int main(int argc, char *const *argv)
 
 	atrf_close(dsc);
 
+	if (status) {
+		if (WIFEXITED(status))
+			return WEXITSTATUS(status);
+		if (WIFSIGNALED(status))
+			raise(WTERMSIG(status));
+		fprintf(stderr, "unexpected exit status %d\n", status);
+		abort();
+	}
 	return 0;
 }
