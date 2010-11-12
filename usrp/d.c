@@ -1,11 +1,12 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
 
 
-#define N	100
+#define SAMPLES_DEFAULT	100
 
 
-int main(int argc, char **argv)
+static void average(int samples)
 {
 	float c[2];
 	int n = 0;
@@ -20,14 +21,45 @@ int main(int argc, char **argv)
 				break;
 			if (s < 0) {
 				perror("read");
-				return 1;
+				exit(1);
 			}
 		}
 		sum += hypot(c[0], c[1]);
-		if (n++ % N)
+		if (n++ % samples)
 			continue;
-		printf("%f\n", sum/N);
+		printf("%f\n", sum/samples);
 		sum = 0;
 	}
+}
+
+
+static void usage(const char *name)
+{
+	fprintf(stderr,
+"usage: %s [samples]\n\n"
+"  samples  samples to average over (default: %d)\n"
+    , name, SAMPLES_DEFAULT);
+	exit(1);
+}
+
+
+int main(int argc, char **argv)
+{
+	int n = SAMPLES_DEFAULT;
+
+	switch (argc) {
+	case 1:
+		break;
+	case 2:
+		n = atoi(argv[1]);
+		if (n <= 0)
+			usage(*argv);
+		break;
+	default:
+		usage(*argv);
+	}
+
+	average(n);
+
 	return 0;
 }
