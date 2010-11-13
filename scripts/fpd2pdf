@@ -15,7 +15,7 @@
 usage()
 {
     cat <<EOF 1>&2
-usage: $0 [-a] [-o out.pdf] file.pdf ...
+usage: $0 [-a] [-o out.pdf] file.fpd ...
 
   -a          also include files whose name contains a tilde (backup files)
   -o out.pdf  write to the specified file (default: standard output)
