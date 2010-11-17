@@ -9,6 +9,7 @@ usage()
 
 
 [ "$1" ] || usage
+[ "${1#-}" = "$1" ] || usage
 [ "$3" ] && usage
 mkdir "$1" || exit
 pwr=${2:-2.6}
