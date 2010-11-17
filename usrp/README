@@ -1,0 +1,151 @@
+Antenna measurements
+====================
+
+The objective of antenna measurements is to determine how much energy the
+antenna transfers at different frequencies. For this, we set up a sender,
+a receiver, connect one to the antennas being tested, and the other to an
+arbitrarily chosen lab antenna.
+
+Since none of the items (sender, receiver, lab antenna) are calibrated,
+we can only compare antennas but we cannot determine any absolute
+characteristics.
+
+
+Preparing a measurement run
+---------------------------
+
+Before measuring the characteristics of an antenne, we need to set up the
+test environment and obtain a number of filtering parameters. The filters
+are used to reduce the effect of noise on the measurements and to suppress
+contamination from other sources.
+
+1) Install transmitter and receiver. The transmitter is an atusb or atusd
+   board, the receiver an USRP2+XCVR2450 with the antenna to test.
+
+   (The same setup may also work with a USRP1 or UN210, and a RFX2400
+   board.)
+
+   Both should be spaced at least twenty times the wavelength, or 2.5 m
+   apart. For test runs that can be compared with each other, antenna
+   placement and orientation have to be exactly the same.
+
+   The sender runs tools/atrf-txrx/atrf-txrx, the receiver runs utilities
+   from gnuradio.
+
+2) Obtain baseline performance values. For example, activate the sender
+   with
+
+   atrf-txrx -f 2455 -p 0.5 -T +0.5
+
+   Emit a constant wave at 2455+0.5 MHz with a power of 0.5 dBm or 1.1 mW.
+
+   Monitor the received signal with
+
+   usrp2_fft.py -f 2455.5M -d 16
+
+   Record the range in which the frequency peak falls. Variations of a few
+   dB are to be expected.
+
+3) Generate a series of sample for a specific setting.
+
+   Example:
+
+   The following script sets up the transmitter, lets it "warm up" for ten
+   seconds, then takes 100 measurements, stored in files tmp00 through
+   tmp99 in a directory $PWD/100/.
+
+   In this setup, the receiver's gnuradio runs on a different host than
+   the sender. Therefore we use ssh and pass the directory from $PWD.
+
+    atrf-txrx -f 2455 -p 2.6 -T +0.5 \
+      'sleep 10;
+       for a in 0 1 2 3 4 5 6 7 8 9; do
+         for b in 0 1 2 3 4 5 6 7 8 9; do
+           ssh ws usrp2_rx_cfile.py -d 16 -f 2455.5M -g 46 -N 1124 \
+	     '$PWD'/100/tmp$a$b
+         done
+       done'
+
+   Each measurement obtains 1124 samples, 1024 samples for the FFT and
+   100 samples to cut off (see below).
+
+4) Determine the shape of the captured waves in the time domain, e.g.,
+   with
+
+   gnuplot
+   gnuplot> plot "<./avg 1 <100/tmp00" with lines
+
+   "avg" outputs the magnitude of the recorded wave, averaging over the
+   specified number of sample.
+
+   Some waves will probably show a peak in the first few samples. We need
+   to cut off these peaks in the later processing steps. In this example,
+   we will skip the first 100 samples.
+
+   Besides the initial peak, the waves should be of comparable amplitude.
+
+5) Verify the distribution in the frequency domain and determine the noise
+   floor.
+
+   gnuplot> plot "<./fft -s 100 -d <100/tmp00" with lines
+                             ^
+                          skip initial peak
+
+   The spectrum should be U-shaped, with narrow peaks tens of dB above
+   the noise floor near the beginning and the end. Note that the noise
+   floor is curved and not perfectly flat.
+
+   From this, we pick level of the noise floor. The value should be at or
+   slightly below the highest peaks of the noise between the large peaks
+   at the end of the spectrum.
+
+   This noise floor value is used to filter uninteresting samples later
+   on, removing a constant bias from the results.
+
+   In this example, we'll use a noise floor value of -50 dB.
+
+6) Determine the "interesting" frequency range. For this, we consider all
+   the spectra of the measurements:
+
+   gnuplot> plot "<for n in 100/tmp*; do ./fft -s 100 -d <$n;echo;done" \
+     with lines
+
+   There should be a thick noise band in the middle, with pronounced
+   narrow peaks at the edges. If there are one or two signals on top of
+   the noise band, some measurements have been compromised and need to be
+   removed or redone. We will do this in the next step.
+
+   When zooming into the left peak, the "bins" which contribute to the
+   peaks can be identified. The range should be chosen with some
+   tolerance, since the frequency may shift a bit during the measurement
+   process.
+
+   By not considering bins far from the peak, less noise is included in
+   the final result, complementing the filtering by noise threshold from
+   step 4). Restricting the bins also eliminates the second peak at the
+   end of the spectrum.
+
+   In this example, we'll use a range from 0 to 20.
+
+7) Obtain the peaks from all measurements
+
+   gnuplot> plot "<for n in 100/tmp*; do ./fft -s 100 5 15 50 <$n;done" \
+     with lines
+                                                   ^  ^  ^ ^
+                                                   |  |  | |
+                                   skip, from step 4  |  | threshold, 5)
+                                             lowest bin  highest bin
+
+   This should yield a jagged more or less horizontal line with values
+   differing by not more than 1-2 dB. If there are any large outliers,
+   they have been contaminated and should be dropped.
+
+8) The final result for one measurement run can be obtained as follows:
+
+   for n in 100/tmp*; do ./fft -s 100 0 200 50 <$n;done | ./range -v 2
+
+   In this example, "range" eliminates all outliers more than 2 dB from
+   the average and reports this.
+
+   The output are three numbers: the average (after eliminating
+   outliers), the minimum, and the maximum.
