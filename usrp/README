@@ -14,7 +14,7 @@ characteristics.
 Preparing a measurement run
 ---------------------------
 
-Before measuring the characteristics of an antenne, we need to set up the
+Before measuring the characteristics of an antenna, we need to set up the
 test environment and obtain a number of filtering parameters. The filters
 are used to reduce the effect of noise on the measurements and to suppress
 contamination from other sources.
@@ -149,3 +149,45 @@ contamination from other sources.
 
    The output are three numbers: the average (after eliminating
    outliers), the minimum, and the maximum.
+
+
+Performing a measurement run
+----------------------------
+
+The script "fscan" performs 100 scans of the 26 channels used by IEEE
+802.15.4. The frequency scan is the inner loop, so that slow changes
+in environmental parameters (background noise, temperature, etc.) will
+affect the spread of the results over the entire frequency range instead
+of causing seemingly frequency-dependent distortions.
+
+The script is written for a setup that uses a pair of hosts, both
+sharing the same file system.
+
+Usage: fscan out-dir [tx-power]
+
+The output directory must not exist yet. The transmit power is in dBm and
+defaults to 2.6 dBm.
+
+Example: ./fscan testant
+
+The full run takes approximately half an hour.
+
+The results are filtered and averaged by the script "evscan". This script
+contains the filtering parameters obtained in the preparation, described
+above.
+
+Example: ./evscan testant >testant.out
+
+The output is a graph with frequency, average signal strength, minimum
+and maximum. The format is compatible with gnuplot's "with errorbars"
+(or "with errorlines") plot style.
+
+Finally, the results can be plotted with the script "plscan", which uses
+gnuplot to output either in a window or to a PNG file.
+
+Usage: plscan [-o pngfile] file ...
+
+More than one graph can be plotted in the same run. The file name is used
+as the title for each graph. Titles are truncated at the first dot.
+
+Example: ./plscan testant.out
