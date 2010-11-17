@@ -1,0 +1,30 @@
+#!/bin/sh
+
+usage()
+{
+    echo "usage: $0 [-o pngfile] file ..." 1>&2
+    exit 1
+}
+
+
+if [ "X$1" = X-o ]; then
+    out=$2
+    shift 2
+fi
+[ "$1" ] || usage
+[ "${1#-}" = "$1" ] || usage
+
+gnuplot -persist <<EOF
+`[ "$out" ] && ( echo set term png\;; echo set output \'$out\'; )`
+set xlabel "MHz"
+set ylabel "dB"
+set xrange [2402:2483]
+set yrange [-35:-25]
+set title "Received signal strength"
+set data style errorlines
+plot \
+  `for n in $@; do
+     echo -n $comma \'$n\' title \'\`echo "$n" | sed "s/\..*//"\`\'
+     comma=,
+   done`
+EOF
