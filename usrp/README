@@ -188,6 +188,6 @@ gnuplot to output either in a window or to a PNG file.
 Usage: plscan [-o pngfile] file ...
 
 More than one graph can be plotted in the same run. The file name is used
-as the title for each graph. Titles are truncated at the first dot.
+as the title for each graph. Titles are truncated at the last dot.
 
 Example: ./plscan testant.out

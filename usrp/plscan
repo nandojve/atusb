@@ -24,7 +24,7 @@ set title "Received signal strength"
 set data style errorlines
 plot \
   `for n in $@; do
-     echo -n $comma \'$n\' title \'${n%%.*}\'
+     echo -n $comma \'$n\' title \'${n%.*}\'
      comma=,
    done`
 EOF
