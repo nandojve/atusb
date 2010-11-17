@@ -1,0 +1,49 @@
+#!/usr/bin/perl
+
+
+sub usage
+{
+    print STDERR "usage: $0 [[-v] tolerance]\n";
+    exit(1);
+}
+
+
+$tol = 999;
+
+if (@ARGV) {
+    $tol = shift @ARGV;
+    if ($tol eq "-v") {
+	$verbose = 1;
+	$tol = shift @ARGV;
+    }
+    &usage unless $tol =~ /^[0-9.]+$/;
+    &usage if @ARGV;
+}
+
+while (<>) {
+    chop;
+    push(@v, $_);
+    $s += $_;
+}
+$avg = $s/@v;
+
+$n = 0;
+for (@v) {
+    $n++;
+    if ($_ < $avg-$tol || $_ > $avg+$tol) {
+	print STDERR "sample $n is outlier: $_\n" if $verbose;
+	next;
+    }
+    $sum += $_;
+    $ns++;
+    $min = $_ if $_ < $min || !defined $min;
+    $max = $_ if $_ > $max || !defined $max;
+}
+
+if (!$ns) {
+    print STDERR "no samples\n";
+    exit(1);
+
+}
+
+print $sum/$ns, " $min $max\n";
