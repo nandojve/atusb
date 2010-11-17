@@ -25,9 +25,9 @@ contamination from other sources.
    (The same setup may also work with a USRP1 or UN210, and a RFX2400
    board.)
 
-   Both should be spaced at least twenty times the wavelength, or 2.5 m
-   apart. For test runs that can be compared with each other, antenna
-   placement and orientation have to be exactly the same.
+   Both should be spaced at least twenty times the wavelength (12.5 cm at
+   2405 MHz), or 2.5 m apart. For test runs that can be compared with each
+   other, antenna placement and orientation have to be exactly the same.
 
    The sender runs tools/atrf-txrx/atrf-txrx, the receiver runs utilities
    from gnuradio.
@@ -129,7 +129,7 @@ contamination from other sources.
 
 7) Obtain the peaks from all measurements
 
-   gnuplot> plot "<for n in 100/tmp*; do ./fft -s 100 5 15 50 <$n;done" \
+   gnuplot> plot "<for n in 100/tmp*; do ./fft -s 100 0 20 50 <$n;done" \
      with lines
                                                    ^  ^  ^ ^
                                                    |  |  | |
@@ -142,7 +142,7 @@ contamination from other sources.
 
 8) The final result for one measurement run can be obtained as follows:
 
-   for n in 100/tmp*; do ./fft -s 100 0 200 50 <$n;done | ./range -v 2
+   for n in 100/tmp*; do ./fft -s 100 0 20 50 <$n;done | ./range -v 2
 
    In this example, "range" eliminates all outliers more than 2 dB from
    the average and reports this.
