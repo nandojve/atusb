@@ -2,17 +2,22 @@
 
 usage()
 {
-    echo "usage: $0 base-dir" 1>&2
+    echo "usage: $0 [options] base-dir" 1>&2
     exit 1
 }
 
 
+[ "$1" ] || usage
+opts=
+while [ "$2" ]; do
+    opts="$opts $1"
+    shift
+done
 [ -d "$1" ] || usage
-[ "$2" ] && usage
 
 for f in "$1"/24*; do
     echo -n `basename "$f"` ''
     for n in "$f"/data*; do
-	./fft -s 100 0 20 50 <"$n" || echo "fft failed for $n" 1>&1
+	./fft $opts -s 100 0 20 50 <"$n" || echo "fft failed for $n" 1>&1
     done | ./range -v 2
 done

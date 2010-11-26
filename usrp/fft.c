@@ -9,13 +9,61 @@
 
 #define  DEFAULT_THRESHOLD	100
 
+static int alg = 0;
+
+
+static void fft_complex(int n, const float *re, const float *im, double *res)
+{
+	fftw_complex *in, *out;
+	fftw_plan plan;
+	int i;
+	double a;
+
+	in = fftw_malloc(sizeof(fftw_complex)*n);
+	out = fftw_malloc(sizeof(fftw_complex)*n);
+
+	for (i = 0; i != n; i++) {
+		in[i][0] = re[i];
+		in[i][1] = im[i];
+	}
+
+	plan = fftw_plan_dft_1d(n, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
+	fftw_execute(plan);
+
+	for (i = 0; i != n; i++) {
+		a = hypot(out[i][0], out[i][1])/n;
+		a = a*a;
+		res[i] = a;
+	}
+}
+
+
+static void fft_real(int n, const float *re, const float *im, double *res)
+{
+	double *in;
+	fftw_plan plan;
+	int i;
+	double a ;
+
+	in = fftw_malloc(sizeof(double)*n);
+	(void) a;
+
+	for (i = 0; i != n; i++)
+		in[i] = hypot(re[i], im[i]);
+
+	plan =  fftw_plan_r2r_1d(n, in, res, FFTW_REDFT10, FFTW_ESTIMATE);
+	fftw_execute(plan);
+
+	for (i = 0; i != n; i++)
+		res[i] /= n;
+}
+
 
 static void do_fft(int skip, int dump, int low, int high, double threshold)
 {
 	float c[2];
 	float *re = NULL, *im = NULL;
-	fftw_complex *in, *out;
-	fftw_plan plan;
+	double *res;
 	int e = 0, n = 0;
 	int i;
 	double a;
@@ -58,23 +106,26 @@ static void do_fft(int skip, int dump, int low, int high, double threshold)
 	im += skip;
 	n -= skip;
 
-	in = fftw_malloc(sizeof(fftw_complex)*n);
-	out = fftw_malloc(sizeof(fftw_complex)*n);
-
-	for (i = 0; i != n; i++) {
-		in[i][0] = re[i];
-		in[i][1] = im[i];
+	res = malloc(n*sizeof(double));
+	if (!res) {
+		perror("malloc");
+		exit(1);
 	}
 
-	plan = fftw_plan_dft_1d(n, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
-	fftw_execute(plan);
+	switch (alg) {
+	case 0:
+		fft_complex(n, re, im, res);
+		break;
+	case 1:
+		fft_real(n, re, im, res);
+		break;
+	default:
+		abort();
+	}
 
 	if (dump) {
-		for (i = 0; i < n; i += 1) {
-			a = hypot(out[i][0], out[i][1])/n;
-//			a = a*a;
-			printf("%d %g\n", i, 10*log(a)/log(10));
-		}
+		for (i = 0; i < n; i += 1)
+			printf("%d %g\n", i, 10*log(res[i])/log(10));
 	} else {
 		double s = 0;
 		double db;
@@ -91,8 +142,7 @@ static void do_fft(int skip, int dump, int low, int high, double threshold)
 		if (low == high)
 			low--;
 		for (i = low; i != high; i++) {
-			a = hypot(out[i][0], out[i][1])/n;
-//			a = a*a;
+			a = res[i];
 			db = 10*log(a)/log(10);
 			if (db >= threshold)
 				s += a;
@@ -124,8 +174,11 @@ int main(int argc, char **argv)
 	double threshold = DEFAULT_THRESHOLD;
 	int c;
 
-	while ((c = getopt(argc, argv, "ds:")) != EOF)
+	while ((c = getopt(argc, argv, "a:ds:")) != EOF)
 		switch (c) {
+		case 'a':
+			alg = atoi(optarg);
+			break;
 		case 'd':
 			dump = 1;
 			break;
