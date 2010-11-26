@@ -43,18 +43,32 @@ sub pcb
 {
     &cut(
       &mil(   0), &mil(   0),
-      &mil( 680), &mil(   0),
-      &mil( 680), &mil( 490),
+      &mil(  $W), &mil(   0),
+      &mil(  $W), &mil( 490),
       &mil(   0), &mil( 490),
       &mil(   0), &mil(   0));
 }
 
 
+#
+# board width
+#
+# antenna factor	width (mil)
+#
+#  80%			530
+#  90%			565
+# 100%			605
+# 110%			640
+# 120%			680
+#
+
+$W = 565;
+
 $z = -0.8;	# full thickness of board
 # x: corner offset, compensation for rotation, array position
 # y: corner offet
 
-&orig(20*0+3, 15*2+23);
+&orig(20*2+3, 15*2+23);
 
 $r = $d/2-0.1;	# compensate deflection of board
 &pcb;

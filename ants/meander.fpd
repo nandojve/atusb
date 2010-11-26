@@ -94,6 +94,7 @@ set tail = 0mm
 
 table
     { size }
+    { 80 }
     { 90 }
     { 100 }
     { 110 }
