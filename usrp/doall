@@ -1,0 +1,11 @@
+#!/bin/bash -x
+opts=
+while [ "$2" ]; do
+    opts="$opts $1"
+    shift
+done
+a=
+for n in $1; do
+    a="$a `basename $n`=<(./evscan $n)"
+done
+eval ./plscan $opts $a

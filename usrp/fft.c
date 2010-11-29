@@ -32,7 +32,7 @@ static void fft_complex(int n, const float *re, const float *im, double *res)
 
 	for (i = 0; i != n; i++) {
 		a = hypot(out[i][0], out[i][1])/n;
-		a = a*a;
+//		a = a*a;
 		res[i] = a;
 	}
 }
