@@ -41,7 +41,7 @@ LibName2=device
 LibName3=conn
 LibName4=../components/at86rf230
 LibName5=../components/c8051f326
-LibName6=../components/mini_usb_b
+LibName6=../components/usb_a_plug
 LibName7=../components/xtal-4
 LibName8=../components/antenna
 [cvpcb]
