@@ -44,7 +44,7 @@ LibName5=../components/c8051f326
 LibName6=../components/usb_a_plug
 LibName7=../components/xtal-4
 LibName8=../components/antenna
-LibName9=../components/balun-smt6.lib
+LibName9=../components/balun-smt6
 [cvpcb]
 version=1
 NetIExt=net
@@ -71,8 +71,9 @@ LastNetListRead=atusb.net
 [pcbnew/libraries]
 LibDir=
 LibName1=../modules/meander
-LibName2=../modules/mini-usb
+LibName2=../modules/usb_a_plug
 LibName3=../../kicad-libs/modules/pads
 LibName4=../modules/qfn
 LibName5=../../kicad-libs/modules/stdpass
 LibName6=../modules/xtal-4
+LibName7=../modules/0805-6
