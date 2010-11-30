@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Thu Nov 11 10:36:47 2010
+EESchema Schematic File Version 2  date Tue Nov 30 04:32:41 2010
 LIBS:power
 LIBS:device
 LIBS:conn
@@ -13,33 +13,16 @@ EELAYER END
 $Descr A4 11700 8267
 Sheet 1 3
 Title "IEEE 802.15.4 USB Transceiver (AT86RF230)"
-Date "11 nov 2010"
-Rev "100820"
+Date "30 nov 2010"
+Rev "101130"
 Comp "Werner Almesberger"
 Comment1 ""
 Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
-Text Notes 5000 5200 0    60   ~ 0
-TST connection is a rework item and\nnot yet included in the layout.
 Wire Wire Line
 	4350 5050 7350 5050
-Wire Wire Line
-	4750 3200 4750 3400
-Wire Wire Line
-	4750 3400 4950 3400
-Wire Wire Line
-	4950 3400 4950 3200
-Connection ~ 6150 4700
-Wire Wire Line
-	6150 3200 6150 4700
-Connection ~ 5750 4300
-Wire Wire Line
-	5750 3200 5750 4300
-Connection ~ 5350 4000
-Wire Wire Line
-	5350 3200 5350 4000
 Wire Wire Line
 	7350 4850 4350 4850
 Wire Wire Line
@@ -54,20 +37,6 @@ Wire Wire Line
 	7350 4300 4350 4300
 Wire Wire Line
 	7350 4700 4350 4700
-Wire Wire Line
-	5150 3200 5150 3850
-Connection ~ 5150 3850
-Wire Wire Line
-	5550 3200 5550 4150
-Connection ~ 5550 4150
-Wire Wire Line
-	5950 3200 5950 4500
-Connection ~ 5950 4500
-Wire Wire Line
-	6350 3200 6350 4850
-Connection ~ 6350 4850
-Wire Wire Line
-	6550 3200 6550 3400
 Wire Wire Line
 	10000 6100 10000 6300
 $Comp
@@ -90,114 +59,6 @@ F 1 "GND" H 10000 6230 30  0001 C CNN
 $EndComp
 Text Notes 900  1250 0    200  ~ 40
 IEEE 802.15.4 USB TXRX
-$Comp
-L CONN_1 P9
-U 1 1 4C6413ED
-P 6550 3050
-F 0 "P9" H 6630 3050 40  0000 L CNN
-F 1 "CONN_1" H 6550 3105 30  0001 C CNN
-F 2 "PAD_2mm" H 6550 3050 60  0001 C CNN
-	1    6550 3050
-	0    -1   -1   0   
-$EndComp
-$Comp
-L CONN_1 P1
-U 1 1 4C6413E8
-P 4950 3050
-F 0 "P1" H 5030 3050 40  0000 L CNN
-F 1 "CONN_1" H 4950 3105 30  0001 C CNN
-F 2 "PAD_2mm" H 4950 3050 60  0001 C CNN
-	1    4950 3050
-	0    -1   -1   0   
-$EndComp
-$Comp
-L GND #PWR03
-U 1 1 4C6413E1
-P 6550 3400
-F 0 "#PWR03" H 6550 3400 30  0001 C CNN
-F 1 "GND" H 6550 3330 30  0001 C CNN
-	1    6550 3400
-	1    0    0    -1  
-$EndComp
-$Comp
-L VDD #PWR04
-U 1 1 4C6413DE
-P 4750 3200
-F 0 "#PWR04" H 4750 3300 30  0001 C CNN
-F 1 "VDD" H 4750 3310 30  0000 C CNN
-	1    4750 3200
-	1    0    0    -1  
-$EndComp
-$Comp
-L CONN_1 P8
-U 1 1 4C641349
-P 6350 3050
-F 0 "P8" H 6430 3050 40  0000 L CNN
-F 1 "CONN_1" H 6350 3105 30  0001 C CNN
-F 2 "PAD_2mm" H 6350 3050 60  0001 C CNN
-	1    6350 3050
-	0    -1   -1   0   
-$EndComp
-$Comp
-L CONN_1 P7
-U 1 1 4C641344
-P 6150 3050
-F 0 "P7" H 6230 3050 40  0000 L CNN
-F 1 "CONN_1" H 6150 3105 30  0001 C CNN
-F 2 "PAD_2mm" H 6150 3050 60  0001 C CNN
-	1    6150 3050
-	0    -1   -1   0   
-$EndComp
-$Comp
-L CONN_1 P6
-U 1 1 4C641341
-P 5950 3050
-F 0 "P6" H 6030 3050 40  0000 L CNN
-F 1 "CONN_1" H 5950 3105 30  0001 C CNN
-F 2 "PAD_2mm" H 5950 3050 60  0001 C CNN
-	1    5950 3050
-	0    -1   -1   0   
-$EndComp
-$Comp
-L CONN_1 P5
-U 1 1 4C64133D
-P 5750 3050
-F 0 "P5" H 5830 3050 40  0000 L CNN
-F 1 "CONN_1" H 5750 3105 30  0001 C CNN
-F 2 "PAD_2mm" H 5750 3050 60  0001 C CNN
-	1    5750 3050
-	0    -1   -1   0   
-$EndComp
-$Comp
-L CONN_1 P4
-U 1 1 4C64133B
-P 5550 3050
-F 0 "P4" H 5630 3050 40  0000 L CNN
-F 1 "CONN_1" H 5550 3105 30  0001 C CNN
-F 2 "PAD_2mm" H 5550 3050 60  0001 C CNN
-	1    5550 3050
-	0    -1   -1   0   
-$EndComp
-$Comp
-L CONN_1 P3
-U 1 1 4C641337
-P 5350 3050
-F 0 "P3" H 5430 3050 40  0000 L CNN
-F 1 "CONN_1" H 5350 3105 30  0001 C CNN
-F 2 "PAD_2mm" H 5350 3050 60  0001 C CNN
-	1    5350 3050
-	0    -1   -1   0   
-$EndComp
-$Comp
-L CONN_1 P2
-U 1 1 4C641324
-P 5150 3050
-F 0 "P2" H 5230 3050 40  0000 L CNN
-F 1 "CONN_1" H 5150 3105 30  0001 C CNN
-F 2 "PAD_2mm" H 5150 3050 60  0001 C CNN
-	1    5150 3050
-	0    -1   -1   0   
-$EndComp
 $Sheet
 S 2300 3400 2050 2050
 U 4C609BEF
