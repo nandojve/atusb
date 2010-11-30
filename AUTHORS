@@ -11,6 +11,8 @@ Rene Harder <rehar@saweb.de>
 Werner Almesberger <werner@openmoko.org>
 
   components/at86rf230.lib
+  components/balun.lib
+  components/balun-smt6.lib
   components/c8051f320.lib
   components/c8051f326.lib
   components/usb_a_plug.lib (based on mini_usb_b.lib by Alvaro Lopes)

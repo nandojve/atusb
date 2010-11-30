@@ -26,8 +26,15 @@ N: nx3225sa
 # Generic antenna with ground on pin 1, feed on pin 2
 S: antenna
 
-# Typical SMT balun configuration
+# SMT balun configuration (using 5 contacts)
+# Example: Wuerth 748421245 balun/filter
 S: balun
+N: 748421245
+
+# SMT balun configuration (using 6 contacts)
+# Example: Johanson 2450FB15L0001 balun/filter
+S: balun-smt6
+N: 2450FB15L0001
 
 # USB A plug
 S: usb_a_plug

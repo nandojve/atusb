@@ -44,6 +44,7 @@ LibName5=../components/c8051f326
 LibName6=../components/usb_a_plug
 LibName7=../components/xtal-4
 LibName8=../components/antenna
+LibName9=../components/balun-smt6.lib
 [cvpcb]
 version=1
 NetIExt=net
