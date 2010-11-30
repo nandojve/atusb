@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Tue Nov 30 04:32:41 2010
+EESchema Schematic File Version 2  date Tue Nov 30 04:45:47 2010
 LIBS:power
 LIBS:device
 LIBS:conn
@@ -13,7 +13,7 @@ EELAYER END
 $Descr A4 11700 8267
 Sheet 2 3
 Title "IEEE 802.15.4 USB Transceiver (AT86RF230)"
-Date "11 nov 2010"
+Date "30 nov 2010"
 Rev "101130"
 Comp "Werner Almesberger"
 Comment1 ""
@@ -21,8 +21,8 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
-Text HLabel 9800 1650 2    60   Output ~ 0
-TST
+Text Notes 5750 6700 0    60   ~ 0
+Space P11 through P14 at 100 mil interval close to board edge\nto allow use with a 0.1" header soldered to the board.
 Wire Wire Line
 	9800 1650 7650 1650
 Wire Wire Line
@@ -145,6 +145,8 @@ Wire Wire Line
 Wire Wire Line
 	5600 2750 5600 900 
 Connection ~ 5600 1100
+Text HLabel 9800 1650 2    60   Output ~ 0
+TST
 NoConn ~ 6900 1800
 Text Label 2550 3200 0    60   ~ 0
 D+
@@ -352,7 +354,7 @@ U 1 1 4C640203
 P 6600 6300
 F 0 "P14" H 6680 6300 40  0000 L CNN
 F 1 "CONN_1" H 6600 6355 30  0001 C CNN
-F 2 "PAD_120x60" H 6600 6300 60  0001 C CNN
+F 2 "PAD_60x60" H 6600 6300 60  0001 C CNN
 	1    6600 6300
 	0    1    1    0   
 $EndComp
@@ -362,7 +364,7 @@ U 1 1 4C640202
 P 7050 6300
 F 0 "P13" H 7130 6300 40  0000 L CNN
 F 1 "CONN_1" H 7050 6355 30  0001 C CNN
-F 2 "PAD_120x60" H 7050 6300 60  0001 C CNN
+F 2 "PAD_60x60" H 7050 6300 60  0001 C CNN
 	1    7050 6300
 	0    1    1    0   
 $EndComp
@@ -372,7 +374,7 @@ U 1 1 4C640200
 P 6900 6300
 F 0 "P12" H 6980 6300 40  0000 L CNN
 F 1 "CONN_1" H 6900 6355 30  0001 C CNN
-F 2 "PAD_120x60" H 6900 6300 60  0001 C CNN
+F 2 "PAD_60x60" H 6900 6300 60  0001 C CNN
 	1    6900 6300
 	0    1    1    0   
 $EndComp
@@ -382,7 +384,7 @@ U 1 1 4C6401FE
 P 6750 6300
 F 0 "P11" H 6830 6300 40  0000 L CNN
 F 1 "CONN_1" H 6750 6355 30  0001 C CNN
-F 2 "PAD_120x60" H 6750 6300 60  0001 C CNN
+F 2 "PAD_60x60" H 6750 6300 60  0001 C CNN
 	1    6750 6300
 	0    1    1    0   
 $EndComp
