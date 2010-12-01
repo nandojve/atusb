@@ -22,6 +22,7 @@ if (@ARGV) {
 
 while (<>) {
     chop;
+    next if $_ eq "-inf";
     push(@v, $_);
     $s += $_;
 }
@@ -30,8 +31,9 @@ $avg = $s/@v;
 $n = 0;
 for (@v) {
     $n++;
+    next if $_ eq "-inf";
     if ($_ < $avg-$tol || $_ > $avg+$tol) {
-	print STDERR "sample $n is outlier: $_\n" if $verbose;
+	print STDERR "sample $n is outlier ($avg): $_\n" if $verbose;
 	next;
     }
     $sum += $_;
