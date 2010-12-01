@@ -102,7 +102,7 @@ contamination from other sources.
    This noise floor value is used to filter uninteresting samples later
    on, removing a constant bias from the results.
 
-   In this example, we'll use a noise floor value of -50 dB.
+   In this example, we'll use a noise floor value of -60 dB.
 
 6) Determine the "interesting" frequency range. For this, we consider all
    the spectra of the measurements:
@@ -129,7 +129,7 @@ contamination from other sources.
 
 7) Obtain the peaks from all measurements
 
-   gnuplot> plot "<for n in 100/tmp*; do ./fft -s 100 0 20 50 <$n;done" \
+   gnuplot> plot "<for n in 100/tmp*; do ./fft -s 100 0 20 60 <$n;done" \
      with lines
                                                    ^  ^  ^ ^
                                                    |  |  | |
@@ -142,7 +142,7 @@ contamination from other sources.
 
 8) The final result for one measurement run can be obtained as follows:
 
-   for n in 100/tmp*; do ./fft -s 100 0 20 50 <$n;done | ./range -v 2
+   for n in 100/tmp*; do ./fft -s 100 0 20 60 <$n;done | ./range -v 2
 
    In this example, "range" eliminates all outliers more than 2 dB from
    the average and reports this.
