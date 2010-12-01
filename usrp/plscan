@@ -19,7 +19,7 @@ gnuplot -persist <<EOF
 set xlabel "MHz"
 set ylabel "dB"
 set xrange [2402:2483]
-set yrange [-35:-25]
+set yrange [-40:-5]
 set title "Received signal strength"
 set data style errorlines
 plot \
