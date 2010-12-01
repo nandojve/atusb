@@ -1,11 +1,26 @@
 #!/bin/bash -x
+
+usage()
+{
+    echo "usage: $0 [evscan-opt ... --] [plscan-opt ...] 'file-glob'" 1>&2
+    exit 1
+}
+
+
+[ "$1" ] || usage
+evscan_opts=
 opts=
 while [ "$2" ]; do
-    opts="$opts $1"
+    if [ "$1" = -- ]; then
+	evscan_opts=$opts
+	opts=
+    else
+	opts="$opts $1"
+    fi
     shift
 done
 a=
 for n in $1; do
-    a="$a `basename $n`=<(./evscan $n)"
+    a="$a `basename $n`=<(./evscan $evscan_opts $n)"
 done
 eval ./plscan $opts $a
