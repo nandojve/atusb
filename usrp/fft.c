@@ -31,8 +31,8 @@ static void fft_complex(int n, const float *re, const float *im, double *res)
 	fftw_execute(plan);
 
 	for (i = 0; i != n; i++) {
-		a = hypot(out[i][0], out[i][1])/n;
-//		a = a*a;
+		a = hypot(out[i][0], out[i][1]); // /n;
+		a = a*a/n;
 		res[i] = a;
 	}
 }
@@ -46,16 +46,18 @@ static void fft_real(int n, const float *re, const float *im, double *res)
 	double a ;
 
 	in = fftw_malloc(sizeof(double)*n);
-	(void) a;
 
-	for (i = 0; i != n; i++)
-		in[i] = hypot(re[i], im[i]);
+	for (i = 0; i != n; i++) {
+		a = hypot(re[i], im[i]);
+		in[i] = a*a;
+	}
 
 	plan =  fftw_plan_r2r_1d(n, in, res, FFTW_REDFT10, FFTW_ESTIMATE);
 	fftw_execute(plan);
 
+	/* @@@ not sure at all about the scaling */
 	for (i = 0; i != n; i++)
-		res[i] /= n;
+		res[i] = res[i]/sqrt(n);
 }
 
 
