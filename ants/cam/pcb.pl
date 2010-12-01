@@ -64,13 +64,13 @@ sub pcb
 # 120%			680
 #
 
-$W = 565;
+$W = 658;
 
 $z = -0.8;	# full thickness of board
 # x: corner offset, compensation for rotation, array position
 # y: corner offet
 
-&orig(20*2+3, 15*2+23);
+&orig(20*0+2, 15*3+2);
 
 $r = $d/2-0.1;	# compensate deflection of board
 &pcb;
