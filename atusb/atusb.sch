@@ -1,19 +1,20 @@
-EESchema Schematic File Version 2  date Tue Nov 30 04:32:41 2010
+EESchema Schematic File Version 2  date Wed Dec  1 13:07:00 2010
 LIBS:power
 LIBS:device
 LIBS:conn
 LIBS:at86rf230
 LIBS:c8051f326
-LIBS:mini_usb_b
+LIBS:usb_a_plug
 LIBS:xtal-4
 LIBS:antenna
+LIBS:balun-smt6
 LIBS:atusb-cache
 EELAYER 24  0
 EELAYER END
 $Descr A4 11700 8267
 Sheet 1 3
 Title "IEEE 802.15.4 USB Transceiver (AT86RF230)"
-Date "30 nov 2010"
+Date "1 dec 2010"
 Rev "101130"
 Comp "Werner Almesberger"
 Comment1 ""

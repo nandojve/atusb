@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Tue Nov 30 06:28:00 2010
+EESchema Schematic File Version 2  date Wed Dec  1 13:07:00 2010
 LIBS:power
 LIBS:device
 LIBS:conn
@@ -14,7 +14,7 @@ EELAYER END
 $Descr A4 11700 8267
 Sheet 2 3
 Title "IEEE 802.15.4 USB Transceiver (AT86RF230)"
-Date "30 nov 2010"
+Date "1 dec 2010"
 Rev "101130"
 Comp "Werner Almesberger"
 Comment1 ""
@@ -23,119 +23,118 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 Wire Wire Line
-	2350 3350 2550 3350
-Connection ~ 5600 1100
+	5600 1100 5600 2750
 Wire Wire Line
-	5600 900  5600 2750
+	9800 1650 7650 1650
 Wire Wire Line
-	8250 1400 8050 1400
+	7650 1650 7650 1800
 Wire Wire Line
-	6950 1400 6750 1400
-Wire Wire Line
-	3700 4050 3700 2900
-Connection ~ 5150 3350
-Wire Wire Line
-	5150 4500 5150 2700
-Wire Wire Line
-	4750 4500 4750 3650
-Wire Wire Line
-	5600 2750 5800 2750
-Wire Wire Line
-	9800 5200 7200 5200
-Wire Wire Line
-	7200 5200 7200 4600
-Wire Wire Line
-	8600 3500 9800 3500
-Wire Wire Line
-	8600 3200 9800 3200
-Wire Wire Line
-	5800 3050 4150 3050
-Wire Wire Line
-	4150 3050 4000 3200
-Wire Wire Line
-	4000 3200 2350 3200
-Wire Wire Line
-	4150 3200 4000 3050
-Wire Wire Line
-	4150 3200 5800 3200
-Wire Wire Line
-	8100 4600 8100 4800
-Wire Wire Line
-	7050 4600 7050 6150
-Connection ~ 6750 4800
-Wire Wire Line
-	6750 4600 6750 6150
-Connection ~ 4750 3650
-Connection ~ 3700 3650
-Wire Wire Line
-	3700 3650 5800 3650
-Wire Wire Line
-	3400 4550 3400 4750
-Wire Wire Line
-	3700 2900 2350 2900
-Connection ~ 3100 3200
-Wire Wire Line
-	3100 4050 3100 3200
-Wire Wire Line
-	4750 4900 4750 5100
-Connection ~ 5150 3500
-Wire Wire Line
-	5150 3500 5800 3500
-Wire Wire Line
-	4000 3050 2350 3050
-Wire Wire Line
-	2550 3350 2550 3550
-Wire Wire Line
-	1000 3550 1000 2900
-Connection ~ 1000 3350
-Wire Wire Line
-	1000 3350 1200 3350
-Wire Wire Line
-	1000 2900 1200 2900
-Wire Wire Line
-	5800 3350 5150 3350
-Wire Wire Line
-	5150 4900 5150 5100
-Wire Wire Line
-	3400 4050 3400 3050
-Connection ~ 3400 3050
-Wire Wire Line
-	3100 4550 3100 4750
-Wire Wire Line
-	3700 4550 3700 4750
-Wire Wire Line
-	5600 3650 5600 4800
-Connection ~ 5600 3650
-Wire Wire Line
-	5600 4800 6750 4800
-Wire Wire Line
-	6900 6150 6900 4600
-Wire Wire Line
-	6600 6150 6600 5500
-Wire Wire Line
-	6600 5500 6400 5500
-Wire Wire Line
-	6400 5500 6400 6150
-Wire Wire Line
-	5800 2900 5600 2900
-Wire Wire Line
-	8600 3050 9800 3050
-Wire Wire Line
-	8600 3350 9800 3350
-Wire Wire Line
-	7350 4600 7350 5100
-Wire Wire Line
-	7350 5100 9800 5100
-Wire Wire Line
-	6750 1400 6750 1800
+	5600 1100 9800 1100
 Wire Wire Line
 	7450 1400 7650 1400
 Wire Wire Line
-	9800 1100 5600 1100
+	6750 1800 6750 1400
 Wire Wire Line
-	7650 1800 7650 1650
+	9800 5100 7350 5100
 Wire Wire Line
-	7650 1650 9800 1650
+	7350 5100 7350 4600
+Wire Wire Line
+	8600 3350 9800 3350
+Wire Wire Line
+	8600 3050 9800 3050
+Wire Wire Line
+	5800 2900 5600 2900
+Wire Wire Line
+	6400 6150 6400 5500
+Wire Wire Line
+	6400 5500 6600 5500
+Wire Wire Line
+	6600 5500 6600 6150
+Wire Wire Line
+	6900 6150 6900 4600
+Wire Wire Line
+	6750 4800 5600 4800
+Connection ~ 5600 3650
+Wire Wire Line
+	5600 4800 5600 3650
+Wire Wire Line
+	3700 4550 3700 4750
+Wire Wire Line
+	3100 4550 3100 4750
+Connection ~ 3400 3050
+Wire Wire Line
+	3400 4050 3400 3050
+Wire Wire Line
+	5150 4900 5150 5100
+Wire Wire Line
+	5800 3350 5150 3350
+Wire Wire Line
+	1200 2900 1000 2900
+Wire Wire Line
+	1000 3350 1200 3350
+Connection ~ 1000 3350
+Wire Wire Line
+	1000 2900 1000 3550
+Wire Wire Line
+	2550 3550 2550 3350
+Wire Wire Line
+	2350 3050 4000 3050
+Wire Wire Line
+	5150 3500 5800 3500
+Connection ~ 5150 3500
+Wire Wire Line
+	4750 4900 4750 5100
+Wire Wire Line
+	3100 4050 3100 3200
+Connection ~ 3100 3200
+Wire Wire Line
+	2350 2900 3700 2900
+Wire Wire Line
+	3400 4550 3400 4750
+Wire Wire Line
+	3700 3650 5800 3650
+Connection ~ 3700 3650
+Connection ~ 4750 3650
+Wire Wire Line
+	6750 4600 6750 6150
+Connection ~ 6750 4800
+Wire Wire Line
+	7050 4600 7050 6150
+Wire Wire Line
+	8100 4600 8100 4800
+Wire Wire Line
+	5800 3200 4150 3200
+Wire Wire Line
+	4150 3200 4000 3050
+Wire Wire Line
+	2350 3200 4000 3200
+Wire Wire Line
+	4000 3200 4150 3050
+Wire Wire Line
+	4150 3050 5800 3050
+Wire Wire Line
+	8600 3200 9800 3200
+Wire Wire Line
+	8600 3500 9800 3500
+Wire Wire Line
+	7200 4600 7200 5200
+Wire Wire Line
+	7200 5200 9800 5200
+Wire Wire Line
+	5600 2750 5800 2750
+Wire Wire Line
+	4750 4500 4750 3650
+Wire Wire Line
+	5150 4500 5150 2700
+Connection ~ 5150 3350
+Wire Wire Line
+	3700 2900 3700 4050
+Wire Wire Line
+	6750 1400 6950 1400
+Wire Wire Line
+	8250 1400 8050 1400
+Wire Wire Line
+	2550 3350 2350 3350
 $Comp
 L USB_A_PLUG~ CON1
 U 1 1 4CF4AD1B
@@ -163,16 +162,6 @@ P 5150 2700
 F 0 "#PWR03" H 5150 2800 30  0001 C CNN
 F 1 "VDD" H 5150 2810 30  0000 C CNN
 	1    5150 2700
-	1    0    0    -1  
-$EndComp
-$Comp
-L TST P10
-U 1 1 4C6409BB
-P 5600 900
-F 0 "P10" H 5600 1200 40  0000 C CNN
-F 1 "TST" H 5600 1150 30  0000 C CNN
-F 2 "PAD_60x60" H 5600 900 60  0001 C CNN
-	1    5600 900 
 	1    0    0    -1  
 $EndComp
 $Comp
