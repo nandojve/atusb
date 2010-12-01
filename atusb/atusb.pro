@@ -1,4 +1,4 @@
-update=Mon Oct 25 00:07:06 2010
+update=Wed Dec  1 00:34:25 2010
 last_client=pcbnew
 [eeschema]
 version=1
@@ -70,8 +70,8 @@ MSegLar=150
 LastNetListRead=atusb.net
 [pcbnew/libraries]
 LibDir=
-LibName1=../modules/meander
-LibName2=../modules/usb_a_plug
+LibName1=../ants/meander
+LibName2=../modules/usb_a_plug_smt
 LibName3=../../kicad-libs/modules/pads
 LibName4=../modules/qfn
 LibName5=../../kicad-libs/modules/stdpass
