@@ -4,18 +4,23 @@ RECT=$DIR/rect/rect
 ALIGN=$DIR/align/align
 ZMAP=$DIR/zmap/zmap
 GP2RML=$DIR/gp2rml/gp2rml
+CAMEO=../../../cae-tools/cameo/cameo
 
 GEN=${1:-./pcb.pl}
 
-rdata="12.10 8.90 -55.90  12.30 81.50 -55.80  111.70 11.30 -55.60"
+rdata="8.1 11.2 -56.3  8.1 80.1 -56.1  117.2 12.8 -55.9"
+
 # we need quite a large Z adjustment due to the table's vertical flexibility
-Z=-56.30
+Z=-56.6
 
 rect=`$RECT $rdata | awk '{$3 = ""; print}'`
 
 $GEN |
   awk '{ if ($3 != "") $3 += '$Z'; print $0; }' |
+  $CAMEO -d 0.4445 |
   $ALIGN 0 1 $rect |
 	# angle, reference (lower left corner), rect
-  $GP2RML 1.5 0.1 0.1
+  $GP2RML 2 0.5 0.5
 	# clearance, xy speed, z speed
+# since everything is in the same plane, z clearance must be thickness plus
+# real clearance !

@@ -41,24 +41,24 @@ sub cut
 sub one
 {
     &cut(
-      &mil(   0)-$r,	&mil(  0)-$r,
-      &mil(   0)-$r,	&mil(620)+$r,
-      &mil( 810)+$r,	&mil(620)+$r,
-      &mil( 850)  ,	&mil(580)+$r,
-      &mil( 890)-$r,	&mil(620)+$r,
-      &mil(1300)+$r,	&mil(620)+$r,
-      &mil(1490)+$r,	&mil(430)+$r,
-      &mil(1630)+$r,	&mil(430)+$r,
-      &mil(1630)+$r,	&mil(360)+$r,
-      &mil(1850)-$r,	&mil(360)+$r,
-      &mil(1850)-$r,	&mil(430)+$r,
-      &mil(2150)+$r,	&mil(430)+$r,
-      &mil(2150)+$r,	&mil(-70)-$r,
-      &mil( 890)-$r,	&mil(-70)-$r,
-      &mil( 890)-$r,	&mil(  0)-$r,
-      &mil( 850)   ,	&mil( 40)-$r,
-      &mil( 810)+$r,	&mil(  0)-$r,
-      &mil(   0)-$r,	&mil(  0)-$r);
+      &mil(   0),	&mil(  0),
+      &mil(   0),	&mil(620),
+      &mil( 810),	&mil(620),
+      &mil( 850)  ,	&mil(580),
+      &mil( 890),	&mil(620),
+      &mil(1300),	&mil(620),
+      &mil(1490),	&mil(430),
+      &mil(1630),	&mil(430),
+      &mil(1630),	&mil(360),
+      &mil(1850),	&mil(360),
+      &mil(1850),	&mil(430),
+      &mil(2150),	&mil(430),
+      &mil(2150),	&mil(-70),
+      &mil( 890),	&mil(-70),
+      &mil( 890),	&mil(  0),
+      &mil( 850),	&mil( 40),
+      &mil( 810),	&mil(  0),
+      &mil(   0),	&mil(  0));
 }
 
 
