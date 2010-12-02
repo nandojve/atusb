@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Wed Dec  1 13:07:00 2010
+EESchema Schematic File Version 2  date Thu Dec  2 12:03:08 2010
 LIBS:power
 LIBS:device
 LIBS:conn
@@ -14,7 +14,7 @@ EELAYER END
 $Descr A4 11700 8267
 Sheet 2 3
 Title "IEEE 802.15.4 USB Transceiver (AT86RF230)"
-Date "1 dec 2010"
+Date "2 dec 2010"
 Rev "101130"
 Comp "Werner Almesberger"
 Comment1 ""
@@ -22,119 +22,136 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
-Wire Wire Line
-	5600 1100 5600 2750
-Wire Wire Line
-	9800 1650 7650 1650
-Wire Wire Line
-	7650 1650 7650 1800
-Wire Wire Line
-	5600 1100 9800 1100
-Wire Wire Line
-	7450 1400 7650 1400
-Wire Wire Line
-	6750 1800 6750 1400
-Wire Wire Line
-	9800 5100 7350 5100
-Wire Wire Line
-	7350 5100 7350 4600
+NoConn ~ 6900 1800
+NoConn ~ 7050 1800
+NoConn ~ 8600 3500
 Wire Wire Line
 	8600 3350 9800 3350
 Wire Wire Line
-	8600 3050 9800 3050
+	9800 1150 7200 1150
 Wire Wire Line
-	5800 2900 5600 2900
+	7200 1150 7200 1800
 Wire Wire Line
-	6400 6150 6400 5500
+	7650 1800 7650 1600
 Wire Wire Line
-	6400 5500 6600 5500
+	2350 3350 2550 3350
 Wire Wire Line
-	6600 5500 6600 6150
+	8250 900  8050 900 
 Wire Wire Line
-	6900 6150 6900 4600
+	6950 900  6750 900 
 Wire Wire Line
-	6750 4800 5600 4800
-Connection ~ 5600 3650
+	3700 4050 3700 2900
+Connection ~ 5150 3350
 Wire Wire Line
-	5600 4800 5600 3650
-Wire Wire Line
-	3700 4550 3700 4750
-Wire Wire Line
-	3100 4550 3100 4750
-Connection ~ 3400 3050
-Wire Wire Line
-	3400 4050 3400 3050
-Wire Wire Line
-	5150 4900 5150 5100
-Wire Wire Line
-	5800 3350 5150 3350
-Wire Wire Line
-	1200 2900 1000 2900
-Wire Wire Line
-	1000 3350 1200 3350
-Connection ~ 1000 3350
-Wire Wire Line
-	1000 2900 1000 3550
-Wire Wire Line
-	2550 3550 2550 3350
-Wire Wire Line
-	2350 3050 4000 3050
-Wire Wire Line
-	5150 3500 5800 3500
-Connection ~ 5150 3500
-Wire Wire Line
-	4750 4900 4750 5100
-Wire Wire Line
-	3100 4050 3100 3200
-Connection ~ 3100 3200
-Wire Wire Line
-	2350 2900 3700 2900
-Wire Wire Line
-	3400 4550 3400 4750
-Wire Wire Line
-	3700 3650 5800 3650
-Connection ~ 3700 3650
-Connection ~ 4750 3650
-Wire Wire Line
-	6750 4600 6750 6150
-Connection ~ 6750 4800
-Wire Wire Line
-	7050 4600 7050 6150
-Wire Wire Line
-	8100 4600 8100 4800
-Wire Wire Line
-	5800 3200 4150 3200
-Wire Wire Line
-	4150 3200 4000 3050
-Wire Wire Line
-	2350 3200 4000 3200
-Wire Wire Line
-	4000 3200 4150 3050
-Wire Wire Line
-	4150 3050 5800 3050
-Wire Wire Line
-	8600 3200 9800 3200
-Wire Wire Line
-	8600 3500 9800 3500
-Wire Wire Line
-	7200 4600 7200 5200
-Wire Wire Line
-	7200 5200 9800 5200
-Wire Wire Line
-	5600 2750 5800 2750
+	5150 2700 5150 4500
 Wire Wire Line
 	4750 4500 4750 3650
 Wire Wire Line
-	5150 4500 5150 2700
-Connection ~ 5150 3350
+	5800 2750 5600 2750
 Wire Wire Line
-	3700 2900 3700 4050
+	5800 3050 4150 3050
 Wire Wire Line
-	6750 1400 6950 1400
+	4000 3200 4150 3050
 Wire Wire Line
-	8250 1400 8050 1400
+	2350 3200 4000 3200
 Wire Wire Line
-	2550 3350 2350 3350
+	4000 3050 4150 3200
+Wire Wire Line
+	4150 3200 5800 3200
+Wire Wire Line
+	8100 4600 8100 4800
+Wire Wire Line
+	7050 4600 7050 6150
+Connection ~ 6750 4800
+Wire Wire Line
+	6750 6150 6750 4600
+Connection ~ 4750 3650
+Connection ~ 3700 3650
+Wire Wire Line
+	3700 3650 5800 3650
+Wire Wire Line
+	3400 4550 3400 4750
+Wire Wire Line
+	3700 2900 2350 2900
+Connection ~ 3100 3200
+Wire Wire Line
+	3100 4050 3100 3200
+Wire Wire Line
+	4750 4900 4750 5100
+Connection ~ 5150 3500
+Wire Wire Line
+	5800 3500 5150 3500
+Wire Wire Line
+	2350 3050 4000 3050
+Wire Wire Line
+	2550 3350 2550 3550
+Wire Wire Line
+	1000 3550 1000 2900
+Connection ~ 1000 3350
+Wire Wire Line
+	1200 3350 1000 3350
+Wire Wire Line
+	1000 2900 1200 2900
+Wire Wire Line
+	5150 3350 5800 3350
+Wire Wire Line
+	5150 4900 5150 5100
+Wire Wire Line
+	3400 4050 3400 3050
+Connection ~ 3400 3050
+Wire Wire Line
+	3100 4550 3100 4750
+Wire Wire Line
+	3700 4550 3700 4750
+Wire Wire Line
+	5600 3650 5600 4800
+Connection ~ 5600 3650
+Wire Wire Line
+	5600 4800 6750 4800
+Wire Wire Line
+	6900 6150 6900 4600
+Wire Wire Line
+	6600 6150 6600 5500
+Wire Wire Line
+	6600 5500 6400 5500
+Wire Wire Line
+	6400 5500 6400 6150
+Wire Wire Line
+	5800 2900 5600 2900
+Wire Wire Line
+	6750 900  6750 1800
+Wire Wire Line
+	7450 900  7650 900 
+Wire Wire Line
+	6050 1150 5600 1150
+Wire Wire Line
+	5600 1150 5600 2750
+Wire Wire Line
+	7350 1800 7350 1300
+Wire Wire Line
+	7350 1300 9800 1300
+Wire Wire Line
+	7500 1800 7500 1450
+Wire Wire Line
+	7500 1450 9800 1450
+Wire Wire Line
+	8600 3050 9800 3050
+Wire Wire Line
+	7650 1600 9800 1600
+Wire Wire Line
+	8600 3200 9800 3200
+$Comp
+L C8051F326 U1
+U 1 1 4C609C36
+P 7200 3200
+F 0 "U1" H 6200 4400 60  0000 C CNN
+F 1 "C8051F326" H 7200 3200 60  0000 C CNN
+F 2 "QFN28" H 7200 3200 60  0001 C CNN
+	1    7200 3200
+	1    0    0    -1  
+$EndComp
+NoConn ~ 7200 4600
+NoConn ~ 7350 4600
 $Comp
 L USB_A_PLUG~ CON1
 U 1 1 4CF4AD1B
@@ -146,9 +163,8 @@ F 1 "USB_A_PLUG " H 1750 2750 60  0000 C CNN
 $EndComp
 Text Notes 5750 6700 0    60   ~ 0
 Space P11 through P14 at 100 mil interval close to board edge\nto allow use with a 0.1" header soldered to the board.
-Text HLabel 9800 1650 2    60   Output ~ 0
+Text HLabel 9800 1150 2    60   Output ~ 0
 TST
-NoConn ~ 6900 1800
 Text Label 2550 3200 0    60   ~ 0
 D+
 Text Label 2550 3050 0    60   ~ 0
@@ -194,10 +210,10 @@ $EndComp
 $Comp
 L GND #PWR07
 U 1 1 4C6408AD
-P 8250 1400
-F 0 "#PWR07" H 8250 1400 30  0001 C CNN
-F 1 "GND" H 8250 1330 30  0001 C CNN
-	1    8250 1400
+P 8250 900
+F 0 "#PWR07" H 8250 900 30  0001 C CNN
+F 1 "GND" H 8250 830 30  0001 C CNN
+	1    8250 900 
 	0    -1   -1   0   
 $EndComp
 $Comp
@@ -271,10 +287,9 @@ Text Label 6750 5950 1    60   ~ 0
 VBUS
 Text Label 6900 5950 1    60   ~ 0
 C2CK
-NoConn ~ 7500 1800
-Text HLabel 9800 3050 2    60   Output ~ 0
+Text HLabel 9800 1450 2    60   Output ~ 0
 nRST_RF
-Text HLabel 9800 3200 2    60   Output ~ 0
+Text HLabel 9800 1300 2    60   Output ~ 0
 SLP_TR
 $Comp
 L VR VR3
@@ -309,35 +324,32 @@ $EndComp
 $Comp
 L R R1
 U 1 1 4C6402F2
-P 7200 1400
-F 0 "R1" V 7280 1400 50  0000 C CNN
-F 1 "68" V 7200 1400 50  0000 C CNN
-F 2 "0402" H 7200 1400 60  0001 C CNN
-	1    7200 1400
+P 7200 900
+F 0 "R1" V 7280 900 50  0000 C CNN
+F 1 "68" V 7200 900 50  0000 C CNN
+F 2 "0402" H 7200 900 60  0001 C CNN
+	1    7200 900 
 	0    1    -1   0   
 $EndComp
 $Comp
 L LED D1
 U 1 1 4C6402EE
-P 7850 1400
-F 0 "D1" H 7850 1500 50  0000 C CNN
-F 1 "LTST-C190KTKR" H 7850 1300 50  0000 C CNN
-F 2 "0603" H 7850 1400 60  0001 C CNN
-	1    7850 1400
+P 7850 900
+F 0 "D1" H 7850 1000 50  0000 C CNN
+F 1 "LTST-C190KTKR" H 7850 800 50  0000 C CNN
+F 2 "0603" H 7850 900 60  0001 C CNN
+	1    7850 900 
 	1    0    0    -1  
 $EndComp
-NoConn ~ 7350 1800
-NoConn ~ 7200 1800
-NoConn ~ 7050 1800
-Text HLabel 9800 1100 2    60   Input ~ 0
+Text HLabel 6050 1150 2    60   Input ~ 0
 IRQ_RF
-Text HLabel 9800 5200 2    60   Output ~ 0
-nSS
 Text HLabel 9800 3350 2    60   Output ~ 0
+nSS
+Text HLabel 9800 1600 2    60   Output ~ 0
 SCLK
-Text HLabel 9800 5100 2    60   Output ~ 0
+Text HLabel 9800 3200 2    60   Output ~ 0
 MOSI
-Text HLabel 9800 3500 2    60   Input ~ 0
+Text HLabel 9800 3050 2    60   Input ~ 0
 MISO
 $Comp
 L CONN_1 P14
@@ -397,16 +409,6 @@ F 0 "C1" H 4800 4800 50  0000 L CNN
 F 1 "1uF" H 4800 4600 50  0000 L CNN
 F 2 "0402" H 4750 4700 60  0001 C CNN
 	1    4750 4700
-	1    0    0    -1  
-$EndComp
-$Comp
-L C8051F326 U1
-U 1 1 4C609C36
-P 7200 3200
-F 0 "U1" H 6200 4400 60  0000 C CNN
-F 1 "C8051F326" H 7200 3200 60  0000 C CNN
-F 2 "QFN28" H 7200 3200 60  0001 C CNN
-	1    7200 3200
 	1    0    0    -1  
 $EndComp
 $EndSCHEMATC

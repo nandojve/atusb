@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Wed Dec  1 13:26:21 2010
+EESchema Schematic File Version 2  date Thu Dec  2 12:03:08 2010
 LIBS:power
 LIBS:device
 LIBS:conn
@@ -14,7 +14,7 @@ EELAYER END
 $Descr A4 11700 8267
 Sheet 3 3
 Title "IEEE 802.15.4 USB Transceiver (AT86RF230)"
-Date "1 dec 2010"
+Date "2 dec 2010"
 Rev "101130"
 Comp "Werner Almesberger"
 Comment1 ""
@@ -27,9 +27,7 @@ Wire Wire Line
 	3350 4300 3150 4300
 Connection ~ 4350 4000
 Wire Wire Line
-	4350 3600 4350 4000
-Wire Wire Line
-	4350 4000 4350 4400
+	4350 3600 4350 4400
 Wire Wire Line
 	3350 4200 3150 4200
 Wire Wire Line
@@ -41,9 +39,7 @@ Wire Wire Line
 Wire Wire Line
 	3650 6350 3650 6150
 Wire Wire Line
-	3650 6150 3400 6150
-Wire Wire Line
-	3400 6150 3150 6150
+	3650 6150 3150 6150
 Wire Wire Line
 	3150 6150 3150 6350
 Wire Wire Line
@@ -52,9 +48,7 @@ Connection ~ 7850 1250
 Wire Wire Line
 	7850 1050 7850 1250
 Wire Wire Line
-	7600 1250 7850 1250
-Wire Wire Line
-	7850 1250 8100 1250
+	7600 1250 8100 1250
 Wire Wire Line
 	7600 1250 7600 1450
 Wire Wire Line
@@ -63,9 +57,7 @@ Wire Wire Line
 	7950 2050 7950 1850
 Connection ~ 9700 1150
 Wire Wire Line
-	9900 1150 9700 1150
-Wire Wire Line
-	9700 1150 8400 1150
+	9900 1150 8400 1150
 Wire Wire Line
 	8400 1150 8400 2650
 Connection ~ 10500 1650
@@ -117,13 +109,9 @@ Wire Wire Line
 Wire Wire Line
 	8250 5650 8250 5450
 Wire Wire Line
-	8100 6350 8100 5650
+	8100 6350 8100 5450
 Wire Wire Line
-	8100 5650 8100 5450
-Wire Wire Line
-	8400 6350 8400 6150
-Wire Wire Line
-	8400 6150 8400 5450
+	8400 6350 8400 5450
 Wire Wire Line
 	8550 5850 8550 5450
 Wire Wire Line
@@ -135,14 +123,10 @@ Wire Wire Line
 Wire Wire Line
 	9500 4500 9700 4500
 Wire Wire Line
-	9700 4050 9700 4500
-Wire Wire Line
-	9700 4500 9700 4850
+	9700 4050 9700 4850
 Connection ~ 9700 4500
 Wire Wire Line
-	7500 5450 7500 5650
-Wire Wire Line
-	7500 5650 7500 5850
+	7500 5450 7500 5850
 Wire Wire Line
 	8100 6950 8100 6750
 Wire Wire Line
@@ -152,21 +136,9 @@ Wire Wire Line
 	6700 4350 6500 4350
 Connection ~ 6500 4350
 Wire Wire Line
-	6500 4850 6500 4350
+	6500 4850 6500 2450
 Wire Wire Line
-	6500 4350 6500 3900
-Wire Wire Line
-	6500 3900 6500 3750
-Wire Wire Line
-	6500 3750 6500 3600
-Wire Wire Line
-	6500 3600 6500 2450
-Wire Wire Line
-	6500 2450 7500 2450
-Wire Wire Line
-	7500 2450 7650 2450
-Wire Wire Line
-	7650 2450 7800 2450
+	6500 2450 7800 2450
 Connection ~ 7500 2450
 Connection ~ 6500 3600
 Wire Wire Line
@@ -174,22 +146,14 @@ Wire Wire Line
 Wire Wire Line
 	10300 1150 10500 1150
 Wire Wire Line
-	10500 1150 10500 1650
-Wire Wire Line
-	10500 1650 10500 1950
-Wire Wire Line
-	10500 1950 10500 2450
-Wire Wire Line
-	10500 2450 10500 2650
+	10500 1150 10500 2650
 Wire Wire Line
 	10500 1950 10100 1950
 Connection ~ 10500 1950
 Wire Wire Line
 	8550 2650 8550 2450
 Wire Wire Line
-	8550 2450 9700 2450
-Wire Wire Line
-	9700 2450 9900 2450
+	8550 2450 9900 2450
 Connection ~ 9700 2450
 Wire Wire Line
 	7950 2650 7950 2450
@@ -226,9 +190,7 @@ Wire Wire Line
 Wire Wire Line
 	4350 5000 4350 4800
 Wire Wire Line
-	3150 4200 3150 4300
-Wire Wire Line
-	3150 4300 3150 5000
+	3150 4200 3150 5000
 $Comp
 L PWR_FLAG #FLG015
 U 1 1 4CF4B348
