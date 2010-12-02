@@ -19,5 +19,5 @@ for f in "$1"/24*; do
     echo -n `basename "$f"` ''
     for n in "$f"/data*; do
 	./fft $opts -s 100 0 20 70 <"$n" || echo "fft failed for $n" 1>&1
-    done | ./range -v 10
+    done | ./range -v 5
 done
