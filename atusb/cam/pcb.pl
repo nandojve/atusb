@@ -30,7 +30,7 @@ sub cut
     while (@_) {
 	$x = shift @_;
 	$y = shift @_;
-	($x, $y) = (-$y, $x);
+#	($x, $y) = (-$y, $x);
 	$x += $x0;
 	$y += $y0;
 	print "$x $y $z\n";
@@ -42,22 +42,9 @@ sub one
 {
     &cut(
       &mil(   0),	&mil(  0),
-      &mil(   0),	&mil(620),
-      &mil( 810),	&mil(620),
-      &mil( 850)  ,	&mil(580),
-      &mil( 890),	&mil(620),
-      &mil(1300),	&mil(620),
-      &mil(1490),	&mil(430),
-      &mil(1630),	&mil(430),
-      &mil(1630),	&mil(360),
-      &mil(1850),	&mil(360),
-      &mil(1850),	&mil(430),
-      &mil(2150),	&mil(430),
-      &mil(2150),	&mil(-70),
-      &mil( 890),	&mil(-70),
-      &mil( 890),	&mil(  0),
-      &mil( 850),	&mil( 40),
-      &mil( 810),	&mil(  0),
+      &mil(   0),	&mil(640),
+      &mil(1305),	&mil(640),
+      &mil(1305),	&mil(  0),
       &mil(   0),	&mil(  0));
 }
 
@@ -65,5 +52,5 @@ sub one
 $z = -0.8;
 # x: corner offset, compensation for rotation, array position
 # y: corner offet
-&orig(5+16+22*3, 5)
+&orig(25+36*1, 2+17*0)
 &one;
