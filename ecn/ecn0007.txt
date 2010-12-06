@@ -1,0 +1,35 @@
+Revised via spacing
+
+
+Tests of PCB antenna performance revealed a sharp drop in received power
+at 2440 MHz, roughly the middle of the antenna's frequency range.
+
+This drop can be seen in the red (ant-120A0) and blue (ant-120B2) curve
+of [1].
+
+The test setup consisted of an atusb board with discrete balun and an
+antenna with only a single ground plane as the sender, and a set of
+antennas (see directory ../ants/) connected to an USRP2+XCVR2450 as the
+receiver. The receiving antennas had two ground planes, connected with
+vias spaced roughly 5 mm apart. (See ECN0004.)
+
+According to figure 1 of [2], the vias connecting the ground planes at
+the edge of the antenna should be spaced at around 50 mil, four times
+closer than 5 mm.
+
+After adding more vias to one of the receiving antennas, sensitivity
+improved drastically, as shown in the purple (ant-120C0) curve of [1].
+The same improvement could be observed in a set of ten antennas that
+all had shown the drop before the addition of more vias.
+
+The remaining drop of about 10 dB in the middle of the spectrum is
+probably caused by the sending antenna. A commercially produced 2.54
+GHz antenna at the receiver showed a similar drop when used with the
+same sender.
+
+[1] http://downloads.qi-hardware.com/people/werner/wpan/three-ants.png
+[2] http://www.ember.com/pdf/120-5052-000_Designing_with_a_PCB_Antenna.pdf
+
+
+Conclusion: place vias at the edge of the ground plane facing the
+antenna with a spacing no larger than 50 mil.
