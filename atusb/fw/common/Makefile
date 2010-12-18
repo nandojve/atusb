@@ -10,6 +10,8 @@
 # (at your option) any later version.
 #
 
+include Makefile.common
+
 
 GEN_quiet	= @echo "  GENERATE " $@ &&
 
@@ -25,7 +27,7 @@ endif
 all:		io-parts.h
 
 io-parts.h:	io.h Makefile
-		$(GEN) $(CPP) -dD $< | \
+		$(GEN) $(CPP) -D$(BOARD) -dD $< | \
 		  sed '1,/IO_H/d' | \
 		  awk \
 		  'BEGIN { print "/* MACHINE-GENERATED. DO NOT EDIT ! */"; \

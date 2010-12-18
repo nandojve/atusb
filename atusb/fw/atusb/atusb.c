@@ -59,6 +59,35 @@ void test_mode(void)
 }
 
 
+/*
+ * The following macros set all unused pins on a given port to zero. This is
+ * more elaborate than just setting the ports directly, but it has the
+ * advantage of hiding the pin to port relation.
+ */
+
+#define	PORT_NUM_P0	0
+#define	PORT_NUM_P2	2
+#define	PORT_NUM_P3	3
+
+#define	__PORT_NUM(mode) PORT_NUM_##mode
+#define	PORT_NUM(mode)	__PORT_NUM(mode)
+
+#define	USED(port, net) (PORT_NUM(net##_PORT) == port ? 1 << net##_BIT : 0)
+
+#define	ZERO_UNUSED(port) \
+	P##port &= \
+	    USED(port, LED)	| \
+	    USED(port, ID)	| \
+	    USED(port, MOSI)	| \
+	    USED(port, MISO)	| \
+	    USED(port, SCLK)	| \
+	    USED(port, nSS)	| \
+	    USED(port, nRST_RF)	| \
+	    USED(port, IRQ_RF)	| \
+	    USED(port, SLP_TR)	| \
+	    USED(port, TST)
+
+	
 static void init_io(void)
 {
 	/*
@@ -91,8 +120,13 @@ static void init_io(void)
 	SLP_TR = 0;
 	SLP_TR_MODE |= 1 << SLP_TR_BIT;
 
-	P0 = 1;	/* IRQ_RF = 1; LED = 0; TST = Z; the rest is unused */
-	P3 = 0;
+	IRQ_RF = 1;
+	LED = 0;
+	TST = 0;
+
+	ZERO_UNUSED(0);
+	ZERO_UNUSED(2);
+	ZERO_UNUSED(3);
 
 #if 0
 	/*

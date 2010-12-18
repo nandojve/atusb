@@ -17,10 +17,10 @@ DIRS=common boot atusb
 .PHONY:		all depend install uninstall clean spotless
 
 all:
-		for d in $(DIRS); do make -C $$d all || exit 1; done
+		for d in $(DIRS); do $(MAKE) -C $$d all || exit 1; done
 
 depend:
-		for d in $(DIRS); do make -C $$d depend || exit 1; done
+		for d in $(DIRS); do $(MAKE) -C $$d depend || exit 1; done
 
 # Top-level Makefile recurses for "install" and "uninstall", which have no use
 # here. Just ignore them.
@@ -30,7 +30,7 @@ install:
 uninstall:
 
 clean:
-		for d in $(DIRS); do make -C $$d clean || exit 1; done
+		for d in $(DIRS); do $(MAKE) -C $$d clean || exit 1; done
 
 spotless:
-		for d in $(DIRS); do make -C $$d spotless || exit 1; done
+		for d in $(DIRS); do $(MAKE) -C $$d spotless || exit 1; done
