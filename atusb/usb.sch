@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Thu Dec  2 23:47:00 2010
+EESchema Schematic File Version 2  date Fri Dec 17 16:15:52 2010
 LIBS:power
 LIBS:device
 LIBS:conn
@@ -14,7 +14,7 @@ EELAYER END
 $Descr A4 11700 8267
 Sheet 2 3
 Title "IEEE 802.15.4 USB Transceiver (AT86RF230)"
-Date "3 dec 2010"
+Date "17 dec 2010"
 Rev "101130"
 Comp "Werner Almesberger"
 Comment1 ""
@@ -22,6 +22,10 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
+Wire Notes Line
+	6950 900  6900 900 
+Wire Notes Line
+	6900 900  6900 1450
 Wire Wire Line
 	6900 1600 6900 1800
 Wire Wire Line
@@ -43,7 +47,7 @@ Wire Wire Line
 Wire Wire Line
 	5600 1150 6050 1150
 Wire Wire Line
-	7450 900  7650 900 
+	6050 900  5850 900 
 Wire Wire Line
 	6750 1800 6750 900 
 Wire Wire Line
@@ -126,9 +130,9 @@ Connection ~ 5150 3350
 Wire Wire Line
 	3700 2900 3700 4050
 Wire Wire Line
-	6750 900  6950 900 
+	6750 900  6550 900 
 Wire Wire Line
-	8250 900  8050 900 
+	5250 900  5450 900 
 Wire Wire Line
 	2550 3350 2350 3350
 Wire Wire Line
@@ -139,6 +143,10 @@ Wire Wire Line
 	7200 1150 9800 1150
 Wire Wire Line
 	8600 3350 9800 3350
+Wire Notes Line
+	6850 900  8300 900 
+Text Notes 6850 850  0    60   ~ 0
+ID: open 1008xx, GND: 1012xx
 $Comp
 L GND #PWR03
 U 1 1 4CF859A9
@@ -220,11 +228,11 @@ $EndComp
 $Comp
 L GND #PWR08
 U 1 1 4C6408AD
-P 8250 900
-F 0 "#PWR08" H 8250 900 30  0001 C CNN
-F 1 "GND" H 8250 830 30  0001 C CNN
-	1    8250 900 
-	0    -1   -1   0   
+P 5250 900
+F 0 "#PWR08" H 5250 900 30  0001 C CNN
+F 1 "GND" H 5250 830 30  0001 C CNN
+	1    5250 900 
+	0    1    -1   0   
 $EndComp
 $Comp
 L GND #PWR09
@@ -334,22 +342,22 @@ $EndComp
 $Comp
 L R R1
 U 1 1 4C6402F2
-P 7200 900
-F 0 "R1" V 7280 900 50  0000 C CNN
-F 1 "68" V 7200 900 50  0000 C CNN
-F 2 "0402" H 7200 900 60  0001 C CNN
-	1    7200 900 
-	0    1    -1   0   
+P 6300 900
+F 0 "R1" V 6380 900 50  0000 C CNN
+F 1 "68" V 6300 900 50  0000 C CNN
+F 2 "0402" H 6300 900 60  0001 C CNN
+	1    6300 900 
+	0    -1   -1   0   
 $EndComp
 $Comp
 L LED D1
 U 1 1 4C6402EE
-P 7850 900
-F 0 "D1" H 7850 1000 50  0000 C CNN
-F 1 "LTST-C190KTKR" H 7850 800 50  0000 C CNN
-F 2 "0603" H 7850 900 60  0001 C CNN
-	1    7850 900 
-	1    0    0    -1  
+P 5650 900
+F 0 "D1" H 5650 1000 50  0000 C CNN
+F 1 "LTST-C190KTKR" H 5650 800 50  0000 C CNN
+F 2 "0603" H 5650 900 60  0001 C CNN
+	1    5650 900 
+	-1   0    0    -1  
 $EndComp
 Text HLabel 6050 1150 2    60   Input ~ 0
 IRQ_RF
