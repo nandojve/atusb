@@ -39,12 +39,12 @@
 
 /* ----- Application configuration ----------------------------------------- */
 
-#if defined(BOARD_1008xx)
+#if defined(BOARD_100813)
 #define	HW_TYPE		HW_TYPE_100813
-#elif defined(BOARD_1012xx)
+#elif defined(BOARD_101216)
 #define	HW_TYPE		HW_TYPE_101216
 #else
-#error must define BOARD_1008xx or BOARD_1012xx
+#error must define BOARD_100813 or BOARD_101216
 #endif
 
 #endif /* !CONFIG_H */
