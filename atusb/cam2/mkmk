@@ -8,7 +8,7 @@ mm
 gerber 35mil ../atusb-PCB_Edges.gbr
 align 1 4.6mm 9.0mm	# align relative to board corner
 translate 3mm 3mm	# move to PCB zone assigned to project
-array 20mm 37mm 3 0	# skip over previous boards
+array 20mm 37mm 0 1	# skip over previous boards
 z 0 -58.9mm		# board surface (tool fully retracted)
 z 1.5mm			# slack for extending the tool
 z -0.8mm		# board thickness
@@ -28,7 +28,7 @@ write mill.gp
 remainder
 empty
 
-gerber 35mil ../atusb-PCB_Edges.gbr
+gerber 20mil ../atusb-PCB_Edges.gbr	# 35 mil endmill, 15 mil deflection
 offset
 append mill.gp
 EOF
