@@ -1,4 +1,4 @@
-PLOT_BRD = pcbnew --plot=ps_a4 --ps-pads-drill-opt=none
+PLOT_BRD = pcbnew --plot=ps_a4 --ps-pads-drill-opt=none --fill-all-zones
 
 .PHONY:		all gen generate sch brd xpdf front back clean
 
