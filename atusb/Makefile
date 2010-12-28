@@ -1,3 +1,5 @@
+PLOT_BRD = pcbnew --plot=ps_a4 --ps-pads-drill-opt=none
+
 .PHONY:		all gen generate sch brd xpdf front back clean
 
 all:
@@ -38,10 +40,10 @@ back:		atusb-Back.ps
 #
 
 atusb-Front.ps:	atusb.brd
-		pcbnew -p=ps_a4 -l Front --ps-pads-drill-opt=none --mirror $<
+		$(PLOT_BRD) -l Front --mirror $<
 
 atusb-Back.ps:	atusb.brd
-		pcbnew -p=ps_a4 -l Back --ps-pads-drill-opt=none $<
+		$(PLOT_BRD) -l Back $<
 
 clean:
 		rm -f atusb-Front.ps atusb-Back.ps
