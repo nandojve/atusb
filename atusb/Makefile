@@ -1,7 +1,7 @@
-.PHONY:		all gen generate sch brd xpdf
+.PHONY:		all gen generate sch brd xpdf front back
 
 all:
-		@echo "make what ? target: gen sch brd xpdf"
+		@echo "make what ? target: gen sch brd xpdf front back"
 		@exit 1
 
 gen generate:
@@ -16,3 +16,29 @@ brd:
 
 xpdf:
 		xpdf atusb.pdf
+
+front:		atusb-Front.ps
+		lpr $<
+
+back:		atusb-Back.ps
+		lpr $<
+
+#
+# Postscript for production of front/back layer, using the toner transfer
+# method. Note that other artwork transfer methods may require different
+# mirror settings.
+#
+# We use  --ps-pads-drill-opt=none  to avoid having any hole before drilling,
+# which yields the best results with a CNC drill. For manual drilling, "real"
+# would be preferrable. Do not use "small", for this created holes that are
+# larger (!) than designed.
+#
+# Note: all this currenly only works properly if the board has been saved with
+# all zones filled.
+#
+
+atusb-Front.ps:	atusb.brd
+		pcbnew -p=ps_a4 -l Front --ps-pads-drill-opt=none --mirror $<
+
+atusb-Back.ps:	atusb.brd
+		pcbnew -p=ps_a4 -l Back --ps-pads-drill-opt=none $<
