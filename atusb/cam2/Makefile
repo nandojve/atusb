@@ -1,4 +1,4 @@
-.PHONY:			all
+.PHONY:			all clean
 
 all:			Makefile.mkmk
 
@@ -12,3 +12,6 @@ Makefile.mkmk:		mkmk ../atusb.drl ../atusb-PCB_Edges.gbr
 			pcbnew --plot=gerber -l PCB_Edges `pwd`/../atusb.brd
 
 -include Makefile.mkmk
+
+clean::
+			rm -f Makefile.mkmk

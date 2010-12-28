@@ -60,4 +60,7 @@ plot:
 dplot:
 		echo 'plot "< sed /^\$\$/d drill.gp" with linespoints' | \
 		  gnuplot -persist
+
+clean::
+		rm -f mill.gp mill.rml drill.gp drill.rml
 EOF

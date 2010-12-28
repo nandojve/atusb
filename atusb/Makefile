@@ -1,7 +1,7 @@
-.PHONY:		all gen generate sch brd xpdf front back
+.PHONY:		all gen generate sch brd xpdf front back clean
 
 all:
-		@echo "make what ? target: gen sch brd xpdf front back"
+		@echo "make what ? target: gen sch brd xpdf front back clean"
 		@exit 1
 
 gen generate:
@@ -42,3 +42,7 @@ atusb-Front.ps:	atusb.brd
 
 atusb-Back.ps:	atusb.brd
 		pcbnew -p=ps_a4 -l Back --ps-pads-drill-opt=none $<
+
+clean:
+		rm -f atusb-Front.ps atusb-Back.ps
+		rm -f atusb.drl atusb-PCB_Edges.gbr
