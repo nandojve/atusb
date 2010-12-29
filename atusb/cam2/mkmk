@@ -8,7 +8,7 @@ mm
 gerber 35mil ../atusb-PCB_Edges.gbr
 align 1 4.6mm 9.0mm	# align relative to board corner
 translate 3mm 3mm	# move to PCB zone assigned to project
-array 20mm 37mm 0 1	# skip over previous boards
+array 20mm 37mm 1 1	# skip over previous boards
 z 0 -58.9mm		# board surface (tool fully retracted)
 z 1.5mm			# slack for extending the tool
 z -0.8mm		# board thickness
@@ -54,11 +54,11 @@ cng:
 		\$(CNGT) -57.4 20 mill.gp
 
 plot:
-		echo 'plot "drill.gp" with points, "mill.gp" with lines' | \
+		echo 'plot "drill.gp" with points, "mill.gp" with lines' | \\
 		  gnuplot -persist
 
 dplot:
-		echo 'plot "< sed /^\$\$/d drill.gp" with linespoints' | \
+		echo 'plot "< sed /^\$\$/d drill.gp" with linespoints' | \\
 		  gnuplot -persist
 
 clean::
