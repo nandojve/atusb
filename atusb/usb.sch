@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Mon Jan  3 15:41:36 2011
+EESchema Schematic File Version 2  date Mon Jan  3 15:54:00 2011
 LIBS:power
 LIBS:device
 LIBS:conn
@@ -354,7 +354,7 @@ L LED D1
 U 1 1 4C6402EE
 P 5650 900
 F 0 "D1" H 5650 1000 50  0000 C CNN
-F 1 "LTST-C190KTKR" H 5650 800 50  0000 C CNN
+F 1 "LTST-C190KRKT" H 5650 800 50  0000 C CNN
 F 2 "0603" H 5650 900 60  0001 C CNN
 	1    5650 900 
 	-1   0    0    -1  
