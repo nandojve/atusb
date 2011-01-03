@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Mon Jan  3 15:54:00 2011
+EESchema Schematic File Version 2  date Mon Jan  3 16:32:06 2011
 LIBS:power
 LIBS:device
 LIBS:conn
@@ -22,6 +22,8 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
+Text Notes 2600 5000 0    60   ~ 0
+USB 2.0 limits the capacitative load\non full-speed drivers to 50 pF.
 Wire Notes Line
 	6950 900  6900 900 
 Wire Notes Line
@@ -316,6 +318,7 @@ P 3700 4300
 F 0 "VR3" V 3780 4300 50  0000 C CNN
 F 1 "5V6" V 3700 4300 50  0000 C CNN
 F 2 "0402" H 3700 4300 60  0001 C CNN
+F 4 "33pF" V 3600 4400 50  0000 C CNN "Field4"
 	1    3700 4300
 	-1   0    0    -1  
 $EndComp
@@ -326,6 +329,7 @@ P 3400 4300
 F 0 "VR2" V 3480 4300 50  0000 C CNN
 F 1 "5V6" V 3400 4300 50  0000 C CNN
 F 2 "0402" H 3400 4300 60  0001 C CNN
+F 4 "33pF" V 3300 4400 50  0000 C CNN "Field4"
 	1    3400 4300
 	-1   0    0    -1  
 $EndComp
@@ -336,6 +340,7 @@ P 3100 4300
 F 0 "VR1" V 3180 4300 50  0000 C CNN
 F 1 "5V6" V 3100 4300 50  0000 C CNN
 F 2 "0402" H 3100 4300 60  0001 C CNN
+F 4 "33pF" V 3000 4400 50  0000 C CNN "Field4"
 	1    3100 4300
 	-1   0    0    -1  
 $EndComp
