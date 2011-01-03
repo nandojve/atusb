@@ -1,8 +1,8 @@
 /*
  * lib/atusd.c - ATRF access functions library (uSD version)
  *
- * Written 2010 by Werner Almesberger
- * Copyright 2010 Werner Almesberger
+ * Written 2010-2011 by Werner Almesberger
+ * Copyright 2010-2011 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -181,7 +181,7 @@ static void *atusd_open(void)
 		exit(1);
 	}
 
-	dsc->fd = open("/dev/mem", O_RDWR);
+	dsc->fd = open("/dev/mem", O_RDWR | O_SYNC);
 	if (dsc->fd < 0) {
 		perror("/dev/mem");
 		exit(1);
