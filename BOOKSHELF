@@ -7,10 +7,15 @@
 #
 
 N: at86rf230
+A: rf230
+D: http://www.atmel.com/dyn/resources/prod_documents/doc5131.pdf
+
+N: at86rf231
+A: rf231
 A: transceiver
 A: txrx
 A: atrf
-D: http://www.atmel.com/dyn/resources/prod_documents/doc5131.pdf
+D: http://www.atmel.com/dyn/resources/prod_documents/doc8111.pdf
 
 N: c8051f326
 A: mcu
@@ -47,6 +52,11 @@ N: avr2005
 A: at86rf230-design
 A: design
 D: http://www.atmel.com/dyn/resources/prod_documents/doc8092.pdf
+
+# AVR2027: AES Security Module
+N: avr2027
+A: aes
+D: http://www.atmel.com/dyn/resources/prod_documents/doc8260.pdf
 
 # Mini-USB B receptacle (this footprint is fairly universal)
 N: mini_usb_b
