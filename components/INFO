@@ -18,6 +18,9 @@ S: mini_usb_b
 # Atmel AT86RF230 2.4 GHz Transceiver for IEEE 802.15.4
 S: at86rf230
 
+# Atmel AT86RF231 2.4 GHz Transceiver for IEEE 802.15.4
+S: at86rf231
+
 # Fairly generic crystal package with 4 pins (crystal connects pins 1 and 3,
 # the rest is ground)
 S: xtal-4
