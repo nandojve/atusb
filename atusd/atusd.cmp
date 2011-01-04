@@ -1,30 +1,30 @@
-Cmp-Mod V01 Created by CvPCB (2010-08-11 BZR 2448)-unstable date = Sat Sep 11 20:51:44 2010
+Cmp-Mod V01 Created by CvPCB (2010-12-27 BZR 2685)-unstable date = Tue Jan  4 02:41:25 2011
 
 BeginCmp
 TimeStamp = /4C63FE17;
 Reference = ANT1;
 ValeurCmp = 50R;
-IdModule  = meander;
+IdModule  = MEANDER-110;
 EndCmp
 
 BeginCmp
-TimeStamp = /4C7FE8A6;
+TimeStamp = /4D22A4C6;
 Reference = B1;
-ValeurCmp = 748421245;
+ValeurCmp = 2450FB15L0001;
 IdModule  = 0805-6;
 EndCmp
 
 BeginCmp
 TimeStamp = /4C7FBF1B;
 Reference = C1;
-ValeurCmp = 22pF;
+ValeurCmp = 22pF/RF;
 IdModule  = 0402-M;
 EndCmp
 
 BeginCmp
 TimeStamp = /4C7FBF1E;
 Reference = C2;
-ValeurCmp = 22pF;
+ValeurCmp = 22pF/RF;
 IdModule  = 0402-M;
 EndCmp
 
@@ -71,6 +71,13 @@ IdModule  = 0402-M;
 EndCmp
 
 BeginCmp
+TimeStamp = /4D22A5A9;
+Reference = C9;
+ValeurCmp = 22pF/RF;
+IdModule  = 0402;
+EndCmp
+
+BeginCmp
 TimeStamp = /4C640CD5;
 Reference = P1;
 ValeurCmp = TST;
@@ -99,9 +106,9 @@ IdModule  = 0402-M;
 EndCmp
 
 BeginCmp
-TimeStamp = /4C609C4B;
+TimeStamp = /4D22A108;
 Reference = U1;
-ValeurCmp = AT86RF230;
+ValeurCmp = AT86RF231;
 IdModule  = QFN32;
 EndCmp
 
