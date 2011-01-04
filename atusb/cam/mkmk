@@ -6,9 +6,11 @@ cameo <<EOF
 mm
 
 gerber 35mil ../atusb-PCB_Edges.gbr
+rotate 90
 align 1 4.6mm 9.0mm	# align relative to board corner
 translate 3mm 3mm	# move to PCB zone assigned to project
-array 20mm 37mm 1 1	# skip over previous boards
+array 20mm 37mm 3 1	# skip over previous boards (201012xx)
+array 37mm 19mm 0 1	# skip over previous boards (201101xx)
 z 0 -58.9mm		# board surface (tool fully retracted)
 z 1.5mm			# slack for extending the tool
 z -0.8mm		# board thickness
