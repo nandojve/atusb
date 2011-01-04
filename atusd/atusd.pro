@@ -1,4 +1,4 @@
-update=Sun Sep 12 12:19:42 2010
+update=Tue Jan  4 01:42:43 2011
 last_client=pcbnew
 [eeschema]
 version=1
@@ -41,7 +41,7 @@ LibName2=device
 LibName3=conn
 LibName4=../components/at86rf231
 LibName5=../components/antenna
-LibName6=../components/balun
+LibName6=../components/balun-smt6
 [cvpcb]
 version=1
 NetIExt=net
