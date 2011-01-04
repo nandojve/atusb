@@ -1,4 +1,4 @@
-update=Thu Dec  2 17:34:14 2010
+update=Tue Jan  4 01:05:08 2011
 last_client=pcbnew
 [eeschema]
 version=1
@@ -39,7 +39,7 @@ ShowSheetReferenceAndTitleBlock=1
 LibName1=power
 LibName2=device
 LibName3=conn
-LibName4=../components/at86rf230
+LibName4=../components/at86rf231
 LibName5=../components/c8051f326
 LibName6=../components/usb_a_plug
 LibName7=../components/xtal-4

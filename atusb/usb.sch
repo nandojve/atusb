@@ -1,8 +1,8 @@
-EESchema Schematic File Version 2  date Mon Jan  3 16:32:06 2011
+EESchema Schematic File Version 2  date Tue Jan  4 00:55:48 2011
 LIBS:power
 LIBS:device
 LIBS:conn
-LIBS:at86rf230
+LIBS:at86rf231
 LIBS:c8051f326
 LIBS:usb_a_plug
 LIBS:xtal-4
@@ -14,14 +14,15 @@ EELAYER END
 $Descr A4 11700 8267
 Sheet 2 3
 Title "IEEE 802.15.4 USB Transceiver (AT86RF230)"
-Date "3 jan 2011"
-Rev "101130"
+Date "4 jan 2011"
+Rev "20110104"
 Comp "Werner Almesberger"
 Comment1 ""
 Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
+NoConn ~ 7200 1800
 Text Notes 2600 5000 0    60   ~ 0
 USB 2.0 limits the capacitative load\non full-speed drivers to 50 pF.
 Wire Notes Line
@@ -140,10 +141,6 @@ Wire Wire Line
 Wire Wire Line
 	7650 1600 7650 1800
 Wire Wire Line
-	7200 1800 7200 1150
-Wire Wire Line
-	7200 1150 9800 1150
-Wire Wire Line
 	8600 3350 9800 3350
 Wire Notes Line
 	6850 900  8300 900 
@@ -183,8 +180,6 @@ F 1 "USB_A_PLUG " H 1750 2750 60  0000 C CNN
 $EndComp
 Text Notes 5750 6700 0    60   ~ 0
 Space P11 through P14 at 100 mil interval close to board edge\nto allow use with a 0.1" header soldered to the board.
-Text HLabel 9800 1150 2    60   Output ~ 0
-TST
 Text Label 2550 3200 0    60   ~ 0
 D+
 Text Label 2550 3050 0    60   ~ 0
