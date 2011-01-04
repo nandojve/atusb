@@ -1,8 +1,8 @@
-EESchema Schematic File Version 2  date Sat Sep 11 20:52:13 2010
+EESchema Schematic File Version 2  date Tue Jan  4 01:38:19 2011
 LIBS:power
 LIBS:device
 LIBS:conn
-LIBS:at86rf230
+LIBS:at86rf231
 LIBS:antenna
 LIBS:balun
 LIBS:atusd-cache
@@ -10,15 +10,200 @@ EELAYER 24  0
 EELAYER END
 $Descr A4 11700 8267
 Sheet 1 1
-Title "IEEE 802.15.4 uSD Transceiver (AT86RF230)"
-Date "11 sep 2010"
-Rev "100911"
+Title "IEEE 802.15.4 uSD Transceiver (AT86RF231)"
+Date "4 jan 2011"
+Rev "20110104"
 Comp "Werner Almesberger"
 Comment1 ""
 Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
+Wire Wire Line
+	8150 2000 6750 2000
+Wire Wire Line
+	6750 2000 6750 2550
+Wire Wire Line
+	7850 3500 8050 3500
+Wire Wire Line
+	8050 3500 8050 3550
+Wire Wire Line
+	8050 3550 10400 3550
+Wire Wire Line
+	7850 3800 8250 3800
+Wire Wire Line
+	8250 3800 8250 3750
+Wire Wire Line
+	8250 3750 10400 3750
+Wire Wire Line
+	4650 4400 5050 4400
+Wire Wire Line
+	5050 3950 4150 3950
+Wire Wire Line
+	4150 3950 4150 4100
+Wire Wire Line
+	4150 4100 4050 4100
+Wire Wire Line
+	9500 6700 9500 6500
+Wire Wire Line
+	3650 4100 3250 4100
+Wire Wire Line
+	8700 4750 8700 4550
+Wire Wire Line
+	2250 4300 2250 4100
+Wire Wire Line
+	2250 4100 2450 4100
+Wire Wire Line
+	1300 4000 1300 3800
+Wire Wire Line
+	8850 1200 9050 1200
+Wire Wire Line
+	8150 1800 8150 2200
+Wire Wire Line
+	9300 2900 9300 3850
+Wire Wire Line
+	9300 3850 10400 3850
+Wire Wire Line
+	9300 5300 9550 5300
+Connection ~ 9300 5300
+Connection ~ 6750 6050
+Wire Wire Line
+	6950 6050 6750 6050
+Wire Wire Line
+	5950 1950 5950 1750
+Wire Wire Line
+	6450 2550 6450 1150
+Wire Wire Line
+	6600 2550 6600 2350
+Wire Wire Line
+	6300 2550 6300 2350
+Connection ~ 4850 3500
+Connection ~ 5850 2350
+Wire Wire Line
+	4850 2350 6150 2350
+Wire Wire Line
+	4850 2350 4850 4750
+Connection ~ 4850 4250
+Wire Wire Line
+	5050 4250 4850 4250
+Connection ~ 4850 3650
+Wire Wire Line
+	4850 3650 5050 3650
+Wire Wire Line
+	6450 6850 6450 6650
+Wire Wire Line
+	5850 5750 5850 5350
+Connection ~ 8050 4400
+Wire Wire Line
+	8050 4750 8050 3950
+Wire Wire Line
+	7850 4400 8050 4400
+Wire Wire Line
+	6900 5750 6900 5350
+Wire Wire Line
+	6750 5350 6750 6250
+Wire Wire Line
+	6450 5350 6450 6250
+Wire Wire Line
+	6600 5350 6600 5550
+Wire Wire Line
+	6600 5550 6450 5550
+Connection ~ 6450 5550
+Wire Wire Line
+	4350 4550 5050 4550
+Wire Wire Line
+	8700 4550 7850 4550
+Wire Wire Line
+	8050 3950 7850 3950
+Wire Wire Line
+	6300 5750 6300 5350
+Wire Wire Line
+	6000 5350 6000 5550
+Wire Wire Line
+	6000 5550 5850 5550
+Connection ~ 5850 5550
+Wire Wire Line
+	6750 6650 6750 6850
+Wire Wire Line
+	7350 5750 7350 5350
+Wire Wire Line
+	4850 3500 5050 3500
+Wire Wire Line
+	4850 3800 5050 3800
+Connection ~ 4850 3800
+Wire Wire Line
+	6150 2350 6150 2550
+Wire Wire Line
+	5850 2350 5850 2550
+Wire Wire Line
+	6000 2550 6000 2350
+Connection ~ 6000 2350
+Wire Wire Line
+	6300 1950 6300 1750
+Wire Wire Line
+	5950 1350 5950 1150
+Wire Wire Line
+	5950 1150 6450 1150
+Wire Wire Line
+	6200 950  6200 1150
+Connection ~ 6200 1150
+Wire Wire Line
+	1300 3800 1100 3800
+Wire Wire Line
+	10400 4050 9300 4050
+Wire Wire Line
+	9300 4050 9300 5500
+Wire Wire Line
+	9100 3950 10400 3950
+Wire Wire Line
+	8150 1400 8150 1200
+Wire Wire Line
+	8150 1200 8350 1200
+Connection ~ 8150 2000
+Wire Wire Line
+	8150 2800 8150 2600
+Wire Wire Line
+	1500 3700 1100 3700
+Wire Wire Line
+	2450 3700 2000 3700
+Wire Wire Line
+	3250 3700 3650 3700
+Wire Wire Line
+	3250 3900 3450 3900
+Wire Wire Line
+	3450 3900 3450 4300
+Wire Wire Line
+	9550 5300 9550 5500
+Wire Wire Line
+	9900 6350 9900 6550
+Wire Wire Line
+	5050 4100 4250 4100
+Wire Wire Line
+	4250 4100 4250 3700
+Wire Wire Line
+	4250 3700 4050 3700
+Wire Wire Line
+	7850 4250 10400 4250
+Wire Wire Line
+	10400 4150 8250 4150
+Wire Wire Line
+	8250 4150 8250 4100
+Wire Wire Line
+	8250 4100 7850 4100
+Wire Wire Line
+	10400 3650 7850 3650
+Wire Wire Line
+	6150 5350 6150 6050
+NoConn ~ 6900 2550
+$Comp
+L AT86RF231 U1
+U 1 1 4D22A108
+P 6450 3950
+F 0 "U1" H 5450 5150 60  0000 C CNN
+F 1 "AT86RF231" H 6450 3950 60  0000 C CNN
+	1    6450 3950
+	1    0    0    -1  
+$EndComp
 $Comp
 L R R2
 U 1 1 4C8C121C
@@ -39,181 +224,6 @@ F 2 "0402" H 8150 2400 60  0001 C CNN
 	1    8150 2400
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	6150 5350 6150 6050
-Wire Wire Line
-	10400 3650 7850 3650
-Wire Wire Line
-	7850 4100 8250 4100
-Wire Wire Line
-	8250 4100 8250 4150
-Wire Wire Line
-	8250 4150 10400 4150
-Wire Wire Line
-	7850 4250 10400 4250
-Wire Wire Line
-	4050 3700 4250 3700
-Wire Wire Line
-	4250 3700 4250 4100
-Wire Wire Line
-	4250 4100 5050 4100
-Wire Wire Line
-	9900 6350 9900 6550
-Wire Wire Line
-	9550 5500 9550 5300
-Wire Wire Line
-	3450 4300 3450 3900
-Wire Wire Line
-	3450 3900 3250 3900
-Wire Wire Line
-	3250 3700 3650 3700
-Wire Wire Line
-	2450 3700 2000 3700
-Wire Wire Line
-	1500 3700 1100 3700
-Wire Wire Line
-	8150 2800 8150 2600
-Connection ~ 8150 2000
-Wire Wire Line
-	8150 2000 6900 2000
-Wire Wire Line
-	6900 2000 6900 2550
-Wire Wire Line
-	8350 1200 8150 1200
-Wire Wire Line
-	8150 1200 8150 1400
-Wire Wire Line
-	9100 3950 10400 3950
-Wire Wire Line
-	9300 5500 9300 4050
-Wire Wire Line
-	9300 4050 10400 4050
-Wire Wire Line
-	1100 3800 1300 3800
-Connection ~ 6200 1150
-Wire Wire Line
-	6200 950  6200 1150
-Wire Wire Line
-	5950 1150 6450 1150
-Wire Wire Line
-	5950 1150 5950 1350
-Wire Wire Line
-	6300 1950 6300 1750
-Connection ~ 6000 2350
-Wire Wire Line
-	6000 2550 6000 2350
-Wire Wire Line
-	5850 2350 5850 2550
-Wire Wire Line
-	6150 2550 6150 2350
-Connection ~ 4850 3800
-Wire Wire Line
-	4850 3800 5050 3800
-Wire Wire Line
-	4850 3500 5050 3500
-Wire Wire Line
-	7350 5750 7350 5350
-Wire Wire Line
-	6750 6650 6750 6850
-Connection ~ 5850 5550
-Wire Wire Line
-	5850 5550 6000 5550
-Wire Wire Line
-	6000 5550 6000 5350
-Wire Wire Line
-	6300 5750 6300 5350
-Wire Wire Line
-	7850 3950 8050 3950
-Wire Wire Line
-	7850 4550 8700 4550
-Wire Wire Line
-	4350 4550 5050 4550
-Connection ~ 6450 5550
-Wire Wire Line
-	6450 5550 6600 5550
-Wire Wire Line
-	6600 5550 6600 5350
-Wire Wire Line
-	6450 5350 6450 6250
-Wire Wire Line
-	6750 5350 6750 6250
-Wire Wire Line
-	6900 5750 6900 5350
-Wire Wire Line
-	7850 4400 8050 4400
-Wire Wire Line
-	8050 3950 8050 4750
-Connection ~ 8050 4400
-Wire Wire Line
-	5850 5750 5850 5350
-Wire Wire Line
-	6450 6850 6450 6650
-Wire Wire Line
-	4850 3650 5050 3650
-Connection ~ 4850 3650
-Wire Wire Line
-	5050 4250 4850 4250
-Connection ~ 4850 4250
-Wire Wire Line
-	4850 4750 4850 2350
-Wire Wire Line
-	4850 2350 6150 2350
-Connection ~ 5850 2350
-Connection ~ 4850 3500
-Wire Wire Line
-	6300 2550 6300 2350
-Wire Wire Line
-	6600 2550 6600 2350
-Wire Wire Line
-	6450 1150 6450 2550
-Wire Wire Line
-	5950 1950 5950 1750
-Wire Wire Line
-	6950 6050 6750 6050
-Connection ~ 6750 6050
-Connection ~ 9300 5300
-Wire Wire Line
-	9550 5300 9300 5300
-Wire Wire Line
-	10400 3850 9300 3850
-Wire Wire Line
-	9300 3850 9300 2900
-Wire Wire Line
-	8150 1800 8150 2200
-Wire Wire Line
-	8850 1200 9050 1200
-Wire Wire Line
-	1300 3800 1300 4000
-Wire Wire Line
-	2450 4100 2250 4100
-Wire Wire Line
-	2250 4100 2250 4300
-Wire Wire Line
-	8700 4550 8700 4750
-Wire Wire Line
-	3650 4100 3250 4100
-Wire Wire Line
-	9500 6700 9500 6500
-Wire Wire Line
-	4050 4100 4150 4100
-Wire Wire Line
-	4150 4100 4150 3950
-Wire Wire Line
-	4150 3950 5050 3950
-Wire Wire Line
-	4650 4400 5050 4400
-Wire Wire Line
-	10400 3750 8250 3750
-Wire Wire Line
-	8250 3750 8250 3800
-Wire Wire Line
-	8250 3800 7850 3800
-Wire Wire Line
-	10400 3550 8050 3550
-Wire Wire Line
-	8050 3550 8050 3500
-Wire Wire Line
-	8050 3500 7850 3500
 $Comp
 L DGND #PWR9
 U 1 1 4C87E5A4
@@ -225,16 +235,6 @@ F 1 "DGND" H 6150 5980 40  0000 C CNN
 $EndComp
 Text Label 2150 3700 0    60   ~ 0
 FEED
-$Comp
-L AT86RF230 U1
-U 1 1 4C609C4B
-P 6450 3950
-F 0 "U1" H 5450 5150 60  0000 C CNN
-F 1 "AT86RF230" H 6450 3950 60  0000 C CNN
-F 2 "QFN32" H 6450 3950 60  0001 C CNN
-	1    6450 3950
-	1    0    0    -1  
-$EndComp
 $Comp
 L DGND #PWR5
 U 1 1 4C803013
@@ -349,7 +349,6 @@ F 2 "0402" H 8600 1200 60  0001 C CNN
 $EndComp
 Text GLabel 9050 1200 2    60   Input ~ 0
 CLK_16M
-NoConn ~ 6750 2550
 $Comp
 L C C7
 U 1 1 4C7FBD45

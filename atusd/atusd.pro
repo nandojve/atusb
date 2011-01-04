@@ -39,7 +39,7 @@ ShowSheetReferenceAndTitleBlock=1
 LibName1=power
 LibName2=device
 LibName3=conn
-LibName4=../components/at86rf230
+LibName4=../components/at86rf231
 LibName5=../components/antenna
 LibName6=../components/balun
 [cvpcb]
