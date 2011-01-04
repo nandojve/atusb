@@ -12,7 +12,7 @@ CHR=atrf.chr $(shell $(BOOM_CONFIG) chr)
 
 
 .PHONY:		all again spotless
-.PRECIOUS:	%.par
+.PRECIOUS:	%.par %.lst
 
 all:		atusb.ord atusd.ord cntr.ord
 
@@ -23,10 +23,6 @@ again:
 %.ord:		%.par $(INV) $(EQU)
 		$(BOOM) part2order $(KITS) $^ >$@ || { rm -f $@; exit 1; }
 
-vpath atusb.lst ../atusb
-vpath atusd.lst ../atusd
-vpath cntr.lst ../cntr
-
 %.par:		$(EQU) $(INV) $(CHR) %.lst atrf.sub
 		$(BOOM) bom2part $^ >$@ || { rm -f $@; exit 1; }
 
@@ -36,10 +32,16 @@ dk/digi-key.inv:
 dk/digi-key.dsc:
 		$(MAKE) -C dk digi-key.dsc
 
+%.lst:		../%/*.sch ../%/*.cmp
+		eeschema --bom `pwd`/../$*/$*.sch
+		mv ../$*/$*.lst .
+
 show-%:		%.ord $(DSC)
 		grep -vw ATRF $< | $(BOOM) prettyord -t - $(DSC) | \
 		  sed 's/^...  //'
 
 spotless:
 		$(MAKE) -C dk spotless
-		rm -f atusb.par arusb.ord atusd.par atusd.ord cntr.par cntr.ord
+		rm -f atusb.lst atusb.par atusb.ord
+		rm -f atusd.lst atusd.par atusd.ord
+		rm -f cntr.lst cntr.par cntr.ord
