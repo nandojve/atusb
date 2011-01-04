@@ -22,6 +22,7 @@ RP[0-9]* {
 C[0-9]* {
     -> T=C
     VAL=*F -> C=$VAL
+    VAL=(*F)/RF -> C=$VAL:1 X=RF	# *F/RF "wins" against the *F above
     FN=*V -> V=>=$FN
 }
 
@@ -65,6 +66,7 @@ D[0-9]* {
 
 VR[0-9]* -> T=D M=TVS {
 	VAL=$V -> Vdc=$VAL	# neither clean nor consistent with the above
+	FN=*F -> C=<=$FN
 }
 
 X[0-9]* {
@@ -81,5 +83,6 @@ FP=MMCX-F-EDGE* -> VAL=MMCX-F-EDGE-SMT
 
 FP=meander -> VAL=meander
 FP=uSD-Card -> VAL=uSD-Card
+FP=PAD_60x60 -> VAL=PAD_60x60
 FP=PAD_120x60 -> VAL=PAD_120x60
 FP=PAD_2mm -> VAL=PAD_2mm
