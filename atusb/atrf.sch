@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Tue Jan  4 00:55:48 2011
+EESchema Schematic File Version 2  date Tue Jan  4 01:43:03 2011
 LIBS:power
 LIBS:device
 LIBS:conn
@@ -256,6 +256,7 @@ U 1 1 4CF4B034
 P 3750 4000
 F 0 "B1" H 3450 4350 60  0000 C CNN
 F 1 "2450FB15L0001" H 3750 3550 60  0000 C CNN
+F 2 "0805-6" H 3750 4000 60  0001 C CNN
 	1    3750 4000
 	1    0    0    -1  
 $EndComp
