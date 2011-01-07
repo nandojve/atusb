@@ -196,12 +196,11 @@ static void transmit(struct atrf_dsc *dsc, const char *msg, int times)
 }
 
 
-static int test_mode(struct atrf_dsc *dsc, uint8_t cont_tx, const char *cmd)
+static void enter_test_mode_230(struct atrf_dsc *dsc, uint8_t cont_tx)
 {
 	atrf_buf_write(dsc, "", 1);
 	atrf_reg_write(dsc, REG_CONT_TX_0, CONT_TX_MAGIC);
 	atrf_reg_write(dsc, REG_CONT_TX_1, cont_tx);
-	int status = 0;
 
 	if (!atrf_test_mode(dsc)) {
 		atrf_reset_rf(dsc);
@@ -213,6 +212,64 @@ static int test_mode(struct atrf_dsc *dsc, uint8_t cont_tx, const char *cmd)
 	wait_for_interrupt(dsc, IRQ_PLL_LOCK, IRQ_PLL_LOCK, 10, 20);
 
 	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_TX_START);
+}
+
+
+static void enter_test_mode_231(struct atrf_dsc *dsc, uint8_t cont_tx)
+{
+	uint8_t buf[127];
+
+	switch (cont_tx) {
+	case CONT_TX_M2M:
+		fprintf(stderr,
+		    "-2 MHz mode is not supported by the AT86RF231\n");
+		break;
+	case CONT_TX_M500K:
+		memset(buf, 0, sizeof(buf));
+		break;
+	case CONT_TX_P500K:
+		memset(buf, 0xff, sizeof(buf));
+		break;
+	default:
+		abort();
+	}
+
+	atrf_reg_write(dsc, REG_IRQ_MASK, IRQ_PLL_LOCK);		/* 2 */
+	atrf_reg_write(dsc, REG_TRX_CTRL_1, 0);				/* 3 */
+	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_FORCE_TRX_OFF);	/* 4 */
+	atrf_reg_write(dsc, REG_TRX_CTRL_0, CLKM_CTRL_1MHz);		/* 5 */
+	atrf_reg_read(dsc, REG_TRX_STATUS);				/* 8 */
+	atrf_reg_write(dsc, REG_CONT_TX_0, CONT_TX_MAGIC);		/* 9 */
+	atrf_reg_write(dsc, REG_TRX_CTRL_2, OQPSK_DATA_RATE_2000);	/*10 */
+	atrf_reg_write(dsc, REG_RX_CTRL, 0xa7);				/*11 */
+
+	atrf_buf_write(dsc, buf, sizeof(buf));				/*12 */
+
+	atrf_reg_write(dsc, REG_PART_NUM, 0x54);			/*13 */
+	atrf_reg_write(dsc, REG_PART_NUM, 0x46);			/*14 */
+	
+	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_PLL_ON);		/*15 */
+	wait_for_interrupt(dsc, IRQ_PLL_LOCK, IRQ_PLL_LOCK, 10, 20);	/*16 */
+
+	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_TX_START);		/*17 */
+}
+
+
+
+static int test_mode(struct atrf_dsc *dsc, uint8_t cont_tx, const char *cmd)
+{
+	int status = 0;
+
+	switch (atrf_identify(dsc)) {
+	case artf_at86rf230:
+		enter_test_mode_230(dsc, cont_tx);
+		break;
+	case artf_at86rf231:
+		enter_test_mode_231(dsc, cont_tx);
+		break;
+	default:
+		abort();
+	}
 
 	if (cmd)
 		status = system(cmd);
@@ -221,6 +278,9 @@ static int test_mode(struct atrf_dsc *dsc, uint8_t cont_tx, const char *cmd)
 			sleep(1);
 	}
 
+	if (atrf_identify(dsc) == artf_at86rf231)
+		atrf_reg_write(dsc, REG_PART_NUM, 0);
+	
 	atrf_reset_rf(dsc);
 
 	return status;
