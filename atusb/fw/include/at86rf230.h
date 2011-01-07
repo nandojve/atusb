@@ -50,7 +50,7 @@ enum {
 	REG_IRQ_MASK		= 0x0e,
 	REG_IRQ_STATUS		= 0x0f,
 	REG_VREG_CTRL		= 0x10,
-	REG_BATMON		= 0x10,
+	REG_BATMON		= 0x11,
 	REG_XOSC_CTRL		= 0x12,
 
 	REG_RX_SYN		= 0x15,	/* 231 only */
@@ -126,7 +126,7 @@ enum {
 };
 
 #define	TRX_CMD_SHIFT	0
-#define	TRX_CMD_MASK	7
+#define	TRX_CMD_MASK	0x1f
 
 enum {
 	TRX_CMD_NOP		= 0x00,	/* reset default */
@@ -165,7 +165,7 @@ enum {
 #define	CLKM_SHA_SEL		(1 << 3)
 
 #define	CLKM_CTRL_SHIFT	0
-#define	CLKM_CTRL_MASK	3
+#define	CLKM_CTRL_MASK	7
 
 enum {
 	CLKM_CTRL_OFF	= 0,
@@ -178,9 +178,10 @@ enum {
 
 /* --- TRX_CTRL_1 (231 only) ----------------------------------------------- */
 
-#define	PA_EXT_EN		(1 << 8)
-#define	IRQ_2_EXT_EN		(1 << 7)
-#define	TX_AUTO_CRC_ON_231	(1 << 6)	/* 231 location */
+#define	PA_EXT_EN		(1 << 7)
+#define	IRQ_2_EXT_EN		(1 << 6)
+#define	TX_AUTO_CRC_ON_231	(1 << 5)	/* 231 location */
+#define	RX_BL_CTRL		(1 << 4)
 
 #define	SPI_CMD_MODE_SHIFT	2
 #define	SPI_CMD_MODE_MASK	3
@@ -199,6 +200,12 @@ enum {
 
 #define	TX_AUTO_CRC_ON	(1 << 7)	/* 230 location */
 
+#define	PA_BUF_LT_SHIFT	6
+#define	PA_BUF_LT_MASK	3
+
+#define	PA_LT_SHIFT	4
+#define	PA_LT_MASK	3
+
 #define	TX_PWR_SHIFT	0
 #define	TX_PWR_MASK	0x0f
 
@@ -206,7 +213,7 @@ enum {
 
 #define	RX_CRC_VALID	(1 << 7)
 
-#define	RND_VALUE_SHIFT	5		/* 231 */
+#define	RND_VALUE_SHIFT	5		/* 231 only */
 #define	RND_VALUE_MASK	3
 
 #define	RSSI_SHIFT	0
@@ -221,7 +228,7 @@ enum {
 
 enum {
 	CCA_MODE_CARRIER_OR_ENERGY	= 0,	/* 231 only */
-	CCA_MODE_ENERGY			= 1,
+	CCA_MODE_ENERGY			= 1,	/* reset default */
 	CCA_MODE_CARRIER		= 2,
 	CCA_MODE_CARRIER_AND_ENERGY	= 3
 };
@@ -258,6 +265,21 @@ enum {
 	OQPSK_DATA_RATE_2000	= 3
 };
 
+/* --- ANT_DIV (231 only) -------------------------------------------------- */
+
+#define	ANT_SEL		(1 << 7)
+#define	ANT_DIV_EN	(1 << 3)
+#define	ANT_EXT_SW_EN	(1 << 2)
+
+#define	ANT_CTRL_SHIFT	0
+#define	ANT_CTRL_MASK	3
+
+enum {
+	ANT_CTRL_ANT_0	= 1,
+	ANT_CTRL_ANT_1	= 2,
+	ANT_CTRL_NODIV	= 3,	/* reset default */
+};
+
 /* --- IRQ_MASK/IRQ_STATUS ------------------------------------------------- */
 
 enum {
@@ -283,8 +305,8 @@ enum {
 #define	BATMON_OK	(1 << 5)
 #define	BATMON_HR	(1 << 4)
 
-#define	NATMON_VTH_SHIFT	0
-#define	NATMON_VTH_MASK		0x0f
+#define	BATMON_VTH_SHIFT	0
+#define	BATMON_VTH_MASK		0x0f
 
 /* --- XOSC_CTRL ----------------------------------------------------------- */
 
@@ -302,7 +324,7 @@ enum {
 
 /* --- RX_SYN (231 only) --------------------------------------------------- */
 
-#define	RX_PDT_DIS	(1 << 7)
+#define	RX_PDT_DIS		(1 << 7)
 
 #define	RX_PDT_LEVEL_SHIFT	0
 #define	RX_PDT_LEVEL_MASK	0xf
@@ -352,7 +374,7 @@ enum {
 };
 
 #define	AACK_SET_PD		(1 << 5)
-
+#define	AACK_DIS_ACK		(1 << 4)	/* 231 only */
 #define	I_AM_COORD		(1 << 3)
 
 #define CSMA_SEED_1_SHIFT	0
