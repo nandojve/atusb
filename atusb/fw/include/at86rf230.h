@@ -1,8 +1,8 @@
 /*
- * include/at86rf230.h - AT86RF230 protocol and register definitions
+ * include/at86rf230.h - AT86RF230/AT86RF231 protocol and register definitions
  *
- * Written 2008-2010 by Werner Almesberger
- * Copyright 2008-2010 Werner Almesberger
+ * Written 2008-2011 by Werner Almesberger
+ * Copyright 2008-2011 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,17 +34,28 @@ enum {
 	REG_TRX_STATE		= 0x02,
 	REG_TRX_CTRL_0		= 0x03,
 
+	REG_TRX_CTRL_1		= 0x04,	/* 231 only */
+
 	REG_PHY_TX_PWR		= 0x05,
 	REG_PHY_RSSI		= 0x06,
 	REG_PHY_ED_LEVEL	= 0x07,
 	REG_PHY_CC_CCA		= 0x08,
 	REG_CCA_THRES		= 0x09,
 
+	REG_RX_CTRL		= 0x0a,	/* 231 only */
+	REG_SFD_VALUE		= 0x0b,	/* 231 only */
+	REG_TRX_CTRL_2		= 0x0c,	/* 231 only */
+	REG_ANT_DIV		= 0x0d,	/* 231 only */
+
 	REG_IRQ_MASK		= 0x0e,
 	REG_IRQ_STATUS		= 0x0f,
 	REG_VREG_CTRL		= 0x10,
 	REG_BATMON		= 0x10,
 	REG_XOSC_CTRL		= 0x12,
+
+	REG_RX_SYN		= 0x15,	/* 231 only */
+	REG_XAH_CTRL_1		= 0x17,	/* 231 only */
+	REG_FTN_CTRL		= 0x18,	/* 231 only */
 
 	REG_PLL_CF		= 0x1a,
 	REL_PLL_DCU		= 0x1b,
@@ -64,9 +75,11 @@ enum {
 	REG_IEEE_ADDR_5		= 0x29,
 	REG_IEEE_ADDR_6		= 0x2a,
 	REG_IEEE_ADDR_7		= 0x2b,
-	REG_XAH_CTRL		= 0x2c,
+
+	REG_XAH_CTRL_0		= 0x2c,	/* XAH_CTRL in 230 */
 	REG_CSMA_SEED_0		= 0x2d,
 	REG_CSMA_SEED_1		= 0x2e,
+	REG_CSMA_BE		= 0x2f,	/* 231 only */
 
 	REG_CONT_TX_0		= 0x36,
 	REG_CONT_TX_1		= 0x3d,
@@ -83,7 +96,7 @@ enum {
 /* --- TRX_STATUS [4:0] ---------------------------------------------------- */
 
 #define	TRX_STATUS_SHIFT	0
-#define	TRX_STATUS_MASK		0x0f
+#define	TRX_STATUS_MASK		0x1f
 
 enum {
 	TRX_STATUS_P_ON			= 0x00,	/* reset default */
@@ -100,7 +113,7 @@ enum {
 	TRX_STATUS_RX_ON_NOCLK		= 0x1c,
 	TRX_STATUS_RX_AACK_ON_NOCLK	= 0x1d,
 	TRX_STATUS_BUSY_RX_AACK_NOCLK	= 0x1e,
-	TRX_STATUS_TRANSITION		= 0x1f
+	TRX_STATUS_TRANSITION		= 0x1f	/* ..._IN_PROGRESS */
 };
 
 /* --- TRX_STATE [7:5] ----------------------------------------------------- */
@@ -111,6 +124,7 @@ enum {
 enum {
 	TRAC_STATUS_SUCCESS			= 0,	/* reset default */
 	TRAC_STATUS_SUCCESS_DATA_PENDING	= 1,
+	TRAC_STATUS_SUCCESS_WAIT_FOR_ACK	= 2,	/* 231 only */
 	TRAC_STATUS_CHANNEL_ACCESS_FAILURE	= 3,
 	TRAC_STATUS_NO_ACK			= 5,
 	TRAC_STATUS_INVALID			= 7
@@ -125,6 +139,7 @@ enum {
 	TRX_CMD_NOP		= 0x00,	/* reset default */
 	TRX_CMD_TX_START	= 0x02,
 	TRX_CMD_FORCE_TRX_OFF	= 0x03,
+	TRX_CMD_FORCE_PLL_ON	= 0x04,	/* 231 only */
 	TRX_CMD_RX_ON		= 0x06,
 	TRX_CMD_TRX_OFF		= 0x08,
 	TRX_CMD_PLL_ON		= 0x09,
@@ -174,9 +189,28 @@ enum {
 	CLKM_CTRL_16MHz	= 5
 };
 
+/* --- TRX_CTRL_1 (231 only) ----------------------------------------------- */
+
+#define	PA_EXT_EN		(1 << 8)
+#define	IRQ_2_EXT_EN		(1 << 7)
+#define	TX_AUTO_CRC_ON_231	(1 << 6)	/* 231 */
+
+#define	SPI_CMD_MODE_SHIFT	2
+#define	SPI_CMD_MODE_MASK	3
+
+enum {
+	SPI_CMD_MODE_EMPTY	= 0,	/* reset default */
+	SPI_CMD_MODE_TRX_STATUS	= 1,
+	SPI_CMD_MODE_PHY_RSSI	= 2,
+	SPI_CMD_MODE_IRQ_STATUS	= 3,
+};
+
+#define	IRQ_MASK_MODE		(1 << 1)
+#define	IRQ_POLARITY		(1 << 0)
+
 /* --- PHY_TX_PWR [7] ------------------------------------------------------ */
 
-#define	TX_AUTO_CRC_ON	(1 << 7)
+#define	TX_AUTO_CRC_ON		(1 << 7)	/* 230 */
 
 /* --- PHY_TX_PWR [3:0] ---------------------------------------------------- */
 
