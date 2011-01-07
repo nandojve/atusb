@@ -1,8 +1,8 @@
 /*
  * lib/atrf.c - ATRF access functions library
  *
- * Written 2010 by Werner Almesberger
- * Copyright 2010 Werner Almesberger
+ * Written 2010-2011 by Werner Almesberger
+ * Copyright 2010-2011 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -13,6 +13,8 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+
+#include "at86rf230.h"
 
 #include "driver.h"
 #include "atrf.h"
@@ -96,6 +98,37 @@ void atrf_reset(struct atrf_dsc *dsc)
 void atrf_reset_rf(struct atrf_dsc *dsc)
 {
 	dsc->driver->reset_rf(dsc->handle);
+}
+
+
+enum atrf_chip_id atrf_identify(struct atrf_dsc *dsc)
+{
+	uint8_t part, version;
+
+	part = atrf_reg_read(dsc, REG_PART_NUM);
+	version = atrf_reg_read(dsc, REG_VERSION_NUM);
+	switch (part) {
+	case 2:	/* AT86RF230 */
+		switch (version) {
+		case 1: /* rev A */
+		case 2: /* rev B */
+			return artf_at86rf230;
+		default:
+			return atrf_unknown_chip;
+		}
+		break;
+	case 3:	/* AT86RF231 */
+		switch (version) {
+		case 2: /* rev A */
+			return artf_at86rf231;
+		default:
+			return atrf_unknown_chip;
+		}
+		break;
+	default:
+		return atrf_unknown_chip;
+	}
+	return atrf_unknown_chip;
 }
 
 

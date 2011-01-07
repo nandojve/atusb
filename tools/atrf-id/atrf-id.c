@@ -1,8 +1,8 @@
 /*
  * atrf-id/atrf-id.c - Identify a ben-wpan AT86RF230 board
  *
- * Written 2010 by Werner Almesberger
- * Copyright 2010 Werner Almesberger
+ * Written 2010-2011 by Werner Almesberger
+ * Copyright 2010-2011 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -116,12 +116,30 @@ static void show_info(struct atrf_dsc *dsc)
 
 	show_usb_info(dsc);
 
+	printf("%10s", "");
+
+	switch (atrf_identify(dsc)) {
+	case atrf_unknown_chip:
+		printf("???");
+		break;
+	case artf_at86rf230:
+		printf("AT86RF230");
+		break;
+	case artf_at86rf231:
+		printf("AT86RF231");
+		break;
+	default:
+		abort();
+	}
+
 	part = atrf_reg_read(dsc, REG_PART_NUM);
 	version = atrf_reg_read(dsc, REG_VERSION_NUM);
 	man_id_0 = atrf_reg_read(dsc, REG_MAN_ID_0);
 	man_id_1 = atrf_reg_read(dsc, REG_MAN_ID_1);
-	printf("%10spart 0x%02x version %u manufacturer xxxx%02x%02x\n", "",
+	printf(", part 0x%02x version %u manufacturer xxxx%02x%02x",
 	    part, version, man_id_1, man_id_0);
+
+	printf(" (%s)\n", man_id_1 == 0 && man_id_0 == 0x1f ? "Atmel" : "???");
 }
 
 

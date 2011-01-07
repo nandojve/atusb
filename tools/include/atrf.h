@@ -16,6 +16,13 @@
 #include <stdint.h>
 
 
+enum atrf_chip_id {
+	atrf_unknown_chip	= 0,
+	artf_at86rf230		= 1,
+	artf_at86rf231		= 2,
+};
+
+
 struct atrf_dsc;
 
 
@@ -29,6 +36,9 @@ int atrf_clear_error(struct atrf_dsc *dsc);
 
 void atrf_reset(struct atrf_dsc *dsc);
 void atrf_reset_rf(struct atrf_dsc *dsc);
+
+enum atrf_chip_id atrf_identify(struct atrf_dsc *dsc);
+
 int atrf_test_mode(struct atrf_dsc *dsc);
 
 void atrf_reg_write(struct atrf_dsc *dsc, uint8_t reg, uint8_t value);
