@@ -116,14 +116,14 @@ static void set_power(struct atrf_dsc *dsc, double power, int crc)
 	switch (atrf_identify(dsc)) {
 	case artf_at86rf230:
 		atrf_reg_write(dsc, REG_PHY_TX_PWR,
-		    (crc ? TX_AUTO_CRC_ON : 0) | n);
+		    (crc ? TX_AUTO_CRC_ON_230 : 0) | n);
 		break;
 	case artf_at86rf231:
 		tmp = atrf_reg_read(dsc, REG_PHY_TX_PWR);
 		tmp = (tmp & ~TX_PWR_MASK) | n;
 		atrf_reg_write(dsc, REG_PHY_TX_PWR, tmp);
 		atrf_reg_write(dsc, REG_TRX_CTRL_1,
-		    crc ? TX_AUTO_CRC_ON_231 : 0);
+		    crc ? TX_AUTO_CRC_ON : 0);
 		break;
 	default:
 		abort();

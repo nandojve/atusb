@@ -180,7 +180,7 @@ enum {
 
 #define	PA_EXT_EN		(1 << 7)
 #define	IRQ_2_EXT_EN		(1 << 6)
-#define	TX_AUTO_CRC_ON_231	(1 << 5)	/* 231 location */
+#define	TX_AUTO_CRC_ON		(1 << 5)	/* 231 location */
 #define	RX_BL_CTRL		(1 << 4)
 
 #define	SPI_CMD_MODE_SHIFT	2
@@ -198,7 +198,7 @@ enum {
 
 /* --- PHY_TX_PWR ---------------------------------------------------------- */
 
-#define	TX_AUTO_CRC_ON	(1 << 7)	/* 230 location */
+#define	TX_AUTO_CRC_ON_230	(1 << 7)	/* 230 location */
 
 #define	PA_BUF_LT_SHIFT	6
 #define	PA_BUF_LT_MASK	3
