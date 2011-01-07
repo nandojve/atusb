@@ -82,7 +82,7 @@ enum {
 	REG_CSMA_BE		= 0x2f,	/* 231 only */
 
 	REG_CONT_TX_0		= 0x36,
-	REG_CONT_TX_1		= 0x3d,
+	REG_CONT_TX_1		= 0x3d,	/* 230 only */
 };
 
 /* --- TRX_STATUS --- ------------------------------------------------------ */
@@ -180,7 +180,7 @@ enum {
 
 #define	PA_EXT_EN		(1 << 8)
 #define	IRQ_2_EXT_EN		(1 << 7)
-#define	TX_AUTO_CRC_ON_231	(1 << 6)	/* 231 */
+#define	TX_AUTO_CRC_ON_231	(1 << 6)	/* 231 location */
 
 #define	SPI_CMD_MODE_SHIFT	2
 #define	SPI_CMD_MODE_MASK	3
@@ -195,9 +195,9 @@ enum {
 #define	IRQ_MASK_MODE		(1 << 1)
 #define	IRQ_POLARITY		(1 << 0)
 
-/* --- PHY_TX_PWR -====----------------------------------------------------- */
+/* --- PHY_TX_PWR ---------------------------------------------------------- */
 
-#define	TX_AUTO_CRC_ON		(1 << 7)	/* 230 */
+#define	TX_AUTO_CRC_ON	(1 << 7)	/* 230 location */
 
 #define	TX_PWR_SHIFT	0
 #define	TX_PWR_MASK	0x0f
@@ -205,6 +205,9 @@ enum {
 /* --- PHY_RSSI ------------------------------------------------------------ */
 
 #define	RX_CRC_VALID	(1 << 7)
+
+#define	RND_VALUE_SHIFT	5		/* 231 */
+#define	RND_VALUE_MASK	3
 
 #define	RSSI_SHIFT	0
 #define	RSSI_MASK	0x1f
@@ -216,6 +219,13 @@ enum {
 #define	CCA_MODE_SHIFT	5
 #define	CCA_MODE_MASK	3
 
+enum {
+	CCA_MODE_CARRIER_OR_ENERGY	= 0,	/* 231 only */
+	CCA_MODE_ENERGY			= 1,
+	CCA_MODE_CARRIER		= 2,
+	CCA_MODE_CARRIER_AND_ENERGY	= 3
+};
+
 #define	CHANNEL_SHIFT	0
 #define	CHANNEL_MASK	0x1f
 
@@ -224,6 +234,30 @@ enum {
 #define	CCA_ED_THRES_SHIFT	0
 #define	CCA_ED_THRES_MASK	0x0f
 
+/* --- RX_CTRL (231 only) -------------------------------------------------- */
+
+#define	PDT_THRES_SHIFT	0
+#define	PDT_THRES_MASK	0x0f
+
+enum {
+	PDT_THRES_DEFAULT	= 0x07,	/* reset default */
+	PDT_THRES_DIVERSITY	= 0x03,
+};
+
+/* --- TRX_CTRL_2 (231 only) ----------------------------------------------- */
+
+#define	RX_SAFE_MODE		(1 << 7)
+
+#define	OQPSK_DATA_RATE_SHIFT	0
+#define	OQPSK_DATA_RATE_MASK	3
+
+enum {
+	OQPSK_DATA_RATE_250	= 0,	/* reset default */
+	OQPSK_DATA_RATE_500	= 1,
+	OQPSK_DATA_RATE_1000	= 2,
+	OQPSK_DATA_RATE_2000	= 3
+};
+
 /* --- IRQ_MASK/IRQ_STATUS ------------------------------------------------- */
 
 enum {
@@ -231,6 +265,8 @@ enum {
 	IRQ_PLL_UNLOCK	= 1 << 1,
 	IRQ_RX_START	= 1 << 2,
 	IRQ_TRX_END	= 1 << 3,
+	IRQ_CCA_ED_DONE	= 1 << 4,	/* 231 only */
+	IRQ_AMI		= 1 << 5,	/* 231 only */
 	IRQ_TRX_UR	= 1 << 6,
 	IRQ_BAT_LOW	= 1 << 7
 };
@@ -256,7 +292,7 @@ enum {
 #define	XTAL_MODE_MASK	0x0f
 
 enum {
-	XTAL_MODE_OFF	= 0x0,
+	XTAL_MODE_OFF	= 0x0,	/* 230 only */
 	XTAL_MODE_EXT	= 0x4,
 	XTAL_MODE_INT	= 0xf	/* reset default */
 };
@@ -264,13 +300,23 @@ enum {
 #define	XTAL_TRIM_SHIFT	4
 #define	XTAL_TRIM_MASK	0x0f
 
-/* --- XAH_CTRL ------------------------------------------------------------ */
+/* --- RX_SYN (231 only) --------------------------------------------------- */
 
-#define	MAX_FRAME_RETRIES_SHIFT	4
-#define	MAX_FRAME_RETRIES_MASK	0x0f
+#define	RX_PDT_DIS	(1 << 7)
 
-#define	MAX_CSMA_RETRIES_SHIFT	1
-#define	MAX_CSMA_RETRIES_MASK	0x07
+#define	RX_PDT_LEVEL_SHIFT	0
+#define	RX_PDT_LEVEL_MASK	0xf
+
+/* --- XAH_CTRL_1 (231 only) ----------------------------------------------- */
+
+#define	AACK_FLTR_RES_FT	(1 << 5)
+#define	AACK_UPLD_RES_FT	(1 << 4)
+#define	AACK_ACK_TIME		(1 << 2)
+#define	AACK_PROM_MODE		(1 << 1)
+
+/* --- FTN_CTRL (231 only) ------------------------------------------------- */
+
+#define	FTN_START		(1 << 7)
 
 /* --- PLL_CF -------------------------------------------------------------- */
 
@@ -280,10 +326,30 @@ enum {
 
 #define	PLL_DCU_START	(1 << 7)
 
+/* --- XAH_CTRL_0 (XAH_CTRL in 230) ---------------------------------------- */
+
+#define	MAX_FRAME_RETRIES_SHIFT	4
+#define	MAX_FRAME_RETRIES_MASK	0x0f
+
+#define	MAX_CSMA_RETRIES_SHIFT	1
+#define	MAX_CSMA_RETRIES_MASK	0x07
+
+#define	SLOTTED_OPERATION	(1 << 0)	/* 231 only */
+
 /* --- CSMA_SEED_1 --------------------------------------------------------- */
 
-#define	MIN_BE_SHIFT		6
-#define	MIN_BE_MASK		3
+#define	MIN_BE_SHIFT_230	6	/* 230 location */
+#define	MIN_BE_MASK_230		3
+
+#define	AACK_FVN_MODE_SHIFT	6	/* 231 only */
+#define	AACK_FVN_MODE_MASK	3
+
+enum {
+	AACK_FVN_MODE_0		= 0,
+	AACK_FVN_MODE_01	= 1,	/* reset default */
+	AACK_FVN_MODE_012	= 2,
+	AACK_FVN_MODE_ANY	= 3
+};
 
 #define	AACK_SET_PD		(1 << 5)
 
@@ -292,11 +358,19 @@ enum {
 #define CSMA_SEED_1_SHIFT	0
 #define	CSMA_SEED_1_MASK	7
 
+/* --- CSMA_BE ------------------------------------------------------------- */
+
+#define	MAX_BE_SHIFT		4
+#define	MAX_BE_MASK		0x0f
+
+#define	MIN_BE_SHIFT		0	/* 231 location */
+#define	MIN_BE_MASK		0x0f
+
 /* --- REG_CONT_TX_0 ------------------------------------------------------- */
 
 #define	CONT_TX_MAGIC		0x0f
 
-/* --- REG_CONT_TX_1 ------------------------------------------------------- */
+/* --- REG_CONT_TX_1 (230 only) -------------------------------------------- */
 
 #define	CONT_TX_MOD		0x00	/* modulated */
 #define	CONT_TX_M2M		0x10	/* f_CH-2 MHz */
