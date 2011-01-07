@@ -1,8 +1,8 @@
 /*
  * atrf-txrx/atrf-txrx.c - ben-wpan AT86RF230 TX/RX
  *
- * Written 2010 by Werner Almesberger
- * Copyright 2010 Werner Almesberger
+ * Written 2010-2011 by Werner Almesberger
+ * Copyright 2010-2011 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,11 +41,19 @@
 #define	DEFAULT_POWER	-3.2	/* transmit power, dBm */
 
 
-static double tx_pwr[] = {
+static double tx_pwr_230[] = {
 	 3.0,	 2.6,	 2.1,	 1.6,
 	 1.1,	 0.5,	-0.2,	-1.2,
 	-2.2,	-3.2,	-4.2,	-5.2,
 	-7.2,	-9.2,	-12.2,	-17.2
+};
+
+
+static double tx_pwr_231[] = {
+	 3.0,	 2.8,	 2.3,	 1.8,
+	 1.3,	 0.7,	 0.0,	-1,
+	-2,	-3,	-4,	-5,
+	-7,	-9,	-12,	-17
 };
 
 
@@ -84,14 +92,42 @@ static void set_channel(struct atrf_dsc *dsc, int channel)
 
 static void set_power(struct atrf_dsc *dsc, double power, int crc)
 {
+	const double *tx_pwr;
 	int n;
+	uint8_t tmp;
 
-	for (n = 0; n != sizeof(tx_pwr)/sizeof(*tx_pwr)-1; n++)
+	switch (atrf_identify(dsc)) {
+	case artf_at86rf230:
+		tx_pwr = tx_pwr_230;
+		break;
+	case artf_at86rf231:
+		tx_pwr = tx_pwr_231;
+		break;
+	default:
+		abort();
+	}
+	
+	for (n = 0; n != sizeof(tx_pwr_230)/sizeof(*tx_pwr_230)-1; n++)
 		if (tx_pwr[n] <= power)
 			break;
 	if (fabs(tx_pwr[n]-power) > 0.01)
 		fprintf(stderr, "TX power %.1f dBm\n", tx_pwr[n]);
-	atrf_reg_write(dsc, REG_PHY_TX_PWR, (crc ? TX_AUTO_CRC_ON : 0) | n);
+
+	switch (atrf_identify(dsc)) {
+	case artf_at86rf230:
+		atrf_reg_write(dsc, REG_PHY_TX_PWR,
+		    (crc ? TX_AUTO_CRC_ON : 0) | n);
+		break;
+	case artf_at86rf231:
+		tmp = atrf_reg_read(dsc, REG_PHY_TX_PWR);
+		tmp = (tmp & ~TX_PWR_MASK) | n;
+		atrf_reg_write(dsc, REG_PHY_TX_PWR, tmp);
+		atrf_reg_write(dsc, REG_TRX_CTRL_1,
+		    crc ? TX_AUTO_CRC_ON_231 : 0);
+		break;
+	default:
+		abort();
+	}
 }
 
 
