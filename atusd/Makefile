@@ -4,7 +4,7 @@ NAME = atusd
 
 .PHONY:		all gen generate sch brd xpdf front back clean
 
-all:		dtc123je.mod
+all:
 		@echo "make what ? target: gen sch brd xpdf"
 		@exit 1
 
