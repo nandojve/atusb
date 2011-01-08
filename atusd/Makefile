@@ -9,22 +9,22 @@ all:		dtc123je.mod
 		@exit 1
 
 gen generate:
-		eeschema --plot `pwd`/atusd.sch
+		eeschema --plot `pwd`/$(NAME).sch
 		# need scripts
 
 sch:
-		eeschema `pwd`/atusd.sch
+		eeschema `pwd`/$(NAME).sch
 
 brd:
-		pcbnew `pwd`/atusd.brd
+		pcbnew `pwd`/$(NAME).brd
 
 xpdf:
-		xpdf atusd.pdf
+		xpdf $(NAME).pdf
 
-front:		atusd-Front.ps
+front:		$(NAME)-Front.ps
 		lpr $<
 
-back:		atusd-Back.ps
+back:		$(NAME)-Back.ps
 		lpr $<
 
 #
@@ -38,12 +38,12 @@ back:		atusd-Back.ps
 # larger (!) than designed.
 #
 
-atusd-Front.ps:	atusd.brd
+%-Front.ps:	%.brd
 		$(PLOT_BRD) -l Front --mirror $<
 
-atusd-Back.ps:	atusd.brd
+%-Back.ps:	%.brd
 		$(PLOT_BRD) -l Back $<
 
 clean:
-		rm -f atusd-Front.ps atusd-Back.ps
-		rm -f atusd.drl atusd-PCB_Edges.gbr
+		rm -f $(NAME)-Front.ps $(NAME)-Back.ps
+		rm -f $(NAME).drl $(NAME)-PCB_Edges.gbr
