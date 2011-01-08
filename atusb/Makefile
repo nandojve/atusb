@@ -35,9 +35,6 @@ back:		atusb-Back.ps
 # would be preferrable. Do not use "small", for this created holes that are
 # larger (!) than designed.
 #
-# Note: all this currenly only works properly if the board has been saved with
-# all zones filled.
-#
 
 atusb-Front.ps:	atusb.brd
 		$(PLOT_BRD) -l Front --mirror $<
