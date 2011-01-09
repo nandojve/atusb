@@ -1,8 +1,8 @@
 /*
  * atrf-rssi/atrf-rssi.c - ben-wpan AT86RF230 spectrum scan
  *
- * Written 2010 by Werner Almesberger
- * Copyright 2010 Werner Almesberger
+ * Written 2010-2011 by Werner Almesberger
+ * Copyright 2010-2011 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -121,6 +121,7 @@ int main(int argc, char **argv)
 
 	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_TRX_OFF);
 	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_RX_ON);
+	atrf_reg_write(dsc, REG_IRQ_MASK, IRQ_PLL_LOCK);
 	/*
 	 * We'll wait for the PLL lock after selecting the channel.
 	 */
