@@ -2,18 +2,24 @@
 PATH=$PATH:/home/qi/cae-tools/cameo
 PATH=$PATH:/home/moko/svn.openmoko.org/developers/werner/cncmap/gp2rml
 
+X=0
+Y=0
+
 cameo <<EOF
 mm
 
 gerber 35mil ../atusd-PCB_Edges.gbr
-align 1 4.6mm 9.0mm	# align relative to board corner
+align 1 2.5mm 8.5mm	# align relative to board corner
 translate 3mm 3mm	# move to PCB zone assigned to project
-array +2.5mm +2.5mm 0 0
+array +18mm +2.5mm $X $Y
+
 z 0 -58.9mm		# board surface (tool fully retracted)
 z 1.5mm			# slack for extending the tool
 z -0.8mm		# board thickness
 z -0.5mm		# tool extra depth
 clear
+
+# ---- 1st board ----
 
 excellon ../atusd.drl
 drill 7mil 15mil	# 12.5-13.5 mil drill
@@ -24,6 +30,39 @@ remainder
 mill 20mil 0.01mm	# 35 mil endmill; pretend it is a little smaller,
 			# to compensate for tool/board deflections
 write mill.gp
+
+remainder
+empty
+
+gerber 20mil ../atusd-PCB_Edges.gbr	# 35 mil endmill, 15 mil deflection
+offset
+append mill.gp
+
+clear
+
+# ---- 2nd board ----
+
+reset
+
+gerber 35mil ../atusd-PCB_Edges.gbr
+rotate 180
+
+align 1 2.5mm 8.5mm	# align relative to board corner
+translate 3mm 3mm	# move to PCB zone assigned to project
+translate 14mm 0mm
+array +18mm +2.5mm $X $Y
+
+clear
+
+excellon ../atusd.drl
+drill 7mil 15mil	# 12.5-13.5 mil drill
+optimize
+append drill.gp
+
+remainder
+mill 20mil 0.01mm	# 35 mil endmill; pretend it is a little smaller,
+			# to compensate for tool/board deflections
+append mill.gp
 
 remainder
 empty
