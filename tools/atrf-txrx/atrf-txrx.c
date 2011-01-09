@@ -78,7 +78,13 @@ static struct atrf_dsc *init_txrx(int trim)
 #endif
 	atrf_reg_write(dsc, REG_TRX_CTRL_0, 0); /* disable CLKM */
 
+	/* We want to see all interrupts, not only the ones we're expecting. */
+	atrf_reg_write(dsc, REG_IRQ_MASK, 0xff);
+
 	(void) atrf_reg_read(dsc, REG_IRQ_STATUS);
+	if (atrf_identify(dsc) == artf_at86rf231)
+		wait_for_interrupt(dsc, IRQ_CCA_ED_DONE, IRQ_CCA_ED_DONE,
+		    10, 50); /* according to table 7-1, 37 us max */
 
 	return dsc;
 }
