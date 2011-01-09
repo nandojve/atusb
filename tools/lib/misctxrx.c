@@ -1,8 +1,8 @@
 /*
  * lib/misctxrx.c - Miscellaenous transceiver helper functions
  *
- * Written 2010 by Werner Almesberger
- * Copyright 2010 Werner Almesberger
+ * Written 2010-2011 by Werner Almesberger
+ * Copyright 2010-2011 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,6 +62,10 @@ uint8_t wait_for_interrupt(struct atrf_dsc *dsc, uint8_t wait_for,
 			fprintf(stderr, " RX_START");
 		if (irq & IRQ_TRX_END)
 			fprintf(stderr, " TRX_END");
+		if (irq & IRQ_CCA_ED_DONE)
+			fprintf(stderr, " CCA_ED_DONE");
+		if (irq & IRQ_AMI)
+			fprintf(stderr, " AMI");
 		if (irq & IRQ_TRX_UR)
 			fprintf(stderr, " TRX_UR");
 		if (irq & IRQ_BAT_LOW)
