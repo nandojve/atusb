@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by CvPCB (2010-12-27 BZR 2685)-unstable date = Tue Jan  4 02:41:25 2011
+Cmp-Mod V01 Created by CvPCB (2010-12-27 BZR 2685)-unstable date = Sun Jan  9 20:33:40 2011
 
 BeginCmp
 TimeStamp = /4C63FE17;
@@ -92,15 +92,8 @@ IdModule  = uSD-Card;
 EndCmp
 
 BeginCmp
-TimeStamp = /4C7FBDBD;
-Reference = R1;
-ValeurCmp = 0R;
-IdModule  = 0402-M;
-EndCmp
-
-BeginCmp
 TimeStamp = /4C8C121C;
-Reference = R2;
+Reference = R1;
 ValeurCmp = 0R;
 IdModule  = 0402-M;
 EndCmp

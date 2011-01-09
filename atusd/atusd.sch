@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Tue Jan  4 01:52:08 2011
+EESchema Schematic File Version 2  date Sun Jan  9 20:36:03 2011
 LIBS:power
 LIBS:device
 LIBS:conn
@@ -11,8 +11,8 @@ EELAYER END
 $Descr A4 11700 8267
 Sheet 1 1
 Title "IEEE 802.15.4 uSD Transceiver (AT86RF231)"
-Date "4 jan 2011"
-Rev "20110104"
+Date "9 jan 2011"
+Rev "20110109"
 Comp "Werner Almesberger"
 Comment1 ""
 Comment2 ""
@@ -161,8 +161,6 @@ Wire Wire Line
 Wire Wire Line
 	8150 2200 8150 1800
 Wire Wire Line
-	8850 1200 9050 1200
-Wire Wire Line
 	1300 3800 1300 4000
 Wire Wire Line
 	2450 4100 2250 4100
@@ -240,10 +238,10 @@ F 1 "AT86RF231" H 6450 3950 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R2
+L R R1
 U 1 1 4C8C121C
 P 1750 3700
-F 0 "R2" V 1830 3700 50  0000 C CNN
+F 0 "R1" V 1830 3700 50  0000 C CNN
 F 1 "0R" V 1750 3700 50  0000 C CNN
 F 2 "0402" H 1750 3700 60  0001 C CNN
 	1    1750 3700
@@ -362,17 +360,7 @@ F 1 "DGND" H 8150 2730 40  0000 C CNN
 	1    8150 2800
 	1    0    0    -1  
 $EndComp
-$Comp
-L R R1
-U 1 1 4C7FBDBD
-P 8600 1200
-F 0 "R1" V 8680 1200 50  0000 C CNN
-F 1 "0R" V 8600 1200 50  0000 C CNN
-F 2 "0402" H 8600 1200 60  0001 C CNN
-	1    8600 1200
-	0    -1   -1   0   
-$EndComp
-Text GLabel 9050 1200 2    60   Input ~ 0
+Text GLabel 8350 1200 2    60   Input ~ 0
 CLK_16M
 $Comp
 L C C7
