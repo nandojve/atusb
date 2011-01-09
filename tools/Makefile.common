@@ -1,8 +1,8 @@
 #
 # tools/Makefile.common - Common items in ATRF tool makefiles
 #
-# Written 2010 by Werner Almesberger
-# Copyright 2010 Werner Almesberger
+# Written 2010-2011 by Werner Almesberger
+# Copyright 2010-2011 Werner Almesberger
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -21,13 +21,20 @@ include $(F32XBASE)/lib/Makefile.common
 endif
 
 CC_host = gcc
-CC_ben = mipsel-openwrt-linux-gcc
+CC_ben_jlime = mipsel-linux-gcc
+CC_ben_openwrt = mipsel-openwrt-linux-gcc
+
 CFLAGS_host =
-CFLAGS_ben =
+CFLAGS_ben_jlime =
+CFLAGS_ben_openwrt =
+
 LDLIBS_host = -lusb
-LDLIBS_ben =
+LDLIBS_ben_jlime =
+LDLIBS_ben_openwrt =
+
 MACROS_host = -DHAVE_USB
-MACROS_ben = -DHAVE_USD
+MACROS_ben_jlime = -DHAVE_USD
+MACROS_ben_openwrt = -DHAVE_USD
 
 CC_normal	:= $(CC_$(TARGET))
 AR_normal	:= $(AR)

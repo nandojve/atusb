@@ -1,8 +1,8 @@
 #
 # tools/Makefile - Build the ATRF-specific tools
 #
-# Written 2010 by Werner Almesberger
-# Copyright 2010 Werner Almesberger
+# Written 2010-2011 by Werner Almesberger
+# Copyright 2010-2011 Werner Almesberger
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,9 +14,16 @@
 DIRS=atrf-id atrf-reset atrf-rssi atrf-trim atrf-txrx
 TARGET_ONLY_DIRS=lib
 
+ifeq ($(TARGET),ben_jlime)
+HOST = jlime
+else
+HOST = ben
+endif
+
+
 include ../Makefile.recurse
 
 .PHONY:		upload
 
 upload:		
-		scp `for n in $(DIRS); do echo $$n/$$n; done` ben:
+		scp `for n in $(DIRS); do echo $$n/$$n; done` $(HOST):

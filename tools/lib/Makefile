@@ -1,8 +1,8 @@
 #
 # lib/Makefile - Build the ATRF library
 #
-# Written 2010 by Werner Almesberger
-# Copyright 2010 Werner Almesberger
+# Written 2010-2011 by Werner Almesberger
+# Copyright 2010-2011 Werner Almesberger
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,8 +16,11 @@ LIB = libatrf.a
 include ../Makefile.common
 
 CFLAGS += -Wall -I$(F32XBASE)/include
+
 OBJS_host = atusb.o $(F32XBASE)/lib/usb.o
-OBJS_ben = atusd.o
+OBJS_ben_jlime = atusd.o
+OBJS_ben_openwrt = atusd.o
+
 OBJS = atrf.o misctxrx.o $(OBJS_$(TARGET))
 
 .PHONY:		all clean spotless
