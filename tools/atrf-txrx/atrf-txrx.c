@@ -224,6 +224,7 @@ static void enter_test_mode_230(struct atrf_dsc *dsc, uint8_t cont_tx)
 static void enter_test_mode_231(struct atrf_dsc *dsc, uint8_t cont_tx)
 {
 	uint8_t buf[127];
+	uint8_t status;
 
 	switch (cont_tx) {
 	case CONT_TX_M2M:
@@ -244,7 +245,14 @@ static void enter_test_mode_231(struct atrf_dsc *dsc, uint8_t cont_tx)
 	atrf_reg_write(dsc, REG_TRX_CTRL_1, 0);				/* 3 */
 	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_FORCE_TRX_OFF);	/* 4 */
 	atrf_reg_write(dsc, REG_TRX_CTRL_0, CLKM_CTRL_1MHz);		/* 5 */
-	atrf_reg_read(dsc, REG_TRX_STATUS);				/* 8 */
+
+	status = atrf_reg_read(dsc, REG_TRX_STATUS) & TRX_STATUS_MASK;	/* 8 */
+	if (status != TRX_STATUS_TRX_OFF) {
+		fprintf(stderr, "expected status 0x%02x, got 0x%02x\n",
+		    TRX_STATUS_TRX_OFF, status);
+		exit(1);
+	}
+
 	atrf_reg_write(dsc, REG_CONT_TX_0, CONT_TX_MAGIC);		/* 9 */
 	atrf_reg_write(dsc, REG_TRX_CTRL_2, OQPSK_DATA_RATE_2000);	/*10 */
 	atrf_reg_write(dsc, REG_RX_CTRL, 0xa7);				/*11 */
@@ -255,7 +263,7 @@ static void enter_test_mode_231(struct atrf_dsc *dsc, uint8_t cont_tx)
 	atrf_reg_write(dsc, REG_PART_NUM, 0x46);			/*14 */
 	
 	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_PLL_ON);		/*15 */
-	wait_for_interrupt(dsc, IRQ_PLL_LOCK, IRQ_PLL_LOCK, 10, 20);	/*16 */
+	wait_for_interrupt(dsc, IRQ_PLL_LOCK, IRQ_PLL_LOCK, 10, 0);	/*16 */
 
 	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_TX_START);		/*17 */
 }
