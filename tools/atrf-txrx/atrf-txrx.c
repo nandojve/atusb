@@ -230,7 +230,8 @@ static void enter_test_mode_231(struct atrf_dsc *dsc, uint8_t cont_tx)
 	case CONT_TX_M2M:
 		fprintf(stderr,
 		    "-2 MHz mode is not supported by the AT86RF231\n");
-		break;
+		atrf_close(dsc);
+		exit(1);
 	case CONT_TX_M500K:
 		memset(buf, 0, sizeof(buf));
 		break;
