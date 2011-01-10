@@ -42,8 +42,10 @@ uint8_t wait_for_interrupt(struct atrf_dsc *dsc, uint8_t wait_for,
 	while (run) {
 		while (run && !atrf_interrupt(dsc)) {
 			usleep(sleep_us);
-			if (timeout && !--timeout)
-				return 0;
+			if (timeout && !--timeout) {
+				irq = 0;
+				goto out;
+			}
 		}
 		irq = atrf_reg_read(dsc, REG_IRQ_STATUS);
 		if (atrf_error(dsc))
@@ -74,6 +76,7 @@ uint8_t wait_for_interrupt(struct atrf_dsc *dsc, uint8_t wait_for,
 		if (irq & wait_for)
 			break;
 	}
+out:
 	signal(SIGINT, old_sig);
 	if (!run)
 		raise(SIGINT);
