@@ -60,7 +60,12 @@ static double tx_pwr_231[] = {
 static volatile int run = 1;
 
 
-static struct atrf_dsc *init_txrx(int trim)
+/*
+ * clkm: 0   disable CLKM
+ *       >0  output 2^(clkm-1) MHz signal
+ */
+
+static struct atrf_dsc *init_txrx(int trim, unsigned clkm)
 {
 	struct atrf_dsc *dsc;
 
@@ -70,13 +75,19 @@ static struct atrf_dsc *init_txrx(int trim)
 	
 	atrf_reset_rf(dsc);
 	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_TRX_OFF);
+
 #ifdef HAVE_USB /* @@@ yeah, ugly */
 	atrf_reg_write(dsc, REG_XOSC_CTRL,
 	    (XTAL_MODE_INT << XTAL_MODE_SHIFT) | trim);
 #else
 	atrf_reg_write(dsc, REG_XOSC_CTRL, XTAL_MODE_EXT << XTAL_MODE_SHIFT);
 #endif
-	atrf_reg_write(dsc, REG_TRX_CTRL_0, 0); /* disable CLKM */
+
+	if (!clkm)
+		atrf_reg_write(dsc, REG_TRX_CTRL_0, 0); /* disable CLKM */
+	else
+		atrf_reg_write(dsc, REG_TRX_CTRL_0,
+		    (PAD_IO_8mA << PAD_IO_CLKM_SHIFT) | clkm);
 
 	/* We want to see all interrupts, not only the ones we're expecting. */
 	atrf_reg_write(dsc, REG_IRQ_MASK, 0xff);
@@ -318,6 +329,7 @@ static void usage(const char *name)
 "    command     shell command to run while transmitting (default: wait for\n"
 "                SIGINT instead)\n\n"
 "    -c channel  channel number, 11 to 26 (default %d)\n"
+"    -C mhz      output clock at 1, 2, 4, 8, or 16 MHz (default: off)\n"
 "    -f freq     frequency in MHz, 2405 to 2480 (default %d)\n"
 "    -p power    transmit power, -17.2 to 3.0 dBm (default %.1f)\n"
 "    -t trim     trim capacitor, 0 to 15 (default 0)\n"
@@ -338,10 +350,11 @@ int main(int argc, char *const *argv)
 	uint8_t cont_tx = 0;
 	char *end;
 	int c, freq;
+	unsigned tmp, clkm = 0;
 	int status = 0;
 	struct atrf_dsc *dsc;
 
-	while ((c = getopt(argc, argv, "c:f:p:t:T:")) != EOF)
+	while ((c = getopt(argc, argv, "c:C:f:p:t:T:")) != EOF)
 		switch (c) {
 		case 'c':
 			channel = strtoul(optarg, &end, 0);
@@ -372,6 +385,17 @@ int main(int argc, char *const *argv)
 			if (trim > 15)
 				usage(*argv);
 			break;
+		case 'C':
+			tmp = strtol(optarg, &end, 0);
+			if (*end)
+				usage(*argv);
+			if (!tmp)
+				usage(*argv);
+			for (clkm = 1; !(tmp & 1); tmp >>= 1)
+				clkm++;
+			if (tmp != 1 || clkm > 5)
+				usage(*argv);
+			break;
 		case 'T':
 			if (!strcmp(optarg, "-2"))
 				cont_tx = CONT_TX_M2M;
@@ -390,7 +414,7 @@ int main(int argc, char *const *argv)
 
 	switch (argc-optind) {
 	case 0:
-		dsc = init_txrx(trim);
+		dsc = init_txrx(trim, clkm);
 		set_channel(dsc, channel);
 		if (!cont_tx)
 			receive(dsc);
@@ -407,7 +431,7 @@ int main(int argc, char *const *argv)
 			usage(*argv);
 		/* fall through */
 	case 1:
-		dsc = init_txrx(trim);
+		dsc = init_txrx(trim, clkm);
 		set_channel(dsc, channel);
 		if (!cont_tx) {
 			set_power(dsc, power, 1);
