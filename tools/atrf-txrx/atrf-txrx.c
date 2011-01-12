@@ -256,7 +256,7 @@ static void enter_test_mode_231(struct atrf_dsc *dsc, uint8_t cont_tx)
 	atrf_reg_write(dsc, REG_IRQ_MASK, IRQ_PLL_LOCK);		/* 2 */
 	atrf_reg_write(dsc, REG_TRX_CTRL_1, 0);				/* 3 */
 	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_FORCE_TRX_OFF);	/* 4 */
-	atrf_reg_write(dsc, REG_TRX_CTRL_0, CLKM_CTRL_1MHz);		/* 5 */
+	/* deleted step 5 - we don't need to enable CLKM */
 
 	status = atrf_reg_read(dsc, REG_TRX_STATUS) & TRX_STATUS_MASK;	/* 8 */
 	if (status != TRX_STATUS_TRX_OFF) {
