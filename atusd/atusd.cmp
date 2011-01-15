@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by CvPCB (2010-12-27 BZR 2685)-unstable date = Sun Jan  9 20:33:40 2011
+Cmp-Mod V01 Created by CvPCB (2010-12-27 BZR 2685)-unstable date = Sat Jan 15 07:07:53 2011
 
 BeginCmp
 TimeStamp = /4C63FE17;
@@ -57,24 +57,24 @@ IdModule  = 0402-M;
 EndCmp
 
 BeginCmp
-TimeStamp = /4C7FBD45;
-Reference = C7;
-ValeurCmp = 33pF;
-IdModule  = 0402-M;
-EndCmp
-
-BeginCmp
-TimeStamp = /4C8BDEB3;
-Reference = C8;
-ValeurCmp = 220pF;
-IdModule  = 0402-M;
-EndCmp
-
-BeginCmp
 TimeStamp = /4D22A5A9;
 Reference = C9;
 ValeurCmp = 22pF/RF;
-IdModule  = 0402;
+IdModule  = 0402-M;
+EndCmp
+
+BeginCmp
+TimeStamp = /4D317091;
+Reference = C10;
+ValeurCmp = 12pF;
+IdModule  = 0402-M;
+EndCmp
+
+BeginCmp
+TimeStamp = /4D317089;
+Reference = C11;
+ValeurCmp = 12pF;
+IdModule  = 0402-M;
 EndCmp
 
 BeginCmp
@@ -103,6 +103,13 @@ TimeStamp = /4D22A108;
 Reference = U1;
 ValeurCmp = AT86RF231;
 IdModule  = QFN32;
+EndCmp
+
+BeginCmp
+TimeStamp = /4D317045;
+Reference = X1;
+ValeurCmp = 16MHz;
+IdModule  = xtal4-3.2mmx2.5mm;
 EndCmp
 
 EndListe

@@ -1,4 +1,4 @@
-update=Tue Jan  4 02:39:00 2011
+update=Sat Jan 15 15:18:40 2011
 last_client=pcbnew
 [eeschema]
 version=1
@@ -42,6 +42,7 @@ LibName3=conn
 LibName4=../components/at86rf231
 LibName5=../components/antenna
 LibName6=../components/balun-smt6
+LibName7=../components/xtal-4
 [cvpcb]
 version=1
 NetIExt=net
@@ -73,3 +74,4 @@ LibName3=../modules/qfn
 LibName4=../../kicad-libs/modules/stdpass
 LibName5=../../kicad-libs/modules/usd-card
 LibName6=../modules/0805-6
+LibName7=../modules/xtal-4
