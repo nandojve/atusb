@@ -76,7 +76,7 @@ static struct atrf_dsc *init_txrx(int trim, unsigned clkm)
 	atrf_reset_rf(dsc);
 	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_TRX_OFF);
 
-#ifdef HAVE_USB /* @@@ yeah, ugly */
+#if 1 // def HAVE_USB /* @@@ yeah, ugly */
 	atrf_reg_write(dsc, REG_XOSC_CTRL,
 	    (XTAL_MODE_INT << XTAL_MODE_SHIFT) | trim);
 #else

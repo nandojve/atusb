@@ -25,7 +25,11 @@
 enum {
 	VDD_OFF	= 1 << 2,	/* VDD disable, PD02 */
 	MOSI	= 1 << 8,	/* CMD, PD08 */
+#ifdef OLD
 	CLK	= 1 << 9,	/* CLK, PD09 */
+#else
+	SLP_TR	= 1 << 9,	/* CLK, PD09 */
+#endif
 	MISO	= 1 << 10,	/* DAT0, PD10 */
 	SCLK	= 1 << 11,	/* DAT1, PD11 */
 	IRQ	= 1 << 12,	/* DAT2, PD12 */
@@ -84,10 +88,15 @@ static void atusd_cycle(struct atusd_dsc *dsc)
 	MSC_STRPCL = 1;
 
 	/* drive all outputs low (including the MMC bus clock) */
+#ifdef OLD
 	PDDATC = MOSI | CLK | SCLK | nSEL;
 
 	/* make the MMC bus clock a regular output */
 	PDFUNC = CLK;
+#else
+	PDDATC = MOSI | SLP_TR | SCLK | nSEL;
+	PDFUNC = SLP_TR;
+#endif
 
 	/* cut the power */
 	PDDATS = VDD_OFF;
@@ -101,11 +110,14 @@ static void atusd_cycle(struct atusd_dsc *dsc)
 	/* precharge the capacitors to avoid current surge */
 	wait_for_power();
 
+#ifdef OLD
+
 	/* return the bus clock output to the MMC controller */
 	PDFUNS = CLK;
 
 	/* start MMC clock output */
 	MSC_STRPCL = 2;
+#endif
 
 	/* supply power */
 	PDDATC = VDD_OFF;
@@ -198,12 +210,20 @@ static void *atusd_open(void)
 	PDDATC = SCLK;
 
 	/* take the GPIOs away from the MMC controller */
+#ifdef OLD
 	PDFUNC = MOSI | MISO | SCLK | IRQ | nSEL;
 	PDFUNS = CLK;
+#else
+	PDFUNC = MOSI | MISO | SCLK | IRQ | nSEL | SLP_TR;
+#endif
 
 	/* set the pin directions */
 	PDDIRC = MISO | IRQ;
+#ifdef OLD
 	PDDIRS = MOSI | CLK | SCLK | nSEL;
+#else
+	PDDIRS = MOSI | SLP_TR | SCLK | nSEL;
+#endif
 
 	/* let capacitors precharge */
 	wait_for_power();
@@ -211,6 +231,7 @@ static void *atusd_open(void)
 	/* enable power */
 	PDDATC = VDD_OFF;
 
+#ifdef OLD
 	/* set the MSC clock to 316 MHz / 21 = 16 MHz */
 	MSCCDR = 20;
 	/*
@@ -222,6 +243,7 @@ static void *atusd_open(void)
 	MSC_CLKRT = 0;
 	/* start MMC clock output */
 	MSC_STRPCL = 2;
+#endif
 
 	wait_for_power();
 	atusd_reset_rf(dsc);
@@ -241,7 +263,11 @@ static void atusd_close(void *arg)
 	PDDATS = VDD_OFF;
 
 	/* make all MMC pins inputs */
+#ifdef OLD
 	PDDIRC = MOSI | MISO | CLK | SCLK | IRQ | nSEL;
+#else
+	PDDIRC = MOSI | MISO | SLP_TR | SCLK | IRQ | nSEL;
+#endif
 }
 
 
