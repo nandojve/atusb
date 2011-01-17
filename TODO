@@ -1,3 +1,5 @@
+*** NEEDS UPDATING ***
+
 General
 =======
 
@@ -35,9 +37,9 @@ inside a Ben.
 
 Update: following Rikard Lindstrom's revelation that we can use the uSD slot
 also just as general GPIOs, the variant that goes inside the Ben can wait a
-bit and the atusd board for insertion into the uSD slot is being worked on
+bit and the atben board for insertion into the uSD slot is being worked on
 first. We can verify most of the design of a fully integrated board with the
-atusd board and the latter will be of greater immediate use.
+atben board and the latter will be of greater immediate use.
 
 
 Things done
@@ -50,11 +52,11 @@ Things done
 - replace discrete balun and filter with integrated solution, to reduce BOM
   size, maybe cost, insertion loss, and PCB space (see ATRF/ECN0003)
 
-  Done for atusd. At a first glamce, does not seem to affect performance.
+  Done for atben. At a first glamce, does not seem to affect performance.
 
 - check if we really need three DC blocking caps in the RF path
 
-  Reduced to two in atusd without apparent ill effects.
+  Reduced to two in atben without apparent ill effects.
 
 
 Things not done yet
@@ -89,7 +91,7 @@ Things not done yet
 
 - implement sleep mode
 
-- (atusd) verify SPI signal timing, particularly the data clock
+- (atben) verify SPI signal timing, particularly the data clock
 
 
 ccrf

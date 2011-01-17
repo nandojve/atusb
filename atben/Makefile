@@ -1,6 +1,6 @@
 PLOT_BRD = pcbnew --plot=ps_a4 --ps-pads-drill-opt=none --fill-all-zones
 
-NAME = atusd
+NAME = atben
 
 .PHONY:		all gen generate sch brd xpdf front back clean
 
