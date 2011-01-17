@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Sat Jan 15 16:51:16 2011
+EESchema Schematic File Version 2  date Mon Jan 17 11:39:21 2011
 LIBS:power
 LIBS:device
 LIBS:conn
@@ -6,12 +6,11 @@ LIBS:at86rf231
 LIBS:antenna
 LIBS:balun-smt6
 LIBS:xtal-4
-LIBS:atusd-cache
 EELAYER 24  0
 EELAYER END
 $Descr A4 11700 8267
 Sheet 1 1
-Title "IEEE 802.15.4 uSD Transceiver (AT86RF231)"
+Title "IEEE 802.15.4 Transceiver (AT86RF231) as 8:10 card"
 Date "15 jan 2011"
 Rev "20110115"
 Comp "Werner Almesberger"

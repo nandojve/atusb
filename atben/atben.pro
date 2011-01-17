@@ -1,4 +1,4 @@
-update=Mon Jan 17 10:53:40 2011
+update=Mon Jan 17 11:40:12 2011
 last_client=pcbnew
 [eeschema]
 version=1
@@ -65,7 +65,7 @@ DrawLar=50
 EdgeLar=50
 TxtLar=100
 MSegLar=150
-LastNetListRead=atusd.net
+LastNetListRead=atben.net
 [pcbnew/libraries]
 LibDir=
 LibName1=../ants/meander
