@@ -1,15 +1,17 @@
+NAME=atben
+
 .PHONY:			all clean
 
 all:			Makefile.mkmk
 
-Makefile.mkmk:		mkmk ../atusd.drl ../atusd-PCB_Edges.gbr
+Makefile.mkmk:		mkmk ../$(NAME).drl ../$(NAME)-PCB_Edges.gbr
 			./mkmk
 
-../atusd.drl:		../atusd.brd
-			pcbnew --drill `pwd`/../atusd.brd
+../$(NAME).drl:		../$(NAME).brd
+			pcbnew --drill `pwd`/../$(NAME).brd
 
-../atusd-PCB_Edges.gbr:	../atusd.brd
-			pcbnew --plot=gerber -l PCB_Edges `pwd`/../atusd.brd
+../$(NAME)-PCB_Edges.gbr: ../$(NAME).brd
+			pcbnew --plot=gerber -l PCB_Edges `pwd`/../$(NAME).brd
 
 -include Makefile.mkmk
 

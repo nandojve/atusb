@@ -2,13 +2,14 @@
 PATH=$PATH:/home/qi/cae-tools/cameo
 PATH=$PATH:/home/moko/svn.openmoko.org/developers/werner/cncmap/gp2rml
 
+NAME=atben
 X=0
 Y=1
 
 cameo <<EOF
 mm
 
-gerber 35mil ../atusd-PCB_Edges.gbr
+gerber 35mil ../$NAME-PCB_Edges.gbr
 align 1 2.5mm 8.5mm	# align relative to board corner
 translate 3mm 3mm	# move to PCB zone assigned to project
 array +19mm +2.5mm $X $Y
@@ -21,7 +22,7 @@ clear
 
 # ---- 1st board ----
 
-excellon ../atusd.drl
+excellon ../$NAME.drl
 drill 7mil 15mil	# 12.5-13.5 mil drill
 optimize
 write drill.gp
@@ -34,7 +35,7 @@ write mill.gp
 remainder
 empty
 
-gerber 20mil ../atusd-PCB_Edges.gbr	# 35 mil endmill, 15 mil deflection
+gerber 20mil ../$NAME-PCB_Edges.gbr	# 35 mil endmill, 15 mil deflection
 offset
 append mill.gp
 
@@ -44,7 +45,7 @@ clear
 
 reset
 
-gerber 35mil ../atusd-PCB_Edges.gbr
+gerber 35mil ../$NAME-PCB_Edges.gbr
 rotate 180
 
 align 1 2.5mm 8.5mm	# align relative to board corner
@@ -54,7 +55,7 @@ array +19mm +2.5mm $X $Y
 
 clear
 
-excellon ../atusd.drl
+excellon ../$NAME.drl
 drill 7mil 15mil	# 12.5-13.5 mil drill
 optimize
 append drill.gp
@@ -67,7 +68,7 @@ append mill.gp
 remainder
 empty
 
-gerber 20mil ../atusd-PCB_Edges.gbr	# 35 mil endmill, 15 mil deflection
+gerber 20mil ../$NAME-PCB_Edges.gbr	# 35 mil endmill, 15 mil deflection
 offset
 append mill.gp
 EOF
