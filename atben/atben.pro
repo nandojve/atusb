@@ -1,4 +1,4 @@
-update=Mon Jan 17 11:40:12 2011
+update=Mon Jan 17 12:11:42 2011
 last_client=pcbnew
 [eeschema]
 version=1
@@ -72,6 +72,6 @@ LibName1=../ants/meander
 LibName2=../../kicad-libs/modules/pads
 LibName3=../modules/qfn
 LibName4=../../kicad-libs/modules/stdpass
-LibName5=../../kicad-libs/modules/usd-card
+LibName5=../../kicad-libs/modules/8_10-card
 LibName6=../modules/0805-6
 LibName7=../modules/xtal-4
