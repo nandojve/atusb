@@ -82,7 +82,7 @@ T=C C=820fF -> C=800fF	# we can't get 0.82 pF, but there's plenty of 0.8 pF :)
 FP=MMCX-F-EDGE* -> VAL=MMCX-F-EDGE-SMT
 
 FP=meander -> VAL=meander
-FP=uSD-Card -> VAL=uSD-Card
+FP=8:10-card -> VAL=8:10-card
 FP=PAD_60x60 -> VAL=PAD_60x60
 FP=PAD_120x60 -> VAL=PAD_120x60
 FP=PAD_2mm -> VAL=PAD_2mm

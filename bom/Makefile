@@ -14,7 +14,7 @@ CHR=atrf.chr $(shell $(BOOM_CONFIG) chr)
 .PHONY:		all again spotless
 .PRECIOUS:	%.par %.lst
 
-all:		atusb.ord atusd.ord cntr.ord
+all:		atusb.ord atben.ord cntr.ord
 
 again:
 		$(MAKE) spotless
@@ -43,5 +43,5 @@ show-%:		%.ord $(DSC)
 spotless:
 		$(MAKE) -C dk spotless
 		rm -f atusb.lst atusb.par atusb.ord
-		rm -f atusd.lst atusd.par atusd.ord
+		rm -f atben.lst atben.par atben.ord
 		rm -f cntr.lst cntr.par cntr.ord
