@@ -18,8 +18,8 @@ include ../Makefile.common
 CFLAGS += -Wall -I$(F32XBASE)/include
 
 OBJS_host = atusb.o $(F32XBASE)/lib/usb.o
-OBJS_ben_jlime = atusd.o
-OBJS_ben_openwrt = atusd.o
+OBJS_ben_jlime = atben.o
+OBJS_ben_openwrt = atben.o
 
 OBJS = atrf.o misctxrx.o $(OBJS_$(TARGET))
 
