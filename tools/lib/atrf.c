@@ -21,7 +21,7 @@
 
 
 extern struct atrf_driver atusb_driver;
-extern struct atrf_driver atusd_driver;
+extern struct atrf_driver atben_driver;
 
 
 struct atrf_dsc {
@@ -61,10 +61,10 @@ struct atrf_dsc *atrf_open(void)
 
 #ifdef HAVE_USB
 	driver = &atusb_driver;
-#elif HAVE_USD
-	driver = &atusd_driver;
+#elif HAVE_BEN
+	driver = &atben_driver;
 #else
-#error Need either HAVE_USB or HAVE_USD
+#error Need either HAVE_USB or HAVE_BEN
 #endif
 	handle = driver->open();
 	if (!handle)

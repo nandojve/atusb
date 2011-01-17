@@ -1,5 +1,5 @@
 /*
- * lib/atusd.c - ATRF access functions library (uSD version)
+ * lib/atben.c - ATRF access functions library (Ben 8:10 card version)
  *
  * Written 2010-2011 by Werner Almesberger
  * Copyright 2010-2011 Werner Almesberger
@@ -63,7 +63,7 @@ enum {
 #define	PAGE_SIZE	4096
 
 
-struct atusd_dsc {
+struct atben_dsc {
 	int fd;
 	void *mem;
 };
@@ -82,7 +82,7 @@ static void wait_for_power(void)
 }
 
 
-static void atusd_cycle(struct atusd_dsc *dsc)
+static void atben_cycle(struct atben_dsc *dsc)
 {
 	/* stop the MMC bus clock */
 	MSC_STRPCL = 1;
@@ -129,19 +129,19 @@ static void atusd_cycle(struct atusd_dsc *dsc)
 /* ----- Low-level SPI operations ------------------------------------------ */
 
 
-static void spi_begin(struct atusd_dsc *dsc)
+static void spi_begin(struct atben_dsc *dsc)
 {
 	PDDATC = nSEL;
 }
 
 
-static void spi_end(struct atusd_dsc *dsc)
+static void spi_end(struct atben_dsc *dsc)
 {
 	PDDATS = nSEL;
 }
 
 
-static void spi_send(struct atusd_dsc *dsc, uint8_t v)
+static void spi_send(struct atben_dsc *dsc, uint8_t v)
 {
 	uint8_t mask;
 
@@ -156,7 +156,7 @@ static void spi_send(struct atusd_dsc *dsc, uint8_t v)
 }
 
 
-static uint8_t spi_recv(struct atusd_dsc *dsc)
+static uint8_t spi_recv(struct atben_dsc *dsc)
 {
 	uint8_t res = 0;
         uint8_t mask;
@@ -174,18 +174,18 @@ static uint8_t spi_recv(struct atusd_dsc *dsc)
 /* ----- Driver operations ------------------------------------------------- */
 
 
-static void atusd_reset_rf(void *handle)
+static void atben_reset_rf(void *handle)
 {
-	struct atusd_dsc *dsc = handle;
+	struct atben_dsc *dsc = handle;
 
-	atusd_cycle(dsc);
+	atben_cycle(dsc);
 	wait_for_power();
 }
 
 
-static void *atusd_open(void)
+static void *atben_open(void)
 {
-	struct atusd_dsc *dsc;
+	struct atben_dsc *dsc;
 
 	dsc = malloc(sizeof(*dsc));
 	if (!dsc) {
@@ -246,15 +246,15 @@ static void *atusd_open(void)
 #endif
 
 	wait_for_power();
-	atusd_reset_rf(dsc);
+	atben_reset_rf(dsc);
 
 	return dsc;
 }
 
 
-static void atusd_close(void *arg)
+static void atben_close(void *arg)
 {
-	struct atusd_dsc *dsc = arg;
+	struct atben_dsc *dsc = arg;
 
 	/* stop the MMC bus clock */
 	MSC_STRPCL = 1;
@@ -271,9 +271,9 @@ static void atusd_close(void *arg)
 }
 
 
-static void atusd_reg_write(void *handle, uint8_t reg, uint8_t v)
+static void atben_reg_write(void *handle, uint8_t reg, uint8_t v)
 {
-	struct atusd_dsc *dsc = handle;
+	struct atben_dsc *dsc = handle;
 
 	spi_begin(dsc);
 	spi_send(dsc, AT86RF230_REG_WRITE | reg);
@@ -282,9 +282,9 @@ static void atusd_reg_write(void *handle, uint8_t reg, uint8_t v)
 }
 
 
-static uint8_t atusd_reg_read(void *handle, uint8_t reg)
+static uint8_t atben_reg_read(void *handle, uint8_t reg)
 {
-	struct atusd_dsc *dsc = handle;
+	struct atben_dsc *dsc = handle;
 	uint8_t res;
 
 	spi_begin(dsc);
@@ -295,9 +295,9 @@ static uint8_t atusd_reg_read(void *handle, uint8_t reg)
 }
 
 
-static void atusd_buf_write(void *handle, const void *buf, int size)
+static void atben_buf_write(void *handle, const void *buf, int size)
 {
-	struct atusd_dsc *dsc = handle;
+	struct atben_dsc *dsc = handle;
 
 	spi_begin(dsc);
 	spi_send(dsc, AT86RF230_BUF_WRITE);
@@ -308,9 +308,9 @@ static void atusd_buf_write(void *handle, const void *buf, int size)
 }
 
 
-static int atusd_buf_read(void *handle, void *buf, int size)
+static int atben_buf_read(void *handle, void *buf, int size)
 {
-	struct atusd_dsc *dsc = handle;
+	struct atben_dsc *dsc = handle;
 	uint8_t len, i;
 
 	spi_begin(dsc);
@@ -329,9 +329,9 @@ static int atusd_buf_read(void *handle, void *buf, int size)
 /* ----- RF interrupt ------------------------------------------------------ */
 
 
-static int atusd_interrupt(void *handle)
+static int atben_interrupt(void *handle)
 {
-        struct atusd_dsc *dsc = handle;
+        struct atben_dsc *dsc = handle;
 
 	return !!(PDPIN & IRQ);
 }
@@ -340,16 +340,16 @@ static int atusd_interrupt(void *handle)
 /* ----- Driver interface -------------------------------------------------- */
 
 
-struct atrf_driver atusd_driver = {
-	.name		= "uSD",
-	.open		= atusd_open,
-	.close		= atusd_close,
+struct atrf_driver atben_driver = {
+	.name		= "Ben",
+	.open		= atben_open,
+	.close		= atben_close,
 	.reset		= NULL,
-	.reset_rf	= atusd_reset_rf,
+	.reset_rf	= atben_reset_rf,
 	.test_mode	= NULL,
-	.reg_write	= atusd_reg_write,
-	.reg_read	= atusd_reg_read,
-	.buf_write	= atusd_buf_write,
-	.buf_read	= atusd_buf_read,
-	.interrupt	= atusd_interrupt,
+	.reg_write	= atben_reg_write,
+	.reg_read	= atben_reg_read,
+	.buf_write	= atben_buf_write,
+	.buf_read	= atben_buf_read,
+	.interrupt	= atben_interrupt,
 };

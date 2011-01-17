@@ -33,8 +33,8 @@ LDLIBS_ben_jlime =
 LDLIBS_ben_openwrt =
 
 MACROS_host = -DHAVE_USB
-MACROS_ben_jlime = -DHAVE_USD
-MACROS_ben_openwrt = -DHAVE_USD
+MACROS_ben_jlime = -DHAVE_BEN
+MACROS_ben_openwrt = -DHAVE_BEN
 
 CC_normal	:= $(CC_$(TARGET))
 AR_normal	:= $(AR)
