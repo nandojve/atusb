@@ -1,5 +1,7 @@
 PLOT_BRD = pcbnew --plot=ps_a4 --ps-pads-drill-opt=none --fill-all-zones
 
+NAME = atusb
+
 .PHONY:		all gen generate sch brd xpdf front back clean
 
 all:
@@ -7,22 +9,22 @@ all:
 		@exit 1
 
 gen generate:
-		eeschema --plot `pwd`/atusb.sch
+		eeschema --plot `pwd`/$(NAME).sch
 		# need scripts
 
 sch:
-		eeschema `pwd`/atusb.sch
+		eeschema `pwd`/$(NAME).sch
 
 brd:
-		pcbnew `pwd`/atusb.brd
+		pcbnew `pwd`/$(NAME).brd
 
 xpdf:
-		xpdf atusb.pdf
+		xpdf $(NAME).pdf
 
-front:		atusb-Front.ps
+front:		$(NAME)-Front.ps
 		lpr $<
 
-back:		atusb-Back.ps
+back:		$(NAME)-Back.ps
 		lpr $<
 
 #
@@ -36,12 +38,12 @@ back:		atusb-Back.ps
 # larger (!) than designed.
 #
 
-atusb-Front.ps:	atusb.brd
+%-Front.ps:	%.brd
 		$(PLOT_BRD) -l Front --mirror $<
 
-atusb-Back.ps:	atusb.brd
+%-Back.ps:	%.brd
 		$(PLOT_BRD) -l Back $<
 
 clean:
-		rm -f atusb-Front.ps atusb-Back.ps
-		rm -f atusb.drl atusb-PCB_Edges.gbr
+		rm -f $(NAME)-Front.ps $(NAME)-Back.ps
+		rm -f $(NAME).drl $(NAME)-PCB_Edges.gbr
