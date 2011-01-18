@@ -47,3 +47,8 @@ back:		$(NAME)-Back.ps
 clean:
 		rm -f $(NAME)-Front.ps $(NAME)-Back.ps
 		rm -f $(NAME).drl $(NAME)-PCB_Edges.gbr
+		rm -f $(NAME)-Front.gtl $(NAME)-Mask_Front.gts
+		rm -f $(NAME)-SilkS_Front.gto $(NAME)-SoldP_Front.gtp
+		rm -f $(NAME)-Back.gbl $(NAME)-Mask_Back.gbs
+		rm -f $(NAME)-SilkS_Back.gbo $(NAME)-SoldP_Back.gbp
+		rm -f $(NAME)-Comments.gbr
