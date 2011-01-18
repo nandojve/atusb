@@ -1,0 +1,17 @@
+PCB manufacturing:
+
+- do not print PCB edges on front/back copper
+- do not print component values on silk screen
+- note that the transceiver is "upside down"
+- the center (!) of the board edge line marks the true board edge, e.g.,
+
+                             Edge line (5 mil)
+                        =======
+         ------- - - - - - ----------
+               |           |
+   PCB outside |           | PCB inside
+               |           |
+         ------- - - - - - ----------
+                     |
+               Volume removed when cutting
+               (width depends on tool used)
