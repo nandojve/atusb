@@ -1,11 +1,11 @@
-PCBNEW-BOARD Version 1 date Mon Jan 17 22:27:41 2011
+PCBNEW-BOARD Version 1 date Mon Jan 17 22:37:38 2011
 
 # Created by Pcbnew(2010-12-27 BZR 2685)-unstable
 
 $GENERAL
 LayerCount 2
 Ly 1FFF8001
-EnabledLayers 12AA8001
+EnabledLayers 12A88001
 Links 81
 NoConn 0
 Di 45606 36414 53375 52126
@@ -2477,7 +2477,7 @@ ZLayer 0
 ZAux 8 E
 ZClearance 100 T
 ZMinThickness 100
-ZOptions 1 16 F 200 200
+ZOptions 1 16 S 200 200
 ZCorner 49050 43500 0
 ZCorner 49750 42800 0
 ZCorner 52650 42800 0
@@ -2589,7 +2589,7 @@ ZLayer 0
 ZAux 5 E
 ZClearance 100 T
 ZMinThickness 100
-ZOptions 1 16 F 200 200
+ZOptions 1 16 S 200 200
 ZCorner 52650 44250 0
 ZCorner 52650 43000 0
 ZCorner 49800 43000 0
@@ -2646,7 +2646,7 @@ ZLayer 0
 ZAux 10 E
 ZClearance 100 T
 ZMinThickness 100
-ZOptions 1 16 F 200 200
+ZOptions 1 16 S 200 200
 ZCorner 51150 47000 0
 ZCorner 51700 46450 0
 ZCorner 51700 45350 0
@@ -2710,7 +2710,7 @@ ZLayer 0
 ZAux 11 E
 ZClearance 100 T
 ZMinThickness 100
-ZOptions 1 16 F 200 200
+ZOptions 1 16 S 200 200
 ZCorner 52650 51700 0
 ZCorner 52650 47200 0
 ZCorner 50250 47200 0
@@ -3207,7 +3207,7 @@ ZLayer 15
 ZAux 8 E
 ZClearance 100 T
 ZMinThickness 100
-ZOptions 1 16 F 200 200
+ZOptions 1 16 S 200 200
 ZCorner 49500 43050 0
 ZCorner 49750 42800 0
 ZCorner 52650 42800 0
@@ -3557,7 +3557,7 @@ ZLayer 15
 ZAux 5 E
 ZClearance 100 T
 ZMinThickness 100
-ZOptions 1 16 F 200 200
+ZOptions 1 16 S 200 200
 ZCorner 52650 44250 0
 ZCorner 52650 43000 0
 ZCorner 49800 43000 0
@@ -3638,7 +3638,7 @@ ZLayer 15
 ZAux 12 E
 ZClearance 100 T
 ZMinThickness 100
-ZOptions 1 16 F 200 200
+ZOptions 1 16 S 200 200
 ZCorner 51200 47050 0
 ZCorner 51750 46500 0
 ZCorner 51750 45350 0
