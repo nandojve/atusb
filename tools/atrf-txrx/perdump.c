@@ -25,13 +25,16 @@
 static const struct result_ops *ops;
 
 
-static void analyze(uint8_t *buf, int len)
+static void analyze(uint8_t *buf, int len, double ts)
 {
 	static int last = -1;
+	static double t0 = 0;
 	int freq[256];
 	uint8_t best = 0;
 	int i;
 
+	if (!t0)
+		t0 = ts;
 	for (i = 0; i != 256; i++)
 		freq[i] = 0;
 	for (i = 0; i != len; i++) {
@@ -40,12 +43,12 @@ static void analyze(uint8_t *buf, int len)
 			best = buf[i];
 	}
 	if (freq[best] <= len >> 1 && freq[best] != len) {
-		ops->undecided(len*2);
+		ops->undecided(len*2, ts-t0);
 		if (last != -1)
 			last++;	/* probably :-) */
 		return;
 	}
-	ops->packet(len*2, last == -1 ? 0 : (uint8_t) (best-last-1));
+	ops->packet(len*2, last == -1 ? 0 : (uint8_t) (best-last-1), ts-t0);
 	last = best;
 	for (i = 0; i != len; i++) {
 		uint8_t delta = buf[i] ^ best;
@@ -87,7 +90,7 @@ static int pcap_record(FILE *file, const char *name)
 		fprintf(stderr, "file truncated\n");
 		exit(1);
 	}
-	analyze(buf, hdr.caplen);
+	analyze(buf, hdr.caplen, hdr.ts_sec+hdr.ts_usec/1000000.0);
 	return 1;
 }
 

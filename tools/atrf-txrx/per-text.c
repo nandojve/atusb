@@ -17,30 +17,34 @@
 
 
 static char line[65] = "";
+static double t_line;
 static int packets = 0, garbled = 0, bad = 0, skipped = 0;
 static int is_bad = 0;
 
 
 static void flush(void)
 {
-	if (*line)
+	if (*line) {
+		printf("%9.3f  ", t_line);
 		printf("%s\n", line);
+	}
 	*line = 0;
 }
 
 
-static void text_undecided(int symbols)
+static void text_undecided(int symbols, double t)
 {
 	int i;
 
 	flush();
+	printf("%9.3f  ", t);
 	for (i = 0; i != symbols/4; i++)
 		putchar('?');
 	putchar('\n');
 }
 
 
-static void text_packet(int symbols, int skip)
+static void text_packet(int symbols, int skip, double t)
 {
 	int i;
 
@@ -50,10 +54,11 @@ static void text_packet(int symbols, int skip)
 		for (i = 0; i != skip; i++)
 			putchar('\n');
 	else
-		printf("\n(%d)\n\n", skip);
+		printf("\n  (%d)\n\n", skip);
 	for (i = 0; i != symbols/4; i++)
 		line[i] = '-';
 	line[i] = 0;
+	t_line = t;
 	packets++;
 	is_bad = 0;
 }

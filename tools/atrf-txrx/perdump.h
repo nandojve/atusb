@@ -16,8 +16,8 @@
 
 struct result_ops {
 	void (*begin)(void);
-	void (*undecided)(int symbols);
-	void (*packet)(int symbols, int skip);
+	void (*undecided)(int symbols, double t);
+	void (*packet)(int symbols, int skip, double t);
 	void (*error)(int symbol);
 	void (*finish)(void);
 };
