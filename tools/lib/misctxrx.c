@@ -53,8 +53,11 @@ uint8_t wait_for_interrupt(struct atrf_dsc *dsc, uint8_t wait_for,
 		if (!irq)
 			continue;
 		show = irq & ~ignore;
-		if ((irq & wait_for) && !show)
-			break;
+		if (!show) {
+			if (irq & wait_for)
+				break;
+			continue;
+		}
 		fprintf(stderr, "IRQ (0x%02x):", irq);
 		if (irq & IRQ_PLL_LOCK)
 			fprintf(stderr, " PLL_LOCK");
