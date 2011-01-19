@@ -455,8 +455,8 @@ static void usage(const char *name)
 "  text message mode:\n"
 "    message     message string to send (if absent, receive)\n"
 "    repetitions number of times the message is sent (default 1)\n\n"
-"  BER test mode (transmit only):\n"
-"    -B pause_s  seconds to pause between frames (floating-point)\n"
+"  PER test mode (transmit only):\n"
+"    -P pause_s  seconds to pause between frames (floating-point)\n"
 "    repetitions number of messages to send (default: infinite)\n\n"
 "  constant wave test mode (transmit only):\n"
 "    -T offset   test mode. offset is the frequency offset of the constant\n"
@@ -481,7 +481,7 @@ int main(int argc, char *const *argv)
 {
 	enum {
 		mode_msg,
-		mode_ber,
+		mode_per,
 		mode_cont_tx,
 	} mode = mode_msg;
 	int channel = DEFAULT_CHANNEL;
@@ -496,7 +496,7 @@ int main(int argc, char *const *argv)
 	const char *pcap_file = NULL;
 	struct atrf_dsc *dsc;
 
-	while ((c = getopt(argc, argv, "B:c:C:f:o:p:t:T:")) != EOF)
+	while ((c = getopt(argc, argv, "c:C:f:o:p:P:t:T:")) != EOF)
 		switch (c) {
 		case 'c':
 			channel = strtoul(optarg, &end, 0);
@@ -530,12 +530,6 @@ int main(int argc, char *const *argv)
 			if (trim > 15)
 				usage(*argv);
 			break;
-		case 'B':
-			mode = mode_ber;
-			pause_s = strtof(optarg, &end);
-			if (*end)
-				usage(*argv);
-			break;
 		case 'C':
 			tmp = strtol(optarg, &end, 0);
 			if (*end)
@@ -545,6 +539,12 @@ int main(int argc, char *const *argv)
 			for (clkm = 1; !(tmp & 1); tmp >>= 1)
 				clkm++;
 			if (tmp != 1 || clkm > 5)
+				usage(*argv);
+			break;
+		case 'P':
+			mode = mode_per;
+			pause_s = strtof(optarg, &end);
+			if (*end)
 				usage(*argv);
 			break;
 		case 'T':
@@ -572,7 +572,7 @@ int main(int argc, char *const *argv)
 		case mode_msg:
 			receive(dsc, pcap_file);
 			break;
-		case mode_ber:
+		case mode_per:
 			set_power(dsc, power, 0);
 			transmit_pattern(dsc, pause_s, 0);
 			break;
@@ -588,7 +588,7 @@ int main(int argc, char *const *argv)
 		switch (mode) {
 		case mode_msg:
 			break;
-		case mode_ber:
+		case mode_per:
 			/* fall through */
 		case mode_cont_tx:
 			usage(*argv);
@@ -607,7 +607,7 @@ int main(int argc, char *const *argv)
 			set_power(dsc, power, 1);
 			transmit(dsc, argv[optind], times);
 			break;
-		case mode_ber:
+		case mode_per:
 			times = strtoul(argv[optind+1], &end, 0);
 			if (*end)
 				usage(*argv);
