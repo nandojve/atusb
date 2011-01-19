@@ -19,10 +19,13 @@
 #include <math.h>
 #include <signal.h>
 #include <sys/wait.h>
+#include <sys/time.h>
 
 #include "at86rf230.h"
 #include "atrf.h"
 #include "misctxrx.h"
+
+#include "pcap.h"
 
 
 /*
@@ -148,18 +151,11 @@ static void set_power(struct atrf_dsc *dsc, double power, int crc)
 }
 
 
-static void receive(struct atrf_dsc *dsc)
+static void receive_message(struct atrf_dsc *dsc)
 {
 	uint8_t buf[MAX_PSDU+1]; /* PSDU+LQI */
 	int n, ok, i;
 	uint8_t ed, lqi;
-
-	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_RX_ON);
-	/*
-	 * 180 us, according to AVR2001 section 4.2. We time out after
-	 * nominally 200 us.
-	 */
-	wait_for_interrupt(dsc, IRQ_PLL_LOCK, IRQ_PLL_LOCK, 10, 20);
 
 	fprintf(stderr, "Ready.\n");
 	wait_for_interrupt(dsc, IRQ_TRX_END, IRQ_TRX_END | IRQ_RX_START,
@@ -182,6 +178,103 @@ static void receive(struct atrf_dsc *dsc)
 	for (i = 0; i != n-3; i++)
 		putchar(buf[i] < ' ' || buf[i] > '~' ? '?' : buf[i]);
 	putchar('\n');
+}
+
+
+static void write_pcap_hdr(FILE *file)
+{
+	struct pcap_file_header hdr = {
+		.magic		= 0xa1b2c3d4,
+		.version_major	= 2,
+		.version_minor	= 4,
+		.thiszone	= 0,
+		.sigfigs	= 0,
+		.snaplen	= MAX_PSDU,
+		.linktype	= DLT_IEEE802_15_4
+	};
+
+	if (fwrite(&hdr, sizeof(hdr), 1, file) != 1) {
+		perror("fwrite");
+		exit(1);
+	}
+}
+
+
+static void write_pcap_rec(FILE *file, const struct timeval *tv,
+    const void *buf, int n)
+{
+	struct pcap_pkthdr hdr = {
+		.ts_sec		= tv->tv_sec,
+		.ts_usec	= tv->tv_usec,
+		.caplen		= n,
+		.len		= n
+	};
+
+	if (fwrite(&hdr, sizeof(hdr), 1, file) != 1) {
+		perror("fwrite");
+		exit(1);
+	}
+	if (fwrite(buf, n, 1, file) != 1) {
+		perror("fwrite");
+		exit(1);
+	}
+}
+
+
+static void receive_pcap(struct atrf_dsc *dsc, const char *name)
+{
+	FILE *file;
+	uint8_t buf[MAX_PSDU+1]; /* PSDU+LQI */
+	struct timeval now;
+	int n;
+	int count = 0;
+
+	file = fopen(name, "w");
+	if (!file) {
+		perror(name);
+		exit(1);
+	}
+	write_pcap_hdr(file);
+	while (run) {
+		wait_for_interrupt(dsc,
+		    IRQ_TRX_END, IRQ_TRX_END | IRQ_RX_START,
+		    10, 0);
+		if (!run)
+			break;
+		gettimeofday(&now, NULL);
+		n = atrf_buf_read(dsc, buf, sizeof(buf));
+		if (n < 0)
+			exit(1);
+		if (n < 2) {
+			fprintf(stderr, "%d bytes received\n", n);
+			continue;
+		}
+		write_pcap_rec(file, &now, buf, n-1);
+		(void) write(2, ".", 1);
+		count++;
+	}
+	if (fclose(file) == EOF) {
+		perror(name);
+		exit(1);
+	}
+	fprintf(stderr, "%sreceived %d message%s\n", count ? "\n" : "",
+	    count, count == 1 ? "" : "s");
+}
+
+
+static void receive(struct atrf_dsc *dsc, const char *name)
+{
+	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_RX_ON);
+	/*
+	 * 180 us, according to AVR2001 section 4.2. We time out after
+	 * nominally 200 us.
+	 */
+	wait_for_interrupt(dsc, IRQ_PLL_LOCK, IRQ_PLL_LOCK, 10, 20);
+
+	if (name)
+		receive_pcap(dsc, name);
+	else
+		receive_message(dsc);
 }
 
 
@@ -332,10 +425,12 @@ static void usage(const char *name)
 "                wave in MHz: -2, -0.5, or +0.5\n"
 "    command     shell command to run while transmitting (default: wait for\n"
 "                SIGINT instead)\n\n"
-"  common options: [-c channel|-f freq] [-C mhz] [-p power] [-t trim]\n"
+"  common options: [-c channel|-f freq] [-C mhz] [-o file] [-p power] "
+"[-t trim]\n"
 "    -c channel  channel number, 11 to 26 (default %d)\n"
 "    -C mhz      output clock at 1, 2, 4, 8, or 16 MHz (default: off)\n"
 "    -f freq     frequency in MHz, 2405 to 2480 (default %d)\n"
+"    -o file     write received data to a file in pcap format\n"
 "    -p power    transmit power, -17.2 to 3.0 dBm (default %.1f)\n"
 "    -t trim     trim capacitor, 0 to 15 (default 0)\n"
 	    , name, name, DEFAULT_CHANNEL, 2405+5*(DEFAULT_CHANNEL-11),
@@ -354,9 +449,10 @@ int main(int argc, char *const *argv)
 	int c, freq;
 	unsigned tmp, clkm = 0;
 	int status = 0;
+	const char *pcap_file = NULL;
 	struct atrf_dsc *dsc;
 
-	while ((c = getopt(argc, argv, "c:C:f:p:t:T:")) != EOF)
+	while ((c = getopt(argc, argv, "c:C:f:o:p:t:T:")) != EOF)
 		switch (c) {
 		case 'c':
 			channel = strtoul(optarg, &end, 0);
@@ -374,6 +470,9 @@ int main(int argc, char *const *argv)
 			channel = (freq-2405)/5+11;
 			if (channel < 11 || channel > 26)
 				usage(*argv);
+			break;
+		case 'o':
+			pcap_file = optarg;
 			break;
 		case 'p':
 			power = strtod(optarg, &end);
@@ -419,7 +518,7 @@ int main(int argc, char *const *argv)
 		dsc = init_txrx(trim, clkm);
 		set_channel(dsc, channel);
 		if (!cont_tx)
-			receive(dsc);
+			receive(dsc, pcap_file);
 		else {
 			set_power(dsc, power, 0);
 			status = test_mode(dsc, cont_tx, NULL);
