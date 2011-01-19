@@ -322,20 +322,22 @@ static void die(int sig)
 static void usage(const char *name)
 {
 	fprintf(stderr,
-"usage: %s [-c channel|-f freq] [-p power] [-t trim] [message [repetitions]]\n"
-"       %s [-c channel|-f freq] [-p power] [-t trim] -T offset [command]\n\n"
+"usage: %s [common_options] [message [repetitions]]\n"
+"       %s [common_options] -T offset [command]\n\n"
+"  text message mode:\n"
 "    message     message string to send (if absent, receive)\n"
-"    repetitions number of times the message is sent (default 1)\n"
+"    repetitions number of times the message is sent (default 1)\n\n"
+"  constant wave test mode (transmit only):\n"
+"    -T offset   test mode. offset is the frequency offset of the constant\n"
+"                wave in MHz: -2, -0.5, or +0.5\n"
 "    command     shell command to run while transmitting (default: wait for\n"
 "                SIGINT instead)\n\n"
+"  common options: [-c channel|-f freq] [-C mhz] [-p power] [-t trim]\n"
 "    -c channel  channel number, 11 to 26 (default %d)\n"
 "    -C mhz      output clock at 1, 2, 4, 8, or 16 MHz (default: off)\n"
 "    -f freq     frequency in MHz, 2405 to 2480 (default %d)\n"
 "    -p power    transmit power, -17.2 to 3.0 dBm (default %.1f)\n"
 "    -t trim     trim capacitor, 0 to 15 (default 0)\n"
-"    -t trim     trim capacitor, 0 to 15 (default 0)\n"
-"    -T offset   test mode. offset is the frequency offset of the constant\n"
-"                wave in MHz: -2, -0.5, or +0.5\n"
 	    , name, name, DEFAULT_CHANNEL, 2405+5*(DEFAULT_CHANNEL-11),
 	    DEFAULT_POWER);
 	exit(1);
