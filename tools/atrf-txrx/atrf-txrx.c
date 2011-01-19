@@ -374,6 +374,40 @@ static void enter_test_mode_231(struct atrf_dsc *dsc, uint8_t cont_tx)
 }
 
 
+static void transmit_pattern(struct atrf_dsc *dsc, double pause_s, int times)
+{
+	uint8_t buf[MAX_PSDU];
+	uint8_t n = 0;
+	int us = fmod(pause_s, 1)*1000000;
+
+	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_PLL_ON);
+	/*
+	 * 180 us, according to AVR2001 section 4.3. We time out after
+	 * nominally 200 us.
+	 */
+	wait_for_interrupt(dsc, IRQ_PLL_LOCK, IRQ_PLL_LOCK, 10, 20);
+
+	while (run) {
+		memset(buf, n, sizeof(buf));
+		atrf_buf_write(dsc, buf, sizeof(buf));
+
+		atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_TX_START);
+
+		/* wait up to 10 ms (nominally) */
+		wait_for_interrupt(dsc, IRQ_TRX_END,
+		   IRQ_TRX_END | IRQ_PLL_LOCK, 10, 1000);
+
+		if (pause_s >= 1)
+			sleep(pause_s);
+		if (us)
+			usleep(us);
+
+		if (times && !--times)
+			break;
+		n++;
+	}
+}
+
 
 static int test_mode(struct atrf_dsc *dsc, uint8_t cont_tx, const char *cmd)
 {
@@ -416,10 +450,14 @@ static void usage(const char *name)
 {
 	fprintf(stderr,
 "usage: %s [common_options] [message [repetitions]]\n"
+"       %s [common_options] -B pause_s [repetitions]\n"
 "       %s [common_options] -T offset [command]\n\n"
 "  text message mode:\n"
 "    message     message string to send (if absent, receive)\n"
 "    repetitions number of times the message is sent (default 1)\n\n"
+"  BER test mode (transmit only):\n"
+"    -B pause_s  seconds to pause between frames (floating-point)\n"
+"    repetitions number of messages to send (default: infinite)\n\n"
 "  constant wave test mode (transmit only):\n"
 "    -T offset   test mode. offset is the frequency offset of the constant\n"
 "                wave in MHz: -2, -0.5, or +0.5\n"
@@ -433,7 +471,7 @@ static void usage(const char *name)
 "    -o file     write received data to a file in pcap format\n"
 "    -p power    transmit power, -17.2 to 3.0 dBm (default %.1f)\n"
 "    -t trim     trim capacitor, 0 to 15 (default 0)\n"
-	    , name, name, DEFAULT_CHANNEL, 2405+5*(DEFAULT_CHANNEL-11),
+	    , name, name, name, DEFAULT_CHANNEL, 2405+5*(DEFAULT_CHANNEL-11),
 	    DEFAULT_POWER);
 	exit(1);
 }
@@ -441,10 +479,16 @@ static void usage(const char *name)
 
 int main(int argc, char *const *argv)
 {
+	enum {
+		mode_msg,
+		mode_ber,
+		mode_cont_tx,
+	} mode = mode_msg;
 	int channel = DEFAULT_CHANNEL;
 	double power = DEFAULT_POWER;
 	int trim = 0, times = 1;
 	uint8_t cont_tx = 0;
+	double pause_s = 0;
 	char *end;
 	int c, freq;
 	unsigned tmp, clkm = 0;
@@ -452,7 +496,7 @@ int main(int argc, char *const *argv)
 	const char *pcap_file = NULL;
 	struct atrf_dsc *dsc;
 
-	while ((c = getopt(argc, argv, "c:C:f:o:p:t:T:")) != EOF)
+	while ((c = getopt(argc, argv, "B:c:C:f:o:p:t:T:")) != EOF)
 		switch (c) {
 		case 'c':
 			channel = strtoul(optarg, &end, 0);
@@ -486,6 +530,12 @@ int main(int argc, char *const *argv)
 			if (trim > 15)
 				usage(*argv);
 			break;
+		case 'B':
+			mode = mode_ber;
+			pause_s = strtof(optarg, &end);
+			if (*end)
+				usage(*argv);
+			break;
 		case 'C':
 			tmp = strtol(optarg, &end, 0);
 			if (*end)
@@ -498,6 +548,7 @@ int main(int argc, char *const *argv)
 				usage(*argv);
 			break;
 		case 'T':
+			mode = mode_cont_tx;
 			if (!strcmp(optarg, "-2"))
 				cont_tx = CONT_TX_M2M;
 			else if (!strcmp(optarg, "-0.5"))
@@ -517,16 +568,33 @@ int main(int argc, char *const *argv)
 	case 0:
 		dsc = init_txrx(trim, clkm);
 		set_channel(dsc, channel);
-		if (!cont_tx)
+		switch (mode) {
+		case mode_msg:
 			receive(dsc, pcap_file);
-		else {
+			break;
+		case mode_ber:
+			set_power(dsc, power, 0);
+			transmit_pattern(dsc, pause_s, 0);
+			break;
+		case mode_cont_tx:
 			set_power(dsc, power, 0);
 			status = test_mode(dsc, cont_tx, NULL);
+			break;
+		default:
+			abort();
 		}
 		break;
 	case 2:
-		if (cont_tx)
+		switch (mode) {
+		case mode_msg:
+			break;
+		case mode_ber:
+			/* fall through */
+		case mode_cont_tx:
 			usage(*argv);
+		default:
+			abort();
+		}
 		times = strtoul(argv[optind+1], &end, 0);
 		if (*end)
 			usage(*argv);
@@ -534,12 +602,25 @@ int main(int argc, char *const *argv)
 	case 1:
 		dsc = init_txrx(trim, clkm);
 		set_channel(dsc, channel);
-		if (!cont_tx) {
+		switch (mode) {
+		case mode_msg:
 			set_power(dsc, power, 1);
 			transmit(dsc, argv[optind], times);
-		} else {
+			break;
+		case mode_ber:
+			times = strtoul(argv[optind+1], &end, 0);
+			if (*end)
+				usage(*argv);
+			set_power(dsc, power, 0);
+			transmit_pattern(dsc, pause_s, times);
+			break;
+		case mode_cont_tx:
 			set_power(dsc, power, 0);
 			status = test_mode(dsc, cont_tx, argv[optind]);
+			break;
+		default:
+			abort();
+		
 		}
 		break;
 	default:
