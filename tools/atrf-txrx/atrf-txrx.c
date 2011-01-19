@@ -184,7 +184,7 @@ static void receive_message(struct atrf_dsc *dsc)
 static void write_pcap_hdr(FILE *file)
 {
 	struct pcap_file_header hdr = {
-		.magic		= 0xa1b2c3d4,
+		.magic		= PCAP_FILE_MAGIC,
 		.version_major	= 2,
 		.version_minor	= 4,
 		.thiszone	= 0,

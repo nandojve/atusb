@@ -27,7 +27,10 @@
 #include <sys/time.h>
 
 
+#define	PCAP_FILE_MAGIC		0xa1b2c3d4
+
 #define	DLT_IEEE802_15_4	195
+
 
 struct pcap_file_header {
 	uint32_t magic;
