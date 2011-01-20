@@ -450,13 +450,13 @@ static void usage(const char *name)
 {
 	fprintf(stderr,
 "usage: %s [common_options] [message [repetitions]]\n"
-"       %s [common_options] -B pause_s [repetitions]\n"
+"       %s [common_options] -E pause_s [repetitions]\n"
 "       %s [common_options] -T offset [command]\n\n"
 "  text message mode:\n"
 "    message     message string to send (if absent, receive)\n"
 "    repetitions number of times the message is sent (default 1)\n\n"
 "  PER test mode (transmit only):\n"
-"    -P pause_s  seconds to pause between frames (floating-point)\n"
+"    -E pause_s  seconds to pause between frames (floating-point)\n"
 "    repetitions number of messages to send (default: infinite)\n\n"
 "  constant wave test mode (transmit only):\n"
 "    -T offset   test mode. offset is the frequency offset of the constant\n"
@@ -496,7 +496,7 @@ int main(int argc, char *const *argv)
 	const char *pcap_file = NULL;
 	struct atrf_dsc *dsc;
 
-	while ((c = getopt(argc, argv, "c:C:f:o:p:P:t:T:")) != EOF)
+	while ((c = getopt(argc, argv, "c:C:f:o:p:E:t:T:")) != EOF)
 		switch (c) {
 		case 'c':
 			channel = strtoul(optarg, &end, 0);
@@ -541,7 +541,7 @@ int main(int argc, char *const *argv)
 			if (tmp != 1 || clkm > 5)
 				usage(*argv);
 			break;
-		case 'P':
+		case 'E':
 			mode = mode_per;
 			pause_s = strtof(optarg, &end);
 			if (*end)
