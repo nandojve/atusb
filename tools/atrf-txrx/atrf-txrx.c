@@ -125,6 +125,23 @@ static void set_channel(struct atrf_dsc *dsc, int channel)
 }
 
 
+static void set_rate(struct atrf_dsc *dsc, uint8_t rate)
+{
+	if (!rate)
+		return;
+	switch (atrf_identify(dsc)) {
+	case artf_at86rf230:
+		fprintf(stderr, "AT86RF230 only supports 250 kbps\n");
+		break;
+	case artf_at86rf231:
+		atrf_reg_write(dsc, REG_TRX_CTRL_2, rate);
+		break;
+	default:
+		abort();
+	}
+}
+
+
 static void set_power(struct atrf_dsc *dsc, double power, int crc)
 {
 	const double *tx_pwr;
@@ -141,7 +158,7 @@ static void set_power(struct atrf_dsc *dsc, double power, int crc)
 	default:
 		abort();
 	}
-	
+
 	for (n = 0; n != sizeof(tx_pwr_230)/sizeof(*tx_pwr_230)-1; n++)
 		if (tx_pwr[n] <= power)
 			break;
@@ -568,13 +585,14 @@ static void usage(const char *name)
 "                wave in MHz: -2, -0.5, or +0.5\n"
 "    command     shell command to run while transmitting (default: wait for\n"
 "                SIGINT instead)\n\n"
-"  common options: [-c channel|-f freq] [-C mhz] [-o file] [-p power] "
-"[-t trim]\n"
+"  common options: [-c channel|-f freq] [-C mhz] [-o file] [-p power]\n"
+"                  [-r rate] [-t trim]\n"
 "    -c channel  channel number, 11 to 26 (default %d)\n"
 "    -C mhz      output clock at 1, 2, 4, 8, or 16 MHz (default: off)\n"
 "    -f freq     frequency in MHz, 2405 to 2480 (default %d)\n"
 "    -o file     write received data to a file in pcap format\n"
 "    -p power    transmit power, -17.2 to 3.0 dBm (default %.1f)\n"
+"    -r rate     data rate, 250k, 500k, 1M, or 2M (default: 250k)\n"
 "    -t trim     trim capacitor, 0 to 15 (default 0)\n"
 	    , name, name, name, name,
 	    DEFAULT_CHANNEL, 2405+5*(DEFAULT_CHANNEL-11), DEFAULT_POWER);
@@ -592,6 +610,7 @@ int main(int argc, char *const *argv)
 	} mode = mode_msg;
 	int channel = DEFAULT_CHANNEL;
 	double power = DEFAULT_POWER;
+	uint8_t rate = OQPSK_DATA_RATE_250;
 	int trim = 0, times = 1;
 	uint8_t cont_tx = 0;
 	double pause_s = 0;
@@ -602,7 +621,7 @@ int main(int argc, char *const *argv)
 	const char *pcap_file = NULL;
 	struct atrf_dsc *dsc;
 
-	while ((c = getopt(argc, argv, "c:C:f:o:p:E:Pt:T:")) != EOF)
+	while ((c = getopt(argc, argv, "c:C:f:o:p:r:E:Pt:T:")) != EOF)
 		switch (c) {
 		case 'c':
 			channel = strtoul(optarg, &end, 0);
@@ -627,6 +646,18 @@ int main(int argc, char *const *argv)
 		case 'p':
 			power = strtod(optarg, &end);
 			if (*end)
+				usage(*argv);
+			break;
+		case 'r':
+			if (!strcmp(optarg, "250k"))
+				rate = OQPSK_DATA_RATE_250;
+			else if (!strcmp(optarg, "500k"))
+				rate = OQPSK_DATA_RATE_500;
+			else if (!strcmp(optarg, "1M"))
+				rate = OQPSK_DATA_RATE_1000;
+			else if (!strcmp(optarg, "2M"))
+				rate = OQPSK_DATA_RATE_2000;
+			else
 				usage(*argv);
 			break;
 		case 't':
@@ -677,6 +708,7 @@ int main(int argc, char *const *argv)
 	case 0:
 		dsc = init_txrx(trim, clkm);
 		set_channel(dsc, channel);
+		set_rate(dsc, rate);
 		switch (mode) {
 		case mode_msg:
 			receive(dsc, pcap_file);
@@ -716,6 +748,7 @@ int main(int argc, char *const *argv)
 	case 1:
 		dsc = init_txrx(trim, clkm);
 		set_channel(dsc, channel);
+		set_rate(dsc, rate);
 		switch (mode) {
 		case mode_msg:
 			set_power(dsc, power, 1);
