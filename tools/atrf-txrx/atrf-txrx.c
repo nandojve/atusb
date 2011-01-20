@@ -44,6 +44,21 @@
 #define	DEFAULT_POWER	-3.2	/* transmit power, dBm */
 
 
+struct ping {
+	uint32_t	seq;	/* sequence number from originator, > 0 */
+	uint32_t	ack;	/* last sequence number received, 0 if none */
+	uint8_t		pad[117]; /* pad to 127 bytes */
+	uint16_t	crc;
+} __attribute__((__packed__));
+
+enum rx_res {
+	rx_exit,
+	rx_good,
+	rx_bad,
+	rx_timeout,
+};
+
+
 static double tx_pwr_230[] = {
 	 3.0,	 2.6,	 2.1,	 1.6,
 	 1.1,	 0.5,	-0.2,	-1.2,
@@ -409,6 +424,92 @@ static void transmit_pattern(struct atrf_dsc *dsc, double pause_s, int times)
 }
 
 
+static void ping_tx(struct atrf_dsc *dsc, const struct ping *pck)
+{
+	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_PLL_ON);
+	/*
+	 * 180 us, according to AVR2001 section 4.3. We time out after
+	 * nominally 200 us.
+	 */
+	wait_for_interrupt(dsc, IRQ_PLL_LOCK, IRQ_PLL_LOCK, 10, 20);
+
+	atrf_buf_write(dsc, pck, sizeof(*pck));
+	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_TX_START);
+
+	/* wait up to 10 ms (nominally) */
+	wait_for_interrupt(dsc, IRQ_TRX_END,
+	   IRQ_TRX_END | IRQ_PLL_LOCK, 10, 1000);
+}
+
+
+static enum rx_res ping_rx(struct atrf_dsc *dsc, struct ping *pck, int wait_ds)
+{
+	uint8_t irq;
+	int n;
+
+	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_RX_ON);
+	irq = wait_for_interrupt(dsc, IRQ_TRX_END,
+	    IRQ_TRX_END | IRQ_RX_START | IRQ_PLL_LOCK,
+	    100000, wait_ds);
+	if (!run)
+		return rx_exit;
+	if (!irq)
+		return rx_timeout;
+
+	n = atrf_buf_read(dsc, pck, sizeof(*pck));
+	if (n < 0)
+		exit(1);
+	if (n != sizeof(*pck)) {
+		fprintf(stderr, "%d bytes received\n", n);
+		return rx_bad;
+	}
+	return atrf_reg_read(dsc, REG_PHY_RSSI) & RX_CRC_VALID ?
+	    rx_good : rx_bad;
+}
+
+
+static void ping(struct atrf_dsc *dsc, double max_wait_s, int master)
+{
+	static int first = 1;
+	struct ping tx_pck = {
+		.seq = 0,
+		.ack = 0,
+	};
+	struct ping rx_pck;
+	enum rx_res res;
+
+	while (run) {
+		tx_pck.seq++;
+		if (master || !first) {
+			ping_tx(dsc, &tx_pck);
+			if (!run)
+				break;
+		}
+		first = 0;
+		res = ping_rx(dsc, &rx_pck, master ? max_wait_s*10 : 0);
+		switch (res) {
+		case rx_good:
+			tx_pck.ack = rx_pck.seq;
+			if (tx_pck.seq == rx_pck.ack)
+				write(2, ".", 1);
+			else
+				write(2, "*", 1);
+			break;
+		case rx_bad:
+			write(2, "-", 1);
+			break;
+		case rx_timeout:
+			write(2, "+", 1);
+			break;
+		case rx_exit:
+			return;
+		default:
+			abort();
+		}
+	}
+}
+
+
 static int test_mode(struct atrf_dsc *dsc, uint8_t cont_tx, const char *cmd)
 {
 	int status = 0;
@@ -451,6 +552,7 @@ static void usage(const char *name)
 	fprintf(stderr,
 "usage: %s [common_options] [message [repetitions]]\n"
 "       %s [common_options] -E pause_s [repetitions]\n"
+"       %s [common_options] -P [max_wait_s]\n"
 "       %s [common_options] -T offset [command]\n\n"
 "  text message mode:\n"
 "    message     message string to send (if absent, receive)\n"
@@ -458,6 +560,9 @@ static void usage(const char *name)
 "  PER test mode (transmit only):\n"
 "    -E pause_s  seconds to pause between frames (floating-point)\n"
 "    repetitions number of messages to send (default: infinite)\n\n"
+"  Ping-pong mode:\n"
+"    -P          exchange packets between two stations\n"
+"    max_wait_s  generate a new packet if no response is received (master)\n\n"
 "  constant wave test mode (transmit only):\n"
 "    -T offset   test mode. offset is the frequency offset of the constant\n"
 "                wave in MHz: -2, -0.5, or +0.5\n"
@@ -471,8 +576,8 @@ static void usage(const char *name)
 "    -o file     write received data to a file in pcap format\n"
 "    -p power    transmit power, -17.2 to 3.0 dBm (default %.1f)\n"
 "    -t trim     trim capacitor, 0 to 15 (default 0)\n"
-	    , name, name, name, DEFAULT_CHANNEL, 2405+5*(DEFAULT_CHANNEL-11),
-	    DEFAULT_POWER);
+	    , name, name, name, name,
+	    DEFAULT_CHANNEL, 2405+5*(DEFAULT_CHANNEL-11), DEFAULT_POWER);
 	exit(1);
 }
 
@@ -482,6 +587,7 @@ int main(int argc, char *const *argv)
 	enum {
 		mode_msg,
 		mode_per,
+		mode_ping,
 		mode_cont_tx,
 	} mode = mode_msg;
 	int channel = DEFAULT_CHANNEL;
@@ -496,7 +602,7 @@ int main(int argc, char *const *argv)
 	const char *pcap_file = NULL;
 	struct atrf_dsc *dsc;
 
-	while ((c = getopt(argc, argv, "c:C:f:o:p:E:t:T:")) != EOF)
+	while ((c = getopt(argc, argv, "c:C:f:o:p:E:Pt:T:")) != EOF)
 		switch (c) {
 		case 'c':
 			channel = strtoul(optarg, &end, 0);
@@ -547,6 +653,9 @@ int main(int argc, char *const *argv)
 			if (*end)
 				usage(*argv);
 			break;
+		case 'P':
+			mode = mode_ping;
+			break;
 		case 'T':
 			mode = mode_cont_tx;
 			if (!strcmp(optarg, "-2"))
@@ -576,6 +685,10 @@ int main(int argc, char *const *argv)
 			set_power(dsc, power, 0);
 			transmit_pattern(dsc, pause_s, 0);
 			break;
+		case mode_ping:
+			set_power(dsc, power, 1);
+			ping(dsc, pause_s, 0);
+			break;
 		case mode_cont_tx:
 			set_power(dsc, power, 0);
 			status = test_mode(dsc, cont_tx, NULL);
@@ -589,6 +702,7 @@ int main(int argc, char *const *argv)
 		case mode_msg:
 			break;
 		case mode_per:
+		case mode_ping:
 			/* fall through */
 		case mode_cont_tx:
 			usage(*argv);
@@ -613,6 +727,13 @@ int main(int argc, char *const *argv)
 				usage(*argv);
 			set_power(dsc, power, 0);
 			transmit_pattern(dsc, pause_s, times);
+			break;
+		case mode_ping:
+			pause_s = strtof(argv[optind], &end);
+			if (*end)
+				usage(*argv);
+			set_power(dsc, power, 1);
+			ping(dsc, pause_s, 1);
 			break;
 		case mode_cont_tx:
 			set_power(dsc, power, 0);
