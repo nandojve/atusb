@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by CvPCB (2010-12-27 BZR 2685)-unstable date = Mon Jan 17 12:10:24 2011
+Cmp-Mod V01 Genere par PcbNew le Sat Jan 22 10:19:49 2011
 
 BeginCmp
 TimeStamp = /4C63FE17;
@@ -18,63 +18,63 @@ BeginCmp
 TimeStamp = /4C7FBF1B;
 Reference = C1;
 ValeurCmp = 22pF/RF;
-IdModule  = 0402-M;
+IdModule  = 0402;
 EndCmp
 
 BeginCmp
 TimeStamp = /4C7FBF1E;
 Reference = C2;
 ValeurCmp = 22pF/RF;
-IdModule  = 0402-M;
+IdModule  = 0402;
 EndCmp
 
 BeginCmp
 TimeStamp = /4C640A76;
 Reference = C3;
 ValeurCmp = 1uF;
-IdModule  = 0402-M;
+IdModule  = 0402;
 EndCmp
 
 BeginCmp
 TimeStamp = /4C641004;
 Reference = C4;
 ValeurCmp = 1uF;
-IdModule  = 0402-M;
+IdModule  = 0402;
 EndCmp
 
 BeginCmp
 TimeStamp = /4C640A84;
 Reference = C5;
 ValeurCmp = 1uF;
-IdModule  = 0402-M;
+IdModule  = 0402;
 EndCmp
 
 BeginCmp
 TimeStamp = /4C640A7E;
 Reference = C6;
 ValeurCmp = 1uF;
-IdModule  = 0402-M;
+IdModule  = 0402;
 EndCmp
 
 BeginCmp
 TimeStamp = /4D22A5A9;
 Reference = C9;
 ValeurCmp = 22pF/RF;
-IdModule  = 0402-M;
+IdModule  = 0402;
 EndCmp
 
 BeginCmp
 TimeStamp = /4D317091;
 Reference = C10;
 ValeurCmp = 12pF;
-IdModule  = 0402-M;
+IdModule  = 0402;
 EndCmp
 
 BeginCmp
 TimeStamp = /4D317089;
 Reference = C11;
 ValeurCmp = 12pF;
-IdModule  = 0402-M;
+IdModule  = 0402;
 EndCmp
 
 BeginCmp
@@ -95,7 +95,7 @@ BeginCmp
 TimeStamp = /4C8C121C;
 Reference = R1;
 ValeurCmp = 0R;
-IdModule  = 0402-M;
+IdModule  = 0402;
 EndCmp
 
 BeginCmp
