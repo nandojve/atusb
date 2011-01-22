@@ -1,4 +1,4 @@
-Cmp-Mod V01 Genere par PcbNew le Sat Jan 22 12:17:41 2011
+Cmp-Mod V01 Created by CvPCB (2010-12-27 BZR 2685)-unstable date = Sat Jan 22 13:12:09 2011
 
 BeginCmp
 TimeStamp = /4C609C08/4C63FE17;
@@ -31,21 +31,21 @@ EndCmp
 BeginCmp
 TimeStamp = /4C609C08/4C641710;
 Reference = C3;
-ValeurCmp = 22pF;
+ValeurCmp = 22pF/RF;
 IdModule  = 0402;
 EndCmp
 
 BeginCmp
 TimeStamp = /4C609C08/4C641506;
 Reference = C8;
-ValeurCmp = 22pF;
+ValeurCmp = 22pF/RF;
 IdModule  = 0402;
 EndCmp
 
 BeginCmp
 TimeStamp = /4C609C08/4C641509;
 Reference = C9;
-ValeurCmp = 22pF;
+ValeurCmp = 22pF/RF;
 IdModule  = 0402;
 EndCmp
 
@@ -92,6 +92,13 @@ IdModule  = 0402;
 EndCmp
 
 BeginCmp
+TimeStamp = /4C609C08/4D3B018B;
+Reference = C16;
+ValeurCmp = NC;
+IdModule  = 0402;
+EndCmp
+
+BeginCmp
 TimeStamp = /4C609BEF/4CF4AD1B;
 Reference = CON1;
 ValeurCmp = USB_A_PLUG_;
@@ -101,15 +108,8 @@ EndCmp
 BeginCmp
 TimeStamp = /4C609BEF/4C6402EE;
 Reference = D1;
-ValeurCmp = LTST-C190KTKR;
+ValeurCmp = LTST-C190KRKT;
 IdModule  = 0603;
-EndCmp
-
-BeginCmp
-TimeStamp = /4C609BEF/4C6409BB;
-Reference = P10;
-ValeurCmp = TST;
-IdModule  = PAD_60x60;
 EndCmp
 
 BeginCmp
@@ -137,13 +137,6 @@ BeginCmp
 TimeStamp = /4C609BEF/4C640203;
 Reference = P14;
 ValeurCmp = CONN_1;
-IdModule  = PAD_60x60;
-EndCmp
-
-BeginCmp
-TimeStamp = /4C609C08/4C640A8D;
-Reference = P15;
-ValeurCmp = TST;
 IdModule  = PAD_60x60;
 EndCmp
 
@@ -176,9 +169,9 @@ IdModule  = QFN28;
 EndCmp
 
 BeginCmp
-TimeStamp = /4C609C08/4C609C4B;
+TimeStamp = /4C609C08/4D229690;
 Reference = U2;
-ValeurCmp = AT86RF230;
+ValeurCmp = AT86RF231;
 IdModule  = QFN32;
 EndCmp
 
