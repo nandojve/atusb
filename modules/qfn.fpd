@@ -3,13 +3,24 @@
 frame center {
 	set pin = pins+1
 
-	set x = D2+0.1mm
+	set x = D2+2*go
 
-	set y = E2+0.1mm
+	set y = E2+2*go
+
+	set go = 5mil
+
+	set gi = 5mil
+
+	set spx = D2-2*gi
+
+	set spy = E2-2*gi
 
 	__0: vec @(x/2, y/2)
 	__1: vec @(-x/2, -y/2)
-	pad "$pin" . __0
+	pad "$pin" . __0 bare
+	__2: vec @(spx/2, -spy/2)
+	__3: vec @(-spx/2, spy/2)
+	pad "$pin" . __2 paste
 }
 
 frame pad {
@@ -22,6 +33,7 @@ frame pad {
 	__0: vec @(px, py)
 	__1: vec @(-px, -py)
 	pad "$pin" __0 .
+	__2: vec @(px, -py)
 }
 
 frame side {
@@ -99,3 +111,10 @@ __0: vec @(D2/2, E2/2)
 frame pads @
 frame center @
 frame outline @
+measy side.__0 >> side.__0 3mm
+meas side.__0 -> side.__0 -1mm
+measy center.__1 >> center.__0 2mm
+measy pad.__1 >> pad.__1 3.5mm
+measy pad.__1 -> pad.__0 1mm
+meas pad.__1 -> pad.__2 -1mm
+measy center.__2 >> center.__3 -2mm
