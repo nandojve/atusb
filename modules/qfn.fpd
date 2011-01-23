@@ -1,26 +1,31 @@
 /* MACHINE-GENERATED ! */
 
+frame paste_pad {
+	__0: vec @(SX/2, SY/2)
+	__1: vec @(-SX/2, -SY/2)
+	pad " " . __0 paste
+}
+
+frame paste {
+	set x = SE*(xi-SNX/2-0.5)
+
+	set y = SE*(yi-SNY/2-0.5)
+
+	loop xi = 1, SNX
+
+	loop yi = 1, SNY
+
+	__0: vec @(x, y)
+	frame paste_pad .
+}
+
 frame center {
 	set pin = pins+1
 
-	set x = D2+2*go
-
-	set y = E2+2*go
-
-	set go = 5mil
-
-	set gi = 5mil
-
-	set spx = D2-2*gi
-
-	set spy = E2-2*gi
-
-	__0: vec @(x/2, y/2)
-	__1: vec @(-x/2, -y/2)
+	__0: vec @(X2/2, Y2/2)
+	__1: vec @(-X2/2, -Y2/2)
 	pad "$pin" . __0 bare
-	__2: vec @(spx/2, -spy/2)
-	__3: vec @(-spx/2, spy/2)
-	pad "$pin" . __2 paste
+	frame paste @
 }
 
 frame pad {
@@ -93,28 +98,26 @@ frame outline {
 	line __2 . w
 }
 
-package "QFN$pins"
+package "QFN$pins-$variant"
 unit mm
 
 table
-    { pins, X1, Y1, E, C1, C2, D2, E2 }
-    { 28, 0.25mm, 0.9mm, 0.5mm, 4.8mm, 4.8mm, 3.15mm, 3.15mm }
-    { 32, 0.29mm, 0.9mm, 0.5mm, 5.1mm, 5.1mm, 3.3mm, 3.3mm }
-
-set X2 = X1+(pins/4-1)*E
-
-set Y2 = X2
+    { pins, variant, X1, Y1, X2, Y2, E, C1, C2, SE, SNX, SNY, SX, SY }
+    { 28, "SiLabs", 0.25mm, 0.9mm, 3.3mm, 3.3mm, 0.5mm, 4.8mm, 4.8mm, 1.1mm, 3, 3, 0.9mm, 0.9mm }
+    { 32, "VHHD-2", 0.26mm, 0.69mm, 3.7mm, 3.7mm, 0.5mm, 5.1mm, 5.1mm, 0.8mm, 3, 3, 0.5mm, 0.5mm }
+    { 32, "VHHD-6", 0.26mm, 0.69mm, 3.4mm, 3.4mm, 0.5mm, 5.1mm, 5.1mm, 1.2mm, 2, 2, 0.7mm, 0.7mm }
 
 set w = 5mil
 
-__0: vec @(D2/2, E2/2)
 frame pads @
 frame center @
 frame outline @
 measy side.__0 >> side.__0 3mm
 meas side.__0 -> side.__0 -1mm
-measy center.__1 >> center.__0 2mm
+measy center.__1 >> center.__0 2.3mm
 measy pad.__1 >> pad.__1 3.5mm
 measy pad.__1 -> pad.__0 1mm
 meas pad.__1 -> pad.__2 -1mm
-measy center.__2 >> center.__3 -2mm
+measy paste_pad.__1 -> paste_pad.__0 1.8mm
+measy paste.__0 -> paste.__0 -C1
+measy paste_pad.__1 >> paste_pad.__0 -C1-1mm
