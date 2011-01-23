@@ -1,4 +1,4 @@
-PCBNEW-BOARD Version 1 date Sun Jan 23 11:25:22 2011
+PCBNEW-BOARD Version 1 date Sun Jan 23 11:39:59 2011
 
 # Created by Pcbnew(2010-12-27 BZR 2685)-unstable
 
@@ -58,7 +58,8 @@ TextModSize 600 600
 TextModWidth 120
 PadSize 600 600
 PadDrill 320
-Pad2MaskClearance 100
+Pad2MaskClearance 20
+Pad2PasteClearance -10
 AuxiliaryAxisOrg 0 0
 $EndSETUP
 
@@ -2632,7 +2633,7 @@ ZLayer 0
 ZAux 8 E
 ZClearance 100 T
 ZMinThickness 100
-ZOptions 1 16 S 200 200
+ZOptions 1 16 F 200 200
 ZCorner 49050 43500 0
 ZCorner 49750 42800 0
 ZCorner 52650 42800 0
@@ -2708,7 +2709,7 @@ ZLayer 0
 ZAux 5 E
 ZClearance 100 T
 ZMinThickness 100
-ZOptions 1 16 S 200 200
+ZOptions 1 16 F 200 200
 ZCorner 52650 44250 0
 ZCorner 52650 43000 0
 ZCorner 49800 43000 0
@@ -2744,7 +2745,7 @@ ZLayer 0
 ZAux 10 E
 ZClearance 100 T
 ZMinThickness 100
-ZOptions 1 16 S 200 200
+ZOptions 1 16 F 200 200
 ZCorner 51150 47000 0
 ZCorner 51700 46450 0
 ZCorner 51700 45350 0
@@ -2796,7 +2797,7 @@ ZLayer 0
 ZAux 11 E
 ZClearance 100 T
 ZMinThickness 100
-ZOptions 1 16 S 200 200
+ZOptions 1 16 F 200 200
 ZCorner 52650 51700 0
 ZCorner 52650 47200 0
 ZCorner 50250 47200 0
@@ -3085,7 +3086,7 @@ ZLayer 15
 ZAux 8 E
 ZClearance 100 T
 ZMinThickness 100
-ZOptions 1 16 S 200 200
+ZOptions 1 16 F 200 200
 ZCorner 49500 43050 0
 ZCorner 49750 42800 0
 ZCorner 52650 42800 0
@@ -3225,7 +3226,7 @@ ZLayer 15
 ZAux 5 E
 ZClearance 100 T
 ZMinThickness 100
-ZOptions 1 16 S 200 200
+ZOptions 1 16 F 200 200
 ZCorner 52650 44250 0
 ZCorner 52650 43000 0
 ZCorner 49800 43000 0
@@ -3258,7 +3259,7 @@ ZLayer 15
 ZAux 12 E
 ZClearance 100 T
 ZMinThickness 100
-ZOptions 1 16 S 200 200
+ZOptions 1 16 F 200 200
 ZCorner 51200 47050 0
 ZCorner 51750 46500 0
 ZCorner 51750 45350 0
