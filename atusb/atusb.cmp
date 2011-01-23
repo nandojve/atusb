@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by CvPCB (2010-12-27 BZR 2685)-unstable date = Sat Jan 22 13:12:09 2011
+Cmp-Mod V01 Genere par PcbNew le Sun Jan 23 01:25:02 2011
 
 BeginCmp
 TimeStamp = /4C609C08/4C63FE17;
@@ -165,14 +165,14 @@ BeginCmp
 TimeStamp = /4C609BEF/4C609C36;
 Reference = U1;
 ValeurCmp = C8051F326;
-IdModule  = QFN28;
+IdModule  = QFN28-SiLabs;
 EndCmp
 
 BeginCmp
 TimeStamp = /4C609C08/4D229690;
 Reference = U2;
 ValeurCmp = AT86RF231;
-IdModule  = QFN32;
+IdModule  = QFN32-VHHD-6;
 EndCmp
 
 BeginCmp
