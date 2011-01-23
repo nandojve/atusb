@@ -1,4 +1,4 @@
-PCBNEW-BOARD Version 1 date Sun Jan 23 01:31:26 2011
+PCBNEW-BOARD Version 1 date Sun Jan 23 01:41:49 2011
 
 # Created by Pcbnew(2010-12-27 BZR 2685)-unstable
 
@@ -9,7 +9,7 @@ EnabledLayers 12A88001
 Links 83
 NoConn 0
 Di 44856 36414 53375 52126
-Ndraw 16
+Ndraw 20
 Ntrack 428
 Nzone 0
 BoardThickness 630
@@ -1679,6 +1679,26 @@ Ne 0 ""
 Po 236 -236
 $EndPAD
 $EndMODULE  QFN32-VHHD-6
+$TEXTPCB
+Te "by Werner Almesberger"
+Po 49600 40450 300 300 60 0
+De 21 1 0 Normal
+$EndTEXTPCB
+$TEXTPCB
+Te "CC-BY-SA"
+Po 50150 39850 400 400 70 0
+De 21 1 0 Normal
+$EndTEXTPCB
+$TEXTPCB
+Te "qi-hw.com"
+Po 49650 38650 400 400 70 0
+De 21 1 0 Normal
+$EndTEXTPCB
+$TEXTPCB
+Te "802.15.4"
+Po 49600 37950 400 400 70 0
+De 21 1 0 Normal
+$EndTEXTPCB
 $DRAWSEGMENT
 Po 0 46150 51800 46150 50250 50
 De 25 0 900 0 0
