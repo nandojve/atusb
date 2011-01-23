@@ -26,6 +26,11 @@ N: c8051f320
 A: f320
 D: https://www.silabs.com/Support Documents/TechnicalDocs/C8051F32x.pdf
 
+N: atmega32u2
+# alias is only temporary - if it works well, change to "mcu"
+A: avr
+D: http://www.atmel.com/dyn/resources/prod_documents/doc7799.pdf
+
 # AN043 -- Small Size 2.4 GHz PCB Antenna (Rev. D)
 N: AN043
 A: antenna
