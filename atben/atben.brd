@@ -1,4 +1,4 @@
-PCBNEW-BOARD Version 1 date Sun Jan 23 01:19:47 2011
+PCBNEW-BOARD Version 1 date Sun Jan 23 01:21:20 2011
 
 # Created by Pcbnew(2010-12-27 BZR 2685)-unstable
 
@@ -21,7 +21,7 @@ $SHEETDESCR
 Sheet A4 11700 8267
 Title "IEEE 802.15.4 Transceiver (AT86RF231) as 8:10 card"
 Date "23 jan 2011"
-Rev "20110116"
+Rev "20110123"
 Comp "Werner Almesberger"
 Comment1 ""
 Comment2 ""
@@ -1171,7 +1171,7 @@ Po 57300 32700 600 600 100 0
 De 25 1 0 Normal
 $EndTEXTPCB
 $TEXTPCB
-Te "20110116"
+Te "20110123"
 Po 51050 30850 400 400 70 900
 De 15 1 0 Normal
 $EndTEXTPCB
