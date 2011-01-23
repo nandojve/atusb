@@ -1,12 +1,8 @@
 /* MACHINE-GENERATED ! */
 
 frame pad {
-	set l = a+0.1mm
-
-	set s = c+0.4mm
-
-	__0: vec @(-l/2, -s/2)
-	__1: vec @(l/2, s/2)
+	__0: vec @(-Px/2, -Py/2)
+	__1: vec @(Px/2, Py/2)
 	pad "$n" __0 .
 }
 
@@ -20,7 +16,7 @@ frame pads {
 	    { 5, 0, -1 }
 	    { 6, 1, -1 }
 
-	set sy = (B-c)/2
+	set sy = (Py+Gy)/2
 
 	__0: vec @(x*e, y*sy)
 	frame pad .
@@ -29,7 +25,7 @@ frame pads {
 frame outline {
 	set L = A+2*clear
 
-	set W = B+2*clear+0.6mm
+	set W = 2*Py+Gy+2*clear
 
 	set clear = 5mil
 
@@ -44,8 +40,8 @@ package "0805-6"
 unit mm
 
 table
-    { A, B, a, c, e }
-    { 2mm, 1.25mm, 0.3mm, 0.3mm, 0.65mm }
+    { A, B, a, c, e, Px, Py, Gy }
+    { 2mm, 1.25mm, 0.35mm, 0.3mm, 0.65mm, 0.35mm, 0.8mm, 0.8mm }
 
 frame pads @
 frame outline @
