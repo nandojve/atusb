@@ -4,14 +4,15 @@ PATH=$PATH:/home/moko/svn.openmoko.org/developers/werner/cncmap/gp2rml
 
 NAME=atben
 X=0
-Y=1
+Y=0
 
 cameo <<EOF
 mm
 
 gerber 35mil ../$NAME-PCB_Edges.gbr
-align 1 2.5mm 8.5mm	# align relative to board corner
-translate 3mm 3mm	# move to PCB zone assigned to project
+align 1 4.4mm 12.1mm	# align relative to board corner
+translate 4mm 4mm	# move to PCB zone assigned to project
+translate 40mm 0mm	# skip over previous boards
 array +19mm +2.5mm $X $Y
 
 z 0 -58.9mm		# board surface (tool fully retracted)
@@ -48,8 +49,9 @@ reset
 gerber 35mil ../$NAME-PCB_Edges.gbr
 rotate 180
 
-align 1 2.5mm 8.5mm	# align relative to board corner
-translate 3mm 3mm	# move to PCB zone assigned to project
+align 1 4.4mm 12.1mm	# align relative to board corner
+translate 4mm 4mm	# move to PCB zone assigned to project
+translate 40mm 0mm	# skip over previous boards
 translate 15mm 0mm
 array +19mm +2.5mm $X $Y
 
