@@ -12,6 +12,7 @@ Werner Almesberger <werner@openmoko.org>
 
   components/at86rf230.lib
   components/at86rf231.lib
+  components/atmega8u2.lib
   components/balun.lib
   components/balun-smt6.lib
   components/c8051f320.lib
