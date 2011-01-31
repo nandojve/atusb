@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Sun Jan 30 21:48:01 2011
+EESchema Schematic File Version 2  date Mon Jan 31 05:08:13 2011
 LIBS:power
 LIBS:device
 LIBS:conn
@@ -231,7 +231,7 @@ F 2 "0402" H 4600 4350 60  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L ATMEGAU2 U1
+L ATMEGA8U2 U1
 U 1 1 4D425860
 P 7650 4200
 F 0 "U1" V 9000 5450 60  0000 C CNN
