@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by CvPCB (2010-12-27 BZR 2685)-unstable date = Thu Feb  3 02:55:10 2011
+Cmp-Mod V01 Created by CvPCB (2010-12-27 BZR 2685)-unstable date = Thu Feb  3 13:49:30 2011
 
 BeginCmp
 TimeStamp = /4D4A40C6;
@@ -11,42 +11,42 @@ BeginCmp
 TimeStamp = /4D4A40B2;
 Reference = P1;
 ValeurCmp = CONN_1;
-IdModule  = PAD_60x60;
+IdModule  = PAD_80x80;
 EndCmp
 
 BeginCmp
 TimeStamp = /4D4A4125;
 Reference = P2;
 ValeurCmp = CONN_1;
-IdModule  = PAD_60x60;
+IdModule  = PAD_80x80;
 EndCmp
 
 BeginCmp
 TimeStamp = /4D4A4128;
 Reference = P3;
 ValeurCmp = CONN_1;
-IdModule  = PAD_60x60;
+IdModule  = PAD_80x80;
 EndCmp
 
 BeginCmp
 TimeStamp = /4D4A412C;
 Reference = P4;
 ValeurCmp = CONN_1;
-IdModule  = PAD_60x60;
+IdModule  = PAD_80x80;
 EndCmp
 
 BeginCmp
 TimeStamp = /4D4A412F;
 Reference = P5;
 ValeurCmp = CONN_1;
-IdModule  = PAD_60x60;
+IdModule  = PAD_80x80;
 EndCmp
 
 BeginCmp
 TimeStamp = /4D4A4131;
 Reference = P6;
 ValeurCmp = CONN_1;
-IdModule  = PAD_60x60;
+IdModule  = PAD_80x80;
 EndCmp
 
 BeginCmp
