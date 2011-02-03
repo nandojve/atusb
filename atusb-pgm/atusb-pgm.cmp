@@ -1,0 +1,115 @@
+Cmp-Mod V01 Created by CvPCB (2010-12-27 BZR 2685)-unstable date = Thu Feb  3 02:55:10 2011
+
+BeginCmp
+TimeStamp = /4D4A40C6;
+Reference = D1;
+ValeurCmp = LTST-C190KRKT;
+IdModule  = 0603;
+EndCmp
+
+BeginCmp
+TimeStamp = /4D4A40B2;
+Reference = P1;
+ValeurCmp = CONN_1;
+IdModule  = PAD_60x60;
+EndCmp
+
+BeginCmp
+TimeStamp = /4D4A4125;
+Reference = P2;
+ValeurCmp = CONN_1;
+IdModule  = PAD_60x60;
+EndCmp
+
+BeginCmp
+TimeStamp = /4D4A4128;
+Reference = P3;
+ValeurCmp = CONN_1;
+IdModule  = PAD_60x60;
+EndCmp
+
+BeginCmp
+TimeStamp = /4D4A412C;
+Reference = P4;
+ValeurCmp = CONN_1;
+IdModule  = PAD_60x60;
+EndCmp
+
+BeginCmp
+TimeStamp = /4D4A412F;
+Reference = P5;
+ValeurCmp = CONN_1;
+IdModule  = PAD_60x60;
+EndCmp
+
+BeginCmp
+TimeStamp = /4D4A4131;
+Reference = P6;
+ValeurCmp = CONN_1;
+IdModule  = PAD_60x60;
+EndCmp
+
+BeginCmp
+TimeStamp = /4D4A41CE;
+Reference = P7;
+ValeurCmp = CONN_1;
+IdModule  = PAD_2mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /4D4A41CC;
+Reference = P8;
+ValeurCmp = CONN_1;
+IdModule  = PAD_2mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /4D4A4162;
+Reference = P9;
+ValeurCmp = CONN_1;
+IdModule  = PAD_2mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /4D4A4160;
+Reference = P10;
+ValeurCmp = CONN_1;
+IdModule  = PAD_2mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /4D4A415F;
+Reference = P11;
+ValeurCmp = CONN_1;
+IdModule  = PAD_2mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /4D4A409E;
+Reference = P12;
+ValeurCmp = CONN_1;
+IdModule  = PAD_2mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /4D4A4156;
+Reference = P13;
+ValeurCmp = CONN_1;
+IdModule  = PAD_2mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /4D4A415C;
+Reference = P14;
+ValeurCmp = CONN_1;
+IdModule  = PAD_2mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /4D4A40C2;
+Reference = R1;
+ValeurCmp = 100;
+IdModule  = 0603;
+EndCmp
+
+EndListe
