@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Thu Feb  3 13:49:19 2011
+EESchema Schematic File Version 2  date Fri Feb  4 04:11:09 2011
 LIBS:conn
 LIBS:device
 EELAYER 24  0
@@ -6,46 +6,46 @@ EELAYER END
 $Descr A4 11700 8267
 Sheet 1 1
 Title "ATUSB Programming Adapter"
-Date "3 feb 2011"
-Rev "20110203"
+Date "4 feb 2011"
+Rev "20110204"
 Comp "Werner Almesberger"
 Comment1 ""
 Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
-NoConn ~ 7500 4900
+NoConn ~ 7500 4450
 Wire Wire Line
-	8150 4900 7500 4900
-Wire Wire Line
-	5300 4750 5300 4300
-Wire Wire Line
-	5300 4750 8150 4750
-Wire Wire Line
-	8150 4000 3950 4000
-Wire Wire Line
-	6350 4450 6550 4450
+	8150 4450 7500 4450
 Connection ~ 5750 4600
 Wire Wire Line
-	5750 4600 5750 4450
+	5750 4600 5750 4750
 Wire Wire Line
-	5750 4450 5950 4450
-Wire Wire Line
-	8150 4600 3950 4600
-Wire Wire Line
-	8150 4300 5550 4300
-Wire Wire Line
-	5550 4300 5550 4450
-Wire Wire Line
-	5550 4450 3950 4450
-Wire Wire Line
-	8150 4450 7050 4450
-Wire Wire Line
-	3950 3850 8150 3850
+	3950 4300 5300 4300
 Wire Wire Line
 	3950 4150 8150 4150
 Wire Wire Line
-	5300 4300 3950 4300
+	3950 3850 8150 3850
+Wire Wire Line
+	8150 4750 7050 4750
+Wire Wire Line
+	3950 4450 5550 4450
+Wire Wire Line
+	5550 4450 5550 4300
+Wire Wire Line
+	5550 4300 8150 4300
+Wire Wire Line
+	8150 4600 3950 4600
+Wire Wire Line
+	5750 4750 5950 4750
+Wire Wire Line
+	6350 4750 6550 4750
+Wire Wire Line
+	8150 4000 3950 4000
+Wire Wire Line
+	8150 4900 5300 4900
+Wire Wire Line
+	5300 4900 5300 4300
 Text Label 7700 4900 0    60   ~ 0
 DAT1
 Text Label 7700 4750 0    60   ~ 0
@@ -197,21 +197,21 @@ $EndComp
 $Comp
 L LED D1
 U 1 1 4D4A40C6
-P 6150 4450
-F 0 "D1" H 6150 4550 50  0000 C CNN
-F 1 "LTST-C190KRKT" H 6150 4350 50  0000 C CNN
-F 2 "0603" H 6150 4450 60  0001 C CNN
-	1    6150 4450
+P 6150 4750
+F 0 "D1" H 6150 4850 50  0000 C CNN
+F 1 "LTST-C190KRKT" H 6150 4650 50  0000 C CNN
+F 2 "0603" H 6150 4750 60  0001 C CNN
+	1    6150 4750
 	-1   0    0    -1  
 $EndComp
 $Comp
 L R R1
 U 1 1 4D4A40C2
-P 6800 4450
-F 0 "R1" V 6880 4450 50  0000 C CNN
-F 1 "100" V 6800 4450 50  0000 C CNN
-F 2 "0603" H 6800 4450 60  0001 C CNN
-	1    6800 4450
+P 6800 4750
+F 0 "R1" V 6880 4750 50  0000 C CNN
+F 1 "100" V 6800 4750 50  0000 C CNN
+F 2 "0603" H 6800 4750 60  0001 C CNN
+	1    6800 4750
 	0    -1   -1   0   
 $EndComp
 $Comp
