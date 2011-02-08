@@ -1,0 +1,10 @@
+cd usb
+
+wget http://freaklabs.org/freakusb/FreakUSB%20v0.70.zip
+unzip -a FreakUSB?v0.70.zip
+quilt push -a
+
+cd ..
+
+make
+make upload prog
