@@ -13,6 +13,7 @@
 
 
 void reset_rf(void);
+void ep0_init(void);
 
 
 void reset_rf(void)
@@ -68,6 +69,7 @@ int main(void)
 	CLR(LED);
 
 	usb_init();
+	ep0_init();
 	hw_init();
 
 	while (1)

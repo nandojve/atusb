@@ -1,0 +1,37 @@
+Index: fw4/class/CDC/cdc.c
+===================================================================
+--- fw4.orig/class/CDC/cdc.c	2011-02-08 17:11:11.000000000 -0300
++++ fw4/class/CDC/cdc.c	2011-02-08 17:12:30.000000000 -0300
+@@ -76,7 +76,10 @@
+ {
+     U8 i;
+     usb_pcb_t *pcb = usb_pcb_get();
+-    
++
++    if (req->type & TYPE_CLASS)
++	goto reject;
++
+     switch (req->req)
+     {
+     case GET_LINE_CODING:
+@@ -127,6 +130,7 @@
+         break;
+ 
+     default:
++    reject:
+         ep_set_stall(EP_CTRL);
+         break;
+     }
+Index: fw4/usb/ctrl.c
+===================================================================
+--- fw4.orig/usb/ctrl.c	2011-02-08 17:09:02.000000000 -0300
++++ fw4/usb/ctrl.c	2011-02-08 17:12:51.000000000 -0300
+@@ -277,7 +277,7 @@
+     reqp = (req_t *)req;
+ 
+     // decode the standard request
+-    if (!(reqp->type & TYPE_CLASS))
++    if (!(reqp->type & (TYPE_CLASS | TYPE_VENDOR)))
+     {
+         // this is a standard request
+         switch (reqp->req)
