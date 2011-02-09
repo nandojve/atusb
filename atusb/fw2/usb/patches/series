@@ -1,3 +1,4 @@
 cleanup.patch
 no-cdc.patch
 no-vbus-detect.patch
+correct-array-size.patch

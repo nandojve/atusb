@@ -1,0 +1,13 @@
+Index: usb/usb/ctrl.c
+===================================================================
+--- usb.orig/usb/ctrl.c	2011-02-08 23:13:09.000000000 -0300
++++ usb/usb/ctrl.c	2011-02-08 23:13:18.000000000 -0300
+@@ -136,7 +136,7 @@
+     U8 status[2];
+     usb_pcb_t *pcb = usb_pcb_get();
+ 
+-    memset(status, 0, 2 * sizeof(status));
++    memset(status, 0, sizeof(status));
+     switch (req->type)
+     {
+     case GET_DEVICE_STATUS:
