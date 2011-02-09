@@ -7,29 +7,25 @@
 
 #include "freakusb.h"
 
-#include "io.h"
 #include "at86rf230.h"
+#include "io.h"
+#include "spi.h"
 
 
-static void spi_begin(void)
+void reset_rf(void);
+
+
+void reset_rf(void)
 {
-	CLR(nSS);
-}
+	/* AT86RF231 data sheet, 12.4.13, reset pulse width: 625 ns (min) */
 
+	CLR(nRST_RF);
+	_delay_us(1);
+	SET(nRST_RF);
 
-static uint8_t spi(uint8_t v)
-{
-//	while (!(UCSR1A & 1 << UDRE1));
-	UDR1 = v;
-	while (!(UCSR1A & 1 << RXC1));
-	return UDR1;
-}
+	/* 12.4.14: SPI access latency after reset: 625 ns (min) */
 
-
-static void spi_end(void)
-{
-//	while (!(UCSR1A & 1 << TXC1));
-	SET(nSS);
+	_delay_us(1);
 }
 
 
@@ -43,32 +39,12 @@ int main(void)
 	/* set up all the outputs; default port value is 0 */
 
 	OUT(LED);
-	OUT(nRST_RF);	/* reset the transceiver */
+	OUT(nRST_RF);	/* resets the transceiver */
 	OUT(SLP_TR);
-	OUT(SCLK);
-	OUT(MOSI);
-	OUT(nSS);
 
-	/* set up UART-SPI */
+	spi_init();
 
-	UCSR1C = 1 << UMSEL11 | 1 << UMSEL10;
-				/* set MSPI, MSB first, SPI data mode 0 */
-	UCSR1B = 1 << RXEN1 | 1 << TXEN1;
-				/* enable receiver and transmitter */
-	UBRR1 = 0;		/* reconfirm the bit rate */
-
-	/* bring the transceiver out of reset */
-
-	/*
-	 * AT86RF231 data sheet, 12.4.13, reset pulse with: 625 ns (min).
-	 * We spend a lot more time getting here, so no extra wait is needed.
-	 */
-	SET(nRST_RF);
-
-	/*
-	 * 12.4.14: SPI access latency after reset: 625 ns
-	 */
-	_delay_us(1);
+	reset_rf();
 
 	/* switch CLKM to 8 MHz */
 
@@ -81,8 +57,8 @@ int main(void)
 	 */
 
 	spi_begin();
-	spi(AT86RF230_REG_WRITE | REG_TRX_CTRL_0);
-	spi(CLKM_CTRL_8MHz);
+	spi_send(AT86RF230_REG_WRITE | REG_TRX_CTRL_0);
+	spi_send(CLKM_CTRL_8MHz);
 	spi_end();
 
 	/* now we should be at 8 MHz */
