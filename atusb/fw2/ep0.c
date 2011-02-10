@@ -71,14 +71,33 @@ static void do_usb_send(const uint8_t *data, int len)
 }
 
 
+static void do_usb_recv(uint8_t *data, int len, void (*fn)(void *user),
+    void *user)
+{
+	volatile usb_pcb_t *pcb = usb_pcb_get();
+	uint8_t got;
+
+	/* FreakUSB likes to do things this way. Looks dangerous ... */
+	while (len) {
+		for (got = pcb->fifo[EP_CTRL].len; got; got--) {
+			*data++ = usb_buf_read(EP_CTRL);
+			len--;
+		}
+	}
+	pcb->flags &= ~(1 << SETUP_DATA_AVAIL);
+	fn(user);
+	ep_send_zlp(EP_CTRL);
+}
+
+
 #define	usb_send(ep, buf, len, arg1, arg2)	do_usb_send(buf, len)
-#define	usb_recv(ep, buf, len, fn, arg)	/* later */
+#define	usb_recv(ep, buf, len, fn, user)	do_usb_recv(buf, len, fn, user)
 
 
 #define	BUILD_OFFSET	7	/* '#' plus "65535" plus ' ' */
 
 
-/* keep things a similar to the original as possible for now */
+/* keep things as similar to the original as possible for now */
 #define	setup_request	req_t
 #define	setup		req
 #define	bmRequestType	type
@@ -128,17 +147,16 @@ static int my_setup(struct setup_request *setup) __reentrant
 	case ATUSB_TO_DEV(ATUSB_RF_RESET):
 		debug("ATUSB_RF_RESET\n");
 		reset_rf();
+		ep_send_zlp(EP_CTRL);
 		return 1;
 
-#ifdef NOTYET
 	case ATUSB_FROM_DEV(ATUSB_POLL_INT):
 		debug("ATUSB_POLL_INT\n");
 		if (setup->wLength < 1)
 			return 0;
-		*buf = IRQ_RF;
+		*buf = 0;//IRQ_RF;
 		usb_send(&ep0, buf, 1, NULL, NULL);
 		return 1;
-#endif
 
 	case ATUSB_TO_DEV(ATUSB_REG_WRITE):
 		debug("ATUSB_REG_WRITE\n");
@@ -146,6 +164,7 @@ static int my_setup(struct setup_request *setup) __reentrant
 		spi_send(AT86RF230_REG_WRITE | setup->wIndex);
 		spi_send(setup->wValue);
 		spi_end();
+		ep_send_zlp(EP_CTRL);
 		return 1;
 	case ATUSB_FROM_DEV(ATUSB_REG_READ):
 		debug("ATUSB_REG_READ\n");
