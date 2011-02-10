@@ -1,3 +1,5 @@
+#include <stdint.h>
+
 #include <avr/io.h>
 
 #define F_CPU   8000000UL
@@ -17,4 +19,10 @@ void reset_rf(void)
 	/* 12.4.14: SPI access latency after reset: 625 ns (min) */
 
 	_delay_us(1);
+}
+
+
+uint8_t read_irq(void)
+{
+	return PIN(IRQ_RF);
 }

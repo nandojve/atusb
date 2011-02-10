@@ -151,7 +151,7 @@ static int my_setup(struct setup_request *setup) __reentrant
 		debug("ATUSB_POLL_INT\n");
 		if (setup->wLength < 1)
 			return 0;
-		*buf = 0;//IRQ_RF;
+		*buf = read_irq();
 		usb_send(&ep0, buf, 1, NULL, NULL);
 		return 1;
 
