@@ -30,6 +30,7 @@ void spi_end(void)
 
 void spi_init(void)
 {
+	SET(nSS);
 	OUT(SCLK);
 	OUT(MOSI);
 	OUT(nSS);

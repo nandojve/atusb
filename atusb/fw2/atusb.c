@@ -14,26 +14,15 @@
 
 int main(void)
 {
-	/* We start with a 1 MHz/8 clock. Disable the prescaler. */
-
-	CLKPR = 1 << CLKPCE;
-	CLKPR = 0;
-
-	/* set up all the outputs; default port value is 0 */
-
-	OUT(LED);
-	OUT(nRST_RF);	/* resets the transceiver */
-	OUT(SLP_TR);
-
+	board_init();
 	spi_init();
-
 	reset_rf();
 
 	/* now we should be at 8 MHz */
 
-	SET(LED);
+	led(1);
 	_delay_ms(100);
-	CLR(LED);
+	led(0);
 
 	usb_init();
 	ep0_init();

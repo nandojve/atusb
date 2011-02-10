@@ -44,5 +44,7 @@
 
 void reset_rf(void);
 uint8_t read_irq(void);
+void led(int on);
+void board_init(void);
 
 #endif /* !BOARD_H */

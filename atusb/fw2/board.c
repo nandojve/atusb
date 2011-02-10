@@ -51,3 +51,27 @@ uint8_t read_irq(void)
 {
 	return PIN(IRQ_RF);
 }
+
+
+void led(int on)
+{
+	if (on)
+		SET(LED);
+	else
+		CLR(LED);
+}
+
+
+void board_init(void)
+{
+	/* We start with a 1 MHz/8 clock. Disable the prescaler. */
+
+	CLKPR = 1 << CLKPCE;
+	CLKPR = 0;
+
+	/* set up all the outputs; default port value is 0 */
+
+	OUT(LED);
+	OUT(nRST_RF);   /* resets the transceiver */
+	OUT(SLP_TR);
+}
