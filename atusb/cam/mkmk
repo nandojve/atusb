@@ -4,14 +4,14 @@ PATH=$PATH:/home/moko/svn.openmoko.org/developers/werner/cncmap/gp2rml
 
 NAME=atusb
 X=0
-Y=2
+Y=0
 
 cameo <<EOF
 mm
 
 gerber 35mil ../$NAME-PCB_Edges.gbr
 rotate 90
-align 1 4.4mm 12.1mm	# align relative to board corner
+align 1 6.8mm 8.4mm	# align relative to board corner
 translate 4mm 4mm	# move to PCB zone assigned to project
 array +3mm +3mm $X $Y
 z 0 -58.9mm		# board surface (tool fully retracted)
