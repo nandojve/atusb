@@ -2,7 +2,7 @@
 
 #include <avr/io.h>
 
-#include "io.h"
+#include "board.h"
 #include "spi.h"
 
 

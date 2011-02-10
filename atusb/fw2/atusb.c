@@ -8,26 +8,11 @@
 #include "freakusb.h"
 
 #include "at86rf230.h"
-#include "io.h"
+#include "board.h"
 #include "spi.h"
 
 
-void reset_rf(void);
 void ep0_init(void);
-
-
-void reset_rf(void)
-{
-	/* AT86RF231 data sheet, 12.4.13, reset pulse width: 625 ns (min) */
-
-	CLR(nRST_RF);
-	_delay_us(1);
-	SET(nRST_RF);
-
-	/* 12.4.14: SPI access latency after reset: 625 ns (min) */
-
-	_delay_us(1);
-}
 
 
 int main(void)

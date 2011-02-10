@@ -16,7 +16,7 @@ USB_OBJS = $(FreakUSB)/usb/usb.o $(FreakUSB)/usb/ctrl.o \
   $(FreakUSB)/usb/usb_buf.o \
   $(FreakUSB)/hw/at90usbxx2/ep.o $(FreakUSB)/hw/at90usbxx2/hw.o \
   $(FreakUSB)/hw/at90usbxx2/isr.o
-OBJS = atusb.o spi.o descr.o ep0.o $(USB_OBJS)
+OBJS = atusb.o board.o spi.o descr.o ep0.o $(USB_OBJS)
 
 CFLAGS += -I../fw/include \
 	  -I$(FreakUSB)/usb -I$(FreakUSB)/hw/at90usbxx2 \

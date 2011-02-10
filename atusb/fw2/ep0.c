@@ -27,16 +27,13 @@
 #include "at86rf230.h"
 #include "atusb/ep0.h"
 //#include "version.h"
-#include "io.h"
+#include "board.h"
 #include "spi.h"
 
 
 #define	HW_TYPE		2	/* @@@ needs more work */
 static const char *build_date = "today";
 static unsigned build_number = 42;
-
-extern void reset_rf(void);
-
 
 #define debug(...)
 #define error(...)

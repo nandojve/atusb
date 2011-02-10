@@ -1,24 +1,24 @@
-#ifndef IO_H
-#define	IO_H
+#ifndef BOARD_H
+#define	BOARD_H
 
 #define	LED_PORT	B
-#define	LED_BIT		6
+#define	LED_BIT		  6
 #define	nRST_RF_PORT	C
-#define	nRST_RF_BIT	7
+#define	nRST_RF_BIT	  7
 #define	SLP_TR_PORT	B
-#define	SLP_TR_BIT	4
+#define	SLP_TR_BIT	  4
 
 #define SCLK_PORT	D
-#define SCLK_BIT	5
+#define SCLK_BIT	  5
 #define	MOSI_PORT	D
-#define	MOSI_BIT	3
+#define	MOSI_BIT	  3
 
 #define	MISO_PORT	D
-#define	MISO_BIT	2
+#define	MISO_BIT	  2
 #define	nSS_PORT	D
-#define	nSS_BIT		1
+#define	nSS_BIT		  1
 #define	IRQ_RF_PORT	D
-#define	IRQ_RF_BIT	0
+#define	IRQ_RF_BIT	  0
 
 
 #define	SET_2(p, b)	PORT##p |= 1 << (b)
@@ -36,4 +36,7 @@
 #define	IN(n)		IN_1(n##_PORT, n##_BIT)
 #define	OUT(n)		OUT_1(n##_PORT, n##_BIT)
 
-#endif /* !IO_H */
+
+void reset_rf(void);
+
+#endif /* !BOARD_H */
