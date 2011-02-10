@@ -10,9 +10,7 @@
 #include "at86rf230.h"
 #include "board.h"
 #include "spi.h"
-
-
-void ep0_init(void);
+#include "atusb/ep0.h"
 
 
 int main(void)

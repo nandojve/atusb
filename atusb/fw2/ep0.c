@@ -31,7 +31,7 @@
 #include "spi.h"
 
 
-#define	HW_TYPE		2	/* @@@ needs more work */
+#define	HW_TYPE		HW_TYPE_110131
 static const char *build_date = "today";
 static unsigned build_number = 42;
 

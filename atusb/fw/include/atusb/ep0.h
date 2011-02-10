@@ -1,8 +1,8 @@
 /*
  * include/atusb/ep0.h - EP0 extension protocol
  *
- * Written 2008-2010 by Werner Almesberger
- * Copyright 2008-2010 Werner Almesberger
+ * Written 2008-2011 by Werner Almesberger
+ * Copyright 2008-2011 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,6 +45,7 @@
 
 #define	HW_TYPE_100813	0	/* 2010-08-13 */
 #define	HW_TYPE_101216	1	/* 2010-12-16 */
+#define	HW_TYPE_110131	2	/* 2011-01-31, ATmega32U2-based */
 
 
 /*
