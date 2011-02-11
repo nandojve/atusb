@@ -149,6 +149,52 @@ int atrf_test_mode(struct atrf_dsc *dsc)
 }
 
 
+int atrf_set_clkm_generic(
+    void (*reg_write)(void *dsc, uint8_t reg, uint8_t value),
+    void *handle, int mhz)
+{
+	uint8_t clkm;
+
+	if (!mhz) {
+		reg_write(handle, REG_TRX_CTRL_0, 0); /* disable CLKM */
+		return 1;
+	}
+	switch (mhz) {
+	case 1:
+		clkm = CLKM_CTRL_1MHz;
+		break;
+	case 2:
+		clkm = CLKM_CTRL_2MHz;
+		break;
+	case 4:
+		clkm = CLKM_CTRL_4MHz;
+		break;
+	case 8:
+		clkm = CLKM_CTRL_8MHz;
+		break;
+	case 16:
+		clkm = CLKM_CTRL_16MHz;
+		break;
+	default:
+		fprintf(stderr, "unsupported CLKM frequency %d MHz\n", mhz);
+		return 0;
+	}
+	reg_write(handle, REG_TRX_CTRL_0,
+	    (PAD_IO_8mA << PAD_IO_CLKM_SHIFT) | clkm);
+	return 1;
+}
+
+
+int atrf_set_clkm(struct atrf_dsc *dsc, int mhz)
+{
+	if (dsc->driver->set_clkm)
+		return dsc->driver->set_clkm(dsc->handle, mhz);
+	else
+		return atrf_set_clkm_generic(dsc->driver->reg_write,
+		    dsc->handle, mhz);
+}
+
+
 void atrf_reg_write(struct atrf_dsc *dsc, uint8_t reg, uint8_t value)
 {
 	dsc->driver->reg_write(dsc->handle, reg, value);

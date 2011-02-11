@@ -83,7 +83,7 @@ static volatile int run = 1;
  *       >0  output 2^(clkm-1) MHz signal
  */
 
-static struct atrf_dsc *init_txrx(int trim, unsigned clkm)
+static struct atrf_dsc *init_txrx(int trim, unsigned mhz)
 {
 	struct atrf_dsc *dsc;
 
@@ -101,11 +101,11 @@ static struct atrf_dsc *init_txrx(int trim, unsigned clkm)
 	atrf_reg_write(dsc, REG_XOSC_CTRL, XTAL_MODE_EXT << XTAL_MODE_SHIFT);
 #endif
 
-	if (!clkm)
-		atrf_reg_write(dsc, REG_TRX_CTRL_0, 0); /* disable CLKM */
-	else
-		atrf_reg_write(dsc, REG_TRX_CTRL_0,
-		    (PAD_IO_8mA << PAD_IO_CLKM_SHIFT) | clkm);
+	if (!atrf_set_clkm(dsc, mhz))
+		if (mhz) {
+			atrf_close(dsc);
+			exit(1);
+		}
 
 	/* We want to see all interrupts, not only the ones we're expecting. */
 	atrf_reg_write(dsc, REG_IRQ_MASK, 0xff);
@@ -616,7 +616,7 @@ int main(int argc, char *const *argv)
 	double pause_s = 0;
 	char *end;
 	int c, freq;
-	unsigned tmp, clkm = 0;
+	unsigned clkm = 0;
 	int status = 0;
 	const char *pcap_file = NULL;
 	struct atrf_dsc *dsc;
@@ -668,14 +668,10 @@ int main(int argc, char *const *argv)
 				usage(*argv);
 			break;
 		case 'C':
-			tmp = strtol(optarg, &end, 0);
+			clkm = strtol(optarg, &end, 0);
 			if (*end)
 				usage(*argv);
-			if (!tmp)
-				usage(*argv);
-			for (clkm = 1; !(tmp & 1); tmp >>= 1)
-				clkm++;
-			if (tmp != 1 || clkm > 5)
+			if (!clkm)
 				usage(*argv);
 			break;
 		case 'E':

@@ -1,8 +1,8 @@
 /*
  * lib/atusb.c - ATUSB access functions library (USB version)
  *
- * Written 2010 by Werner Almesberger
- * Copyright 2010 Werner Almesberger
+ * Written 2010-2011 by Werner Almesberger
+ * Copyright 2010-2011 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -227,6 +227,48 @@ static int atusb_interrupt(void *dsc)
 }
 
 
+/* ----- CLKM handling ----------------------------------------------------- */
+
+
+/*
+ * ATmega32U2-based boards don't allow disabling CLKM, so we keep it at 8 MHz.
+ * We could accommodate a choice between 8 MHz and 16 MHz, but that's for
+ * later.
+ */
+
+static int atusb_set_clkm(void *dsc, int mhz)
+{
+	usb_dev_handle *dev = dsc;
+	uint8_t ids[3];
+	int res;
+
+	if (error)
+		return 0;
+	res = usb_control_msg(dev, FROM_DEV, ATUSB_ID, 0, 0,
+	    (void *) ids, 3, 1000);
+	if (res < 0) {
+		fprintf(stderr, "ATUSB_ID: %s\n", usb_strerror());
+		error = 1;
+		return 0;
+	}
+	switch (ids[2]) {
+	case HW_TYPE_100813:
+	case HW_TYPE_101216:
+		break;
+	case HW_TYPE_110131:
+		if (mhz == 0 || mhz == 8)
+			return 1;
+		fprintf(stderr, "this board only supports CLKM = 8 MHz\n");
+		return 0;
+	default:
+		fprintf(stderr,
+		    "atusb_set_clkm: unknown hardware type 0x%02x\n", ids[2]);
+		return 0;
+	}
+	return atrf_set_clkm_generic(atusb_reg_write, dsc, mhz);
+}
+
+
 /* ----- driver interface -------------------------------------------------- */
 
 
@@ -239,6 +281,7 @@ struct atrf_driver atusb_driver = {
 	.reset		= atusb_reset,
 	.reset_rf	= atusb_reset_rf,
 	.test_mode	= atusb_test_mode,
+	.set_clkm	= atusb_set_clkm,
 	.reg_write	= atusb_reg_write,
 	.reg_read	= atusb_reg_read,
 	.buf_write	= atusb_buf_write,

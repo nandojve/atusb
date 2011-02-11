@@ -1,8 +1,8 @@
 /*
  * include/atrf.h - ATRF access functions library
  *
- * Written 2010 by Werner Almesberger
- * Copyright 2010 Werner Almesberger
+ * Written 2010-2011 by Werner Almesberger
+ * Copyright 2010-2011 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,6 +40,7 @@ void atrf_reset_rf(struct atrf_dsc *dsc);
 enum atrf_chip_id atrf_identify(struct atrf_dsc *dsc);
 
 int atrf_test_mode(struct atrf_dsc *dsc);
+int atrf_set_clkm(struct atrf_dsc *dsc, int mhz);
 
 void atrf_reg_write(struct atrf_dsc *dsc, uint8_t reg, uint8_t value);
 uint8_t atrf_reg_read(struct atrf_dsc *dsc, uint8_t reg);
