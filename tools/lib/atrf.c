@@ -27,6 +27,7 @@ extern struct atrf_driver atben_driver;
 struct atrf_dsc {
 	struct atrf_driver *driver;
 	void *handle;
+	enum atrf_chip_id chip_id;
 };
 
 
@@ -53,55 +54,7 @@ int atrf_clear_error(struct atrf_dsc *dsc)
 }
 
 
-struct atrf_dsc *atrf_open(void)
-{
-	struct atrf_dsc *dsc;
-	struct atrf_driver *driver;
-	void *handle;
-
-#ifdef HAVE_USB
-	driver = &atusb_driver;
-#elif HAVE_BEN
-	driver = &atben_driver;
-#else
-#error Need either HAVE_USB or HAVE_BEN
-#endif
-	handle = driver->open();
-	if (!handle)
-		return NULL;
-	dsc = malloc(sizeof(*dsc));
-	if (!dsc) {
-		perror("malloc");
-		exit(1);
-	}
-	dsc->driver = driver;
-	dsc->handle = handle;
-	return dsc;
-}
-
-
-void atrf_close(struct atrf_dsc *dsc)
-{
-	if (dsc->driver->close)
-		dsc->driver->close(dsc->handle);
-	free(dsc);
-}
-
-
-void atrf_reset(struct atrf_dsc *dsc)
-{
-	if (dsc->driver->reset)
-		dsc->driver->reset(dsc->handle);
-}
-
-
-void atrf_reset_rf(struct atrf_dsc *dsc)
-{
-	dsc->driver->reset_rf(dsc->handle);
-}
-
-
-enum atrf_chip_id atrf_identify(struct atrf_dsc *dsc)
+static enum atrf_chip_id identify(struct atrf_dsc *dsc)
 {
 	uint8_t part, version;
 
@@ -129,6 +82,61 @@ enum atrf_chip_id atrf_identify(struct atrf_dsc *dsc)
 		return atrf_unknown_chip;
 	}
 	return atrf_unknown_chip;
+}
+
+
+struct atrf_dsc *atrf_open(void)
+{
+	struct atrf_dsc *dsc;
+	struct atrf_driver *driver;
+	void *handle;
+
+#ifdef HAVE_USB
+	driver = &atusb_driver;
+#elif HAVE_BEN
+	driver = &atben_driver;
+#else
+#error Need either HAVE_USB or HAVE_BEN
+#endif
+	handle = driver->open();
+	if (!handle)
+		return NULL;
+	dsc = malloc(sizeof(*dsc));
+	if (!dsc) {
+		perror("malloc");
+		exit(1);
+	}
+	dsc->driver = driver;
+	dsc->handle = handle;
+	dsc->chip_id = identify(dsc);
+	return dsc;
+}
+
+
+void atrf_close(struct atrf_dsc *dsc)
+{
+	if (dsc->driver->close)
+		dsc->driver->close(dsc->handle);
+	free(dsc);
+}
+
+
+void atrf_reset(struct atrf_dsc *dsc)
+{
+	if (dsc->driver->reset)
+		dsc->driver->reset(dsc->handle);
+}
+
+
+void atrf_reset_rf(struct atrf_dsc *dsc)
+{
+	dsc->driver->reset_rf(dsc->handle);
+}
+
+
+enum atrf_chip_id atrf_identify(struct atrf_dsc *dsc)
+{
+	return dsc->chip_id;
 }
 
 
