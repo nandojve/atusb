@@ -3,8 +3,6 @@ CFLAGS = -g -Wall -Wextra -Wshadow -Werror -Wno-unused \
 	 -Wmissing-prototypes -Wmissing-declarations -Wstrict-prototypes
 
 CHIP=atmega32u2
-CHIP_AVRDUDE=at90usb162	# @@@ fix this when support for the ATmega32U2 becomes
-			# available
 
 AVR_PREFIX = $(BIN_PATH) avr-
 CC = $(AVR_PREFIX)gcc
@@ -42,7 +40,7 @@ upload:		$(NAME).bin
 		scp $(NAME).bin jlime:
 
 prog:
-		ssh jlime avrdude -F -p $(CHIP_AVRDUDE) -c nanonote_atusb -e \
+		ssh jlime avrdude -F -p $(CHIP) -c nanonote_atusb -e \
 		  -U flash:w:$(NAME).bin:r \
 		  -U lfuse:w:0x60:m		# external clock, slow start-up
 
