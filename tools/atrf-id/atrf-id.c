@@ -76,6 +76,7 @@ static void show_usb_info(struct atrf_dsc *dsc)
 	usb_dev_handle *dev;
 	const struct usb_device *device;
 	uint8_t major, minor, target;
+	const char *mcu;
 	char buf[BUF_SIZE+1];	/* +1 for terminating \0 */
 	int len;
 
@@ -89,7 +90,18 @@ static void show_usb_info(struct atrf_dsc *dsc)
 
 	if (get_protocol(dev, &major, &minor, &target) < 0)
 		exit(1);
-	printf("protocol %u.%u hw %u\n", major, minor, target);
+	switch (target) {
+	case HW_TYPE_100813:
+	case HW_TYPE_101216:
+		mcu = "C8051F326";
+		break;
+	case HW_TYPE_110131:
+		mcu = "ATmega32U2";
+		break;
+	default:
+		mcu = "???";
+	}
+	printf("protocol %u.%u hw %u (%s)\n", major, minor, target, mcu);
 
 	len = get_build(dev, buf, sizeof(buf)-1);
 	if (len < 0)
