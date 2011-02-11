@@ -1,4 +1,5 @@
 NAME = atusb
+
 CFLAGS = -g -Wall -Wextra -Wshadow -Werror -Wno-unused \
 	 -Wmissing-prototypes -Wmissing-declarations -Wstrict-prototypes
 
@@ -10,15 +11,16 @@ OBJCOPY = $(AVR_PREFIX)objcopy
 #OBJDUMP = $(AVR_PREFIX)objdump
 
 FreakUSB = usb
-USB_OBJS = $(FreakUSB)/usb/usb.o $(FreakUSB)/usb/ctrl.o \
-  $(FreakUSB)/usb/usb_buf.o \
-  $(FreakUSB)/hw/at90usbxx2/ep.o $(FreakUSB)/hw/at90usbxx2/hw.o \
-  $(FreakUSB)/hw/at90usbxx2/isr.o
+USB_OBJS  = usb.o ctrl.o usb_buf.o ep.o hw.o isr.o
 OBJS = atusb.o board.o spi.o descr.o ep0.o $(USB_OBJS)
+
+vpath %.c $(FreakUSB)/usb/
+vpath %.c $(FreakUSB)/hw/at90usbxx2/
 
 CFLAGS += -I../fw/include \
 	  -I$(FreakUSB)/usb -I$(FreakUSB)/hw/at90usbxx2 \
 	  -DNUM_EPS=1
+
 
 .PHONY:	all clean upload prog
 
@@ -28,13 +30,13 @@ all:	$(NAME).bin
 		$(CC) $(CFLAGS) -mmcu=$(CHIP) -Os -c $<
 
 $(NAME).elf:	$(OBJS)
-		$(CC) $(CFLAGS) -mmcu=$(CHIP) -o $@ $(notdir $(OBJS))
+		$(CC) $(CFLAGS) -mmcu=$(CHIP) -o $@ $(OBJS)
 
 %.bin:		%.elf
 		$(OBJCOPY) -j .text -j .data -O binary $< $@
 
 clean:
-		rm -f $(NAME).bin $(NAME).elf $(notdir $(OBJS))
+		rm -f $(NAME).bin $(NAME).elf $(OBJS)
 
 upload:		$(NAME).bin
 		scp $(NAME).bin jlime:
