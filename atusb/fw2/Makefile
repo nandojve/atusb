@@ -1,3 +1,17 @@
+#
+# Makefile - Makefile of the ATUSB firmware 
+#
+# Written 2010-2011 by Werner Almesberger
+# Copyright 2010-2011 by Werner Almesberger
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+
+SHELL = /bin/bash
+
 NAME = atusb
 
 CFLAGS = -g -Wall -Wextra -Wshadow -Werror -Wno-unused \
@@ -21,22 +35,56 @@ CFLAGS += -I../fw/include \
 	  -I$(FreakUSB)/usb -I$(FreakUSB)/hw/at90usbxx2 \
 	  -DNUM_EPS=1
 
+# ----- Verbosity control -----------------------------------------------------
+
+CC_normal	:= $(CC)
+BUILD_normal	:=
+DEPEND_normal	:= $(CPP) $(CFLAGS) -MM -MG
+
+CC_quiet	= @echo "  CC       " $@ && $(CC_normal)
+BUILD_quiet	= @echo "  BUILD    " $@ && $(BUILD_normal)
+DEPEND_quiet	= @$(DEPEND_normal)
+
+ifeq ($(V),1)
+    CC		= $(CC_normal)
+    BUILD	= $(BUILD_normal)
+    DEPEND	= $(DEPEND_normal)
+else
+    CC		= $(CC_quiet)
+    BUILD	= $(BUILD_quiet)
+    DEPEND	= $(DEPEND_quiet)
+endif
+
+# ----- Rules -----------------------------------------------------------------
 
 .PHONY:	all clean upload prog
 
 all:	$(NAME).bin
 
-%.o:		%.c
-		$(CC) $(CFLAGS) -mmcu=$(CHIP) -Os -c $<
-
 $(NAME).elf:	$(OBJS)
 		$(CC) $(CFLAGS) -mmcu=$(CHIP) -o $@ $(OBJS)
 
 %.bin:		%.elf
-		$(OBJCOPY) -j .text -j .data -O binary $< $@
+		$(BUILD) $(OBJCOPY) -j .text -j .data -O binary $< $@
+
+# ----- Cleanup ---------------------------------------------------------------
 
 clean:
-		rm -f $(NAME).bin $(NAME).elf $(OBJS)
+		rm -f $(NAME).bin $(NAME).elf $(OBJS) $(OBJS:.o=.d)
+
+# ----- Dependencies ----------------------------------------------------------
+
+%.o:            %.c
+		$(CC) $(CFLAGS) -mmcu=$(CHIP) -Os -c $<
+		$(DEPEND) $< | \
+		  sed -e \
+		    '/^\(.*:\)\? */{p;s///;s/ *\\\?$$/ /;s/  */:\n/g;H;}' \
+		    -e '$${g;p;}' -e d >$*.d; \
+		  [ "$${PIPESTATUS[*]}" = "0 0" ] || { rm -f $*.d; exit 1; }
+
+-include $(OBJS:.o=.d)
+
+# ----- Programming and device control ----------------------------------------
 
 upload:		$(NAME).bin
 		scp $(NAME).bin jlime:
