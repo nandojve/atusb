@@ -31,7 +31,8 @@ $(LIB):		$(OBJS)
 		$(AR) cr $@ $^
 
 clean:
-		rm -f $(OBJS) $(OBJS_ben) $(OBJS_host)
+		rm -f $(OBJS)
+		rm -f $(OBJS_ben_jlime) $(OBJS_ben_openwrt) $(OBJS_host)
 
 spotless:	clean
 		rm -f $(LIB)
