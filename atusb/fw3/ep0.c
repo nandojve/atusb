@@ -57,7 +57,7 @@ static void do_buf_write(void *user)
 #define	BUILD_OFFSET	7	/* '#' plus "65535" plus ' ' */
 
 
-static int my_setup(struct setup_request *setup)
+static int my_setup(const struct setup_request *setup)
 {
 	unsigned tmp;
 	uint8_t i;

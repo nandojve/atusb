@@ -124,7 +124,7 @@ extern const uint8_t device_descriptor[];
 extern const uint8_t config_descriptor[];
 extern struct ep_descr eps[];
 
-extern int (*user_setup)(struct setup_request *setup);
+extern int (*user_setup)(const struct setup_request *setup);
 extern int (*user_get_descriptor)(uint8_t type, uint8_t index,
     const uint8_t * const *reply, uint8_t *size);
 extern void (*user_reset)(void);
@@ -139,7 +139,8 @@ extern void (*user_reset)(void);
 void usb_io(struct ep_descr *ep, enum ep_state state, uint8_t *buf,
     uint8_t size, void (*callback)(void *user), void *user);
 
-
+int handle_setup(const struct setup_request *setup);
+int set_addr(uint8_t addr);
 void usb_init(void);
 void usb_poll(void);
 

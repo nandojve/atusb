@@ -24,7 +24,7 @@ CC = $(AVR_PREFIX)gcc
 OBJCOPY = $(AVR_PREFIX)objcopy
 #OBJDUMP = $(AVR_PREFIX)objdump
 
-USB_OBJS  = usb.o
+USB_OBJS  = usb.o atu2.o
 OBJS = atusb.o board.o spi.o descr.o ep0.o $(USB_OBJS)
 
 vpath %.c usb/
