@@ -14,7 +14,7 @@ SHELL = /bin/bash
 
 NAME = atusb
 
-CFLAGS = -g -Wall -Wextra -Wshadow -Werror -Wno-unused \
+CFLAGS = -g -Wall -Wextra -Wshadow -Werror -Wno-unused-parameter \
 	 -Wmissing-prototypes -Wmissing-declarations -Wstrict-prototypes
 
 CHIP=atmega32u2

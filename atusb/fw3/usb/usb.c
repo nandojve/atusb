@@ -261,7 +261,6 @@ static void ep_tx(struct ep_descr *ep)
 static void handle_ep(int n)
 {
 	struct ep_descr *ep = eps+n;
-	int res;
 
 	UENUM = n;
 	if (UEINTX & (1 << RXSTPI)) {
