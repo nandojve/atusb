@@ -13,18 +13,9 @@
 /*
  * Known issues:
  * - no suspend/resume
- * - EP0-sized packets cause an (otherwise harmless) SUEND at the end of the
- *   packet
- * - #ifdef hell
- */
-
-/*
- * This code follows the register read/write sequences from the examples in
- * SiLabs/MCU/Examples/C8051F326_7/USB_Interrupt/Firmware/F326_USB_Main.c and
- * SiLabs/MCU/Examples/C8051F326_7/USB_Interrupt/Firmware/F326_USB_ISR.c
- *
- * More resources:
- * http://www.beyondlogic.org/usbnutshell/usb1.htm
+ * - we don't call back after failed transmissions,
+ * - we don't reset the EP buffer after failed receptions
+ * - enumeration often encounters an error -71 (from which it recovers)
  */
 
 #include <stdint.h>
