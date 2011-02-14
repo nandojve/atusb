@@ -101,39 +101,3 @@ void board_init(void)
 	OUT(nRST_RF);   /* resets the transceiver */
 	OUT(SLP_TR);
 }
-
-
-static void wr(uint8_t reg, uint8_t val)
-{
-	spi_begin();
-	spi_send(AT86RF230_REG_WRITE | reg);
-	spi_send(val);
-	spi_end();
-}
-
-
-void rf_init(void)
-{
-	wr(REG_TRX_STATE, TRX_CMD_TRX_OFF);
-	wr(REG_IRQ_MASK, 0xff);
-	_delay_us(50);
-}
-
-
-void rf_send(const char *s)
-{
-	const char *p;
-	int len = 0;
-
-	wr(REG_TRX_STATE, TRX_CMD_PLL_ON);
-	for (p = s; *p; p++)
-		len++;
-	spi_begin();
-	spi_send(AT86RF230_BUF_WRITE);
-	spi_send(len);
-	while (*s)
-		spi_send(*s++);
-	spi_end();
-	wr(REG_TRX_STATE, TRX_CMD_TX_START);
-	_delay_ms(10);
-}

@@ -61,7 +61,4 @@ void led(int on);
 void panic(void);
 void board_init(void);
 
-void rf_init(void);
-void rf_send(const char *s);
-
 #endif /* !BOARD_H */
