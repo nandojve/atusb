@@ -1,3 +1,15 @@
+/*
+ * fw/board.h - Board-specific functions and definitions
+ *
+ * Written 2008-2010 by Werner Almesberger
+ * Copyright 2008-2010 Werner Almesberger
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ */
+
 #ifndef BOARD_H
 #define	BOARD_H
 
@@ -41,6 +53,7 @@
 #define	IN(n)		IN_1(n##_PORT, n##_BIT)
 #define	OUT(n)		OUT_1(n##_PORT, n##_BIT)
 #define	PIN(n)		PIN_1(n##_PORT, n##_BIT)
+
 
 void reset_rf(void);
 uint8_t read_irq(void);

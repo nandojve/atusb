@@ -1,5 +1,5 @@
 /*
- * u/atu2.c - Chip-specific driver for Atmel ATxxxU2 USB chips
+ * fw/usb/atu2.c - Chip-specific driver for Atmel ATxxxU2 USB chips
  *
  * Written 2008-2011 by Werner Almesberger
  * Copyright 2008-2011 Werner Almesberger

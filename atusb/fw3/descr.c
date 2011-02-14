@@ -1,5 +1,5 @@
 /*
- * atspi/descr.c - USB descriptors
+ * fw/descr.c - USB descriptors
  *
  * Written 2008-2011 by Werner Almesberger
  * Copyright 2008-2011 Werner Almesberger

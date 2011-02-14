@@ -1,5 +1,5 @@
 /*
- * common/usb.h - USB hardware setup and standard device requests
+ * fw/usb//usb.h - USB hardware setup and standard device requests
  *
  * Written 2008, 2009 by Werner Almesberger
  * Copyright 2008, 2009 Werner Almesberger

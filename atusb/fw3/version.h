@@ -1,5 +1,5 @@
 /*
- * boot/version.h - Automatically generated version string
+ * fw/version.h - Automatically generated version string
  *
  * Written 2008, 2011 by Werner Almesberger
  * Copyright 2008, 2011 Werner Almesberger

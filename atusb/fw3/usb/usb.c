@@ -1,5 +1,5 @@
 /*
- * u/usb.c - USB hardware setup and standard device requests
+ * fw/usb/usb.c - USB hardware setup and standard device requests
  *
  * Written 2008-2011 by Werner Almesberger
  * Copyright 2008-2011 Werner Almesberger

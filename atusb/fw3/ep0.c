@@ -1,8 +1,8 @@
 /*
- * atspi/ep0.c - EP0 extension protocol
+ * fw/ep0.c - EP0 extension protocol
  *
- * Written 2008-2010 by Werner Almesberger
- * Copyright 2008-2010 Werner Almesberger
+ * Written 2008-2011 by Werner Almesberger
+ * Copyright 2008-2011 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,10 +18,6 @@
 #ifndef NULL
 #define NULL 0
 #endif
-
-//#include "regs.h"
-//#include "uart.h"
-//#include "usb.h"
 
 #include "usb.h"
 
