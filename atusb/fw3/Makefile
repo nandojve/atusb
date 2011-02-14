@@ -24,19 +24,12 @@ CC = $(AVR_PREFIX)gcc
 OBJCOPY = $(AVR_PREFIX)objcopy
 #OBJDUMP = $(AVR_PREFIX)objdump
 
-FreakUSB = usb
-#USB_OBJS  = usb.o ctrl.o usb_buf.o ep.o hw.o isr.o
 USB_OBJS  = usb.o
 OBJS = atusb.o board.o spi.o descr.o ep0.o $(USB_OBJS)
 
-#vpath %.c $(FreakUSB)/usb/
-#vpath %.c $(FreakUSB)/hw/at90usbxx2/
-vpath %.c usb2/
+vpath %.c usb/
 
-CFLAGS += -I../fw/include \
-	  -Iusb2
-	  -DNUM_EPS=1
-#	  -I$(FreakUSB)/usb -I$(FreakUSB)/hw/at90usbxx2 \
+CFLAGS += -I../fw/include -Iusb
 
 # ----- Verbosity control -----------------------------------------------------
 
