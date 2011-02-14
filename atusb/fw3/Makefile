@@ -53,20 +53,39 @@ endif
 
 # ----- Rules -----------------------------------------------------------------
 
-.PHONY:	all clean upload prog
+.PHONY:	all clean upload prog version.c
 
-all:	$(NAME).bin
+all:		$(NAME).bin
 
 $(NAME).elf:	$(OBJS)
-		$(CC) $(CFLAGS) -mmcu=$(CHIP) -o $@ $(OBJS)
+		$(MAKE) version.o
+		$(CC) $(CFLAGS) -mmcu=$(CHIP) -o $@ $(OBJS) version.o
 
 %.bin:		%.elf
 		$(BUILD) $(OBJCOPY) -j .text -j .data -O binary $< $@
+		@echo "build #`cat .version`, `ls -l $@`"
 
 # ----- Cleanup ---------------------------------------------------------------
 
 clean:
 		rm -f $(NAME).bin $(NAME).elf $(OBJS) $(OBJS:.o=.d)
+		rm -f version.c version.d version.o
+
+# ----- Build version ---------------------------------------------------------
+
+version.c:
+		@if [ -f .version ]; then \
+		    v=`cat .version`; \
+		    expr $$v + 1 >.version; \
+		else \
+		    echo 0 >.version; \
+		fi
+		@[ -s .version ] || echo 0 >.version
+		@echo '/* MACHINE-GENERATED. DO NOT EDIT ! */' >version.c
+		@echo '#include "version.h"' >>version.c
+		@echo "const char *build_date = \"`date`\";" >>version.c
+		@echo "const uint16_t build_number = `cat .version`;" \
+		  >>version.c
 
 # ----- Dependencies ----------------------------------------------------------
 

@@ -27,14 +27,12 @@
 
 #include "at86rf230.h"
 #include "atusb/ep0.h"
-//#include "version.h"
+#include "version.h"
 #include "board.h"
 #include "spi.h"
 
 
 #define	HW_TYPE		HW_TYPE_110131
-static const char *build_date = "today";
-static unsigned build_number = 42;
 
 #define debug(...)
 #define error(...)
