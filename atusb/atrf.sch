@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Fri Jan 28 03:26:57 2011
+EESchema Schematic File Version 2  date Mon Feb 14 01:54:28 2011
 LIBS:power
 LIBS:device
 LIBS:conn
@@ -14,8 +14,8 @@ EELAYER END
 $Descr A4 11700 8267
 Sheet 3 3
 Title "IEEE 802.15.4 USB Transceiver (AT86RF230)"
-Date "28 jan 2011"
-Rev "20110123"
+Date "14 feb 2011"
+Rev "20110214"
 Comp "Werner Almesberger"
 Comment1 ""
 Comment2 ""
@@ -223,7 +223,7 @@ L C C17
 U 1 1 4D425FF1
 P 10200 6150
 F 0 "C17" H 10250 6250 50  0000 L CNN
-F 1 "1pF" H 10250 6050 50  0000 L CNN
+F 1 "2.2pF" H 10250 6050 50  0000 L CNN
 F 2 "0402" H 10200 6150 60  0001 C CNN
 	1    10200 6150
 	-1   0    0    -1  

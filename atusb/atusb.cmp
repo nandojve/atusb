@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by CvPCB (2010-12-27 BZR 2685)-unstable date = Fri Jan 28 09:41:59 2011
+Cmp-Mod V01 Created by CvPCB (2010-12-27 BZR 2685)-unstable date = Mon Feb 14 01:54:39 2011
 
 BeginCmp
 TimeStamp = /4C609C08/4C63FE17;
@@ -101,7 +101,7 @@ EndCmp
 BeginCmp
 TimeStamp = /4C609C08/4D425FF1;
 Reference = C17;
-ValeurCmp = 1pF;
+ValeurCmp = 2.2pF;
 IdModule  = 0402;
 EndCmp
 
@@ -164,7 +164,7 @@ EndCmp
 BeginCmp
 TimeStamp = /4C609BEF/4C6402F2;
 Reference = R1;
-ValeurCmp = 68;
+ValeurCmp = 180;
 IdModule  = 0402;
 EndCmp
 
