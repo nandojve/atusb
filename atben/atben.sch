@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Tue Feb 15 19:05:36 2011
+EESchema Schematic File Version 2  date Fri Feb 18 15:22:55 2011
 LIBS:power
 LIBS:device
 LIBS:conn
@@ -12,8 +12,8 @@ EELAYER END
 $Descr A4 11700 8267
 Sheet 1 1
 Title "IEEE 802.15.4 Transceiver (AT86RF231) as 8:10 card"
-Date "15 feb 2011"
-Rev "20110215"
+Date "18 feb 2011"
+Rev "20110218"
 Comp "Werner Almesberger"
 Comment1 ""
 Comment2 ""
@@ -552,7 +552,7 @@ U 1 1 4C640CD5
 P 9100 4650
 F 0 "P1" H 9100 4950 40  0000 C CNN
 F 1 "TST" H 9100 4900 30  0000 C CNN
-F 2 "PAD_60x60" H 9100 4650 60  0001 C CNN
+F 2 "PAD_2mm" H 9100 4650 60  0001 C CNN
 	1    9100 4650
 	-1   0    0    1   
 $EndComp
