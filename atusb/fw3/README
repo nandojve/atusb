@@ -1,0 +1,52 @@
+Requires very recent toolchain, because ATmega32U2 is relatively new.
+
+Building:
+
+make
+make upload prog
+
+--------------------------
+
+Making the toolchain:
+
+# patches according to
+# http://www.avrfreaks.net/index.php?name=PNphpBB2&file=viewtopic&p=789527
+
+# some gcc prerequisites
+
+apt-get remove avr-libc gcc-avr binutils-avr
+apt-get install libmpfr-dev libmpc-dev
+
+# binutils
+
+wget http://ftp.gnu.org/gnu/binutils/binutils-2.21.tar.bz2
+tar xfj binutils-2.21.tar.bz2 
+cd binutils-2.21
+./configure --target=avr --disable-nls
+make
+make install
+
+# gcc
+
+wget http://ftpmirror.gnu.org/gcc/gcc-4.5.2/gcc-4.5.2.tar.bz2
+wget -O gcc_452_avr.patch http://gcc.gnu.org/bugzilla/attachment.cgi?id=23050
+tar xfj gcc-4.5.2.tar.bz2
+cd gcc-4.5.2
+patch -p1 -s <../gcc_452_avr.patch
+mkdir obj-avr
+cd obj-avr
+../configure --target=avr --enable-languages=c \
+    --disable-nls --disable-libssp --with-dwarf2
+make
+make install
+
+wget http://download.savannah.gnu.org/releases/avr-libc/avr-libc-1.7.0.tar.bz2
+wget -O avr_libc_170.patch \
+  https://savannah.nongnu.org/support/download.php?file_id=21669
+tar xfj avr-libc-1.7.0.tar.bz2 
+cd avr-libc-1.7.0
+patch -p0 -s <../avr_libc_170.patch
+./bootstrap	# the automake at the end takes a while
+./configure --build=`./config.guess` --host=avr
+make
+make install
