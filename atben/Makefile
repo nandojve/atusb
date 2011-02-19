@@ -3,6 +3,7 @@ PLOT_BRD = pcbnew --plot=ps_a4 --ps-pads-drill-opt=none --fill-all-zones
 NAME = atben
 
 .PHONY:		all gen generate sch brd xpdf front back clean
+.PHONY:		gerber gerbv
 
 all:
 		@echo "make what ? target: gen sch brd xpdf"
@@ -26,6 +27,22 @@ front:		$(NAME)-Front.ps
 
 back:		$(NAME)-Back.ps
 		lpr $<
+
+# this needs more work
+
+gerber:
+		pcbnew --plot=gerber \
+		  -l `pcbnew --list-layers atben.brd | tr '\012' ,` \
+		  --fill-all-zones $(NAME).brd
+
+gerbv:
+		gerbv $(NAME)-Comments.gbr \
+		  $(NAME)-SilkS_Front.gto \
+		  $(NAME)-SoldP_Front.gtp \
+		  $(NAME)-Front.gtl \
+		  $(NAME)-Mask_Front.gts \
+		  $(NAME)-Back.gbl \
+		  $(NAME)-Mask_Back.gbs
 
 #
 # Postscript for production of front/back layer, using the toner transfer
