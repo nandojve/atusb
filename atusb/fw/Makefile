@@ -29,7 +29,7 @@ OBJS = atusb.o board.o spi.o descr.o ep0.o $(USB_OBJS)
 
 vpath %.c usb/
 
-CFLAGS += -I../fw/include -Iusb
+CFLAGS += -Iinclude -Iusb
 
 # ----- Verbosity control -----------------------------------------------------
 
