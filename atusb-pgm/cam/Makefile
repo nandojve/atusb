@@ -7,6 +7,10 @@ NAME=atusb-pgm
 # 6.8 / 8.4 mm
 # + 0 / 59 mm
 BOARD = X0=6.8mm Y0=67.4mm
+# 9.2 8.1
+# 0   59
+# 0   -0.5
+BOARD = X0=9.2mm Y0=66.6mm
 TOOLS = DRILL=7mil,15mil MILL_IN=25mil MILL_OUT=45mil
 FAB = X=0 Y=0 XN=3 YN=1
 
