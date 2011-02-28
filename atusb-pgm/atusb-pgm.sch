@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Fri Feb  4 04:11:09 2011
+EESchema Schematic File Version 2  date Mon Feb 28 02:20:46 2011
 LIBS:conn
 LIBS:device
 EELAYER 24  0
@@ -6,14 +6,18 @@ EELAYER END
 $Descr A4 11700 8267
 Sheet 1 1
 Title "ATUSB Programming Adapter"
-Date "4 feb 2011"
-Rev "20110204"
+Date "28 feb 2011"
+Rev "20110228"
 Comp "Werner Almesberger"
 Comment1 ""
 Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
+Text Notes 5650 5350 0    70   ~ 0
+For red, use LTST-C190KRKT (631 nm)
+Text Notes 5650 5200 0    70   ~ 0
+LTST-C190KFKT is yellow/orange (605 nm)
 NoConn ~ 7500 4450
 Wire Wire Line
 	8150 4450 7500 4450
@@ -199,7 +203,7 @@ L LED D1
 U 1 1 4D4A40C6
 P 6150 4750
 F 0 "D1" H 6150 4850 50  0000 C CNN
-F 1 "LTST-C190KRKT" H 6150 4650 50  0000 C CNN
+F 1 "LTST-C190KFKT" H 6150 4650 50  0000 C CNN
 F 2 "0603" H 6150 4750 60  0001 C CNN
 	1    6150 4750
 	-1   0    0    -1  
