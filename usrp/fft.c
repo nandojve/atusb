@@ -91,13 +91,14 @@ static void fft_real(int n, const float *re, const float *im, double *res)
 }
 
 
-static void do_fft(int skip, int dump, int low, int high, double threshold)
+static void do_fft(int skip, int dump, int low, int high, double threshold,
+    int split)
 {
 	float c[2];
 	float *re = NULL, *im = NULL;
-	double *res;
+	double *out, *res;
 	int e = 0, n = 0;
-	int i;
+	int i, j, off;
 	double a;
 
 	while (1) {
@@ -138,28 +139,46 @@ static void do_fft(int skip, int dump, int low, int high, double threshold)
 	im += skip;
 	n -= skip;
 
-	res = malloc(n*sizeof(double));
+	out = malloc(n/split*sizeof(double));
+	if (!out) {
+		perror("malloc");
+		exit(1);
+	}
+
+	res = malloc(n/split*sizeof(double));
 	if (!res) {
 		perror("malloc");
 		exit(1);
 	}
 
-	switch (alg) {
-	case 0:
-		fft_complex(n, re, im, res);
-		break;
-	case 1:
-		fft_real(n, re, im, res);
-		break;
-	default:
-		abort();
+	for (i = 0; i != n/split; i++)
+		res[i] = 0;
+
+	off = 0;
+	for (i = 0; i != split; i++) {
+		switch (alg) {
+		case 0:
+			fft_complex(n/split, re+off, im+off, out);
+			break;
+		case 1:
+			fft_real(n/split, re+off, im+off, out);
+			break;
+		default:
+			abort();
+		}
+		for (j = 0; j != n/split; j++)
+			res[j] += out[j];
+		off += n/split;
 	}
+	for (i = 0; i != n/split; i++)
+		res[i] /= split;
 
 	if (dump) {
-		for (i = 0; i < n; i += 1)
+		for (i = 0; i != n/split; i++)
 			printf("%d %g\n", i,
-			    10*log(res[(i+n/2) % n])/log(10));
+			    10*log(res[(i+(n/split)/2) % (n/split)])/log(10));
 	} else {
+		/* @@@ need to think about supporting averaged FFT here later */
 		double s = 0;
 		double db;
 
@@ -189,11 +208,12 @@ static void usage(const char *name)
 {
 	fprintf(stderr,
 "usage: %s [-s skip] [-w window] low high [threshold]\n"
-"       %s [-s skip] [-w window] -d\n\n"
+"       %s [-s skip] [-w window] -d [split]\n\n"
 "  threshold   only use frequency bins with at least this power, in - dB.\n"
 "              E.g., a threshold value of 60 would be -60 dB. (default: %d\n"
 "              dB)\n"
-"  -d          dump frequency-domain \n"
+"  -d [split]  dump frequency-domain, optionally splitting the samples into\n"
+"              several parts and averaging over them.\n"
 "  -s skip     skip this number of samples from the beginning (default: 0)\n"
 "  -w window   use the specified window function. Available: blackman, hann,\n"
 "              hamming, rectangle. Default is rectangle.\n"
@@ -240,7 +260,12 @@ int main(int argc, char **argv)
 	case 0:
 		if (!dump)
 			usage(*argv);
-		do_fft(skip, 1, 0, 0, 0);
+		do_fft(skip, 1, 0, 0, 0, 1);
+		break;
+	case 1:
+		if (!dump)
+			usage(*argv);
+		do_fft(skip, 1, 0, 0, 0, atoi(argv[optind]));
 		break;
 	case 3:
 		threshold = -atof(argv[optind+2]);
@@ -252,7 +277,7 @@ int main(int argc, char **argv)
 		high = atoi(argv[optind+1]);
 		if (low > high)
 			usage(*argv);
-		do_fft(skip, 0, low, high, threshold);
+		do_fft(skip, 0, low, high, threshold, 1);
 		break;
 	default:
 		usage(*argv);
