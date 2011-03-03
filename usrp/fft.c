@@ -12,6 +12,12 @@
 static int alg = 0;
 
 
+static double window(int i, int n)
+{
+	return 0.54-0.46*cos(M_PI*2*i/(n-1));
+}
+
+
 static void fft_complex(int n, const float *re, const float *im, double *res)
 {
 	fftw_complex *in, *out;
@@ -23,8 +29,9 @@ static void fft_complex(int n, const float *re, const float *im, double *res)
 	out = fftw_malloc(sizeof(fftw_complex)*n);
 
 	for (i = 0; i != n; i++) {
-		in[i][0] = re[i];
-		in[i][1] = im[i];
+		double w = window(i, n);
+		in[i][0] = re[i]*w;
+		in[i][1] = im[i]*w;
 	}
 
 	plan = fftw_plan_dft_1d(n, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
@@ -127,7 +134,8 @@ static void do_fft(int skip, int dump, int low, int high, double threshold)
 
 	if (dump) {
 		for (i = 0; i < n; i += 1)
-			printf("%d %g\n", i, 10*log(res[i])/log(10));
+			printf("%d %g\n", i,
+			    10*log(res[(i+n/2) % n])/log(10));
 	} else {
 		double s = 0;
 		double db;
