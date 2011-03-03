@@ -175,7 +175,7 @@ static void do_fft(int skip, int dump, int low, int high, double threshold,
 
 	if (dump) {
 		for (i = 0; i != n/split; i++)
-			printf("%d %g\n", i,
+			printf("%g\n",
 			    10*log(res[(i+(n/split)/2) % (n/split)])/log(10));
 	} else {
 		/* @@@ need to think about supporting averaged FFT here later */
