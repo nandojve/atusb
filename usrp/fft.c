@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <string.h>
 #include <math.h>
 #include <sys/types.h>
 
@@ -12,10 +13,31 @@
 static int alg = 0;
 
 
-static double window(int i, int n)
+static double window_rectangle(int i, int n)
+{
+	return 1;
+}
+
+
+static double window_hann(int i, int n)
+{
+	return 0.5-0.5*cos(M_PI*2*i/(n-1));
+}
+
+
+static double window_hamming(int i, int n)
 {
 	return 0.54-0.46*cos(M_PI*2*i/(n-1));
 }
+
+
+static double window_blackman(int i, int n)
+{
+	return 0.42-0.5*cos(M_PI*2*i/(n-1))+0.08*cos(M_PI*4*i/(n-1));
+}
+
+
+static double (*window)(int i, int n) = window_rectangle;
 
 
 static void fft_complex(int n, const float *re, const float *im, double *res)
@@ -30,6 +52,7 @@ static void fft_complex(int n, const float *re, const float *im, double *res)
 
 	for (i = 0; i != n; i++) {
 		double w = window(i, n);
+
 		in[i][0] = re[i]*w;
 		in[i][1] = im[i]*w;
 	}
@@ -165,13 +188,15 @@ static void do_fft(int skip, int dump, int low, int high, double threshold)
 static void usage(const char *name)
 {
 	fprintf(stderr,
-"usage: %s [-s skip] low high [threshold]\n"
-"       %s [-s skip] -d\n\n"
+"usage: %s [-s skip] [-w window] low high [threshold]\n"
+"       %s [-s skip] [-w window] -d\n\n"
 "  threshold   only use frequency bins with at least this power, in - dB.\n"
 "              E.g., a threshold value of 60 would be -60 dB. (default: %d\n"
 "              dB)\n"
 "  -d          dump frequency-domain \n"
 "  -s skip     skip this number of samples from the beginning (default: 0)\n"
+"  -w window   use the specified window function. Available: blackman, hann,\n"
+"              hamming, rectangle. Default is rectangle.\n"
     , name, name, -DEFAULT_THRESHOLD);
 	exit(1);
 }
@@ -184,7 +209,7 @@ int main(int argc, char **argv)
 	double threshold = DEFAULT_THRESHOLD;
 	int c;
 
-	while ((c = getopt(argc, argv, "a:ds:")) != EOF)
+	while ((c = getopt(argc, argv, "a:ds:w:")) != EOF)
 		switch (c) {
 		case 'a':
 			alg = atoi(optarg);
@@ -194,6 +219,18 @@ int main(int argc, char **argv)
 			break;
 		case 's':
 			skip = atoi(optarg);
+			break;
+		case 'w':
+			if (!strcmp(optarg, "blackman"))
+				window = window_blackman;
+			else if (!strcmp(optarg, "hann"))
+				window = window_hann;
+			else if (!strcmp(optarg, "hamming"))
+				window = window_hamming;
+			else if (!strcmp(optarg, "rectangle"))
+				window = window_rectangle;
+			else
+				usage(*argv);
 			break;
 		default:
 			usage(*argv);
