@@ -1,0 +1,10 @@
+#!/usr/bin/perl
+
+for ($n = 0; <>; $n++) {
+	if ($_ > $ym || !defined $ym) {
+		$xm = $n;
+		chop($ym = $_);
+	}
+}
+
+print "$xm $ym $n\n";

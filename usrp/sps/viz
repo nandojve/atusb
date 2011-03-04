@@ -1,0 +1,69 @@
+#!/bin/sh
+
+usage()
+{
+	echo "usage: $0 [-f font] prefix frequency" 1>&2
+	exit 1
+}
+
+
+font=
+term=
+output=
+while true; do
+	case "$1" in
+	-f)	[ "$2" ] || usage
+		shift
+		font=$1
+		shift;;
+	-p)	[ "$2" ] || usage
+		shift
+		term="set term png"
+		output="set output \"$1\""
+		shift;;
+	*)
+		break;;
+	esac
+done
+
+[ "$2" ] || usage
+[ "$3" ] && usage
+
+prefix=$1
+f=$2
+
+../fft -s 100 -d -w hamming 100 <./$prefix-$f >_tmp
+set `./norm _tmp`
+
+xm=$1.0		# sample number of y peak
+ym=$2		# magnitude of y peak
+n=$3		# total number of samples
+span=6.25	# ADC sample rate in MHz / decimation (100 MHz/16)
+
+gnuplot -persist <<EOF
+$term
+$output
+
+set label "$prefix" at graph 0.03, graph 0.93 font "$font,22"
+set label sprintf("+%.1f dB", $ym) at graph 0.03, graph 0.82 font "$font,18"
+
+set label sprintf("%.1f MHz", $f-0.5) \
+  at graph 0.97, graph 0.93 right font "$font,22"
+set label sprintf("+%.1f ppm", (($xm/$n-0.5)*$span+0.5)/($f-0.5)*1000000) \
+  at graph 0.97, graph 0.82 right font "$font,18"
+
+set xrange [-2.5:2.5]
+set yrange [-70:0]
+
+set mxtics 10
+set mytics 2
+set grid
+
+set xlabel "MHz from nominal frequency of test wave"
+
+set style fill solid 1
+plot "_tmp" using ((\$0/$n-0.5)*$span+0.5):(\$1-$ym) with lines notitle, \
+  "<echo -0.9 -$ym 0.2" with boxes notitle
+EOF
+
+rm -f _tmp

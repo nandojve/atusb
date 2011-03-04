@@ -1,0 +1,14 @@
+#!/bin/sh
+if ! [ "$1" ]; then
+	echo "usage: $0 prefix" 2>&1
+	exit 1
+fi
+f=2405
+while [ $f -le 2480 ]; do
+	f1=`expr $f + 1`
+	atrf-txrx -f $f -p 4 -T -0.5 \
+	    'sleep 1; usrp2_rx_cfile.py -d 16 -g 46 -f '$f'M -N 1M '$1-$f
+	atrf-txrx -f $f -p 4 -T +0.5 \
+	    'sleep 1; usrp2_rx_cfile.py -d 16 -g 46 -f '$f1'M -N 1M '$1-$f1
+	f=`expr $f + 5`
+done
