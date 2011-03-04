@@ -1,14 +1,29 @@
 #!/bin/sh
-if ! [ "$1" ]; then
-	echo "usage: $0 prefix" 2>&1
+
+PATH=$PATH:.
+
+if ! [ "$1" ] || [ "$3" ]; then
+	echo "usage: $0 prefix [directory]" 1>&2
 	exit 1
 fi
+
+if [ "$2" ]; then
+	if [ "${2#/}" = "$2" ]; then
+		dir=`pwd`/$2
+	else
+		dir=$2
+	fi
+else
+	dir=`pwd`
+fi
+
 f=2405
 while [ $f -le 2480 ]; do
+	echo Center: $f MHz 1>&2
 	f1=`expr $f + 1`
 	atrf-txrx -f $f -p 4 -T -0.5 \
-	    'sleep 1; usrp2_rx_cfile.py -d 16 -g 46 -f '$f'M -N 1M '$1-$f
+	    "sleep 1; ssh -a -x ws usrp2_rx_cfile.py -d 16 -g 46 -f ${f}M -N 1M $dir/$1-$f"
 	atrf-txrx -f $f -p 4 -T +0.5 \
-	    'sleep 1; usrp2_rx_cfile.py -d 16 -g 46 -f '$f1'M -N 1M '$1-$f1
+	    "sleep 1; ssh -a -x ws usrp2_rx_cfile.py -d 16 -g 46 -f ${f1}M -N 1M $dir/$1-$f1"
 	f=`expr $f + 5`
 done

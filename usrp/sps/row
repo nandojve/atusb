@@ -4,34 +4,54 @@ export GDFONTPATH
 GDFONTPATH=$GDFONTPATH:/usr/share/fonts/truetype/ttf-liberation/
 
 if ! [ "$1" ]; then
-	echo "usage: $0 prefix" 2>&1
+	echo "usage: $0 prefix ..." 1>&2
 	exit 1
 fi
 
-prefix=$1
+cat <<EOF
+<HTML>
+<TABLE cellpadding="0" cellspacing="0">
+EOF
 
-echo "<TR><TH>$prefix"
-f=2405
-while [ $f -le 2480 ]; do
-	echo "<TD align="center">$f MHz"
-	f=`expr $f + 5`
+last=
+for prefix in "$@"; do
+	echo $prefix 1>&2
+
+	if [ "${last%-*}" = "${prefix%-*}" ]; then
+		color=
+	else
+		color=' bgcolor="#a0e0ff"'
+	fi
+	last=$prefix
+	
+	echo "<TR$color><TH>$prefix"
+	f=2405
+	while [ $f -le 2480 ]; do
+		echo "<TD align="center">$f MHz"
+		f=`expr $f + 5`
+	done
+
+	echo "<TR><TD align="right">-0.5 MHz"
+	f=2405
+	while [ $f -le 2480 ]; do
+		./viz -f LiberationSans-Bold -p $prefix-$f.png $prefix $f
+		convert -resize '15%' $prefix-$f.png $prefix-$f-small.png
+		echo "<TD><A href=\"$prefix-$f.png\"><IMG src=\"$prefix-$f-small.png\"></A>"
+		f=`expr $f + 5`
+	done
+
+	echo "<TR><TD align="right">+0.5 MHz"
+	f=2405
+	while [ $f -le 2480 ]; do
+		f1=`expr $f + 1`
+		./viz -f LiberationSans-Bold -p $prefix-$f1.png $prefix $f1
+		convert -resize '15%' $prefix-$f1.png $prefix-$f1-small.png
+		echo "<TD><A href=\"$prefix-$f1.png\"><IMG src=\"$prefix-$f1-small.png\"></A>"
+		f=`expr $f + 5`
+	done
+
 done
 
-echo "<TR><TD align="right">-0.5 MHz"
-f=2405
-while [ $f -le 2480 ]; do
-	./viz -f LiberationSans-Bold -p $prefix-$f.png $prefix $f
-	convert -resize '15%' $prefix-$f.png $prefix-$f-small.png
-	echo "<TD><A href=\"$prefix-$f.png\"><IMG src=\"$prefix-$f-small.png\"></A>"
-	f=`expr $f + 5`
-done
-
-echo "<TR><TD align="right">+0.5 MHz"
-f=2405
-while [ $f -le 2480 ]; do
-	f1=`expr $f + 1`
-	./viz -f LiberationSans-Bold -p $prefix-$f1.png $prefix $f1
-	convert -resize '15%' $prefix-$f1.png $prefix-$f1-small.png
-	echo "<TD><A href=\"$prefix-$f1.png\"><IMG src=\"$prefix-$f1-small.png\"></A>"
-	f=`expr $f + 5`
-done
+cat <<EOF
+</TABLE>
+EOF

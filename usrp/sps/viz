@@ -40,16 +40,24 @@ ym=$2		# magnitude of y peak
 n=$3		# total number of samples
 span=6.25	# ADC sample rate in MHz / decimation (100 MHz/16)
 
+if [ ${ym#-} = $ym ]; then
+	ymbar=-$ym
+	ymbarlt=2
+else
+	ymbar=$ym
+	ymbarlt=1
+fi
+
 gnuplot -persist <<EOF
 $term
 $output
 
 set label "$prefix" at graph 0.03, graph 0.93 font "$font,22"
-set label sprintf("+%.1f dB", $ym) at graph 0.03, graph 0.82 font "$font,18"
+set label sprintf("%+.1f dB", $ym) at graph 0.03, graph 0.82 font "$font,18"
 
 set label sprintf("%.1f MHz", $f-0.5) \
   at graph 0.97, graph 0.93 right font "$font,22"
-set label sprintf("+%.1f ppm", (($xm/$n-0.5)*$span+0.5)/($f-0.5)*1000000) \
+set label sprintf("%+.1f ppm", (($xm/$n-0.5)*$span+0.5)/($f-0.5)*1000000) \
   at graph 0.97, graph 0.82 right font "$font,18"
 
 set xrange [-2.5:2.5]
@@ -63,7 +71,7 @@ set xlabel "MHz from nominal frequency of test wave"
 
 set style fill solid 1
 plot "_tmp" using ((\$0/$n-0.5)*$span+0.5):(\$1-$ym) with lines notitle, \
-  "<echo -0.9 -$ym 0.2" with boxes notitle
+  "<echo -0.9 $ymbar 0.2" with boxes lt $ymbarlt notitle
 EOF
 
 rm -f _tmp
