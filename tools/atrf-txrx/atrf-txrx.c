@@ -35,6 +35,9 @@
 
 #define	DEFAULT_CHANNEL	15	/* channel 15, 2425 MHz */
 
+#define	DEFAULT_TRIM	8	/* trim range is 0-15, see also ECN0002 */
+
+
 /*
  * Transmit power, dBm. IEEE 802.15.4-2003 section E.3.1.3 specifies a transmit
  * power of 0 dBm for IEEE 802.15.4. We assume an antenna gain of 3 dB or
@@ -593,9 +596,10 @@ static void usage(const char *name)
 "    -o file     write received data to a file in pcap format\n"
 "    -p power    transmit power, -17.2 to 3.0 dBm (default %.1f)\n"
 "    -r rate     data rate, 250k, 500k, 1M, or 2M (default: 250k)\n"
-"    -t trim     trim capacitor, 0 to 15 (default 0)\n"
+"    -t trim     trim capacitor, 0 to 15 (default %d)\n"
 	    , name, name, name, name,
-	    DEFAULT_CHANNEL, 2405+5*(DEFAULT_CHANNEL-11), DEFAULT_POWER);
+	    DEFAULT_CHANNEL, 2405+5*(DEFAULT_CHANNEL-11), DEFAULT_POWER,
+	    DEFAULT_TRIM);
 	exit(1);
 }
 
@@ -611,7 +615,7 @@ int main(int argc, char *const *argv)
 	int channel = DEFAULT_CHANNEL;
 	double power = DEFAULT_POWER;
 	uint8_t rate = OQPSK_DATA_RATE_250;
-	int trim = 0, times = 1;
+	int trim = DEFAULT_TRIM, times = 1;
 	uint8_t cont_tx = 0;
 	double pause_s = 0;
 	char *end;
