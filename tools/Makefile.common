@@ -51,5 +51,5 @@ endif
 
 CFLAGS += $(CFLAGS_$(TARGET)) -I../../atusb/fw/include -I../include \
           $(MACROS_$(TARGET))
-LDLIBS = $(LDLIBS_$(TARGET)) -L../lib -latrf
+LDLIBS = $(LDLIBS_$(TARGET)) -L../lib -latrf $(LDLIBS_$(TARGET))
 OBJS += $(OBJS_$(TARGET))
