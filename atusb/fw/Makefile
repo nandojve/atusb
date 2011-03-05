@@ -18,6 +18,7 @@ CFLAGS = -g -Wall -Wextra -Wshadow -Werror -Wno-unused-parameter \
 	 -Wmissing-prototypes -Wmissing-declarations -Wstrict-prototypes
 
 CHIP=atmega32u2
+HOST=jlime
 
 AVR_PREFIX = $(BIN_PATH) avr-
 CC = $(AVR_PREFIX)gcc
@@ -102,19 +103,19 @@ version.c:
 # ----- Programming and device control ----------------------------------------
 
 upload:		$(NAME).bin
-		scp $(NAME).bin jlime:
+		scp $(NAME).bin $(HOST):
 
 prog:
-		ssh jlime avrdude -F -p $(CHIP) -c nanonote_atusb -e \
+		ssh $(HOST) avrdude -F -p $(CHIP) -c nanonote_atusb -e \
 		  -U flash:w:$(NAME).bin:r \
 		  -U lfuse:w:0x60:m		# external clock, slow start-up
 
 on:
-		ssh jlime poke 0x10010318 4
+		ssh $(HOST) poke 0x10010318 4
 
 off:
-		ssh jlime poke 0x10010314 4
+		ssh $(HOST) poke 0x10010314 4
 
 reset:
-		ssh jlime poke 0x10010318 2048
-		ssh jlime poke 0x10010314 2048
+		ssh $(HOST) poke 0x10010318 2048
+		ssh $(HOST) poke 0x10010314 2048
