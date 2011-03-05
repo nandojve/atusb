@@ -2,7 +2,8 @@
 
 usage()
 {
-	echo "usage: $0 [-f font] prefix frequency" 1>&2
+	echo "usage: $0 [-f font] [-m] [-o fft_file] [-p png_file] prefix \
+frequency" 1>&2
 	exit 1
 }
 
@@ -10,30 +11,38 @@ usage()
 font=
 term=
 output=
+show_max=false
+out=
+
 while true; do
 	case "$1" in
 	-f)	[ "$2" ] || usage
 		shift
-		font=$1
-		shift;;
+		font=$1;;
+	-m)	show_max=true;;
+	-o)	[ "$2" ] || usage
+		shift
+		out=$1;;
 	-p)	[ "$2" ] || usage
 		shift
 		term="set term png"
-		output="set output \"$1\""
-		shift;;
+		output="set output \"$1\"";;
+	-*)	usage;;
 	*)
 		break;;
 	esac
+	shift
 done
 
 [ "$2" ] || usage
 [ "$3" ] && usage
 
+tmp=${out:-_tmp}
 prefix=$1
 f=$2
 
-../fft -s 100 -d -w hamming 100 <./$prefix-$f >_tmp
-set `./norm _tmp`
+../fft -s 100 -d -w hamming 100 <./$prefix-$f >$tmp
+set `./norm $tmp`
 
 xm=$1.0		# sample number of y peak
 ym=$2		# magnitude of y peak
@@ -70,8 +79,9 @@ set grid
 set xlabel "MHz from nominal frequency of test wave"
 
 set style fill solid 1
-plot "_tmp" using ((\$0/$n-0.5)*$span+0.5):(\$1-$ym) with lines notitle, \
+plot "$tmp" using ((\$0/$n-0.5)*$span+0.5):(\$1-$ym) with lines notitle, \
   "<echo -0.9 $ymbar 0.2" with boxes lt $ymbarlt notitle
 EOF
 
-rm -f _tmp
+[ "$out" ] || rm -f $tmp
+$show_max && echo $ym
