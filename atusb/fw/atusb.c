@@ -33,7 +33,7 @@ int main(void)
 
 	/* now we should be at 8 MHz */
 
-#if 0
+#if 1
 	led(1);
 	_delay_ms(100);
 	led(0);
