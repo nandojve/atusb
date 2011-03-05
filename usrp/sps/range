@@ -1,0 +1,53 @@
+#!/usr/bin/perl
+
+sub read
+{
+	local ($n) = "$_[0].fft";
+	local (@f);
+	local $i = 0;
+	local $ym, $v;
+
+	open(FILE, $n) || die "$n: $!";
+	while (<FILE>) {
+		chop;
+		push(@f, $_);
+		$ym = $_ unless defined $ym && $ym > $_;
+	}
+	close FILE;
+	for (@f) {
+		$v = $_-$ym;
+		$min[$i] = $v unless defined $min[$i] && $min[$i] < $v;
+		$max[$i] = $v unless defined $max[$i] && $max[$i] > $v;
+		$sum[$i] += $v;
+		$i++;
+	}
+}
+
+
+sub usage
+{
+	print STDERR "usage: $0\n";
+	exit(1);
+}
+
+
+&usage if @ARGV;
+
+#
+# @@@ for future study: use an x axis proportional to the center frequency,
+# instead of an absolute frequency.
+#
+
+for ($f = 2405; $f <= 2480; $f += 5) {
+	&read($f);
+	&read($f+1);
+	$n += 2;
+}
+
+$mhz_per_bin = 100.0/16/@sum;	# 100 MHz ADC, decimation 16
+
+$, = " ";
+for ($i = 0; $i != @sum; $i++) {
+	print $mhz_per_bin*($i-@sum/2)+0.5, "";
+	print $min[$i], $sum[$i]/$n, $max[$i], "\n";
+}

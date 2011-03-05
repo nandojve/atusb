@@ -23,35 +23,55 @@ for prefix in "$@"; do
 		color=' bgcolor="#a0e0ff"'
 	fi
 	last=$prefix
-	
-	echo "<TR$color><TH>$prefix"
+
+	echo "<TR$color><TH>$prefix<TD align=\"center\">Offset"
 	f=2405
 	while [ $f -le 2480 ]; do
-		echo "<TD align="center">$f MHz"
+		echo "<TD align=\"center\">$f MHz"
 		f=`expr $f + 5`
 	done
 
-	echo "<TR><TD align="right">-0.5 MHz"
+	echo "<TR>"
+	echo "<TD><A href=\"$prefix.png\"><IMG src=\"$prefix-small.png\"></A>"
+	echo "<TD align="right">-0.5 MHz"
+
 	f=2405
 	while [ $f -le 2480 ]; do
-		./viz -f LiberationSans-Bold -p $prefix-$f.png $prefix $f
+		./viz -f LiberationSans-Bold -p $prefix-$f.png \
+		  -o $f.fft $prefix $f
 		convert -resize '15%' $prefix-$f.png $prefix-$f-small.png
 		echo "<TD><A href=\"$prefix-$f.png\"><IMG src=\"$prefix-$f-small.png\"></A>"
 		f=`expr $f + 5`
 	done
 
-	echo "<TR><TD align="right">+0.5 MHz"
+	echo "<TR>"
+	echo "<TD>"
+	echo "<TD align="right">+0.5 MHz"
+
 	f=2405
 	while [ $f -le 2480 ]; do
 		f1=`expr $f + 1`
-		./viz -f LiberationSans-Bold -p $prefix-$f1.png $prefix $f1
+		./viz -f LiberationSans-Bold -p $prefix-$f1.png \
+		  -o $f1.fft $prefix $f1
 		convert -resize '15%' $prefix-$f1.png $prefix-$f1-small.png
 		echo "<TD><A href=\"$prefix-$f1.png\"><IMG src=\"$prefix-$f1-small.png\"></A>"
 		f=`expr $f + 5`
 	done
 
-done
+	ffts=`
+	    f=2405
+	    while [ $f -le 2480 ]; do
+		echo $f.fft
+		echo \`expr $f + 1\`.fft
+		f=\`expr $f + 5\`
+	    done`
 
+	./range >_tmp
+	./vizr -f LiberationSans-Bold -p $prefix.png $prefix _tmp
+	rm -f $ffts _tmp
+
+	convert -resize '15%' $prefix.png $prefix-small.png
+done
 cat <<EOF
 </TABLE>
 EOF
