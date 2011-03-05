@@ -35,24 +35,28 @@ for prefix in "$@"; do
 	echo "<TD><A href=\"$prefix.png\"><IMG src=\"$prefix-small.png\"></A>"
 	echo "<TD align="right">-0.5 MHz"
 
+	>_peak
+
 	f=2405
 	while [ $f -le 2480 ]; do
-		./viz -f LiberationSans-Bold -p $prefix-$f.png \
-		  -o $f.fft $prefix $f
+		echo -n "$f " >>_peak
+		./viz -f LiberationSans-Bold -m -p $prefix-$f.png \
+		  -o $f.fft $prefix $f >>_peak
 		convert -resize '15%' $prefix-$f.png $prefix-$f-small.png
 		echo "<TD><A href=\"$prefix-$f.png\"><IMG src=\"$prefix-$f-small.png\"></A>"
 		f=`expr $f + 5`
 	done
 
 	echo "<TR>"
-	echo "<TD>"
+	echo "<TD><A href=\"$prefix-peak.png\"><IMG src=\"$prefix-peak-small.png\"></A>"
 	echo "<TD align="right">+0.5 MHz"
 
 	f=2405
 	while [ $f -le 2480 ]; do
 		f1=`expr $f + 1`
-		./viz -f LiberationSans-Bold -p $prefix-$f1.png \
-		  -o $f1.fft $prefix $f1
+		echo -n "$f1 " >>_peak
+		./viz -f LiberationSans-Bold -m -p $prefix-$f1.png \
+		  -o $f1.fft $prefix $f1 >>_peak
 		convert -resize '15%' $prefix-$f1.png $prefix-$f1-small.png
 		echo "<TD><A href=\"$prefix-$f1.png\"><IMG src=\"$prefix-$f1-small.png\"></A>"
 		f=`expr $f + 5`
@@ -69,8 +73,13 @@ for prefix in "$@"; do
 	./range >_tmp
 	./vizr -f LiberationSans-Bold -p $prefix.png $prefix _tmp
 	rm -f $ffts _tmp
-
 	convert -resize '15%' $prefix.png $prefix-small.png
+
+	sort -n _peak >_tmp
+	./vizp -f LiberationSans-Bold -p $prefix-peak.png $prefix _tmp
+	rm -f _peak _tmp
+	convert -resize '15%' $prefix-peak.png $prefix-peak-small.png
+
 done
 cat <<EOF
 </TABLE>

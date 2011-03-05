@@ -2,7 +2,7 @@
 
 usage()
 {
-	echo "usage: $0 [-f font] [-p png_file] prefix range_file" 1>&2
+	echo "usage: $0 [-f font] [-p png_file] prefix peak_file" 1>&2
 	exit 1
 }
 
@@ -39,16 +39,14 @@ $output
 
 set label "$prefix" at graph 0.03, graph 0.93 font "$font,22"
 
-set xrange [-2.5:2.5]
-set yrange [-70:0]
+set xrange [2404:2481]
+set yrange [-20:20]
 
-set mxtics 10
+set xlabel "Frequency of test wave (MHz)"
+set ylabel "Peak power (dB)"
+
 set mytics 2
 set grid
 
-set xlabel "MHz from nominal frequency of test wave"
-
-plot "$file" using 1:4 with lines title "max" lt 2, \
-  "$file" using 1:3 with lines title "avg" lt 3, \
-  "$file" using 1:2 with lines title "min" lt 1
+plot "$file" using (\$1-0.5):2 with linespoints notitle
 EOF
