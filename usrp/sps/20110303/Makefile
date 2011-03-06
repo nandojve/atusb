@@ -13,4 +13,4 @@ upload:
 	  www-data@downloads.qi-hardware.com:werner/wpan/20110303/
 
 index:
-	time ./row $(RUNS) >index.html
+	PATH=..:../..:$$PATH time ../row $(RUNS) >index.html
