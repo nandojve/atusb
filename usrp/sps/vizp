@@ -45,6 +45,7 @@ set yrange [-20:20]
 set xlabel "Frequency of test wave (MHz)"
 set ylabel "Peak power (dB)"
 
+set xzeroaxis lt -1
 set mytics 2
 set grid
 

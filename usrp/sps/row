@@ -24,7 +24,7 @@ for prefix in "$@"; do
 	fi
 	last=$prefix
 
-	echo "<TR$color><TH>$prefix<TD align=\"center\">Offset"
+	echo "<TR$color><TH>$prefix<TD>"
 	f=2405
 	while [ $f -le 2480 ]; do
 		echo "<TD align=\"center\">$f MHz"
