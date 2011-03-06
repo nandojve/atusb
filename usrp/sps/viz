@@ -1,5 +1,7 @@
 #!/bin/sh
 
+PATH=..:$PATH
+
 usage()
 {
 	echo "usage: $0 [-f font] [-m] [-o fft_file] [-p png_file] prefix \
@@ -41,8 +43,8 @@ tmp=${out:-_tmp}
 prefix=$1
 f=$2
 
-../fft -s 100 -d -w hamming 100 <./$prefix-$f >$tmp
-set `./norm $tmp`
+fft -s 100 -d -w hamming 100 <$prefix-$f >$tmp
+set `norm $tmp`
 
 xm=$1.0		# sample number of y peak
 ym=$2		# magnitude of y peak

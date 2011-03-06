@@ -2,6 +2,7 @@
 
 export GDFONTPATH
 GDFONTPATH=$GDFONTPATH:/usr/share/fonts/truetype/ttf-liberation/
+PATH=.:$PATH
 
 if ! [ "$1" ]; then
 	echo "usage: $0 prefix ..." 1>&2
@@ -40,7 +41,7 @@ for prefix in "$@"; do
 	f=2405
 	while [ $f -le 2480 ]; do
 		echo -n "$f " >>_peak
-		./viz -f LiberationSans-Bold -m -p $prefix-$f.png \
+		viz -f LiberationSans-Bold -m -p $prefix-$f.png \
 		  -o $f.fft $prefix $f >>_peak
 		convert -resize '15%' $prefix-$f.png $prefix-$f-small.png
 		echo "<TD><A href=\"$prefix-$f.png\"><IMG src=\"$prefix-$f-small.png\"></A>"
@@ -55,7 +56,7 @@ for prefix in "$@"; do
 	while [ $f -le 2480 ]; do
 		f1=`expr $f + 1`
 		echo -n "$f1 " >>_peak
-		./viz -f LiberationSans-Bold -m -p $prefix-$f1.png \
+		viz -f LiberationSans-Bold -m -p $prefix-$f1.png \
 		  -o $f1.fft $prefix $f1 >>_peak
 		convert -resize '15%' $prefix-$f1.png $prefix-$f1-small.png
 		echo "<TD><A href=\"$prefix-$f1.png\"><IMG src=\"$prefix-$f1-small.png\"></A>"
@@ -70,13 +71,13 @@ for prefix in "$@"; do
 		f=\`expr $f + 5\`
 	    done`
 
-	./range >_tmp
-	./vizr -f LiberationSans-Bold -p $prefix.png $prefix _tmp
+	range >_tmp
+	vizr -f LiberationSans-Bold -p $prefix.png $prefix _tmp
 	rm -f $ffts _tmp
 	convert -resize '15%' $prefix.png $prefix-small.png
 
 	sort -n _peak >_tmp
-	./vizp -f LiberationSans-Bold -p $prefix-peak.png $prefix _tmp
+	vizp -f LiberationSans-Bold -p $prefix-peak.png $prefix _tmp
 	rm -f _peak _tmp
 	convert -resize '15%' $prefix-peak.png $prefix-peak-small.png
 
