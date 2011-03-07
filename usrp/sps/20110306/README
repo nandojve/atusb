@@ -1,0 +1,56 @@
+Objective:
+
+Reproduce sidebands observed in 200110303 and look for ways to reduce them.
+In particular, examine the effect of the antenna tuning capacitor C16.
+
+
+Test setup / changes:
+
+4	original board, like in 20110303 (noise from WLAN I forgot to turn off)
+4a	reflowed some RF vias; cleaning
+4b	removed large solder deposits on RF; not cleaned
+4c	cleaning after 4b
+4d	0.5 pF at C16; cleaning
+4e	1.0 pF at C16; cleaning
+4f	C16 NC; cleaning
+4g	resolder pin B1.1; cleaning
+4h	replace cracked B1; switched to leaded solder; cleaning
+4i	reflowed B1 at higher temperature; cleaning
+4j	reflowed C8's balun side; cleaning
+
+3	original board, like in 20110303
+3a	wait 2 h (warm-up; USRP2 freshly booted)
+3b	cycle (unplug/plug) atusb
+3c	retract shutters (metal)
+
+-------------------------------------------------------------------------------
+
+Observations:
+
+4	behaves as it did in 20110303
+4a	no change
+4b	no change
+4c	no change
+4d	no change
+4e	no change
+4f	major regression
+4g	regression persists
+4h	regression persists (slight recovery seen in 4h-0 may be due to
+	temporary effects)
+4i	regression persists
+4j	regression persists; giving up
+
+3	behaves as it did in 20110303; significantly cleaner
+3a	sidebands are reduced
+3b	sideband reduction persists
+3c	~10 dB drop at lower end of spectrum
+
+-------------------------------------------------------------------------------
+
+Conclusions:
+
+- build quality seems to be principal factor in RF performance variations
+- a warmed up board performs slightly better than a cold board
+- C16 has no noticeable effect
+- reflection characteristics even of distant items in the environment have
+  a strong influence on relative signal strength
