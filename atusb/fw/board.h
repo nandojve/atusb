@@ -1,8 +1,8 @@
 /*
  * fw/board.h - Board-specific functions and definitions
  *
- * Written 2008-2010 by Werner Almesberger
- * Copyright 2008-2010 Werner Almesberger
+ * Written 2008-2011 by Werner Almesberger
+ * Copyright 2008-2011 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,6 +53,10 @@
 #define	IN(n)		IN_1(n##_PORT, n##_BIT)
 #define	OUT(n)		OUT_1(n##_PORT, n##_BIT)
 #define	PIN(n)		PIN_1(n##_PORT, n##_BIT)
+
+
+#define	USB_VENDOR	0x20b7	/* Qi Hardware */
+#define	USB_PRODUCT	0x1540	/* ben-wpan atusb */
 
 
 void reset_rf(void);

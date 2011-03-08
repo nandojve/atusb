@@ -12,10 +12,8 @@
 
 
 #include "usb.h"
+#include "board.h"
 
-
-#define USB_VENDOR		0x20b7	/* Qi Hardware */
-#define	USB_PRODUCT		0x1540	/* ben-wpan atusb */
 
 #define LE(x) ((uint16_t) (x) & 0xff), ((uint16_t) (x) >> 8)
 
