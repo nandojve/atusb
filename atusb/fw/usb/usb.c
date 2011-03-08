@@ -37,7 +37,7 @@ extern void panic(void);
 
 int (*user_setup)(const struct setup_request *setup);
 int (*user_get_descriptor)(uint8_t type, uint8_t index,
-    const uint8_t * const *reply, uint8_t *size);
+    const uint8_t **reply, uint8_t *size);
 void (*user_reset)(void);
 
 

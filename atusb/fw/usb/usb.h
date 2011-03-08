@@ -126,7 +126,7 @@ extern struct ep_descr eps[];
 
 extern int (*user_setup)(const struct setup_request *setup);
 extern int (*user_get_descriptor)(uint8_t type, uint8_t index,
-    const uint8_t * const *reply, uint8_t *size);
+    const uint8_t **reply, uint8_t *size);
 extern void (*user_reset)(void);
 
 
