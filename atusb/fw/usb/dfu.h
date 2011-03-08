@@ -1,8 +1,8 @@
 /*
  * boot/dfu.h - DFU protocol constants and data structures
  *
- * Written 2008 by Werner Almesberger
- * Copyright 2008 Werner Almesberger
+ * Written 2008, 2011 by Werner Almesberger
+ * Copyright 2008, 2011 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,6 +79,12 @@ struct dfu {
 
 
 extern struct dfu dfu;
+
+
+void flash_start(void);
+int flash_can_write(uint16_t size);
+void flash_write(const uint8_t *buf, uint16_t size);
+uint16_t flash_read(uint8_t *buf, uint16_t size);
 
 
 void dfu_init(void);

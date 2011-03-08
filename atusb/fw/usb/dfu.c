@@ -1,8 +1,8 @@
 /*
  * boot/dfu.c - DFU protocol engine
  *
- * Written 2008-2010 by Werner Almesberger
- * Copyright 2008-2010 Werner Almesberger
+ * Written 2008-2011 by Werner Almesberger
+ * Copyright 2008-2011 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,20 +27,18 @@
 
 #include <stdint.h>
 
-#include "regs.h"
-#include "uart.h"
 #include "usb.h"
 #include "dfu.h"
 
-#include "config.h"
+#include "../board.h"
 
 
 #ifndef NULL
 #define NULL 0
 #endif
 
-
-#define	PAYLOAD_END	(PAYLOAD_START+PAYLOAD_SIZE)
+#define debug(...)
+#define error(...)
 
 
 const uint8_t device_descriptor[] = {
@@ -51,8 +49,8 @@ const uint8_t device_descriptor[] = {
 	0x00,			/* bDeviceSubClass (per interface) */
 	0x00,			/* bDeviceProtocol (per interface) */
 	EP0_SIZE,		/* bMaxPacketSize */
-	LE(USB_VENDOR),		/* idVendor */
-	LE(USB_PRODUCT),	/* idProduct */
+	LE(DFU_USB_VENDOR),	/* idVendor */
+	LE(DFU_USB_PRODUCT),	/* idProduct */
 	LE(0x0001),		/* bcdDevice */
 	0,			/* iManufacturer */
 	0,			/* iProduct */
@@ -105,55 +103,25 @@ struct dfu dfu = {
 
 
 static uint16_t next_block = 0;
-static uint16_t payload;
-static __bit did_download;
+static int did_download;
 
 
-static __xdata uint8_t buf[EP0_SIZE];
-
-
-static void flash_erase_page(uint16_t addr)
-{
-	FLKEY = 0xa5;
-	FLKEY = 0xf1;
-	PSCTL |= PSEE;
-	PSCTL |= PSWE;
-	*(__xdata uint8_t *) addr = 0;
-	PSCTL &= ~PSWE;
-	PSCTL &= ~PSEE;
-}
-
-
-static void flash_write_byte(uint16_t addr, uint8_t value)
-{
-	FLKEY = 0xa5;
-	FLKEY = 0xf1;
-	PSCTL |= PSWE;
-	PSCTL &= ~PSEE;
-	*(__xdata uint8_t *) addr = value;
-	PSCTL &= ~PSWE;
-}
+static uint8_t buf[EP0_SIZE];
 
 
 static void block_write(void *user)
 {
 	uint16_t *size = user;
-	uint8_t *p;
 
-	for (p = buf; p != buf+*size; p++) {
-		if (!(payload & 511))
-			flash_erase_page(payload);
-		flash_write_byte(payload, *p);
-		payload++;
-	}
+	flash_write(buf, *size);
 }
 
 
-static __bit block_receive(uint16_t length)
+static int block_receive(uint16_t length)
 {
 	static uint16_t size;
 
-	if (payload < PAYLOAD_START || payload+length > PAYLOAD_END) {
+	if (!flash_can_write(length)) {
 		dfu.state = dfuERROR;	
 		dfu.status = errADDRESS;
 		return 0;
@@ -164,39 +132,33 @@ static __bit block_receive(uint16_t length)
 		return 0;
 	}
 	size = length;
-	usb_recv(&ep0, buf, size, block_write, &size);
+	usb_recv(&eps[0], buf, size, block_write, &size);
 	return 1;
 }
 
 
-static __bit block_transmit(uint16_t length)
+static int block_transmit(uint16_t length)
 {
-	uint16_t left;
+	uint16_t got;
 
-	if (payload < PAYLOAD_START || payload > PAYLOAD_END) {
-		dfu.state = dfuERROR;	
-		dfu.status = errADDRESS;
-		return 1;
-	}
 	if (length > EP0_SIZE) {
 		dfu.state = dfuERROR;	
 		dfu.status = errUNKNOWN;
 		return 1;
 	}
-	left = PAYLOAD_END-payload;
-	if (left < length) {
-		length = left;
+	got = flash_read(buf, length);
+	if (got < length) {
+		length = got;
 		dfu.state = dfuIDLE;
 	}
-	usb_send(&ep0, (__code uint8_t *) payload, length, NULL, NULL);
-	payload += length;
+	usb_send(&eps[0], buf, length, NULL, NULL);
 	return 1;
 }
 
 
-static __bit my_setup(struct setup_request *setup) __reentrant
+static int my_setup(const struct setup_request *setup)
 {
-	__bit ok;
+	int ok;
 
 	switch (setup->bmRequestType | setup->bRequest << 8) {
 	case DFU_TO_DEV(DFU_DETACH):
@@ -211,7 +173,7 @@ static __bit my_setup(struct setup_request *setup) __reentrant
 		debug("DFU_DNLOAD\n");
 		if (dfu.state == dfuIDLE) {
 			next_block = setup->wValue;
-			payload = PAYLOAD_START;
+			flash_start();
 		}
 		else if (dfu.state != dfuDNLOAD_IDLE) {
 			error("bad state\n");
@@ -242,7 +204,7 @@ static __bit my_setup(struct setup_request *setup) __reentrant
 		debug("DFU_UPLOAD\n");
 		if (dfu.state == dfuIDLE) {
 			next_block = setup->wValue;
-			payload = PAYLOAD_START;
+			flash_start();
 		}
 		else if (dfu.state != dfuUPLOAD_IDLE)
 			return 0;
@@ -266,7 +228,7 @@ static __bit my_setup(struct setup_request *setup) __reentrant
 		return ok;
 	case DFU_FROM_DEV(DFU_GETSTATUS):
 		debug("DFU_GETSTATUS\n");
-		usb_send(&ep0, (uint8_t *) &dfu, sizeof(dfu), NULL, NULL);
+		usb_send(&eps[0], (uint8_t *) &dfu, sizeof(dfu), NULL, NULL);
 		return 1;
 	case DFU_TO_DEV(DFU_CLRSTATUS):
 		debug("DFU_CLRSTATUS\n");
@@ -275,7 +237,7 @@ static __bit my_setup(struct setup_request *setup) __reentrant
 		return 1;
 	case DFU_FROM_DEV(DFU_GETSTATE):
 		debug("DFU_GETSTATE\n");
-		usb_send(&ep0, &dfu.state, 1, NULL, NULL);
+		usb_send(&eps[0], &dfu.state, 1, NULL, NULL);
 		return 1;
 	case DFU_TO_DEV(DFU_ABORT):
 		debug("DFU_ABORT\n");
@@ -283,29 +245,16 @@ static __bit my_setup(struct setup_request *setup) __reentrant
 		dfu.status = OK;
 		return 1;
 	default:
-#ifdef CONFIG_PRINTK
-		printk("DFU rt %x, rq%x ?\n",
+		error("DFU rt %x, rq%x ?\n",
 		    setup->bmRequestType, setup->bRequest);
-#else
-		/*
-		 * @@@ SDCC 2.7.0 ends up OR'in setup->bmRequestType with
-		 * setup->bRequest unshifted if we don't use at least one of
-		 * them here.
-		 */
-		{
-			static volatile uint8_t foo;
-			foo = setup->bRequest;
-		}
-#endif
 		return 0;
 	}
 }
 
 
-static __bit my_descr(uint8_t type, uint8_t index, const uint8_t **reply,
-    uint8_t *size) __reentrant
+static int my_descr(uint8_t type, uint8_t index, const uint8_t **reply,
+    uint8_t *size)
 {
-	index; /* suppress warning */
 	if (type != DFU_DT_FUNCTIONAL)
 		return 0;
 	*reply = functional_descriptor;
@@ -314,7 +263,8 @@ static __bit my_descr(uint8_t type, uint8_t index, const uint8_t **reply,
 }
 
 
-static void my_reset(void) __reentrant
+#if 0
+static void my_reset(void)
 {
 	/* @@@ not nice -- think about where this should go */
 	extern void run_payload(void);
@@ -322,11 +272,12 @@ static void my_reset(void) __reentrant
 	if (did_download)
 		run_payload();
 }
+#endif
 
 
 void dfu_init(void)
 {
 	user_setup = my_setup;
 	user_get_descriptor = my_descr;
-	user_reset = my_reset;
+//	user_reset = my_reset;
 }
