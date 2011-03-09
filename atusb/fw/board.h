@@ -58,11 +58,16 @@
 #define	USB_VENDOR	0x20b7	/* Qi Hardware */
 #define	USB_PRODUCT	0x1540	/* ben-wpan atusb */
 
+#define	DFU_USB_VENDOR	USB_VENDOR
+#define	DFU_USB_PRODUCT	USB_PRODUCT
+
 
 void reset_rf(void);
 uint8_t read_irq(void);
+
 void led(int on);
 void panic(void);
+
 void board_init(void);
 
 #endif /* !BOARD_H */

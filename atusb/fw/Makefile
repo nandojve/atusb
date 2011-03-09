@@ -24,9 +24,11 @@ AVR_PREFIX = $(BIN_PATH) avr-
 CC = $(AVR_PREFIX)gcc
 OBJCOPY = $(AVR_PREFIX)objcopy
 #OBJDUMP = $(AVR_PREFIX)objdump
+SIZE = $(AVR_PREFIX)size
 
 USB_OBJS  = usb.o atu2.o
 OBJS = atusb.o board.o spi.o descr.o ep0.o $(USB_OBJS)
+BOOT_OBJS = boot.o board.o spi.o flash.o dfu.o $(USB_OBJS)
 
 vpath %.c usb/
 
@@ -54,22 +56,32 @@ endif
 
 # ----- Rules -----------------------------------------------------------------
 
-.PHONY:	all clean upload prog version.c
+.PHONY:		all clean upload prog version.c
 
-all:		$(NAME).bin
+all:		$(NAME).bin boot.hex
 
 $(NAME).elf:	$(OBJS)
 		$(MAKE) version.o
 		$(CC) $(CFLAGS) -mmcu=$(CHIP) -o $@ $(OBJS) version.o
 
+boot.elf:	$(BOOT_OBJS)
+		$(CC) $(CFLAGS) -mmcu=$(CHIP) -o $@ $(BOOT_OBJS) \
+		  -Wl,--section-start=.text=0x7000
+
 %.bin:		%.elf
 		$(BUILD) $(OBJCOPY) -j .text -j .data -O binary $< $@
 		@echo "build #`cat .version`, `ls -l $@`"
 
+%.hex:		%.elf
+		$(BUILD) $(OBJCOPY) -j .text -j .data -O ihex $< $@
+		$(SIZE) $@
+
 # ----- Cleanup ---------------------------------------------------------------
 
 clean:
-		rm -f $(NAME).bin $(NAME).elf $(OBJS) $(OBJS:.o=.d)
+		rm -f $(NAME).bin $(NAME).elf
+		rm -f $(OBJS) $(OBJS:.o=.d)
+		rm -f $(BOOT_OBJS) $(BOOT_OBJS:.o=.d)
 		rm -f version.c version.d version.o
 
 # ----- Build version ---------------------------------------------------------
@@ -102,13 +114,21 @@ version.c:
 
 # ----- Programming and device control ----------------------------------------
 
-upload:		$(NAME).bin
-		scp $(NAME).bin $(HOST):
+upload:		$(NAME).bin boot.hex
+		scp $(NAME).bin boot.hex $(HOST):
+
+# lfuse: external clock, slow start-up
+# hfuse: 4 kB boot loader, reset into boot loader
+# lock: allow everything but SPM to the boot loader
 
 prog:
 		ssh $(HOST) avrdude -F -p $(CHIP) -c nanonote_atusb -e \
-		  -U flash:w:$(NAME).bin:r \
-		  -U lfuse:w:0x60:m		# external clock, slow start-up
+		  -U flash:w:boot.hex:i \
+		  -U lfuse:w:0x60:m \
+		  -U hfuse:w:0xde:m \
+		  -U lock:w:0xef:m
+
+#		  -U flash:w:$(NAME).bin:r \
 
 on:
 		ssh $(HOST) poke 0x10010318 4
