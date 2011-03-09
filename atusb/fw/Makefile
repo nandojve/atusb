@@ -14,7 +14,8 @@ SHELL = /bin/bash
 
 NAME = atusb
 
-CFLAGS = -g -Wall -Wextra -Wshadow -Werror -Wno-unused-parameter \
+CFLAGS = -g -mmcu=$(CHIP) \
+	 -Wall -Wextra -Wshadow -Werror -Wno-unused-parameter \
 	 -Wmissing-prototypes -Wmissing-declarations -Wstrict-prototypes
 
 CHIP=atmega32u2
@@ -62,10 +63,10 @@ all:		$(NAME).bin boot.hex
 
 $(NAME).elf:	$(OBJS)
 		$(MAKE) version.o
-		$(CC) $(CFLAGS) -mmcu=$(CHIP) -o $@ $(OBJS) version.o
+		$(CC) $(CFLAGS) -o $@ $(OBJS) version.o
 
 boot.elf:	$(BOOT_OBJS)
-		$(CC) $(CFLAGS) -mmcu=$(CHIP) -o $@ $(BOOT_OBJS) \
+		$(CC) $(CFLAGS) -o $@ $(BOOT_OBJS) \
 		  -Wl,--section-start=.text=0x7000
 
 %.bin:		%.elf
@@ -104,7 +105,7 @@ version.c:
 # ----- Dependencies ----------------------------------------------------------
 
 %.o:            %.c
-		$(CC) $(CFLAGS) -mmcu=$(CHIP) -Os -c $<
+		$(CC) $(CFLAGS) -Os -c $<
 		$(DEPEND) $< | \
 		  sed -e \
 		    '/^\(.*:\)\? */{p;s///;s/ *\\\?$$/ /;s/  */:\n/g;H;}' \
