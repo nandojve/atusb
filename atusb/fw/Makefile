@@ -122,13 +122,15 @@ upload:		$(NAME).bin boot.hex
 # lfuse: external clock, slow start-up
 # hfuse: 4 kB boot loader, reset into boot loader
 # lock: allow everything but SPM to the boot loader
+#       Note: when trying to program 0xef, we get back 0x2f, failing
+#	      verification. So we just program 0x2f.
 
 prog:
 		ssh $(HOST) avrdude -F -p $(CHIP) -c nanonote_atusb -e \
 		  -U flash:w:boot.hex:i \
 		  -U lfuse:w:0x60:m \
 		  -U hfuse:w:0xde:m \
-		  -U lock:w:0xef:m
+		  -U lock:w:0x2f:m
 
 #		  -U flash:w:$(NAME).bin:r \
 
