@@ -40,12 +40,9 @@ cd obj-avr
 make
 make install
 
-wget http://download.savannah.gnu.org/releases/avr-libc/avr-libc-1.7.0.tar.bz2
-wget -O avr_libc_170.patch \
-  https://savannah.nongnu.org/support/download.php?file_id=21669
-tar xfj avr-libc-1.7.0.tar.bz2 
-cd avr-libc-1.7.0
-patch -p0 -s <../avr_libc_170.patch
+wget http://download.savannah.gnu.org/releases/avr-libc/avr-libc-1.7.1.tar.bz2
+tar xfj avr-libc-1.7.1.tar.bz2 
+cd avr-libc-1.7.1
 ./bootstrap	# the automake at the end takes a while
 ./configure --build=`./config.guess` --host=avr
 make
