@@ -130,7 +130,7 @@ prog:
 		ssh $(HOST) avrdude -F -p $(CHIP) -c nanonote_atusb -e \
 		  -U flash:w:boot.hex:i \
 		  -U lfuse:w:0x60:m \
-		  -U hfuse:w:0xde:m \
+		  -U hfuse:w:0xd8:m \
 		  -U lock:w:0x2f:m
 
 on:
