@@ -131,6 +131,7 @@ static void handle_ep(int n)
 	UENUM = n;
 	if (UEINTX & (1 << RXSTPI)) {
 		/* @@@ EP_RX. EP_TX: cancel */
+		ep->state = EP_IDLE;
 		if (!ep_setup())
 			goto stall;
 		UEINTX &= ~(1 << RXSTPI);
@@ -149,7 +150,7 @@ static void handle_ep(int n)
 		UEINTX &= ~(1 << STALLEDI);
 	}
 	if (UEINTX & (1 << TXINI)) {
-		/* @@ EP_RX: cancel */
+		/* @@ EP_RX: cancel (?) */
 		if (ep->state == EP_TX) {
 			ep_tx(ep);
 			UEINTX &= ~(1 << TXINI);
