@@ -14,12 +14,13 @@ SHELL = /bin/bash
 
 NAME = atusb
 
-CFLAGS = -g -mmcu=$(CHIP) \
+CFLAGS = -g -mmcu=$(CHIP) -DBOOT_ADDR=$(BOOT_ADDR) \
 	 -Wall -Wextra -Wshadow -Werror -Wno-unused-parameter \
 	 -Wmissing-prototypes -Wmissing-declarations -Wstrict-prototypes
 
 CHIP=atmega32u2
 HOST=jlime
+BOOT_ADDR=0x7000
 
 AVR_PREFIX = $(BIN_PATH) avr-
 CC = $(AVR_PREFIX)gcc
@@ -67,7 +68,7 @@ $(NAME).elf:	$(OBJS)
 
 boot.elf:	$(BOOT_OBJS)
 		$(CC) $(CFLAGS) -o $@ $(BOOT_OBJS) \
-		  -Wl,--section-start=.text=0x7000
+		  -Wl,--section-start=.text=$(BOOT_ADDR)
 
 %.bin:		%.elf
 		$(BUILD) $(OBJCOPY) -j .text -j .data -O binary $< $@
@@ -131,8 +132,6 @@ prog:
 		  -U lfuse:w:0x60:m \
 		  -U hfuse:w:0xde:m \
 		  -U lock:w:0x2f:m
-
-#		  -U flash:w:$(NAME).bin:r \
 
 on:
 		ssh $(HOST) poke 0x10010318 4
