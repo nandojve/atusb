@@ -40,27 +40,23 @@ void flash_write(const uint8_t *buf, uint16_t size)
 	static uint8_t last;
         const uint8_t *p;
 
-	eeprom_busy_wait();
 	for (p = buf; p != buf+size; p++) {
 		if (!(payload & (SPM_PAGESIZE-1))) {
-			if (payload) {
-				boot_page_write(payload-SPM_PAGESIZE);
-				boot_spm_busy_wait();
-			}
 			boot_page_erase(payload);
 			boot_spm_busy_wait();
 		}
+
 		if (payload & 1)
-			boot_page_fill(payload, last | (*p << 0));
+			boot_page_fill(payload, last | (*p << 8));
 		else
 			last = *p;
 		payload++;
-        }
 
-	if (!(payload & (SPM_PAGESIZE-1))) {
-		boot_page_write(payload);
-		boot_spm_busy_wait();
-	}
+		if (!(payload & (SPM_PAGESIZE-1))) {
+			boot_page_write(payload-SPM_PAGESIZE);
+			boot_spm_busy_wait();
+		}
+        }
 
 	boot_rww_enable();
 }
