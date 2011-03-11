@@ -264,21 +264,21 @@ static int my_descr(uint8_t type, uint8_t index, const uint8_t **reply,
 }
 
 
-#if 0
 static void my_reset(void)
 {
+#if 0
 	/* @@@ not nice -- think about where this should go */
 	extern void run_payload(void);
 
 	if (did_download)
 		run_payload();
-}
 #endif
+}
 
 
 void dfu_init(void)
 {
 	user_setup = my_setup;
 	user_get_descriptor = my_descr;
-//	user_reset = my_reset;
+	user_reset = my_reset;
 }

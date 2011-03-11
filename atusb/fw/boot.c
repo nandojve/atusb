@@ -57,6 +57,7 @@ int main(void)
 
 	led(0);
 
+	usb_reset();
 	run_payload();
 
 	while (1);	/* not reached */

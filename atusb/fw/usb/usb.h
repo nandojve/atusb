@@ -141,6 +141,7 @@ void usb_io(struct ep_descr *ep, enum ep_state state, uint8_t *buf,
 
 int handle_setup(const struct setup_request *setup);
 int set_addr(uint8_t addr);
+void usb_reset(void);
 void usb_init(void);
 void usb_poll(void);
 

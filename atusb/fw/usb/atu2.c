@@ -171,6 +171,12 @@ void usb_poll(void)
 {
 	uint8_t flags, i;
 
+	flags = UDINT;
+	if (flags & EORSTI) {
+		UDINT &= ~(1 << EORSTI);
+		if (user_reset)
+			user_reset();
+	}
 	flags = UEINT;
 	for (i = 0; i != NUM_EPS; i++)
 		if (1 || flags & (1 << i))
@@ -191,6 +197,13 @@ static void ep_init(void)
 
 	eps[0].state = EP_IDLE;
 	eps[0].size = 64;
+}
+
+
+void usb_reset(void)
+{
+	UDCON |= 1 << DETACH;	/* detach the pull-up */
+	_delay_ms(1);
 }
 
 
