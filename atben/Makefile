@@ -1,6 +1,8 @@
 PLOT_BRD = pcbnew --plot=ps_a4 --ps-pads-drill-opt=none --fill-all-zones
 
 NAME = atben
+VERSION = 110219
+DIR = $(NAME)
 
 .PHONY:		all gen generate sch brd xpdf front back clean
 .PHONY:		gerber gerbv
@@ -28,12 +30,24 @@ front:		$(NAME)-Front.ps
 back:		$(NAME)-Back.ps
 		lpr $<
 
-# this needs more work
+# this needs more work (--exclude-board-edges)
+
+PCB_FILES = README-PCB $(NAME)-PCB_Edges.dxf $(NAME).drl \
+            $(NAME)-SilkS_Front.gto $(NAME)-Mask_Front.gts \
+            $(NAME)-Front.gtl $(NAME)-Back.gbl $(NAME)-Mask_Back.gbs \
+            $(NAME)-PCB_Edges.gbr
 
 gerber:
 		pcbnew --plot=gerber \
 		  -l `pcbnew --list-layers atben.brd | tr '\012' ,` \
 		  --fill-all-zones $(NAME).brd
+
+fab:		gerber
+		pcbnew --plot=dxf -l PCB_Edges $(NAME).brd
+		pcbnew --drill $(NAME).brd
+		tar Ccfz .. $(NAME)-$(VERSION).tar.gz $(PCB_FILES:%=$(DIR)/%)
+		cd ..; zip -l $(DIR)$(NAME)-$(VERSION).zip \
+		  $(PCB_FILES:%=$(DIR)/%)
 
 gerbv:
 		gerbv $(NAME)-Comments.gbr \
@@ -63,7 +77,7 @@ gerbv:
 
 clean:
 		rm -f $(NAME)-Front.ps $(NAME)-Back.ps
-		rm -f $(NAME).drl $(NAME)-PCB_Edges.gbr
+		rm -f $(NAME).drl $(NAME)-PCB_Edges.gbr $(NAME)-PCB_Edges.dxf
 		rm -f $(NAME)-Front.gtl $(NAME)-Mask_Front.gts
 		rm -f $(NAME)-SilkS_Front.gto $(NAME)-SoldP_Front.gtp
 		rm -f $(NAME)-Back.gbl $(NAME)-Mask_Back.gbs
