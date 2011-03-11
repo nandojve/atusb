@@ -126,12 +126,21 @@ upload:		$(NAME).bin boot.hex
 #       Note: when trying to program 0xef, we get back 0x2f, failing
 #	      verification. So we just program 0x2f.
 
+prog-app:
+		ssh $(HOST) avrdude -F -p $(CHIP) -c nanonote_atusb -e \
+		  -U flash:w:atusb.bin:r \
+		  -U lfuse:w:0x60:m
+
 prog:
 		ssh $(HOST) avrdude -F -p $(CHIP) -c nanonote_atusb -e \
 		  -U flash:w:boot.hex:i \
 		  -U lfuse:w:0x60:m \
 		  -U hfuse:w:0xd8:m \
 		  -U lock:w:0x2f:m
+
+prog-read:
+		ssh $(HOST) avrdude -F -p $(CHIP) -c nanonote_atusb \
+		  -U flash:r:mcu.bin:r
 
 on:
 		ssh $(HOST) poke 0x10010318 4
