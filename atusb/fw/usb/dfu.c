@@ -192,6 +192,7 @@ static int my_setup(const struct setup_request *setup)
 		}
 		if (!setup->wLength) {
 			debug("DONE\n");
+			flash_end_write();
 			dfu.state = dfuIDLE;
 			did_download = 1;
 			return 1;

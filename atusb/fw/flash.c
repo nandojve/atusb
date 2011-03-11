@@ -57,7 +57,15 @@ void flash_write(const uint8_t *buf, uint16_t size)
 			boot_spm_busy_wait();
 		}
         }
+}
 
+
+void flash_end_write(void)
+{
+	if (payload & (SPM_PAGESIZE-1)) {
+		boot_page_write(payload & ~(SPM_PAGESIZE-1));
+		boot_spm_busy_wait();
+	}
 	boot_rww_enable();
 }
 
