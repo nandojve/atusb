@@ -40,7 +40,8 @@ PCB_FILES = README-PCB $(NAME)-PCB_Edges.dxf $(NAME).drl \
 gerber:
 		pcbnew --plot=gerber \
 		  -l `pcbnew --list-layers atben.brd | tr '\012' ,` \
-		  --fill-all-zones $(NAME).brd
+		  --fill-all-zones $(NAME).brd \
+		  --exclude-pcb-edge
 
 fab:		gerber
 		pcbnew --plot=dxf -l PCB_Edges $(NAME).brd
@@ -55,8 +56,7 @@ gerbv:
 		  $(NAME)-SoldP_Front.gtp \
 		  $(NAME)-Front.gtl \
 		  $(NAME)-Mask_Front.gts \
-		  $(NAME)-Back.gbl \
-		  $(NAME)-Mask_Back.gbs
+		  $(NAME)-Back.gbl
 
 #
 # Postscript for production of front/back layer, using the toner transfer
