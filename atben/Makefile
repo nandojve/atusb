@@ -12,7 +12,7 @@ all:
 		@exit 1
 
 gen generate:
-		eeschema --plot `pwd`/$(NAME).sch
+		eeschema --plot=ps `pwd`/$(NAME).sch
 		# need scripts
 
 sch:
