@@ -1,4 +1,4 @@
-PCBNEW-BOARD Version 1 date Mon Mar 14 00:51:23 2011
+PCBNEW-BOARD Version 1 date Mon Mar 14 02:11:07 2011
 
 # Created by Pcbnew(2010-12-27 BZR 2685)-unstable
 
@@ -9,7 +9,7 @@ EnabledLayers 12E88001
 Links 55
 NoConn 0
 Di 47751 24269 62686 35581
-Ndraw 21
+Ndraw 22
 Ntrack 365
 Nzone 0
 BoardThickness 630
@@ -1056,6 +1056,10 @@ Po 0 0
 $EndPAD
 $EndMODULE  PAD_2mm
 $DRAWSEGMENT
+Po 3 52150 25800 52250 25800 50
+De 21 0 900 0 0
+$EndDRAWSEGMENT
+$DRAWSEGMENT
 Po 0 49291 25118 62047 25118 50
 De 28 0 900 0 0
 $EndDRAWSEGMENT
@@ -1887,7 +1891,7 @@ ZLayer 0
 ZAux 9 E
 ZClearance 80 T
 ZMinThickness 100
-ZOptions 1 16 F 80 120
+ZOptions 1 16 S 80 120
 ZCorner 51772 35394 0
 ZCorner 51772 29961 0
 ZCorner 50709 28898 0
@@ -2010,7 +2014,7 @@ ZLayer 0
 ZAux 7 E
 ZClearance 80 T
 ZMinThickness 100
-ZOptions 1 16 F 80 120
+ZOptions 1 16 S 80 120
 ZCorner 48740 29370 0
 ZCorner 49252 28858 0
 ZCorner 49252 26299 0
@@ -2061,7 +2065,7 @@ ZLayer 0
 ZAux 19 E
 ZClearance 80 T
 ZMinThickness 100
-ZOptions 1 16 F 80 120
+ZOptions 1 16 S 80 120
 ZCorner 52323 29331 0
 ZCorner 52323 28937 0
 ZCorner 54291 28937 0
@@ -2121,7 +2125,7 @@ ZLayer 0
 ZAux 17 E
 ZClearance 80 T
 ZMinThickness 100
-ZOptions 1 16 F 80 120
+ZOptions 1 16 S 80 120
 ZCorner 61890 28937 0
 ZCorner 61890 27165 0
 ZCorner 55551 27165 0
@@ -2205,7 +2209,7 @@ ZLayer 15
 ZAux 17 E
 ZClearance 80 T
 ZMinThickness 100
-ZOptions 1 16 F 80 120
+ZOptions 1 16 S 80 120
 ZCorner 52323 29331 0
 ZCorner 52323 28937 0
 ZCorner 54291 28937 0
@@ -2312,7 +2316,7 @@ ZLayer 0
 ZAux 13 E
 ZClearance 80 T
 ZMinThickness 100
-ZOptions 1 16 F 80 120
+ZOptions 1 16 S 80 120
 ZCorner 51220 27835 0
 ZCorner 51378 27677 0
 ZCorner 52047 27677 0
@@ -2345,7 +2349,7 @@ ZLayer 15
 ZAux 3 E
 ZClearance 80 T
 ZMinThickness 100
-ZOptions 1 16 F 200 200
+ZOptions 1 16 S 200 200
 ZCorner 50748 27047 0
 ZCorner 50748 27031 0
 ZCorner 50709 27047 1
@@ -2356,7 +2360,7 @@ ZLayer 15
 ZAux 17 E
 ZClearance 80 T
 ZMinThickness 100
-ZOptions 1 16 F 80 120
+ZOptions 1 16 S 80 120
 ZCorner 61890 28937 0
 ZCorner 61890 27165 0
 ZCorner 55551 27165 0
