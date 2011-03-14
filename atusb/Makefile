@@ -65,8 +65,9 @@ gerber:
 fab:		gerber
 		pcbnew --plot=dxf -l PCB_Edges $(NAME).brd
 		pcbnew --drill $(NAME).brd
-		tar Ccfz .. $(NAME)-$(VERSION).tar.gz $(PCB_FILES:%=$(DIR)/%)
-		cd ..; zip -l $(DIR)/$(NAME)-$(VERSION).zip \
+		tar Ccfz .. $(NAME)-pcb-$(VERSION).tar.gz \
+		  $(PCB_FILES:%=$(DIR)/%)
+		cd ..; zip -l $(DIR)/$(NAME)-pcb-$(VERSION).zip \
 		  $(PCB_FILES:%=$(DIR)/%)
 
 gerbv:
@@ -76,6 +77,10 @@ gerbv:
 		  $(NAME)-Front.gtl \
 		  $(NAME)-Mask_Front.gts \
 		  $(NAME)-Back.gbl
+
+upload:
+		qippl $(NAME)-pcb-$(VERSION).tar.gz \
+		  $(NAME)-pcb-$(VERSION).zip wpan/fab
 
 # --- Cleanup -----------------------------------------------------------------
 
