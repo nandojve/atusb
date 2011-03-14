@@ -61,14 +61,14 @@ PCB_FILES = README-PCB $(NAME)-PCB_Edges.dxf $(NAME).drl \
 	    $(NAME)-PCB_Edges.gbr
 
 gerber:
-		pcbnew --plot=gerber \
+		pcbnew --plot=gerber --origin=aux \
 		  -l `pcbnew --list-layers $(NAME).brd | tr '\012' ,` \
 		  --fill-all-zones $(NAME).brd \
 		  --exclude-pcb-edge
 
 fab:		gerber
-		pcbnew --plot=dxf -l PCB_Edges $(NAME).brd
-		pcbnew --drill $(NAME).brd
+		pcbnew --plot=dxf --origin=aux -l PCB_Edges $(NAME).brd
+		pcbnew --drill --origin=aux $(NAME).brd
 		tar Ccfz .. $(NAME)-pcb-$(VERSION).tar.gz \
 		  $(PCB_FILES:%=$(DIR)/%)
 		cd ..; zip -l $(DIR)/$(NAME)-pcb-$(VERSION).zip \
