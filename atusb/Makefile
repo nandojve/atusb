@@ -1,4 +1,5 @@
 PLOT_BRD = pcbnew --plot=ps_a4 --ps-pads-drill-opt=none --fill-all-zones
+CPTX = ../../eda-tools/mlztx/cptx
 
 NAME = atusb
 VERSION = 110214
@@ -29,6 +30,9 @@ front:		$(NAME)-Front.ps
 
 back:		$(NAME)-Back.ps
 		lpr $<
+
+cptx:
+		$(CPTX) -i $(NAME).brd 0 47000 48100 21 46811 40591
 
 # --- DIY production (toner transfer) -----------------------------------------
 
