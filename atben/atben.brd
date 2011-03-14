@@ -1,4 +1,4 @@
-PCBNEW-BOARD Version 1 date Mon Mar 14 02:11:07 2011
+PCBNEW-BOARD Version 1 date Mon Mar 14 03:15:39 2011
 
 # Created by Pcbnew(2010-12-27 BZR 2685)-unstable
 
@@ -983,13 +983,13 @@ Po 236 -236
 $EndPAD
 $EndMODULE  QFN32-VHHD-6
 $MODULE 0805-6
-Po 51535 26102 0 15 4D5AF65D 4C80D3C0 ~~
+Po 51535 26102 0 15 4D7DB288 4C80D3C0 ~~
 Li 0805-6
 Sc 4C80D3C0
 AR /4D22A4C6
 Op 0 0 0
 At SMD 
-T0 750 -300 200 200 0 40 N V 25 N"B1"
+T0 715 -2 200 200 0 40 N V 25 N"B1"
 T1 750 -700 200 200 0 40 N I 25 N"2450FB15L0001"
 DS -443 522 -443 -522 50 21
 DS -443 -522 443 -522 50 21
@@ -1891,7 +1891,7 @@ ZLayer 0
 ZAux 9 E
 ZClearance 80 T
 ZMinThickness 100
-ZOptions 1 16 S 80 120
+ZOptions 1 16 F 80 120
 ZCorner 51772 35394 0
 ZCorner 51772 29961 0
 ZCorner 50709 28898 0
@@ -2014,7 +2014,7 @@ ZLayer 0
 ZAux 7 E
 ZClearance 80 T
 ZMinThickness 100
-ZOptions 1 16 S 80 120
+ZOptions 1 16 F 80 120
 ZCorner 48740 29370 0
 ZCorner 49252 28858 0
 ZCorner 49252 26299 0
@@ -2065,7 +2065,7 @@ ZLayer 0
 ZAux 19 E
 ZClearance 80 T
 ZMinThickness 100
-ZOptions 1 16 S 80 120
+ZOptions 1 16 F 80 120
 ZCorner 52323 29331 0
 ZCorner 52323 28937 0
 ZCorner 54291 28937 0
@@ -2125,7 +2125,7 @@ ZLayer 0
 ZAux 17 E
 ZClearance 80 T
 ZMinThickness 100
-ZOptions 1 16 S 80 120
+ZOptions 1 16 F 80 120
 ZCorner 61890 28937 0
 ZCorner 61890 27165 0
 ZCorner 55551 27165 0
@@ -2209,7 +2209,7 @@ ZLayer 15
 ZAux 17 E
 ZClearance 80 T
 ZMinThickness 100
-ZOptions 1 16 S 80 120
+ZOptions 1 16 F 80 120
 ZCorner 52323 29331 0
 ZCorner 52323 28937 0
 ZCorner 54291 28937 0
@@ -2316,7 +2316,7 @@ ZLayer 0
 ZAux 13 E
 ZClearance 80 T
 ZMinThickness 100
-ZOptions 1 16 S 80 120
+ZOptions 1 16 F 80 120
 ZCorner 51220 27835 0
 ZCorner 51378 27677 0
 ZCorner 52047 27677 0
@@ -2349,7 +2349,7 @@ ZLayer 15
 ZAux 3 E
 ZClearance 80 T
 ZMinThickness 100
-ZOptions 1 16 S 200 200
+ZOptions 1 16 F 200 200
 ZCorner 50748 27047 0
 ZCorner 50748 27031 0
 ZCorner 50709 27047 1
@@ -2360,7 +2360,7 @@ ZLayer 15
 ZAux 17 E
 ZClearance 80 T
 ZMinThickness 100
-ZOptions 1 16 S 80 120
+ZOptions 1 16 F 80 120
 ZCorner 61890 28937 0
 ZCorner 61890 27165 0
 ZCorner 55551 27165 0
