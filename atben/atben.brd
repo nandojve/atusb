@@ -1,4 +1,4 @@
-PCBNEW-BOARD Version 1 date Mon Mar 14 03:15:39 2011
+PCBNEW-BOARD Version 1 date Mon Mar 14 09:56:35 2011
 
 # Created by Pcbnew(2010-12-27 BZR 2685)-unstable
 
@@ -9,7 +9,7 @@ EnabledLayers 12E88001
 Links 55
 NoConn 0
 Di 47751 24269 62686 35581
-Ndraw 22
+Ndraw 23
 Ntrack 365
 Nzone 0
 BoardThickness 630
@@ -61,7 +61,7 @@ PadSize 786 196
 PadDrill 0
 Pad2MaskClearance 20
 Pad2PasteClearance -10
-AuxiliaryAxisOrg 0 0
+AuxiliaryAxisOrg 48071 35472
 $EndSETUP
 
 $EQUIPOT
@@ -1150,6 +1150,11 @@ $TEXTPCB
 Te "110219"
 Po 51950 30550 400 400 70 900
 De 15 1 0 Normal
+$EndTEXTPCB
+$TEXTPCB
+Te "110219"
+Po 51950 30550 400 400 70 900
+De 21 1 0 Normal
 $EndTEXTPCB
 $TRACK
 Po 0 49233 28680 49233 28877 80 -1
@@ -2500,9 +2505,4 @@ $FILLSEGMENTS
 54420 28847 61840 28847
 $endFILLSEGMENTS
 $endCZONE_OUTLINE
-$TEXTPCB
-Te "110219"
-Po 51950 30550 400 400 70 900
-De 21 1 0 Normal
-$EndTEXTPCB
 $EndBOARD
