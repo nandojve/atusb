@@ -1,5 +1,5 @@
 PLOT_BRD = pcbnew --plot=ps_a4 --ps-pads-drill-opt=none --fill-all-zones
-MLZTX = ../../eda-tools/mlztx/mlztx
+CPTX = ../../eda-tools/mlztx/cptx
 
 NAME = atben
 VERSION = 110314
@@ -33,8 +33,8 @@ back:		$(NAME)-Back.ps
 
 # Copy text from front copper to front silk screen
 
-mlztx:
-		$(MLZTX) -i $(NAME).brd 15 21
+cptx:
+		$(CPTX) -i $(NAME).brd 15 51950 30550 21 51950 30550
 
 # --- Industrial production ---------------------------------------------------
 
