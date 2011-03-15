@@ -98,3 +98,8 @@ clean:
 		rm -f $(NAME)-Back.gbl $(NAME)-Mask_Back.gbs
 		rm -f $(NAME)-SilkS_Back.gbo $(NAME)-SoldP_Back.gbp
 		rm -f $(NAME)-Comments.gbr $(NAME)-Drawings.gbr
+
+spotless:	clean
+		rm -f '$$'savepcb.000 '$$'savepcb.brd
+		rm -f $(NAME)-cache.lib $(NAME).000 $(NAME).bak
+		rm -f $(NAME).net
