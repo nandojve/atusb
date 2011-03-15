@@ -97,4 +97,4 @@ clean:
 		rm -f $(NAME)-SilkS_Front.gto $(NAME)-SoldP_Front.gtp
 		rm -f $(NAME)-Back.gbl $(NAME)-Mask_Back.gbs
 		rm -f $(NAME)-SilkS_Back.gbo $(NAME)-SoldP_Back.gbp
-		rm -f $(NAME)-Comments.gbr
+		rm -f $(NAME)-Comments.gbr $(NAME)-Drawings.gbr
