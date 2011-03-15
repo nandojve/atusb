@@ -1,8 +1,8 @@
 Board characteristics:
 
 - stacking: 2 layers, solder mask on front and back, silk screen on front
-- board material: FR4, thickness 0.8 mm, 1 oz copper
-- surface finish: TBD, both ENIG and tin are acceptable
+- board material: FR4, thickness 0.8 mm (1/32"), 1 oz copper
+- surface finish: TBD, ENIG is preferred
 - via holes: diameter is nominally 10 mil, but any size <= 15 mil can be used
 - mechanical tolerances: <= +/- 0.1 mm on all sides
 
@@ -22,7 +22,7 @@ atusb.drl		Excellon drill file
 
 Interpretation of files:
 
-- do not print PCB edges on front/back copper
+- for all coordinates, the origin is the lower left corner of the board
 - do not print component values on silk screen
 - the center (!) of the board edge line marks the true board edge, e.g.,
 
