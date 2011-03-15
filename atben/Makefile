@@ -2,7 +2,7 @@ PLOT_BRD = pcbnew --plot=ps_a4 --ps-pads-drill-opt=none --fill-all-zones
 MLZTX = ../../eda-tools/mlztx/mlztx
 
 NAME = atben
-VERSION = 110219
+VERSION = 110314
 DIR = $(NAME)
 
 .PHONY:		all gen generate sch brd xpdf front back clean
