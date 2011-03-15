@@ -1,5 +1,6 @@
 PLOT_BRD = pcbnew --plot=ps_a4 --ps-pads-drill-opt=none --fill-all-zones
 CPTX = ../../eda-tools/mlztx/cptx
+GMERGE = ../../eda-tools/gerber/gmerge
 
 NAME = atusb
 VERSION = 110314
@@ -65,6 +66,9 @@ gerber:
 		  -l `pcbnew --list-layers $(NAME).brd | tr '\012' ,` \
 		  --fill-all-zones $(NAME).brd \
 		  --exclude-pcb-edge
+		$(GMERGE) $(NAME)-SilkS_Front.gto $(NAME)-Comments.gbr >_tmp \
+		  || { rm -rf _tmp; exit 1; }
+		mv _tmp $(NAME)-SilkS_Front.gto
 
 fab:		gerber
 		pcbnew --plot=dxf --origin=aux -l PCB_Edges $(NAME).brd
@@ -76,8 +80,7 @@ fab:		gerber
 		  $(PCB_FILES:%=$(DIR)/%)
 
 gerbv:
-		gerbv $(NAME)-Comments.gbr \
-		  $(NAME)-SilkS_Front.gto \
+		gerbv $(NAME)-SilkS_Front.gto \
 		  $(NAME)-SoldP_Front.gtp \
 		  $(NAME)-Front.gtl \
 		  $(NAME)-Mask_Front.gts \
@@ -96,7 +99,7 @@ clean:
 		rm -f $(NAME)-SilkS_Front.gto $(NAME)-SoldP_Front.gtp
 		rm -f $(NAME)-Back.gbl $(NAME)-Mask_Back.gbs
 		rm -f $(NAME)-SilkS_Back.gbo $(NAME)-SoldP_Back.gbp
-		rm -f $(NAME)-Comments.gbr
+		rm -f $(NAME)-Comments.gbr $(NAME)-Drawings.gbr
 
 spotless:	clean
 		rm -f '$$'savepcb.brd
