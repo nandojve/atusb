@@ -52,9 +52,10 @@ gerber:
 fab:		gerber
 		pcbnew --plot=dxf --origin=aux -l PCB_Edges $(NAME).brd
 		pcbnew --drill --origin=aux $(NAME).brd
-		tar Ccfz .. $(NAME)-pcb-$(VERSION).tar.gz \
+		mkdir -p fab
+		tar Ccfz .. fab/$(NAME)-pcb-$(VERSION).tar.gz \
 		  $(PCB_FILES:%=$(DIR)/%)
-		cd ..; zip -l $(DIR)/$(NAME)-pcb-$(VERSION).zip \
+		cd ..; zip -l $(DIR)/fab/$(NAME)-pcb-$(VERSION).zip \
 		  $(PCB_FILES:%=$(DIR)/%)
 
 gerbv:
@@ -66,8 +67,8 @@ gerbv:
 		  $(NAME)-Back.gbl
 
 upload:
-		qippl $(NAME)-pcb-$(VERSION).tar.gz \
-		  $(NAME)-pcb-$(VERSION).zip wpan/fab
+		qippl fab/$(NAME)-pcb-$(VERSION).tar.gz \
+		  fab/$(NAME)-pcb-$(VERSION).zip wpan/fab
 
 # --- DIY production (toner transfer) -----------------------------------------
 

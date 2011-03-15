@@ -69,9 +69,10 @@ gerber:
 fab:		gerber
 		pcbnew --plot=dxf --origin=aux -l PCB_Edges $(NAME).brd
 		pcbnew --drill --origin=aux $(NAME).brd
-		tar Ccfz .. $(NAME)-pcb-$(VERSION).tar.gz \
+		mkdir -p fab
+		tar Ccfz .. fab/$(NAME)-pcb-$(VERSION).tar.gz \
 		  $(PCB_FILES:%=$(DIR)/%)
-		cd ..; zip -l $(DIR)/$(NAME)-pcb-$(VERSION).zip \
+		cd ..; zip -l $(DIR)/fab/$(NAME)-pcb-$(VERSION).zip \
 		  $(PCB_FILES:%=$(DIR)/%)
 
 gerbv:
@@ -83,8 +84,8 @@ gerbv:
 		  $(NAME)-Back.gbl
 
 upload:
-		qippl $(NAME)-pcb-$(VERSION).tar.gz \
-		  $(NAME)-pcb-$(VERSION).zip wpan/fab
+		qippl fab/$(NAME)-pcb-$(VERSION).tar.gz \
+		  fab/$(NAME)-pcb-$(VERSION).zip wpan/fab
 
 # --- Cleanup -----------------------------------------------------------------
 
@@ -96,3 +97,10 @@ clean:
 		rm -f $(NAME)-Back.gbl $(NAME)-Mask_Back.gbs
 		rm -f $(NAME)-SilkS_Back.gbo $(NAME)-SoldP_Back.gbp
 		rm -f $(NAME)-Comments.gbr
+
+spotless:	clean
+		rm -f '$$'savepcb.brd
+		rm -f $(NAME)-cache.bak atrf.bak usb.bak
+		rm -f $(NAME).000
+		rm -f $(NAME).net
+		
