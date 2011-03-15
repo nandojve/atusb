@@ -2,7 +2,7 @@ PLOT_BRD = pcbnew --plot=ps_a4 --ps-pads-drill-opt=none --fill-all-zones
 CPTX = ../../eda-tools/mlztx/cptx
 
 NAME = atusb
-VERSION = 110214
+VERSION = 110314
 DIR = $(NAME)
 
 .PHONY:		all gen generate sch brd xpdf front back clean

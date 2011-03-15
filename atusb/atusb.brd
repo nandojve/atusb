@@ -1,4 +1,4 @@
-PCBNEW-BOARD Version 1 date Mon Mar 14 13:22:43 2011
+PCBNEW-BOARD Version 1 date Mon Mar 14 21:37:48 2011
 
 # Created by Pcbnew(2010-12-27 BZR 2685)-unstable
 
@@ -20,8 +20,8 @@ $EndGENERAL
 $SHEETDESCR
 Sheet A4 11700 8267
 Title "IEEE 802.15.4 USB Transceiver (AT86RF231)"
-Date "14 mar 2011"
-Rev "20110214"
+Date "15 mar 2011"
+Rev "20110314"
 Comp "Werner Almesberger"
 Comment1 ""
 Comment2 ""
@@ -1918,7 +1918,7 @@ Po 0 46150 51800 46150 50250 50
 De 25 0 900 0 0
 $EndDRAWSEGMENT
 $TEXTPCB
-Te "20110214"
+Te "20110314"
 Po 47000 48100 300 300 75 900
 De 0 0 0 Normal
 $EndTEXTPCB
@@ -1972,11 +1972,6 @@ $DRAWSEGMENT
 Po 0 46350 36950 52750 36950 50
 De 28 0 900 0 0
 $EndDRAWSEGMENT
-$TEXTPCB
-Te "20110214"
-Po 46811 40591 300 300 70 900
-De 21 1 0 Normal
-$EndTEXTPCB
 $TRACK
 Po 0 47750 45400 50100 47750 80 -1
 De 0 0 1 0 0
@@ -2957,7 +2952,7 @@ ZLayer 0
 ZAux 8 E
 ZClearance 100 T
 ZMinThickness 100
-ZOptions 1 16 S 200 200
+ZOptions 1 16 F 200 200
 ZCorner 50200 43350 0
 ZCorner 51050 42500 0
 ZCorner 52650 42500 0
@@ -3035,7 +3030,7 @@ ZLayer 0
 ZAux 5 E
 ZClearance 100 T
 ZMinThickness 100
-ZOptions 1 16 S 200 200
+ZOptions 1 16 F 200 200
 ZCorner 52650 43950 0
 ZCorner 52650 42600 0
 ZCorner 51100 42600 0
@@ -3071,7 +3066,7 @@ ZLayer 0
 ZAux 9 E
 ZClearance 100 T
 ZMinThickness 100
-ZOptions 1 16 S 200 200
+ZOptions 1 16 F 200 200
 ZCorner 52650 46850 0
 ZCorner 52650 44050 0
 ZCorner 50400 44050 0
@@ -3124,7 +3119,7 @@ ZLayer 0
 ZAux 13 E
 ZClearance 100 T
 ZMinThickness 100
-ZOptions 1 16 S 200 200
+ZOptions 1 16 F 200 200
 ZCorner 52650 51700 0
 ZCorner 52650 47000 0
 ZCorner 51200 47000 0
@@ -3484,7 +3479,7 @@ ZLayer 15
 ZAux 9 E
 ZClearance 100 T
 ZMinThickness 100
-ZOptions 1 16 S 200 200
+ZOptions 1 16 F 200 200
 ZCorner 52650 46850 0
 ZCorner 52650 44050 0
 ZCorner 50800 44050 0
@@ -3571,7 +3566,7 @@ ZLayer 15
 ZAux 8 E
 ZClearance 100 T
 ZMinThickness 100
-ZOptions 1 16 S 200 200
+ZOptions 1 16 F 200 200
 ZCorner 50700 42850 0
 ZCorner 51050 42500 0
 ZCorner 52650 42500 0
@@ -3714,7 +3709,7 @@ ZLayer 15
 ZAux 5 E
 ZClearance 100 T
 ZMinThickness 100
-ZOptions 1 16 S 200 200
+ZOptions 1 16 F 200 200
 ZCorner 52650 43950 0
 ZCorner 52650 42600 0
 ZCorner 51100 42600 0
@@ -3748,4 +3743,9 @@ $FILLSEGMENTS
 52411 43850 52600 43850
 $endFILLSEGMENTS
 $endCZONE_OUTLINE
+$TEXTPCB
+Te "20110314"
+Po 46811 40591 300 300 70 900
+De 21 1 0 Normal
+$EndTEXTPCB
 $EndBOARD
