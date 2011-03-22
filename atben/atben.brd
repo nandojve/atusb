@@ -1,4 +1,4 @@
-PCBNEW-BOARD Version 1 date Tue Mar 22 06:48:56 2011
+PCBNEW-BOARD Version 1 date Tue Mar 22 12:33:39 2011
 
 # Created by Pcbnew(2010-12-27 BZR 2685)-unstable
 
@@ -9,7 +9,7 @@ EnabledLayers 13E88001
 Links 55
 NoConn 0
 Di 47751 24269 62686 35581
-Ndraw 25
+Ndraw 26
 Ntrack 363
 Nzone 0
 BoardThickness 630
@@ -1055,6 +1055,11 @@ Ne 1 "/CLKM"
 Po 0 0
 $EndPAD
 $EndMODULE  PAD_2mm
+$TEXTPCB
+Te "35.5 x 26.3 mm"
+Po 57300 32700 600 600 100 0
+De 24 1 0 Normal
+$EndTEXTPCB
 $DRAWSEGMENT
 Po 0 51535 26732 51457 26810 50
 De 21 0 900 0 0
@@ -1150,8 +1155,8 @@ Po 62950 27100 600 600 100 2700
 De 24 1 0 Normal
 $EndTEXTPCB
 $TEXTPCB
-Te "35.5 x 26.3 mm"
-Po 57300 32700 600 600 100 0
+Te "Grid: 0.1 mm"
+Po 56535 34291 600 600 100 0
 De 24 1 0 Normal
 $EndTEXTPCB
 $TEXTPCB
@@ -1900,7 +1905,7 @@ ZLayer 0
 ZAux 9 E
 ZClearance 80 T
 ZMinThickness 100
-ZOptions 1 16 F 80 120
+ZOptions 1 16 S 80 120
 ZCorner 51772 35394 0
 ZCorner 51772 29961 0
 ZCorner 50709 28898 0
@@ -2023,7 +2028,7 @@ ZLayer 0
 ZAux 7 E
 ZClearance 80 T
 ZMinThickness 100
-ZOptions 1 16 F 80 120
+ZOptions 1 16 S 80 120
 ZCorner 48740 29370 0
 ZCorner 49252 28858 0
 ZCorner 49252 26299 0
@@ -2074,7 +2079,7 @@ ZLayer 0
 ZAux 19 E
 ZClearance 80 T
 ZMinThickness 100
-ZOptions 1 16 F 80 120
+ZOptions 1 16 S 80 120
 ZCorner 52323 29331 0
 ZCorner 52323 28937 0
 ZCorner 54291 28937 0
@@ -2134,7 +2139,7 @@ ZLayer 0
 ZAux 17 E
 ZClearance 80 T
 ZMinThickness 100
-ZOptions 1 16 F 80 120
+ZOptions 1 16 S 80 120
 ZCorner 61890 28937 0
 ZCorner 61890 27165 0
 ZCorner 55551 27165 0
@@ -2218,7 +2223,7 @@ ZLayer 15
 ZAux 17 E
 ZClearance 80 T
 ZMinThickness 100
-ZOptions 1 16 F 80 120
+ZOptions 1 16 S 80 120
 ZCorner 52323 29331 0
 ZCorner 52323 28937 0
 ZCorner 54291 28937 0
@@ -2325,7 +2330,7 @@ ZLayer 0
 ZAux 13 E
 ZClearance 80 T
 ZMinThickness 100
-ZOptions 1 16 F 80 120
+ZOptions 1 16 S 80 120
 ZCorner 51220 27835 0
 ZCorner 51378 27677 0
 ZCorner 52047 27677 0
@@ -2358,7 +2363,7 @@ ZLayer 15
 ZAux 3 E
 ZClearance 80 T
 ZMinThickness 100
-ZOptions 1 16 F 200 200
+ZOptions 1 16 S 200 200
 ZCorner 50748 27047 0
 ZCorner 50748 27031 0
 ZCorner 50709 27047 1
@@ -2369,7 +2374,7 @@ ZLayer 15
 ZAux 17 E
 ZClearance 80 T
 ZMinThickness 100
-ZOptions 1 16 F 80 120
+ZOptions 1 16 S 80 120
 ZCorner 61890 28937 0
 ZCorner 61890 27165 0
 ZCorner 55551 27165 0
@@ -2515,7 +2520,7 @@ ZLayer 22
 ZAux 10 E
 ZClearance 80 T
 ZMinThickness 100
-ZOptions 0 16 F 200 200
+ZOptions 0 16 S 200 200
 ZCorner 51850 35472 0
 ZCorner 51850 33465 0
 ZCorner 52402 32913 0
