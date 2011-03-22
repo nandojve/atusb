@@ -6,6 +6,9 @@ NAME = atben
 VERSION = 110314
 DIR = $(NAME)
 
+SCH=$(shell pwd)/$(NAME).sch
+BRD=$(shell pwd)/$(NAME).brd
+
 .PHONY:		all gen generate sch brd xpdf front back clean
 .PHONY:		gerber gerbv
 
@@ -14,14 +17,14 @@ all:
 		@exit 1
 
 gen generate:
-		eeschema --plot=ps `pwd`/$(NAME).sch
+		eeschema --plot=ps $(SCH)
 		# need scripts
 
 sch:
-		eeschema `pwd`/$(NAME).sch
+		eeschema $(SCH)
 
 brd:
-		pcbnew `pwd`/$(NAME).brd
+		pcbnew $(BRD)
 
 xpdf:
 		xpdf $(NAME).pdf
@@ -46,16 +49,16 @@ PCB_FILES = README-PCB $(NAME)-PCB_Edges.dxf $(NAME).drl \
 
 gerber:
 		pcbnew --plot=gerber --origin=aux \
-		  -l `pcbnew --list-layers $(NAME).brd | tr '\012' ,` \
-		  --fill-all-zones $(NAME).brd \
-		  --exclude-pcb-edge
+		  -l `pcbnew --list-layers $(BRD) | tr '\012' ,` \
+		  --fill-all-zones --exclude-pcb-edge \
+		  $(BRD)
 		$(GMERGE) $(NAME)-SilkS_Front.gto $(NAME)-Comments.gbr >_tmp \
 		  || { rm -rf _tmp; exit 1; }
 		mv _tmp $(NAME)-SilkS_Front.gto
 
 fab:		gerber
-		pcbnew --plot=dxf --origin=aux -l PCB_Edges $(NAME).brd
-		pcbnew --drill --origin=aux $(NAME).brd
+		pcbnew --plot=dxf --origin=aux -l PCB_Edges $(BRD)
+		pcbnew --drill --origin=aux $(BRD)
 		mkdir -p fab
 		tar Ccfz .. fab/$(NAME)-pcb-$(VERSION).tar.gz \
 		  $(PCB_FILES:%=$(DIR)/%)
