@@ -21,7 +21,7 @@ HOST = ben
 endif
 
 
-include ../Makefile.recurse
+include ../makefiles/Makefile.recurse
 
 .PHONY:		upload
 
