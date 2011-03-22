@@ -1,5 +1,5 @@
 NAME = atben
-VERSION = 110314
+VERSION = 110322
 
 include ../makefiles/Makefile.kicad
 
