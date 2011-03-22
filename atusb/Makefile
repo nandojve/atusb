@@ -1,6 +1,7 @@
 PLOT_BRD = pcbnew --plot=ps_a4 --ps-pads-drill-opt=none --fill-all-zones
 CPTX = ../../eda-tools/mlztx/cptx
 GMERGE = ../../eda-tools/gerber/gmerge
+PRETTYGERBV=../../eda-tools/gerber/prettygerbv
 
 NAME = atusb
 VERSION = 110314
@@ -94,6 +95,14 @@ upload:
 		qippl fab/$(NAME)-pcb-$(VERSION).tar.gz \
 		  fab/$(NAME)-pcb-$(VERSION).zip wpan/fab
 
+# --- Overview images ---------------------------------------------------------
+
+overview:	gerber
+		$(PRETTYGERBV) $(NAME) all overview.png
+
+uoverview:	overview
+		qippl overview.png wpan/tmp/$(NAME)-$(VERSION)-overview.png
+
 # --- Cleanup -----------------------------------------------------------------
 
 clean:
@@ -104,6 +113,7 @@ clean:
 		rm -f $(NAME)-Back.gbl $(NAME)-Mask_Back.gbs
 		rm -f $(NAME)-SilkS_Back.gbo $(NAME)-SoldP_Back.gbp
 		rm -f $(NAME)-Comments.gbr $(NAME)-Drawings.gbr
+		rm -f overview.png
 
 spotless:	clean
 		rm -f '$$'savepcb.brd
