@@ -87,6 +87,7 @@ gerbv:
 		  $(NAME)-SoldP_Front.gtp \
 		  $(NAME)-Front.gtl \
 		  $(NAME)-Mask_Front.gts \
+		  $(NAME)-Mask_Back.gbs \
 		  $(NAME)-Back.gbl
 
 upload:
@@ -109,4 +110,3 @@ spotless:	clean
 		rm -f $(NAME)-cache.bak atrf.bak usb.bak
 		rm -f $(NAME).000
 		rm -f $(NAME).net
-		

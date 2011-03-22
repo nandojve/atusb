@@ -70,6 +70,7 @@ gerbv:
 		  $(NAME)-SoldP_Front.gtp \
 		  $(NAME)-Front.gtl \
 		  $(NAME)-Mask_Front.gts \
+		  $(NAME)-Mask_Back.gbs \
 		  $(NAME)-Back.gbl
 
 upload:

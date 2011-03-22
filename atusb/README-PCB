@@ -12,7 +12,7 @@ atusb-SilkS_Front.gto	Front silk screen
 atusb-Mask_Front.gts	Front solder mask
 atusb-Front.gtl		Front copper
 atusb-Back.gbl		Back copper
-atusb-Mask_Back.gbs	Back solder mask (empty)
+atusb-Mask_Back.gbs	Back solder mask
 
 Other design files:
 

@@ -12,7 +12,7 @@ atben-SilkS_Front.gto	Front silk screen
 atben-Mask_Front.gts	Front solder mask
 atben-Front.gtl		Front copper
 atben-Back.gbl		Back copper
-atben-Mask_Back.gbs	Back solder mask (empty)
+atben-Mask_Back.gbs	Back solder mask
 
 Other design files:
 
