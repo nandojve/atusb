@@ -101,9 +101,13 @@ $(GERBERS):	$(NAME).brd Makefile
 
 fab:		fab-pcb fab-smt
 
-fab-pcb:	$(PCB_FILES)
+$(NAME)-PCB_Edges.dxf: $(NAME).brd
 		pcbnew --plot=dxf --origin=aux -l PCB_Edges $(BRD)
+
+$(NAME).drl:	$(NAME).brd
 		pcbnew --drill --origin=aux $(BRD)
+
+fab-pcb:	$(PCB_FILES)
 		mkdir -p fab
 		tar Ccfz .. fab/$(NAME)-pcb-$(VERSION).tar.gz \
 		  $(PCB_FILES:%=$(DIR)/%)
@@ -142,8 +146,12 @@ fab-smt:	$(SMT_FILES)
 		  $(SMT_FILES:%=$(DIR)/%)
 
 upload:
-		qippl fab/$(NAME)-pcb-$(VERSION).tar.gz \
-		  fab/$(NAME)-pcb-$(VERSION).zip wpan/fab
+		qippl \
+		  fab/$(NAME)-pcb-$(VERSION).tar.gz \
+		  fab/$(NAME)-pcb-$(VERSION).zip \
+		  fab/$(NAME)-smt-$(VERSION).tar.gz \
+		  fab/$(NAME)-smt-$(VERSION).zip \
+		  wpan/fab
 
 # --- Overview images ---------------------------------------------------------
 
