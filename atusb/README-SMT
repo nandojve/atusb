@@ -11,11 +11,12 @@ Board characteristics:
 
 Design files:
 
+atusb-front.png		Illustration of the PCB's front side (with silk screen)
 atusb-bom.csv		Bill of materials
 atusb-pos.csv		Automatic insertion file
 * footprints
 
-The PCB design files are in a separate archive, atusb-pcb-*
+The PCB design files (Gerbers, etc.) are in a separate archive, atusb-pcb-*
 
 
 Interpretation of files:

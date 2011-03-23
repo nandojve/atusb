@@ -31,7 +31,7 @@ BRD=$(shell pwd)/$(NAME).brd
 
 
 .PHONY:		all gen generate sch brd xpdf front back clean
-.PHONY:		gerber gerbv fab
+.PHONY:		gerber gerbv fab fab-pcb fab-smt
 
 all:
 		@echo "make what ? target: gen sch brd xpdf front back clean"
@@ -77,14 +77,18 @@ back:		$(NAME)-Back.ps
 
 # --- Industrial production ---------------------------------------------------
 
-PCB_FILES = README-PCB $(NAME)-PCB_Edges.dxf $(NAME).drl \
-	    $(NAME)-SilkS_Front.gto $(NAME)-Mask_Front.gts \
-	    $(NAME)-Front.gtl $(NAME)-Back.gbl $(NAME)-Mask_Back.gbs \
-	    $(NAME)-PCB_Edges.gbr
+GERBERS = $(NAME)-SilkS_Front.gto $(NAME)-Mask_Front.gts \
+	  $(NAME)-Front.gtl $(NAME)-Back.gbl $(NAME)-Mask_Back.gbs \
+	  $(NAME)-PCB_Edges.gbr
 
-SMT_FILES = README-SMT $(NAME)-bom.csv $(NAME)-pos.csv
+PCB_FILES = README-PCB $(NAME)-front.png $(NAME)-back.png \
+	    $(NAME)-PCB_Edges.dxf $(NAME).drl $(GERBERS)
 
-gerber:
+SMT_FILES = README-SMT $(NAME)-front.png $(NAME)-bom.csv $(NAME)-pos.csv
+
+gerber:		$(GERBERS)
+
+$(GERBERS):	$(NAME).brd Makefile
 		pcbnew --plot=gerber --origin=aux \
 		  -l `pcbnew --list-layers $(BRD) | tr '\012' ,` \
 		  --fill-all-zones --exclude-pcb-edge \
@@ -138,11 +142,18 @@ upload:
 
 # --- Overview images ---------------------------------------------------------
 
-overview:	gerber
-		$(PRETTYGERBV) $(NAME) all overview.png
+$(NAME)-front.png: gerber
+		$(PRETTYGERBV) $(NAME) front $(NAME)-front.png
 
-uoverview:	overview
-		qippl overview.png wpan/tmp/$(NAME)-$(VERSION)-overview.png
+$(NAME)-back.png: gerber
+		$(PRETTYGERBV) $(NAME) back $(NAME)-back.png
+
+$(NAME)-overview.png: gerber
+		$(PRETTYGERBV) $(NAME) all $(NAME)-overview.png
+
+uoverview:	$(NAME)-overview.png
+		qippl $(NAME)-overview.png \
+		  wpan/tmp/$(NAME)-$(VERSION)-overview.png
 
 # --- Cleanup -----------------------------------------------------------------
 
@@ -154,7 +165,7 @@ clean::
 		rm -f $(NAME)-Back.gbl $(NAME)-Mask_Back.gbs
 		rm -f $(NAME)-SilkS_Back.gbo $(NAME)-SoldP_Back.gbp
 		rm -f $(NAME)-Comments.gbr $(NAME)-Drawings.gbr
-		rm -f overview.png
+		rm -f $(NAME)-overview.png $(NAME)-front.png $(NAME)-back.png
 		rm -f $(NAME)Front.pos $(NAME)-pos.csv
 
 spotless::	clean

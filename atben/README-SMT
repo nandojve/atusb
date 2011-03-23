@@ -9,11 +9,12 @@ Board characteristics:
 
 Design files:
 
+atben-front.png		Illustration of the PCB's front side (with silk screen)
 atben-bom.csv		Bill of materials
 atben-pos.csv		Automatic insertion file
 * footprints
 
-The PCB design files are in a separate archive, atben-pcb-*
+The PCB design files (Gerbers, etc.) are in a separate archive, atben-pcb-*
 
 
 Interpretation of files:

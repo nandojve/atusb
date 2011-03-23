@@ -6,6 +6,7 @@ Board characteristics:
 - via holes: diameter is nominally 10 mil, but any size <= 15 mil can be used
 - mechanical tolerances: <= +/- 0.1 mm on all sides
 
+
 Layer stacking, from top to bottom:
 
 atusb-SilkS_Front.gto	Front silk screen
@@ -14,11 +15,15 @@ atusb-Front.gtl		Front copper
 atusb-Back.gbl		Back copper
 atusb-Mask_Back.gbs	Back solder mask
 
+
 Other design files:
 
+atusb-front.png		Illustration of the PCB's front side (without holes)
+atusb-back.png		idem, for the back side
 atusb-PCB_Edges.gbr	Board edges, for routing (Gerber)
 atusb.dxf		idem (AutoCAD DXF)
 atusb.drl		Excellon drill file
+
 
 Interpretation of files:
 
