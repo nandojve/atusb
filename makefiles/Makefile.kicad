@@ -21,7 +21,8 @@
 PLOT_BRD = pcbnew --plot=ps_a4 --ps-pads-drill-opt=none --fill-all-zones
 CPTX = ../../eda-tools/mlztx/cptx
 GMERGE = ../../eda-tools/fab/gmerge
-PRETTYGERBV=../../eda-tools/fab/prettygerbv
+PRETTYGERBV = ../../eda-tools/fab/prettygerbv
+POS2FAB = ../../eda-tools/fab/pos2fab
 
 DIR = $(shell pwd | sed 's|.*/||')
 
@@ -108,7 +109,11 @@ gerbv:
 		  $(NAME)-Back.gbl
 
 $(NAME)Front.pos:
-		pcbnew --pos --origin=abs $(BRD)
+		pcbnew --pos $(BRD)
+
+$(NAME)-pos.csv: $(NAME)Front.pos $(NAME).cmp
+		$(POS2FAB) $(NAME)Front.pos $(NAME).cmp >$@ || \
+		  { rm -f "$@"; exit 1; }
 
 upload:
 		qippl fab/$(NAME)-pcb-$(VERSION).tar.gz \
@@ -133,6 +138,7 @@ clean::
 		rm -f $(NAME)-SilkS_Back.gbo $(NAME)-SoldP_Back.gbp
 		rm -f $(NAME)-Comments.gbr $(NAME)-Drawings.gbr
 		rm -f overview.png
+		rm -f $(NAME)Front.pos $(NAME)-pos.csv
 
 spotless::	clean
 		rm -f '$$'savepcb.000 '$$'savepcb.brd
