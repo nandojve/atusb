@@ -20,8 +20,8 @@
 
 PLOT_BRD = pcbnew --plot=ps_a4 --ps-pads-drill-opt=none --fill-all-zones
 CPTX = ../../eda-tools/mlztx/cptx
-GMERGE = ../../eda-tools/gerber/gmerge
-PRETTYGERBV=../../eda-tools/gerber/prettygerbv
+GMERGE = ../../eda-tools/fab/gmerge
+PRETTYGERBV=../../eda-tools/fab/prettygerbv
 
 DIR = $(shell pwd | sed 's|.*/||')
 
@@ -106,6 +106,9 @@ gerbv:
 		  $(NAME)-Mask_Front.gts \
 		  $(NAME)-Mask_Back.gbs \
 		  $(NAME)-Back.gbl
+
+$(NAME)Front.pos:
+		pcbnew --pos --origin=abs $(BRD)
 
 upload:
 		qippl fab/$(NAME)-pcb-$(VERSION).tar.gz \
