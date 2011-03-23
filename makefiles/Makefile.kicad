@@ -99,7 +99,7 @@ $(GERBERS):	$(NAME).brd Makefile
 
 fab:		fab-pcb fab-smt
 
-fab-pcb:	gerber
+fab-pcb:	$(PCB_FILES)
 		pcbnew --plot=dxf --origin=aux -l PCB_Edges $(BRD)
 		pcbnew --drill --origin=aux $(BRD)
 		mkdir -p fab
@@ -129,7 +129,7 @@ $(NAME)-pos.csv: $(NAME)Front.pos $(NAME).cmp
 $(NAME)-bom.csv: ../bom/$(NAME)-bom.csv
 		mv $< $@
 
-fab-smt:	$(NAME)-pos.csv $(NAME)-bom.csv
+fab-smt:	$(SMT_FILES)
 		mkdir -p fab
 		tar Ccfz .. fab/$(NAME)-smt-$(VERSION).tar.gz \
 		  $(SMT_FILES:%=$(DIR)/%)
@@ -167,6 +167,7 @@ clean::
 		rm -f $(NAME)-Comments.gbr $(NAME)-Drawings.gbr
 		rm -f $(NAME)-overview.png $(NAME)-front.png $(NAME)-back.png
 		rm -f $(NAME)Front.pos $(NAME)-pos.csv
+		rm -f $(NAME)-bom.csv
 
 spotless::	clean
 		rm -f '$$'savepcb.000 '$$'savepcb.brd
