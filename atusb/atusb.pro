@@ -1,4 +1,4 @@
-update=Mon Jan 31 04:55:59 2011
+update=Wed Mar 23 13:03:50 2011
 last_client=pcbnew
 [cvpcb]
 version=1
@@ -75,3 +75,4 @@ LibName4=../modules/qfn
 LibName5=../../kicad-libs/modules/stdpass
 LibName6=../modules/xtal-4
 LibName7=../modules/0805-6
+LibName8=../../kicad-libs/modules/fiducial
