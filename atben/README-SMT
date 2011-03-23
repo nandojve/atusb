@@ -12,7 +12,7 @@ Design files:
 atben-front.png		Illustration of the PCB's front side (with silk screen)
 atben-bom.csv		Bill of materials
 atben-pos.csv		Automatic insertion file
-* footprints
+atben-footprints.pdf	Footprint reference
 
 The PCB design files (Gerbers, etc.) are in a separate archive, atben-pcb-*
 
@@ -22,3 +22,5 @@ Interpretation of files:
 - for all coordinates, the origin is the lower left corner of the board
 - coordinates in atben-pos.csv are in inches
 - rotation in atben-pos.csv is in degrees, counter-clockwise
+- in the footprint reference, footprints are shown in the 0 degree
+  orientation and with their center at the crosshairs

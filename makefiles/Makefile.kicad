@@ -23,6 +23,7 @@ CPTX = ../../eda-tools/mlztx/cptx
 GMERGE = ../../eda-tools/fab/gmerge
 PRETTYGERBV = ../../eda-tools/fab/prettygerbv
 POS2FAB = ../../eda-tools/fab/pos2fab
+FPDOC = PATH=$$PATH:../../eda-tools/fab:../../eda-tools/fpd2pdf fpdoc
 
 DIR = $(shell pwd | sed 's|.*/||')
 
@@ -84,7 +85,8 @@ GERBERS = $(NAME)-SilkS_Front.gto $(NAME)-Mask_Front.gts \
 PCB_FILES = README-PCB $(NAME)-front.png $(NAME)-back.png \
 	    $(NAME)-PCB_Edges.dxf $(NAME).drl $(GERBERS)
 
-SMT_FILES = README-SMT $(NAME)-front.png $(NAME)-bom.csv $(NAME)-pos.csv
+SMT_FILES = README-SMT $(NAME)-front.png $(NAME)-bom.csv $(NAME)-pos.csv \
+	    $(NAME)-footprints.pdf
 
 gerber:		$(GERBERS)
 
@@ -129,6 +131,9 @@ $(NAME)-pos.csv: $(NAME)Front.pos $(NAME).cmp
 $(NAME)-bom.csv: ../bom/$(NAME)-bom.csv
 		mv $< $@
 
+$(NAME)-footprints.pdf: $(NAME).pro $(NAME).cmp $(NAME)Front.pos
+		$(FPDOC) $(NAME).pro "$@" || { rm -f "$@"; exit 1; }
+
 fab-smt:	$(SMT_FILES)
 		mkdir -p fab
 		tar Ccfz .. fab/$(NAME)-smt-$(VERSION).tar.gz \
@@ -167,7 +172,7 @@ clean::
 		rm -f $(NAME)-Comments.gbr $(NAME)-Drawings.gbr
 		rm -f $(NAME)-overview.png $(NAME)-front.png $(NAME)-back.png
 		rm -f $(NAME)Front.pos $(NAME)-pos.csv
-		rm -f $(NAME)-bom.csv
+		rm -f $(NAME)-bom.csv $(NAME)-footprints.pdf
 
 spotless::	clean
 		rm -f '$$'savepcb.000 '$$'savepcb.brd
