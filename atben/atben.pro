@@ -1,4 +1,4 @@
-update=Tue Mar 22 02:30:07 2011
+update=Wed Mar 23 12:38:34 2011
 last_client=pcbnew
 [eeschema]
 version=1
@@ -75,3 +75,4 @@ LibName4=../../kicad-libs/modules/stdpass
 LibName5=../../kicad-libs/modules/8_10-card
 LibName6=../modules/0805-6
 LibName7=../modules/xtal-4
+LibName8=../../kicad-libs/modules/fiducial
