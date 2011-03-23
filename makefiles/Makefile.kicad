@@ -82,6 +82,8 @@ PCB_FILES = README-PCB $(NAME)-PCB_Edges.dxf $(NAME).drl \
 	    $(NAME)-Front.gtl $(NAME)-Back.gbl $(NAME)-Mask_Back.gbs \
 	    $(NAME)-PCB_Edges.gbr
 
+SMT_FILES = README-SMT $(NAME)-bom.csv $(NAME)-pos.csv
+
 gerber:
 		pcbnew --plot=gerber --origin=aux \
 		  -l `pcbnew --list-layers $(BRD) | tr '\012' ,` \
@@ -91,7 +93,9 @@ gerber:
 		  || { rm -rf _tmp; exit 1; }
 		mv _tmp $(NAME)-SilkS_Front.gto
 
-fab:		gerber
+fab:		fab-pcb fab-smt
+
+fab-pcb:	gerber
 		pcbnew --plot=dxf --origin=aux -l PCB_Edges $(BRD)
 		pcbnew --drill --origin=aux $(BRD)
 		mkdir -p fab
@@ -114,6 +118,19 @@ $(NAME)Front.pos:
 $(NAME)-pos.csv: $(NAME)Front.pos $(NAME).cmp
 		$(POS2FAB) $(NAME)Front.pos $(NAME).cmp >$@ || \
 		  { rm -f "$@"; exit 1; }
+
+../bom/$(NAME)-bom.csv:
+		$(MAKE) -C ../bom $(NAME)-bom.csv
+
+$(NAME)-bom.csv: ../bom/$(NAME)-bom.csv
+		mv $< $@
+
+fab-smt:	$(NAME)-pos.csv $(NAME)-bom.csv
+		mkdir -p fab
+		tar Ccfz .. fab/$(NAME)-smt-$(VERSION).tar.gz \
+		  $(SMT_FILES:%=$(DIR)/%)
+		cd ..; zip -l $(DIR)/fab/$(NAME)-smt-$(VERSION).zip \
+		  $(SMT_FILES:%=$(DIR)/%)
 
 upload:
 		qippl fab/$(NAME)-pcb-$(VERSION).tar.gz \

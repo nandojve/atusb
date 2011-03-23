@@ -1,0 +1,25 @@
+Board characteristics:
+
+- two layers, components only on front
+- smallest components are 0402 and 0.5 mm pitch QFN
+- one through-hole component: USB connector CON1
+- the following orientation markings are on the silk screen:
+  B1: circle near pin 1
+  D1: plus sign at the anode
+  U1, U2: triangle at the corner between pins 1 and 32
+  
+
+Design files:
+
+atusb-bom.csv		Bill of materials
+atusb-pos.csv		Automatic insertion file
+* footprints
+
+The PCB design files are in a separate archive, atusb-pcb-*
+
+
+Interpretation of files:
+
+- for all coordinates, the origin is the lower left corner of the board
+- coordinates in atusb-pos.csv are in inches
+- rotation in atusb-pos.csv is in degrees, counter-clockwise

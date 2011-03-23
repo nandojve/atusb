@@ -40,7 +40,7 @@ show-%:		%.ord $(DSC)
 		grep -vw ATRF $< | $(BOOM) prettyord -t - $(DSC) | \
 		  sed 's/^...  //'
 
-%-smt.csv:	%.ord $(DSC)
+%-bom.csv:	%.ord $(DSC)
 		grep -vw ATRF $< | $(BOOM) prettyord -f -c -r - $(DSC) >$@ || \
 		  { rm -f $@; exit 1; }
 
@@ -48,5 +48,5 @@ spotless:
 		$(MAKE) -C dk spotless
 		rm -f atusb.lst atusb.par atusb.ord
 		rm -f atben.lst atben.par atben.ord
-		rm -f atusb-smt.csv atben-smt.csv cntr-smt.csv
+		rm -f atusb-bom.csv atben-bom.csv cntr-bom.csv
 		rm -f cntr.lst cntr.par cntr.ord
