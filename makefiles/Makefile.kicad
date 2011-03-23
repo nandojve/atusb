@@ -125,19 +125,17 @@ gerbv:
 $(NAME)Front.pos:
 		pcbnew --pos $(BRD)
 
-$(NAME)-pos.csv: $(NAME)Front.pos $(NAME).cmp
-		$(POS2FAB) $(NAME)Front.pos $(NAME).cmp >$@ || \
-		  { rm -f "$@"; exit 1; }
+%-pos.csv:	%Front.pos %.cmp
+		$(POS2FAB) $^ >$@ || { rm -f "$@"; exit 1; }
 
 ../bom/$(NAME)-bom.csv:
 		$(MAKE) -C ../bom $(NAME)-bom.csv
 
-$(NAME)-bom.csv: ../bom/$(NAME)-bom.csv
+%-bom.csv:	../bom/%-bom.csv
 		mv $< $@
 
-$(NAME)-footprints.pdf: $(NAME).pro $(NAME).cmp $(NAME)Front.pos
-		$(FPDOC) -a FIDUCIAL $(NAME).pro "$@" || \
-		  { rm -f "$@"; exit 1; }
+%-footprints.pdf: %.pro %.cmp %Front.pos
+		$(FPDOC) -a FIDUCIAL $< "$@" || { rm -f "$@"; exit 1; }
 
 fab-smt:	$(SMT_FILES)
 		mkdir -p fab
