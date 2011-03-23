@@ -32,7 +32,7 @@ BRD=$(shell pwd)/$(NAME).brd
 
 
 .PHONY:		all gen generate sch brd xpdf front back clean
-.PHONY:		gerber gerbv fab fab-pcb fab-smt
+.PHONY:		gerber gerbv fab fab-pcb fab-smt overview
 
 all:
 		@echo "make what ? target: gen sch brd xpdf front back clean"
@@ -163,6 +163,9 @@ $(NAME)-back.png: gerber
 
 $(NAME)-overview.png: gerber
 		$(PRETTYGERBV) $(NAME) all $(NAME)-overview.png
+
+overview:	$(NAME)-overview.png
+		display $(NAME)-overview.png
 
 uoverview:	$(NAME)-overview.png
 		qippl $(NAME)-overview.png \
