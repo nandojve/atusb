@@ -1,4 +1,4 @@
-PCBNEW-BOARD Version 1 date Wed Mar 23 13:07:52 2011
+PCBNEW-BOARD Version 1 date Wed Mar 23 17:29:02 2011
 
 # Created by Pcbnew(2010-12-27 BZR 2685)-unstable
 
@@ -1867,7 +1867,7 @@ Li FIDUCIAL
 Sc 4D8A16F0
 AR 
 Op 0 0 0
-At SMD 
+At VIRTUAL 
 T0 -1000 -250 200 200 0 40 N V 25 N"FIDUCIAL"
 T1 0 150 200 200 0 40 N I 25 N"Val*"
 $PAD
@@ -1891,7 +1891,7 @@ Li FIDUCIAL
 Sc 4D8A175F
 AR 
 Op 0 0 0
-At SMD 
+At VIRTUAL 
 T0 -450 -550 200 200 0 40 N V 25 N"FIDUCIAL"
 T1 0 150 200 200 0 40 N I 25 N"Val*"
 $PAD
@@ -3010,7 +3010,7 @@ ZLayer 0
 ZAux 9 E
 ZClearance 100 T
 ZMinThickness 100
-ZOptions 1 16 S 200 200
+ZOptions 1 16 F 200 200
 ZCorner 50200 43350 0
 ZCorner 51050 42500 0
 ZCorner 51900 42500 0
@@ -3089,7 +3089,7 @@ ZLayer 0
 ZAux 6 E
 ZClearance 100 T
 ZMinThickness 100
-ZOptions 1 16 S 200 200
+ZOptions 1 16 F 200 200
 ZCorner 52650 43950 0
 ZCorner 52650 43450 0
 ZCorner 51800 42600 0
@@ -3126,7 +3126,7 @@ ZLayer 0
 ZAux 9 E
 ZClearance 100 T
 ZMinThickness 100
-ZOptions 1 16 S 200 200
+ZOptions 1 16 F 200 200
 ZCorner 52650 46850 0
 ZCorner 52650 44050 0
 ZCorner 50400 44050 0
@@ -3179,7 +3179,7 @@ ZLayer 0
 ZAux 13 E
 ZClearance 100 T
 ZMinThickness 100
-ZOptions 1 16 S 200 200
+ZOptions 1 16 F 200 200
 ZCorner 52650 51700 0
 ZCorner 52650 47000 0
 ZCorner 51200 47000 0
@@ -3539,7 +3539,7 @@ ZLayer 15
 ZAux 9 E
 ZClearance 100 T
 ZMinThickness 100
-ZOptions 1 16 S 200 200
+ZOptions 1 16 F 200 200
 ZCorner 52650 46850 0
 ZCorner 52650 44050 0
 ZCorner 50800 44050 0
@@ -3626,7 +3626,7 @@ ZLayer 15
 ZAux 9 E
 ZClearance 100 T
 ZMinThickness 100
-ZOptions 1 16 S 200 200
+ZOptions 1 16 F 200 200
 ZCorner 50700 42850 0
 ZCorner 51050 42500 0
 ZCorner 51900 42500 0
@@ -3770,7 +3770,7 @@ ZLayer 15
 ZAux 6 E
 ZClearance 100 T
 ZMinThickness 100
-ZOptions 1 16 S 200 200
+ZOptions 1 16 F 200 200
 ZCorner 52650 43950 0
 ZCorner 52650 43450 0
 ZCorner 51800 42600 0

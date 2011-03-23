@@ -136,7 +136,8 @@ $(NAME)-bom.csv: ../bom/$(NAME)-bom.csv
 		mv $< $@
 
 $(NAME)-footprints.pdf: $(NAME).pro $(NAME).cmp $(NAME)Front.pos
-		$(FPDOC) $(NAME).pro "$@" || { rm -f "$@"; exit 1; }
+		$(FPDOC) -a FIDUCIAL $(NAME).pro "$@" || \
+		  { rm -f "$@"; exit 1; }
 
 fab-smt:	$(SMT_FILES)
 		mkdir -p fab
