@@ -25,6 +25,7 @@ atusb-back.png		idem, for the back side
 atusb-PCB_Edges.gbr	Board edges, for routing (Gerber)
 atusb.dxf		idem (AutoCAD DXF)
 atusb.drl		Excellon drill file
+atusb-SoldP_Front.gtp	Front solder paste, for stencil
 
 
 Interpretation of files:

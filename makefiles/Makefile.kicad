@@ -80,7 +80,7 @@ back:		$(NAME)-Back.ps
 
 GERBERS = $(NAME)-SilkS_Front.gto $(NAME)-Mask_Front.gts \
 	  $(NAME)-Front.gtl $(NAME)-Back.gbl $(NAME)-Mask_Back.gbs \
-	  $(NAME)-PCB_Edges.gbr
+	  $(NAME)-PCB_Edges.gbr $(NAME)-SoldP_Front.gtp
 
 PCB_FILES = README-PCB $(NAME)-front.png $(NAME)-back.png \
 	    $(NAME)-PCB_Edges.dxf $(NAME).drl $(GERBERS)
@@ -120,7 +120,8 @@ gerbv:
 		  $(NAME)-Front.gtl \
 		  $(NAME)-Mask_Front.gts \
 		  $(NAME)-Mask_Back.gbs \
-		  $(NAME)-Back.gbl
+		  $(NAME)-Back.gbl \
+		  $(NAME)-PCB_Edges.gbr
 
 $(NAME)Front.pos:
 		pcbnew --pos $(BRD)

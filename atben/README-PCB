@@ -25,6 +25,7 @@ atben-back.png		idem, for the back side
 atben-PCB_Edges.gbr	Board edges, for routing (Gerber)
 atben.dxf		idem (AutoCAD DXF)
 atben.drl		Excellon drill file
+atben-SoldP_Front.gtp	Front solder paste, for stencil
 
 
 Interpretation of files:
