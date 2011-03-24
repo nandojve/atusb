@@ -21,6 +21,7 @@
 PLOT_BRD = pcbnew --plot=ps_a4 --ps-pads-drill-opt=none --fill-all-zones
 CPTX = ../../eda-tools/mlztx/cptx
 GMERGE = ../../eda-tools/fab/gmerge
+DRL2GERBER = ../../eda-tools/fab/drl2gerber
 PRETTYGERBV = ../../eda-tools/fab/prettygerbv
 POS2FAB = ../../eda-tools/fab/pos2fab
 FPDOC = PATH=$$PATH:../../eda-tools/fab:../../eda-tools/fpd2pdf fpdoc
@@ -155,14 +156,20 @@ upload:
 
 # --- Overview images ---------------------------------------------------------
 
-$(NAME)-front.png: gerber
-		$(PRETTYGERBV) $(NAME) front $(NAME)-front.png
+%-Drill.gbr:	%.drl
+		$(DRL2GERBER) $^ >$@ || { rm -f "$@"; exit 1; }
 
-$(NAME)-back.png: gerber
-		$(PRETTYGERBV) $(NAME) back $(NAME)-back.png
+$(NAME)-front.png: gerber $(NAME)-Drill.gbr
+		$(PRETTYGERBV) -d $(NAME)-Drill.gbr $(NAME) front \
+		  $(NAME)-front.png
 
-$(NAME)-overview.png: gerber
-		$(PRETTYGERBV) $(NAME) all $(NAME)-overview.png
+$(NAME)-back.png: gerber $(NAME)-Drill.gbr
+		$(PRETTYGERBV) -d $(NAME)-Drill.gbr $(NAME) back \
+		  $(NAME)-back.png
+
+$(NAME)-overview.png: gerber $(NAME)-Drill.gbr
+		$(PRETTYGERBV) -d $(NAME)-Drill.gbr $(NAME) all \
+		  $(NAME)-overview.png
 
 overview:	$(NAME)-overview.png
 		display $(NAME)-overview.png
@@ -175,7 +182,8 @@ uoverview:	$(NAME)-overview.png
 
 clean::
 		rm -f $(NAME)-Front.ps $(NAME)-Back.ps
-		rm -f $(NAME).drl $(NAME)-PCB_Edges.gbr $(NAME)-PCB_Edges.dxf
+		rm -f $(NAME).drl $(NAME)-Drill.gbr
+		rm -f $(NAME)-PCB_Edges.gbr $(NAME)-PCB_Edges.dxf
 		rm -f $(NAME)-Front.gtl $(NAME)-Mask_Front.gts
 		rm -f $(NAME)-SilkS_Front.gto $(NAME)-SoldP_Front.gtp
 		rm -f $(NAME)-Back.gbl $(NAME)-Mask_Back.gbs
