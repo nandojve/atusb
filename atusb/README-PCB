@@ -4,6 +4,8 @@ Board characteristics:
 - board material: FR4, thickness 0.8 mm (1/32"), 1 oz copper
 - surface finish: TBD, ENIG is preferred
 - via holes: diameter is nominally 10 mil, but any size <= 15 mil can be used
+- ground via of the antenna: diameter is nominally 8 mil, but any size <= 15 
+  mil can be used
 - mechanical tolerances: <= +/- 0.1 mm on all sides
 
 
