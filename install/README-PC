@@ -1,0 +1,23 @@
+1. Build the kernel
+
+	git clone git://projects.qi-hardware.com/qi-kernel.git
+	...
+	... enable CONFIG_IEEE802154, CONFIG_MAC802154,
+	... CONFIG_IEEE802154_DRIVERS, ...
+	... also enable IPv6
+	...
+
+2. Set up the user space
+
+	# iproute - probably already installed
+	aptiude install libnl1
+	mkdir -p /usr/local/var/run
+
+3. Build the user space tools of the linux-zigbee project
+
+	wget http://ufpr.dl.sourceforge.net/project/linux-zigbee/linux-zigbee-sources/0.2.2/lowpan-tools-0.2.2.tar.gz
+	tar xfz lowpan-tools-0.2.2.tar.gz
+	cd lowpan-tools-0.2.2
+	./configure
+	make
+	make install

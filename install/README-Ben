@@ -1,0 +1,86 @@
+1. Obtain u-boot's mkimage
+
+	wget ftp://ftp.denx.de/pub/u-boot/u-boot-2009.11.tar.bz2
+	tar xfj u-boot-2009.11.tar.bz2
+	cd u-boot-2009.11
+	touch include/config.{h,mk}
+	make SUBDIRS=tools BIN_FILES-y=mkimage tools
+	cp tools/mkimage /usr/local/bin
+	cd ..
+
+2. Build the kernel
+
+	git clone git://projects.qi-hardware.com/qi-kernel.git
+	cd qi-kernel
+	git checkout ben-wpan
+	cp ../ben-wpan-config-2.6.38 .config
+  	patch -p0 -s <../openwrt-preinit-hack.patch
+  OWRT	make ARCH=mips CROSS_COMPILE=mipsel-openwrt-linux- vmlinux.bin
+  Jlime	make ARCH=mips CROSS_COMPILE=mipsel-linux- vmlinux.bin
+	../u-boot/tools/mkimage -A mips -O linux -T kernel -a 0x80010000 \
+	    -C gzip -e 0x`mipsel-openwrt-linux-nm vmlinux | \
+	    grep " kernel_entry" | cut -f1 -d ' '` \
+	    -n 'Ben NanoNote Linux Kernel' \
+	    -d arch/mips/boot/vmlinux.bin.gz uImage
+	cd ..
+
+3. Install the kernel
+
+    Using usbboot:
+
+	- remove battery and USB
+	- wait 15 seconds
+	- press the "U" key on the Ben
+	- insert USB while keeping "U" pressed
+	- release the "U" key
+	- on the host, run
+	  usbboot -c "boot;nprog 1024 qi-kernel/uImage 0 0 -n"
+	- disconnect USB
+	- wait 15 seconds
+	- connect USB again
+
+   Using nandwrite:
+
+	- set up TCP/IP networking with the Ben
+	- get the Ben's IPv4 address:
+	  NN=`ifconfig usb0 |
+	  sed '/.*inet addr:\([^ ]*\).*/{s//\1/;s/100$/101/;s/200$/202/;p;};d'`
+	- copy the kernel:
+	  scp qi-kernel/uImage $NN:
+	- flash the kernel, clean up, and reboot:
+	  ssh $NN 'PATH=$PATH:/usr/sbin;
+	    flash_eraseall /dev/mtd1 && nandwrite -p /dev/mtd1 uImage &&
+	    rm -f uImage && sync && sleep 1 && sync && sleep 1 &&
+	    /sbin/reboot -f'
+
+4. Set up the user space on the Ben
+
+  OWRT?	opkg install ip
+  OWRT	opkg install ldconfig
+  OWRT?	mkdir -p /usr/local/var/run
+
+5. Build libnl-1 for cross-development and install the run-time library
+
+	wget http://www.infradead.org/~tgr/libnl/files/libnl-1.1.tar.gz
+	tar xfz libnl-1.1.tar.gz
+	cd libnl-1.1
+  OWRT	gcc=`readlink \`which mipsel-openwrt-linux-gcc\``
+  OWRT	./configure --prefix=${gcc%/bin/*} --host=mipsel-openwrt-linux
+  Jlime	???
+	make
+	make install
+
+	scp lib/libnl.so.1.1 $NN:/usr/lib
+	ssh $NN /sbin/ldconfig
+	cd ..
+
+6. Build the user space tools of the linux-zigbee project
+
+	wget http://ufpr.dl.sourceforge.net/project/linux-zigbee/linux-zigbee-sources/0.2.2/lowpan-tools-0.2.2.tar.gz
+	tar xfz lowpan-tools-0.2.2.tar.gz
+	cd lowpan-tools-0.2.2
+  OWRT	./configure --host=mipsel-openwrt-linux
+  JLime	./configure --host=mipsel-linux
+	make
+
+	scp src/iz src/izcoordinator src/izchat $NN:/usr/sbin/
