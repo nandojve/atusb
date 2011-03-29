@@ -14,11 +14,17 @@
 	cd qi-kernel
 	git checkout ben-wpan
 	cp ../ben-wpan-config-2.6.38 .config
-  	patch -p0 -s <../openwrt-preinit-hack.patch
+  	patch -p1 -s <../openwrt-preinit-hack.patch
   OWRT	make ARCH=mips CROSS_COMPILE=mipsel-openwrt-linux- vmlinux.bin
   Jlime	make ARCH=mips CROSS_COMPILE=mipsel-linux- vmlinux.bin
-	../u-boot/tools/mkimage -A mips -O linux -T kernel -a 0x80010000 \
+	gzip -9 -f arch/mips/boot/vmlinux.bin
+  OWRT	mkimage -A mips -O linux -T kernel -a 0x80010000 \
 	    -C gzip -e 0x`mipsel-openwrt-linux-nm vmlinux | \
+	    grep " kernel_entry" | cut -f1 -d ' '` \
+	    -n 'Ben NanoNote Linux Kernel' \
+	    -d arch/mips/boot/vmlinux.bin.gz uImage
+  Jlime	mkimage -A mips -O linux -T kernel -a 0x80010000 \
+	    -C gzip -e 0x`mipsel-linux-nm vmlinux | \
 	    grep " kernel_entry" | cut -f1 -d ' '` \
 	    -n 'Ben NanoNote Linux Kernel' \
 	    -d arch/mips/boot/vmlinux.bin.gz uImage
@@ -45,6 +51,8 @@
 	- get the Ben's IPv4 address:
 	  NN=`ifconfig usb0 |
 	  sed '/.*inet addr:\([^ ]*\).*/{s//\1/;s/100$/101/;s/200$/202/;p;};d'`
+	  # should be  NN=192.168.254.101  for OpenWRT,
+	  # NN=192.168.1.202  for Jlime
 	- copy the kernel:
 	  scp qi-kernel/uImage $NN:
 	- flash the kernel, clean up, and reboot:
@@ -52,21 +60,28 @@
 	    flash_eraseall /dev/mtd1 && nandwrite -p /dev/mtd1 uImage &&
 	    rm -f uImage && sync && sleep 1 && sync && sleep 1 &&
 	    /sbin/reboot -f'
+	- press ^C to return to the shell
 
 4. Set up the user space on the Ben
 
-  OWRT?	opkg install ip
-  OWRT	opkg install ldconfig
-  OWRT?	mkdir -p /usr/local/var/run
+	- connect to the Ben
+	  ssh $NN
+	- run the following commands:
+  OWRT	  opkg install ip
+  OWRT	  opkg install ldconfig
+	  mkdir -p /usr/local/var/run
+	  exit
 
 5. Build libnl-1 for cross-development and install the run-time library
 
 	wget http://www.infradead.org/~tgr/libnl/files/libnl-1.1.tar.gz
 	tar xfz libnl-1.1.tar.gz
 	cd libnl-1.1
-  OWRT	gcc=`readlink \`which mipsel-openwrt-linux-gcc\``
+  OWRT	gcc=`readlink -f \`which mipsel-openwrt-linux-gcc\``
   OWRT	./configure --prefix=${gcc%/bin/*} --host=mipsel-openwrt-linux
-  Jlime	???
+  Jlime patch -p1 -s <../libnl-1.1-limits.patch
+  Jlime	inc=`mipsel-linux-cpp -v </dev/null 2>&1 | grep usr/include | tr -d \ `
+  Jlime	./configure --prefix=${inc%/include} --host=mipsel-linux
 	make
 	make install
 
