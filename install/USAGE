@@ -2,16 +2,17 @@ Setup between two Bens:
 
 (for reference - doesn't work yet)
 
-Ben1	iz add wpan-phy0
-Ben1	ip link set wpan0 address de:ad:be:af:ca:fe:ba:be
-Ben1	ifconfig wpan0 up
+Ben1:
+	iz add wpan-phy0
+	ip link set wpan0 address de:ad:be:af:ca:fe:ba:be
+	ifconfig wpan0 up
+	izcoordinator -d 1 -l lease -i wpan0 -p 0x777 -s 1 -c 11
 
-Ben2	iz add wpan-phy0
-Ben2	ip link set wpan0 address ca:fe:ca:fe:ca:fe:ca:fe
-Ben2	ifconfig wpan0 up
-
-Ben1	izcoordinator -d 1 -l lease -i wpan0 -p 0x777 -s 1 -c 11
-Ben2	iz assoc wpan0 777 1 11 short
+Ben2:
+	iz add wpan-phy0
+	ip link set wpan0 address ca:fe:ca:fe:ca:fe:ca:fe
+	ifconfig wpan0 up
+	iz assoc wpan0 777 1 11 short
 
 Based on
 http://sourceforge.net/apps/trac/linux-zigbee/wiki/GettingStarted-0.2
