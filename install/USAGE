@@ -14,5 +14,10 @@ Ben2:
 	ifconfig wpan0 up
 	iz assoc wpan0 777 1 11 short
 
+Ben1:
+	izchat 777 1 8001
+Ben2:
+	izchat 777 8001 1
+
 Based on
 http://sourceforge.net/apps/trac/linux-zigbee/wiki/GettingStarted-0.2
