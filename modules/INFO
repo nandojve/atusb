@@ -46,7 +46,7 @@ F: qfn
 # Our parameters:
 #
 # Package       Pad  Paste zone  Islands  Isl. size  Isl. gap  Zone  Coverage
-# QFN32-VHHD-2  3.7  2.15	 3 x 3	  0.5	     0.25      34%   20%
+# QFN32-VHHD-2  3.7  2.15	 3 x 3	  0.55	     0.25      34%   20%
 # QFN32-VHHD-6  3.4  1.95	 2 x 2	  0.75	     0.45      33%   19%
 #
 # Known bugs:
