@@ -1,4 +1,4 @@
-Cmp-Mod V01 Created by CvPCB (2010-12-27 BZR 2685)-unstable date = Mon Feb 14 01:54:39 2011
+Cmp-Mod V01 Created by CvPCB (2010-12-27 BZR 2685)-unstable date = Wed Mar 30 12:33:00 2011
 
 BeginCmp
 TimeStamp = /4C609C08/4C63FE17;
@@ -108,7 +108,7 @@ EndCmp
 BeginCmp
 TimeStamp = /4C609BEF/4CF4AD1B;
 Reference = CON1;
-ValeurCmp = USB_A_PLUG_;
+ValeurCmp = USB_A_PLUG;
 IdModule  = USB-A-PLUG-SMT;
 EndCmp
 

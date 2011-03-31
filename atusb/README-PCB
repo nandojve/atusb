@@ -7,6 +7,25 @@ Board characteristics:
 - ground via of the antenna: hole diameter is nominally 8 mil, but any size
   <= 15 mil can be used
 - mechanical tolerances: <= +/- 0.1 mm on all sides
+- the holes for the positioning pins of the USB connector have a nominal
+  diameter of 1.15 mm. The minimum finished hole size must be 1.10 mm,
+  maximum 1.25 mm.
+
+
+Hole for the USB connector:
+
+The USB connector extends below (!) the surface of the PCB. For SMT, a
+16-17 mm hole must be left next to the PCB's edge:
+
+<-17mm->
++------+-------------+
+|      |-            |
+| Hole |     PCB     |
+|      |-            |
++------+-------------+
+
+For illustration:
+http://downloads.qi-hardware.com/people/werner/wpan/tmp/usb-off-board.jpg
 
 
 Layer stacking, from top to bottom:

@@ -1,5 +1,5 @@
 NAME = atusb
-VERSION = 110324
+VERSION = 110330
 
 include ../makefiles/Makefile.kicad
 

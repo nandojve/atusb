@@ -51,7 +51,7 @@ frame shield {
 }
 
 frame holes {
-	set d = 1.1mm
+	set d = 1.15mm
 
 	table
 	    { x }

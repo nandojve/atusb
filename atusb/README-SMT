@@ -3,7 +3,7 @@ Board characteristics:
 - two layers, components only on front
 - smallest components are 0402 and 0.5 mm pitch QFN
 - one through-hole component: USB connector CON1
-- the following componet orientation markings are on the silk screen:
+- the following component orientation markings are on the silk screen:
   B1: circle near pin 1
   D1: plus sign at the anode
   U1, U2: triangle at the corner between pins 1 and 32

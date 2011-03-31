@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Mon Feb 14 01:54:28 2011
+EESchema Schematic File Version 2  date Wed Mar 30 12:30:52 2011
 LIBS:power
 LIBS:device
 LIBS:conn
@@ -8,14 +8,13 @@ LIBS:usb_a_plug
 LIBS:xtal-4
 LIBS:antenna
 LIBS:balun-smt6
-LIBS:atusb-cache
 EELAYER 24  0
 EELAYER END
 $Descr A4 11700 8267
 Sheet 2 3
-Title "IEEE 802.15.4 USB Transceiver (AT86RF230)"
-Date "14 feb 2011"
-Rev "20110214"
+Title "IEEE 802.15.4 USB Transceiver (AT86RF231)"
+Date "30 mar 2011"
+Rev "20110330"
 Comp "Werner Almesberger"
 Comment1 ""
 Comment2 ""
@@ -262,7 +261,7 @@ L USB_A_PLUG~ CON1
 U 1 1 4CF4AD1B
 P 1750 4450
 F 0 "CON1" H 1950 4900 60  0000 C CNN
-F 1 "USB_A_PLUG " H 1750 4050 60  0000 C CNN
+F 1 "USB_A_PLUG" H 1750 4050 60  0000 C CNN
 	1    1750 4450
 	-1   0    0    -1  
 $EndComp
