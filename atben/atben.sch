@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Fri Feb 18 15:22:55 2011
+EESchema Schematic File Version 2  date Fri Apr  1 19:30:08 2011
 LIBS:power
 LIBS:device
 LIBS:conn
@@ -6,14 +6,13 @@ LIBS:at86rf231
 LIBS:antenna
 LIBS:balun-smt6
 LIBS:xtal-4
-LIBS:atben-cache
 EELAYER 24  0
 EELAYER END
 $Descr A4 11700 8267
 Sheet 1 1
 Title "IEEE 802.15.4 Transceiver (AT86RF231) as 8:10 card"
-Date "18 feb 2011"
-Rev "20110218"
+Date "1 apr 2011"
+Rev "20110401"
 Comp "Werner Almesberger"
 Comment1 ""
 Comment2 ""
@@ -454,7 +453,7 @@ CLKM
 Text Label 4850 4000 0    60   ~ 0
 RFN
 Text Label 4850 3850 0    60   ~ 0
-RPF
+RFP
 $Comp
 L DGND #PWR22
 U 1 1 4C641B55
