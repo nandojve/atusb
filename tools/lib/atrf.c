@@ -149,6 +149,15 @@ int atrf_test_mode(struct atrf_dsc *dsc)
 }
 
 
+int atrf_slp_tr(struct atrf_dsc *dsc, int on)
+{
+	if (!dsc->driver->slp_tr)
+		return 0;
+	dsc->driver->slp_tr(dsc->handle, on);
+	return 1;
+}
+
+
 int atrf_set_clkm_generic(
     void (*reg_write)(void *dsc, uint8_t reg, uint8_t value),
     void *handle, int mhz)

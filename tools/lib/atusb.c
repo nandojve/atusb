@@ -281,6 +281,7 @@ struct atrf_driver atusb_driver = {
 	.reset		= atusb_reset,
 	.reset_rf	= atusb_reset_rf,
 	.test_mode	= atusb_test_mode,
+	.slp_tr		= NULL,	/* @@@ not yet *
 	.set_clkm	= atusb_set_clkm,
 	.reg_write	= atusb_reg_write,
 	.reg_read	= atusb_reg_read,

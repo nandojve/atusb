@@ -40,6 +40,7 @@ void atrf_reset_rf(struct atrf_dsc *dsc);
 enum atrf_chip_id atrf_identify(struct atrf_dsc *dsc);
 
 int atrf_test_mode(struct atrf_dsc *dsc);
+int atrf_slp_tr(struct atrf_dsc *dsc, int on);
 int atrf_set_clkm(struct atrf_dsc *dsc, int mhz);
 
 void atrf_reg_write(struct atrf_dsc *dsc, uint8_t reg, uint8_t value);

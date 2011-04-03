@@ -326,6 +326,20 @@ static int atben_buf_read(void *handle, void *buf, int size)
 }
 
 
+/* ----- SLP_TR ------------------------------------------------------------ */
+
+
+static void atben_slp_tr(void *handle, int on)
+{
+	struct atben_dsc *dsc = handle;
+
+	if (on)
+		PDDATS = SLP_TR;
+	else
+		PDDATC = SLP_TR;
+}
+
+
 /* ----- RF interrupt ------------------------------------------------------ */
 
 
@@ -347,6 +361,7 @@ struct atrf_driver atben_driver = {
 	.reset		= NULL,
 	.reset_rf	= atben_reset_rf,
 	.test_mode	= NULL,
+	.slp_tr		= atben_slp_tr,
 	.reg_write	= atben_reg_write,
 	.reg_read	= atben_reg_read,
 	.buf_write	= atben_buf_write,
