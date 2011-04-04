@@ -11,7 +11,8 @@
 #
 
 
-DIRS=atrf-id atrf-reset atrf-rssi atrf-trim atrf-txrx
+DIRS=atrf-id atrf-reset atrf-rssi atrf-trim atrf-txrx \
+     atrf-xtal
 TARGET_ONLY_DIRS=lib
 
 ifeq ($(TARGET),ben_jlime)
