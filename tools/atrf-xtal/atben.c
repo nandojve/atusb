@@ -39,12 +39,10 @@
 #define	MAX_COUNT	(1000*1000)
 
 
-static volatile void *base;
-static volatile uint32_t *clkgr;
-static uint32_t old_clkgr;
+/* ----- RF setup ---------------------------------------------------------- */
 
 
-void atben_setup(struct atrf_dsc *dsc, int size, int trim)
+static void rf_setup(struct atrf_dsc *dsc, int size, int trim)
 {
 	static uint8_t buf[127];
 
@@ -74,8 +72,67 @@ void atben_setup(struct atrf_dsc *dsc, int size, int trim)
 
 	//atrf_reg_write(dsc, REG_IRQ_MASK, IRQ_TRX_END);
 	atrf_reg_write(dsc, REG_IRQ_MASK, 0xff);
+}
 
-	mlockall(MCL_CURRENT);
+
+/* ----- Ben hardware ------------------------------------------------------ */
+
+
+static volatile void *base;
+
+static volatile uint32_t *icmr, *icmsr, *icmcr;
+static uint32_t old_icmr;
+
+static volatile uint32_t *clkgr;
+static uint32_t old_clkgr;
+
+static volatile uint32_t *pdpin, *pddats, *pddatc;
+
+
+static void disable_interrupts(void)
+{
+	/*
+	 * @@@ Race condition alert ! If we get interrupted/preempted between
+	 * reading ICMR and masking all interrupts, and the code that runs
+	 * between these two operations changes ICMR, then we may set an
+	 * incorrect mask when restoring interrupts, which may hang the system.
+	 */
+
+	old_icmr = *icmr;
+	*icmsr = 0xffffffff;
+}
+
+
+static void enable_interrupts(void)
+{
+	*icmcr = ~old_icmr;
+}
+
+
+/*
+ * @@@ Disabling the LCD clock will halng operations that depend on the LCD
+ * subsystem to advance. This includes the screen saver.
+ */
+
+static void disable_lcd(void)
+{
+	old_clkgr = *clkgr;
+	*clkgr = old_clkgr | 1 << 10;
+}
+
+
+static void enable_lcd(void)
+{
+	*clkgr = old_clkgr;
+}
+
+
+static void ben_setup(struct atrf_dsc *dsc)
+{
+	/*
+	 * @@@ Ugly. Should either mmap the registers again here or add some
+	 * proper means to extract the pointer directly.
+	 */
 
 	struct atrf_dsc {
 		void *driver;
@@ -88,10 +145,34 @@ void atben_setup(struct atrf_dsc *dsc, int size, int trim)
 	};
 
 	base = ((struct atben_dsc *) ((struct atrf_dsc *) dsc)->handle)->mem;
+
+	icmr = base+0x1004;
+	icmsr = base+0x1008;
+	icmcr = base+0x100c;
+
 	clkgr = base+0x20;
 
-	old_clkgr = *clkgr;
-	*clkgr = old_clkgr | 1 << 10;
+	pdpin = base+0x10300;
+	pddats = base+0x10314;
+	pddatc = base+0x10318;
+
+	/*
+	 * Ironically, switching the LCD clock on and off many times only
+	 * increases the risk of a hang. Therefore, we leave stop it during
+	 * all the measurements and only enable it again at the end.
+	 */
+	disable_lcd();
+}
+
+
+/* ----- Interface --------------------------------------------------------- */
+
+
+void atben_setup(struct atrf_dsc *dsc, int size, int trim)
+{
+	rf_setup(dsc, size, trim);
+	mlockall(MCL_CURRENT);
+	ben_setup(dsc);
 }
 
 
@@ -100,43 +181,45 @@ unsigned atben_sample(struct atrf_dsc *dsc)
 	unsigned i = MAX_COUNT;
 
 	(void) atrf_reg_read(dsc, REG_IRQ_STATUS);
+
+	disable_interrupts();
+
 #if 0
+	/*
+	 * This is a high-level view of what the code should do. It has rather
+	 * high overhead, though, so we optimize it below.
+	 */
+
+	atrf_slp_tr(dsc, 1);
+	atrf_slp_tr(dsc, 0);
 	while (i) {
 		if (atrf_interrupt(dsc))
 			break;
 		i--;
 	}
 #else
-	volatile uint32_t *pdpin = base+0x10300;
-	volatile uint32_t *pddats = base+0x10314;
-	volatile uint32_t *pddatc = base+0x10318;
-	volatile uint32_t *icmr = base+0x1004;
-	volatile uint32_t *icmsr = base+0x1008;
-	volatile uint32_t *icmcr = base+0x100c;
-#if 0
-	atrf_slp_tr(dsc, 1);
-	while (i) {
-		if (*pdpin & 0x1000)
-			break;
-		i--;
-	}
-	atrf_slp_tr(dsc, 0);
-#endif
-	uint32_t old_icmr = *icmr;
-	*icmsr = 0xffffffff;
+	/*
+	 * We hit registers directly. We also don't enforce the upper limit,
+	 * to squeeze out a few more cycles and gain a finer resolution.
+	 */
 
+	/* pulse SLP_TR */
 	*pddats = 1 << 9;
 	*pddatc = 1 << 9;
+
+	/* count the time until an interrupt arrives */
 	do i--;
 	while (!(*pdpin & 0x1000));
 
-	*icmcr = ~old_icmr;
 #endif
+
+	enable_interrupts();
+
 	return MAX_COUNT-i;
 }
 
 
 void atben_cleanup(struct atrf_dsc *dsc)
 {
-	*clkgr = old_clkgr;
+	enable_lcd();
 }
