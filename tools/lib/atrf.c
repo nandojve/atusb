@@ -123,7 +123,7 @@ static const struct atrf_driver *select_driver(const char *arg,
 	end = strchr(arg, ':');
 	if (!end)
 		end = strchr(arg, 0);
-	len = arg-end;
+	len = end-arg;
 	for (drv = drivers; *drv; drv++)
 		if (!strncmp((*drv)->name, arg, len) &&
 		    strlen((*drv)->name) == len)
