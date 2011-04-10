@@ -273,7 +273,7 @@ static int atusb_set_clkm(void *dsc, int mhz)
 
 
 struct atrf_driver atusb_driver = {
-	.name		= "USB",
+	.name		= "usb",
 	.open		= atusb_open,
 	.close		= atusb_close,
 	.error		= atusb_error,

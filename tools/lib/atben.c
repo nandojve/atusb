@@ -355,7 +355,7 @@ static int atben_interrupt(void *handle)
 
 
 struct atrf_driver atben_driver = {
-	.name		= "Ben",
+	.name		= "ben",
 	.open		= atben_open,
 	.close		= atben_close,
 	.reset		= NULL,

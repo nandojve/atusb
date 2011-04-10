@@ -14,7 +14,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <strings.h> /* for strcasecmp */
 
 #include "at86rf230.h"
 
@@ -120,7 +119,7 @@ static const struct atrf_driver *select_driver(const char *arg,
 		end = strchr(arg, 0);
 	len = arg-end;
 	for (drv = drivers; *drv; drv++)
-		if (!strncasecmp((*drv)->name, arg, len) &&
+		if (!strncmp((*drv)->name, arg, len) &&
 		    strlen((*drv)->name) == len)
 			break;
 	if (!*drv) {
