@@ -15,9 +15,7 @@ LIB = libatrf.a
 
 include ../Makefile.common
 
-CFLAGS += -Wall -I$(F32XBASE)/include
-
-OBJS_host = atusb.o $(F32XBASE)/lib/usb.o
+OBJS_host = atusb.o usbopen.o
 OBJS_ben_jlime = atben.o
 OBJS_ben_openwrt = atben.o
 

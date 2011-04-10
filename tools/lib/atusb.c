@@ -14,10 +14,10 @@
 #include <stdio.h>
 #include <usb.h>
 
-#include "f32xbase/usb.h"
 #include "atusb/ep0.h"
 #include "atusb/usb-ids.h"
 
+#include "usbopen.h"
 #include "driver.h"
 
 
