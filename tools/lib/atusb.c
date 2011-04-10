@@ -224,6 +224,7 @@ static int atusb_interrupt(void *dsc)
 	if (res < 0) {
 		fprintf(stderr, "ATUSB_POLL_INT: %d\n", res);
 		error = 1;
+		return -1;
 	}
 
 	return buf;

@@ -55,18 +55,19 @@ static int get_num(struct netio *netio, int last, int *ret)
 }
 
 
-static int cmd_more(struct atrf_dsc *dsc, struct netio *netio, const char *cmd)
+static int cmd_two(struct atrf_dsc *dsc, struct netio *netio, const char *cmd)
 {
 	int n, ret;
+
+	n = get_num(netio, 0, &ret);
+	if (n < 0)
+		return ret;
+	if (n > 255)
+		return netio_printf(netio, "-bad argument\n");
 
 	if (!strcasecmp(cmd, "set")) {
 		int val;
 
-		n = get_num(netio, 0, &ret);
-		if (n < 0)
-			return ret;
-		if (n > 255)
-			return netio_printf(netio, "-bad argument\n");
 		val = get_num(netio, 1, &ret);
 		if (val < 0)
 			return ret;
@@ -76,28 +77,6 @@ static int cmd_more(struct atrf_dsc *dsc, struct netio *netio, const char *cmd)
 		if (atrf_error(dsc))
 			return netio_printf(netio, "-I/O error\n");
 		return netio_printf(netio, "+\n");
-	}
-
-	n = get_num(netio, 1, &ret);
-	if (n < 0)
-		return ret;
-
-	if (!strcasecmp(cmd, "slp_tr")) {
-		if (n > 1)
-			return netio_printf(netio, "-bad argument\n");
-		if (atrf_slp_tr(dsc, n) < 0)
-			return netio_printf(netio, "-I/O error\n");
-		return netio_printf(netio, "+\n");
-	}
-	if (!strcasecmp(cmd, "get")) {
-		uint8_t res;
-
-		if (n > 255)
-			return netio_printf(netio, "-bad argument\n");
-		res = atrf_reg_read(dsc, n);
-		if (atrf_error(dsc))
-			return netio_printf(netio, "-I/O error\n");
-		return netio_printf(netio, "+0x%02x\n", res);
 	}
 	if (!strcasecmp(cmd, "write")) {
 		uint8_t *tmp;
@@ -122,6 +101,47 @@ static int cmd_more(struct atrf_dsc *dsc, struct netio *netio, const char *cmd)
 		if (atrf_error(dsc))
 			return netio_printf(netio, "-I/O error\n");
 		return netio_printf(netio, "+\n");
+	}
+	abort();
+}
+
+
+static int cmd_more(struct atrf_dsc *dsc, struct netio *netio, const char *cmd)
+{
+	int n, ret;
+
+	if (!strcasecmp(cmd, "set"))
+		return cmd_two(dsc, netio, cmd);
+	if (!strcasecmp(cmd, "write"))
+		return cmd_two(dsc, netio, cmd);
+
+	n = get_num(netio, 1, &ret);
+	if (n < 0)
+		return ret;
+
+	if (!strcasecmp(cmd, "slp_tr")) {
+		if (n > 1)
+			return netio_printf(netio, "-bad argument\n");
+		if (atrf_slp_tr(dsc, n) < 0)
+			return netio_printf(netio, "-I/O error\n");
+		return netio_printf(netio, "+\n");
+	}
+	if (!strcasecmp(cmd, "clkm")) {
+		if (n > 16)
+			return netio_printf(netio, "-bad argument\n");
+		if (atrf_set_clkm(dsc, n) < 0)
+			return netio_printf(netio, "-error\n");
+		return netio_printf(netio, "+\n");
+	}
+	if (!strcasecmp(cmd, "get")) {
+		uint8_t res;
+
+		if (n > 255)
+			return netio_printf(netio, "-bad argument\n");
+		res = atrf_reg_read(dsc, n);
+		if (atrf_error(dsc))
+			return netio_printf(netio, "-I/O error\n");
+		return netio_printf(netio, "+0x%02x\n", res);
 	}
 	return netio_printf(netio, "-unrecognized command\n");
 }
@@ -159,6 +179,8 @@ static int cmd_zero(struct atrf_dsc *dsc, struct netio *netio, const char *cmd)
 		res = atrf_interrupt(dsc);
 		if (res < 0)
 			return netio_printf(netio, "-I/O error\n");
+		if (!res)
+			usleep(100*1000);
 		return netio_printf(netio, "+%d\n", res);
 	}
 	return netio_printf(netio, "-unrecognized command\n");
