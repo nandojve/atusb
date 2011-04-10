@@ -97,6 +97,12 @@ const static struct atrf_driver *drivers[] = {
 };
 
 
+const char *atrf_default_driver_name(void)
+{
+	return drivers[0] ? drivers[0]->name : "none";
+}
+
+
 static const struct atrf_driver *select_driver(const char *arg,
     const char **opt)
 {

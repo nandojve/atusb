@@ -28,6 +28,7 @@ struct atrf_dsc;
 
 void *atrf_usb_handle(struct atrf_dsc *dsc); /* hack for atrf-id */
 
+const char *atrf_default_driver_name(void);
 struct atrf_dsc *atrf_open(const char *arg);
 void atrf_close(struct atrf_dsc *dsc);
 
