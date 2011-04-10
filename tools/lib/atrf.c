@@ -21,10 +21,6 @@
 #include "atrf.h"
 
 
-extern struct atrf_driver atusb_driver;
-extern struct atrf_driver atben_driver;
-
-
 struct atrf_dsc {
 	const struct atrf_driver *driver;
 	void *handle;
