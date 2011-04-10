@@ -86,11 +86,11 @@ static volatile int run = 1;
  *       >0  output 2^(clkm-1) MHz signal
  */
 
-static struct atrf_dsc *init_txrx(int trim, unsigned mhz)
+static struct atrf_dsc *init_txrx(const char *driver, int trim, unsigned mhz)
 {
 	struct atrf_dsc *dsc;
 
-	dsc = atrf_open(NULL);
+	dsc = atrf_open(driver);
 	if (!dsc)
 		exit(1);
 	
@@ -588,17 +588,20 @@ static void usage(const char *name)
 "                wave in MHz: -2, -0.5, or +0.5\n"
 "    command     shell command to run while transmitting (default: wait for\n"
 "                SIGINT instead)\n\n"
-"  common options: [-c channel|-f freq] [-C mhz] [-o file] [-p power]\n"
-"                  [-r rate] [-t trim]\n"
+"  common options: [-c channel|-f freq] [-C mhz] [-d driver[:arg]] [-o file]\n"
+"                  [-p power] [-r rate] [-t trim]\n"
 "    -c channel  channel number, 11 to 26 (default %d)\n"
 "    -C mhz      output clock at 1, 2, 4, 8, or 16 MHz (default: off)\n"
+"    -d driver[:arg]\n"
+"                use the specified driver (default: %s)\n"
 "    -f freq     frequency in MHz, 2405 to 2480 (default %d)\n"
 "    -o file     write received data to a file in pcap format\n"
 "    -p power    transmit power, -17.2 to 3.0 dBm (default %.1f)\n"
 "    -r rate     data rate, 250k, 500k, 1M, or 2M (default: 250k)\n"
 "    -t trim     trim capacitor, 0 to 15 (default %d)\n"
 	    , name, name, name, name,
-	    DEFAULT_CHANNEL, 2405+5*(DEFAULT_CHANNEL-11), DEFAULT_POWER,
+	    DEFAULT_CHANNEL, atrf_default_driver_name(),
+	    2405+5*(DEFAULT_CHANNEL-11), DEFAULT_POWER,
 	    DEFAULT_TRIM);
 	exit(1);
 }
@@ -612,6 +615,7 @@ int main(int argc, char *const *argv)
 		mode_ping,
 		mode_cont_tx,
 	} mode = mode_msg;
+	const char *driver = NULL;
 	int channel = DEFAULT_CHANNEL;
 	double power = DEFAULT_POWER;
 	uint8_t rate = OQPSK_DATA_RATE_250;
@@ -625,7 +629,7 @@ int main(int argc, char *const *argv)
 	const char *pcap_file = NULL;
 	struct atrf_dsc *dsc;
 
-	while ((c = getopt(argc, argv, "c:C:f:o:p:r:E:Pt:T:")) != EOF)
+	while ((c = getopt(argc, argv, "c:C:d:f:o:p:r:E:Pt:T:")) != EOF)
 		switch (c) {
 		case 'c':
 			channel = strtoul(optarg, &end, 0);
@@ -633,6 +637,9 @@ int main(int argc, char *const *argv)
 				usage(*argv);
 			if (channel < 11 || channel > 26)
 				usage(*argv);
+			break;
+		case 'd':
+			driver = optarg;
 			break;
 		case 'f':
 			freq = strtoul(optarg, &end, 0);
@@ -706,7 +713,7 @@ int main(int argc, char *const *argv)
 
 	switch (argc-optind) {
 	case 0:
-		dsc = init_txrx(trim, clkm);
+		dsc = init_txrx(driver, trim, clkm);
 		set_channel(dsc, channel);
 		set_rate(dsc, rate);
 		switch (mode) {
@@ -746,7 +753,7 @@ int main(int argc, char *const *argv)
 			usage(*argv);
 		/* fall through */
 	case 1:
-		dsc = init_txrx(trim, clkm);
+		dsc = init_txrx(driver, trim, clkm);
 		set_channel(dsc, channel);
 		set_rate(dsc, rate);
 		switch (mode) {

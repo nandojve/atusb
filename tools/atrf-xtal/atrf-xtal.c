@@ -83,18 +83,20 @@ static void eval(unsigned *res, int rep)
 static void usage(const char *name)
 {
 	fprintf(stderr,
-"%s [-r] [-s size] [-t trim] [repetitions]\n"
-"  -r           instead of printing a mean value, dump the raw samples\n"
-"  -s size      payload size in bytes, 0-127 (default: %d bytes)\n"
-"  -t trim      trim capacitor setting, 0-15 (default: %d)\n"
-"  repetitions  number of measurements (default: 1)\n"
-  , name, DEFAULT_SIZE, DEFAULT_TRIM);
+"%s [-d driver[:arg]] [-r] [-s size] [-t trim] [repetitions]\n\n"
+"  -d driver[:arg]  use the specified driver (default: %s)\n"
+"  -r               instead of printing a mean value, dump the raw samples\n"
+"  -s size          payload size in bytes, 0-127 (default: %d bytes)\n"
+"  -t trim          trim capacitor setting, 0-15 (default: %d)\n"
+"  repetitions      number of measurements (default: 1)\n"
+  , name, atrf_default_driver_name(), DEFAULT_SIZE, DEFAULT_TRIM);
 	exit(1);
 }
 
 
 int main(int argc, char *const *argv)
 {
+	const char *driver = NULL;
 	struct atrf_dsc *dsc;
 	int size = DEFAULT_SIZE;
 	int trim = DEFAULT_TRIM;
@@ -104,8 +106,11 @@ int main(int argc, char *const *argv)
 	unsigned *res;
 	int c, i;
 
-	while ((c = getopt(argc, argv, "rs:t:")) != EOF)
+	while ((c = getopt(argc, argv, "d:rs:t:")) != EOF)
 		switch (c) {
+		case 'd':
+			driver = optarg;
+			break;
 		case 'r':
 			dump_raw = 1;
 			break;
@@ -145,7 +150,7 @@ int main(int argc, char *const *argv)
 		exit(1);
 	}
 
-	dsc = atrf_open(NULL);
+	dsc = atrf_open(driver);
 	if (!dsc)
 		return 1;
 

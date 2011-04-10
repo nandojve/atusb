@@ -13,6 +13,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
 
 #ifdef HAVE_USB
 #include <usb.h>
@@ -157,18 +158,29 @@ static void show_info(struct atrf_dsc *dsc)
 
 static void usage(const char *name)
 {
-	fprintf(stderr, "usage: %s\n", name);
+	fprintf(stderr, "usage: [-d driver[:arg]] %s\n", name);
 	exit(1);
 }
 
 
-int main(int argc, const char **argv)
+int main(int argc, char *const *argv)
 {
+	const char *driver = NULL;
 	struct atrf_dsc *dsc;
+	int c;
 
-	if (argc != 1)
+	while ((c = getopt(argc, argv, "d:")) != EOF)
+		switch (c) {
+		case 'd':
+			driver = optarg;
+			break;
+		default:
+			usage(*argv);
+		}
+	if (argc != optind)
 		usage(*argv);
-	dsc = atrf_open(NULL);
+
+	dsc = atrf_open(driver);
 	if (!dsc)
 		return 1;
 

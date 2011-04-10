@@ -64,11 +64,11 @@ static void die(int sig)
 static void usage(const char *name)
 {
 	fprintf(stderr,
-"usage: %s [-n] sweeps\n", name);
+"usage: %s [-d driver[:arg]] [-n] sweeps\n", name);
 
 #ifdef HAVE_GFX
 	fprintf(stderr,
-"%6s %s -g\n", "", name);
+"%6s %s driver[:arg]] -g\n", "", name);
 #endif
 
 	exit(1);
@@ -77,14 +77,18 @@ static void usage(const char *name)
 
 int main(int argc, char **argv)
 {
+	const char *driver = NULL;
 	struct atrf_dsc *dsc;
 	unsigned long arg = 0, i;
 	char *end;
 	int c;
 	int graphical = 0;
 
-	while ((c = getopt(argc, argv, "gn")) != EOF)
+	while ((c = getopt(argc, argv, "d:gn")) != EOF)
 		switch (c) {
+		case 'd':
+			driver = optarg;
+			break;
 #ifdef HAVE_GFX
 		case 'g':
 			graphical = 1;
@@ -115,7 +119,7 @@ int main(int argc, char **argv)
 
 	signal(SIGINT, die);
 
-	dsc = atrf_open(NULL);
+	dsc = atrf_open(driver);
 	if (!dsc)
 		return 1;
 

@@ -13,6 +13,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
 #include <string.h>
 
 #include "atrf.h"
@@ -21,34 +22,40 @@
 static void usage(const char *name)
 {
 	fprintf(stderr,
-"usage: %s [-a|-t]\n\n"
-"  -a  reset the MCU and transceiver\n"
-"  -t  reset transceiver (default)\n"
-    , name);
+"usage: %s [-a|-t] [-d driver[:arg]]\n\n"
+"  -a               reset MCU and transceiver\n"
+"  -d driver[:arg]  use the specified driver (default: %s)\n"
+"  -t               reset transceiver (default)\n"
+    , name, atrf_default_driver_name());
 	exit(1);
 }
 
 
-int main(int argc, const char **argv)
+int main(int argc, char *const *argv)
 {
+	const char *driver = NULL;
 	struct atrf_dsc *dsc;
 	int txrx = 1;
+	int c;
 
-	switch (argc) {
-	case 1:
-		break;
-	case 2:
-		if (!strcmp(argv[1], "-t"))
+	while ((c = getopt(argc, argv, "ad:t")) != EOF)
+		switch (c) {
+		case 'a':
+			txrx = 0;
 			break;
-		txrx = 0;
-		if (!strcmp(argv[1], "-a"))
+		case 'd':
+			driver = optarg;
 			break;
-		/* fall through */
-	default:
+		case 't':
+			txrx = 1;
+			break;
+		default:
+			usage(*argv);
+		}
+	if (argc != optind)
 		usage(*argv);
-	}
 
-	dsc = atrf_open(NULL);
+	dsc = atrf_open(driver);
 	if (!dsc)
 		return 1;
 

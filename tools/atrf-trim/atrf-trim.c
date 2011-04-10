@@ -13,6 +13,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
 #include <sys/time.h>
 
 #include "at86rf230.h"
@@ -21,22 +22,35 @@
 
 static void usage(const char *name)
 {
-	fprintf(stderr, "%s [trim_value]\n", name);
+	fprintf(stderr, "%s [-d driver[:arg]] [trim_value]\n", name);
 	exit(1);
 }
 
 
-int main(int argc, const char **argv)
+int main(int argc, char *const *argv)
 {
+	const char *driver = NULL;
 	struct atrf_dsc *dsc;
 	int trim = -1;
 	char *end;
+	int c;
 
-	switch (argc) {
-	case 1:
+	while ((c = getopt(argc, argv, "d:")) != EOF)
+		switch (c) {
+		case 'd':
+			driver = optarg;
+			break;
+		default:
+			usage(*argv);
+		}
+	if (argc != optind)
+		usage(*argv);
+
+	switch (argc-optind) {
+	case 0:
 		break;
-	case 2:
-		trim = strtoul(argv[1], &end, 0);
+	case 1:
+		trim = strtoul(argv[optind], &end, 0);
 		if (*end || trim > 15)
 			usage(*argv);
 		break;
@@ -44,7 +58,7 @@ int main(int argc, const char **argv)
 		usage(*argv);
 	}
 
-	dsc = atrf_open(NULL);
+	dsc = atrf_open(driver);
 	if (!dsc)
 		return 1;
 
