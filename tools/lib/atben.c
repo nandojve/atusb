@@ -183,7 +183,7 @@ static void atben_reset_rf(void *handle)
 }
 
 
-static void *atben_open(void)
+static void *atben_open(const char *arg)
 {
 	struct atben_dsc *dsc;
 

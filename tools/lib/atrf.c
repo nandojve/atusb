@@ -13,6 +13,8 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
+#include <strings.h> /* for strcasecmp */
 
 #include "at86rf230.h"
 
@@ -25,7 +27,7 @@ extern struct atrf_driver atben_driver;
 
 
 struct atrf_dsc {
-	struct atrf_driver *driver;
+	const struct atrf_driver *driver;
 	void *handle;
 	enum atrf_chip_id chip_id;
 };
@@ -85,20 +87,63 @@ static enum atrf_chip_id identify(struct atrf_dsc *dsc)
 }
 
 
-struct atrf_dsc *atrf_open(void)
+const static struct atrf_driver *drivers[] = {
+#ifdef HAVE_BEN
+	&atben_driver,
+#endif
+#ifdef HAVE_USB
+	&atusb_driver,
+#endif
+	NULL
+};
+
+
+static const struct atrf_driver *select_driver(const char *arg,
+    const char **opt)
+{
+	const struct atrf_driver **drv;
+	const char *end;
+	size_t len;
+
+	if (!*drivers) {
+		fprintf(stderr, "no drivers defined\n");
+		return NULL;
+	}
+
+	*opt = NULL;
+	if (!arg) {
+		return *drivers;
+	}
+	
+	end = strchr(arg, ':');
+	if (!end)
+		end = strchr(arg, 0);
+	len = arg-end;
+	for (drv = drivers; *drv; drv++)
+		if (!strncasecmp((*drv)->name, arg, len) &&
+		    strlen((*drv)->name) == len)
+			break;
+	if (!*drv) {
+		fprintf(stderr, "no driver \"%.*s\" found\n", (int) len, arg);
+		return NULL;
+	}
+	if (*end)
+		*opt = end+1;
+	return *drv;
+}
+
+
+static struct atrf_dsc *do_atrf_open(const char *arg)
 {
 	struct atrf_dsc *dsc;
-	struct atrf_driver *driver;
+	const struct atrf_driver *driver;
+	const char *opt;
 	void *handle;
 
-#ifdef HAVE_USB
-	driver = &atusb_driver;
-#elif HAVE_BEN
-	driver = &atben_driver;
-#else
-#error Need either HAVE_USB or HAVE_BEN
-#endif
-	handle = driver->open();
+	driver = select_driver(arg, &opt);
+	if (!driver)
+		return NULL;
+	handle = driver->open(opt);
 	if (!handle)
 		return NULL;
 	dsc = malloc(sizeof(*dsc));
@@ -110,6 +155,12 @@ struct atrf_dsc *atrf_open(void)
 	dsc->handle = handle;
 	dsc->chip_id = identify(dsc);
 	return dsc;
+}
+
+
+struct atrf_dsc *atrf_open(void)
+{
+	return do_atrf_open(NULL);
 }
 
 

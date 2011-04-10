@@ -19,7 +19,7 @@
 
 struct atrf_driver {
 	const char *name;
-	void *(*open)(void);
+	void *(*open)(const char *arg);
 	void (*close)(void *dsc);
 	int (*error)(void *dsc);
 	int (*clear_error)(void *dsc);
