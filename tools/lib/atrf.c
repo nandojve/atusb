@@ -31,20 +31,20 @@ struct atrf_dsc {
 void *atrf_usb_handle(struct atrf_dsc *dsc)
 {
 #ifdef HAVE_USB
-	return dsc->handle;
-#else
-	return NULL;
+	if (dsc->driver == &atusb_driver)
+		return dsc->handle;
 #endif
+	return NULL;
 }
 
 
 void *atrf_ben_regs(struct atrf_dsc *dsc)
 {
 #ifdef HAVE_BEN
-	return atben_regs(dsc->handle);
-#else
-	return NULL;
+	if (dsc->driver == &atben_driver)
+		return atben_regs(dsc->handle);
 #endif
+	return NULL;
 }
 
 
