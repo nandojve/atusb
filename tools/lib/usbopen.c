@@ -228,3 +228,11 @@ void restrict_usb_path(const char *path)
 	else
 		restrict_usb_by_port(path);
 }
+
+
+void usb_unrestrict(void)
+{
+	vendor = 0;
+	product = 0;
+	restricted_path = NULL;
+}

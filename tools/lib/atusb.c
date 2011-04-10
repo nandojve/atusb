@@ -54,6 +54,7 @@ static void *atusb_open(const char *arg)
 {
 	usb_dev_handle *dev;
 
+	usb_unrestrict();
 	if (arg)
 		restrict_usb_path(arg);
 	dev = open_usb(USB_VENDOR, USB_PRODUCT);

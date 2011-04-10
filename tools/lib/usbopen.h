@@ -21,5 +21,6 @@
 usb_dev_handle *open_usb(uint16_t default_vendor, uint16_t default_product);
 void parse_usb_id(const char *id);
 void restrict_usb_path(const char *path);
+void usb_unrestrict(void);
 
 #endif /* !USB_OPEN_H */
