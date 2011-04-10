@@ -28,6 +28,18 @@ struct atrf_dsc {
 };
 
 
+static const struct atrf_driver *drivers[] = {
+#ifdef HAVE_BEN
+	&atben_driver,
+#endif
+#ifdef HAVE_USB
+	&atusb_driver,
+#endif
+	&atnet_driver,
+	NULL
+};
+
+
 void *atrf_usb_handle(struct atrf_dsc *dsc)
 {
 #ifdef HAVE_USB
@@ -90,17 +102,6 @@ static enum atrf_chip_id identify(struct atrf_dsc *dsc)
 	}
 	return atrf_unknown_chip;
 }
-
-
-const static struct atrf_driver *drivers[] = {
-#ifdef HAVE_BEN
-	&atben_driver,
-#endif
-#ifdef HAVE_USB
-	&atusb_driver,
-#endif
-	NULL
-};
 
 
 const char *atrf_default_driver_name(void)
