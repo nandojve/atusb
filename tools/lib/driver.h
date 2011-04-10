@@ -40,4 +40,6 @@ int atrf_set_clkm_generic(
     void (*reg_write)(void *dsc, uint8_t reg, uint8_t value),
     void *handle, int mhz);
 
+void *atben_regs(void *dsc); /* hack for atrf-xtal */
+
 #endif /* !DRIVER_H */

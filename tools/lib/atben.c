@@ -351,6 +351,17 @@ static int atben_interrupt(void *handle)
 }
 
 
+/* ----- Driver-specific hacks --------------------------------------------- */
+
+
+void *atben_regs(void *handle)
+{
+        struct atben_dsc *dsc = handle;
+
+	return dsc->mem;
+}
+
+
 /* ----- Driver interface -------------------------------------------------- */
 
 

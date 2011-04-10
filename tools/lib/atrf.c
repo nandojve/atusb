@@ -42,6 +42,16 @@ void *atrf_usb_handle(struct atrf_dsc *dsc)
 }
 
 
+void *atrf_ben_regs(struct atrf_dsc *dsc)
+{
+#ifdef HAVE_BEN
+	return atben_regs(dsc->handle);
+#else
+	return NULL;
+#endif
+}
+
+
 int atrf_error(struct atrf_dsc *dsc)
 {
 	return dsc->driver->error ? dsc->driver->error(dsc->handle) : 0;

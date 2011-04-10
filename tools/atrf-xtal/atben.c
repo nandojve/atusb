@@ -78,8 +78,6 @@ static void rf_setup(struct atrf_dsc *dsc, int size, int trim)
 /* ----- Ben hardware ------------------------------------------------------ */
 
 
-static volatile void *base;
-
 static volatile uint32_t *icmr, *icmsr, *icmcr;
 static uint32_t old_icmr;
 
@@ -129,22 +127,7 @@ static void enable_lcd(void)
 
 static void ben_setup(struct atrf_dsc *dsc)
 {
-	/*
-	 * @@@ Ugly. Should either mmap the registers again here or add some
-	 * proper means to extract the pointer directly.
-	 */
-
-	struct atrf_dsc {
-		void *driver;
-		void *handle;
-		int chip_id;
-	};
-	struct atben_dsc {
-		int fd;
-		void *mem;
-	};
-
-	base = ((struct atben_dsc *) ((struct atrf_dsc *) dsc)->handle)->mem;
+	volatile void *base = atrf_ben_regs(dsc);
 
 	icmr = base+0x1004;
 	icmsr = base+0x1008;
