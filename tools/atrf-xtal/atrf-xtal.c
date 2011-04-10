@@ -83,8 +83,8 @@ static void eval(unsigned *res, int rep)
 static void usage(const char *name)
 {
 	fprintf(stderr,
-"%s [-d] [-s size] [-t trim] [repetitions]\n"
-"  -d           instead of printing a mean value, dump all samples\n"
+"%s [-r] [-s size] [-t trim] [repetitions]\n"
+"  -r           instead of printing a mean value, dump the raw samples\n"
 "  -s size      payload size in bytes, 0-127 (default: %d bytes)\n"
 "  -t trim      trim capacitor setting, 0-15 (default: %d)\n"
 "  repetitions  number of measurements (default: 1)\n"
@@ -99,15 +99,15 @@ int main(int argc, char *const *argv)
 	int size = DEFAULT_SIZE;
 	int trim = DEFAULT_TRIM;
 	int rep = 1;
-	int dump = 0;
+	int dump_raw = 0;
 	char *end;
 	unsigned *res;
 	int c, i;
 
-	while ((c = getopt(argc, argv, "ds:t:")) != EOF)
+	while ((c = getopt(argc, argv, "rs:t:")) != EOF)
 		switch (c) {
-		case 'd':
-			dump = 1;
+		case 'r':
+			dump_raw = 1;
 			break;
 		case 's':
 			size = strtoul(optarg, &end, 0);
@@ -158,7 +158,7 @@ int main(int argc, char *const *argv)
 
 	atrf_close(dsc);
 
-	if (dump) {
+	if (dump_raw) {
 		for (i = 0; i != rep; i++)
 			printf("%u\n", res[i]);
 		exit(0);
