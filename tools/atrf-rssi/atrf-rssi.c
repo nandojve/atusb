@@ -68,7 +68,7 @@ static void usage(const char *name)
 
 #ifdef HAVE_GFX
 	fprintf(stderr,
-"%6s %s driver[:arg]] -g\n", "", name);
+"%6s %s [-d driver[:arg]] -g\n", "", name);
 #endif
 
 	exit(1);

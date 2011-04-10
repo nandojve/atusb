@@ -158,7 +158,7 @@ static void show_info(struct atrf_dsc *dsc)
 
 static void usage(const char *name)
 {
-	fprintf(stderr, "usage: [-d driver[:arg]] %s\n", name);
+	fprintf(stderr, "usage: %s [-d driver[:arg]]\n", name);
 	exit(1);
 }
 
