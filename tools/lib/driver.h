@@ -36,6 +36,10 @@ struct atrf_driver {
 };
 
 
+extern struct atrf_driver atusb_driver;
+extern struct atrf_driver atben_driver;
+
+
 int atrf_set_clkm_generic(
     void (*reg_write)(void *dsc, uint8_t reg, uint8_t value),
     void *handle, int mhz);
