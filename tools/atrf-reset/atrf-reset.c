@@ -1,8 +1,8 @@
 /*
  * atrf-reset/atrf-reset.c - Reset the transceiver or the whole board
  *
- * Written 2010 by Werner Almesberger
- * Copyright 2010 Werner Almesberger
+ * Written 2010-2011 by Werner Almesberger
+ * Copyright 2010-2011 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,7 +48,7 @@ int main(int argc, const char **argv)
 		usage(*argv);
 	}
 
-	dsc = atrf_open();
+	dsc = atrf_open(NULL);
 	if (!dsc)
 		return 1;
 

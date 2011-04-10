@@ -145,7 +145,7 @@ int main(int argc, char *const *argv)
 		exit(1);
 	}
 
-	dsc = atrf_open();
+	dsc = atrf_open(NULL);
 	if (!dsc)
 		return 1;
 

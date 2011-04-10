@@ -168,7 +168,7 @@ int main(int argc, const char **argv)
 
 	if (argc != 1)
 		usage(*argv);
-	dsc = atrf_open();
+	dsc = atrf_open(NULL);
 	if (!dsc)
 		return 1;
 

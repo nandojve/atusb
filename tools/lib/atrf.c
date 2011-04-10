@@ -133,7 +133,7 @@ static const struct atrf_driver *select_driver(const char *arg,
 }
 
 
-static struct atrf_dsc *do_atrf_open(const char *arg)
+struct atrf_dsc *atrf_open(const char *arg)
 {
 	struct atrf_dsc *dsc;
 	const struct atrf_driver *driver;
@@ -155,12 +155,6 @@ static struct atrf_dsc *do_atrf_open(const char *arg)
 	dsc->handle = handle;
 	dsc->chip_id = identify(dsc);
 	return dsc;
-}
-
-
-struct atrf_dsc *atrf_open(void)
-{
-	return do_atrf_open(NULL);
 }
 
 

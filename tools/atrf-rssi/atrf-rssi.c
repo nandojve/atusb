@@ -115,7 +115,7 @@ int main(int argc, char **argv)
 
 	signal(SIGINT, die);
 
-	dsc = atrf_open();
+	dsc = atrf_open(NULL);
 	if (!dsc)
 		return 1;
 

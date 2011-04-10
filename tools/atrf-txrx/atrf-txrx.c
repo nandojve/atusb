@@ -90,7 +90,7 @@ static struct atrf_dsc *init_txrx(int trim, unsigned mhz)
 {
 	struct atrf_dsc *dsc;
 
-	dsc = atrf_open();
+	dsc = atrf_open(NULL);
 	if (!dsc)
 		exit(1);
 	
