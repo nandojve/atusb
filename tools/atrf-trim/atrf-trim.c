@@ -43,8 +43,6 @@ int main(int argc, char *const *argv)
 		default:
 			usage(*argv);
 		}
-	if (argc != optind)
-		usage(*argv);
 
 	switch (argc-optind) {
 	case 0:
