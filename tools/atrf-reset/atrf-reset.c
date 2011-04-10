@@ -1,5 +1,5 @@
 /*
- * atrf-rssi/atrf-rssi.c - ben-wpan AT86RF230 spectrum scan
+ * atrf-reset/atrf-reset.c - Reset the transceiver or the whole board
  *
  * Written 2010 by Werner Almesberger
  * Copyright 2010 Werner Almesberger
