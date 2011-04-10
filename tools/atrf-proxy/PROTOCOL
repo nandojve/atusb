@@ -1,0 +1,68 @@
+Protocol specification
+======================
+
+Messages
+--------
+
+<open TCP session>
++[greeting]
+-message
+
+RESET
++[comment]
+-message
+
+RESET_RF
++[comment]
+-message
+
+TEST
++[comment]
+-message
+
+SLP_TR 0|1
++[comment]
+-message
+
+CLKM freq_mhz
++[comment]
+-message
+
+SET register value
++[comment]
+-message
+
+GET register
++value
+-message
+
+WRITE length raw-data
++[comment]
+-message
+
+READ
++length raw-data
+-message
+
+POLL
++0|1
+-message
+
+
+Message format
+--------------
+
+Commands are not case-sensitive. Messages and comments consist of printable
+ASCII characters and spaces.
+
+Whitespace separating words is always exactly one space character.
+Lines end with a * single newline, without trailing whitespace.
+Numeric values are in C notation, i.e., 64, 0100, and 0x40 would all
+represent the same value.
+
+"raw-data" is a string of binary data of the indicated length. The other
+formatting conventions remain valid after this string, i.e., it must be
+followed by a single newline.
+
+The device is implicitly opened when establishing a TCP session. The
+device is implicitly closed when closing the TCP session.
