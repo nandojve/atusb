@@ -73,7 +73,7 @@ static int cmd_two(struct atrf_dsc *dsc, struct netio *netio, const char *cmd)
 			return ret;
 		if (val > 255)
 			return netio_printf(netio, "-bad argument\n");
-		atrf_reg_write(dsc, n, ret);
+		atrf_reg_write(dsc, n, val);
 		if (atrf_error(dsc))
 			return netio_printf(netio, "-I/O error\n");
 		return netio_printf(netio, "+\n");

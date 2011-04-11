@@ -321,15 +321,22 @@ static int atnet_buf_read(void *dsc, void *buf, int size)
 		goto fail;
 
 	n = netio_read_until(netio, " ", tmp, sizeof(tmp)-1, NULL);
+	if (n < 0)
+		goto fail;
+	tmp[n] = 0;
 	if (*tmp == '-') {
-		tmp[n] = 0;
-		fprintf(stderr, "%s\n", tmp+1);
+		fprintf(stderr, "%s ", tmp+1);
+		n = netio_read_until(netio, "\n", tmp, sizeof(tmp)-1, NULL);
+		if (n >= 0) {
+			tmp[n] = 0;
+			fprintf(stderr, "%s\n", tmp);
+		}
 		goto fail;
 	}
-	if (*tmp != '+' || n < 3) /* +0<spc> */
+	if (*tmp != '+' || n < 2) /* +0<spc> */
 		goto invalid;
 	len = strtoul(tmp+1, &end, 0);
-	if (*end != ' ')
+	if (*end)
 		goto invalid;
 	if (len > size) {
 		fprintf(stderr, "buffer overflow\n");
