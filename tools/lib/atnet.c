@@ -28,10 +28,14 @@
 #define	DEFAULT_PORT	"5440"
 
 
-static char reply[1000];
+struct atnet_dsc {
+	struct netio *netio;
+	int error;
+	char reply[1000];
+};
 
 
-static int dialog_vsend(struct netio *netio, const char *fmt, va_list ap)
+static int dialog_vsend(struct atnet_dsc *dsc, const char *fmt, va_list ap)
 {
 	va_list ap2;
 	char *buf;
@@ -49,71 +53,72 @@ static int dialog_vsend(struct netio *netio, const char *fmt, va_list ap)
 	vsprintf(buf, fmt, ap);
 
 	buf[n] = '\n';
-	res = netio_write(netio, buf, n+1);
+	res = netio_write(dsc->netio, buf, n+1);
 	free(buf);
 
 	return res < 0 ? -1 : 0;
 }
 
 
-static int dialog_send(struct netio *netio, const char *fmt, ...)
+static int dialog_send(struct atnet_dsc *dsc, const char *fmt, ...)
 {
 	va_list ap;
 	int res;
 
 	va_start(ap, fmt);
-	res = dialog_vsend(netio, fmt, ap);
+	res = dialog_vsend(dsc, fmt, ap);
 	va_end(ap);
 	return res;
 }
 
 
-static int dialog_recv(struct netio *netio)
+static int dialog_recv(struct atnet_dsc *dsc)
 {
 	int n;
 
-	n = netio_read_until(netio, "\n", reply, sizeof(reply)-1, NULL);
+	n = netio_read_until(dsc->netio,
+	    "\n", dsc->reply, sizeof(dsc->reply)-1, NULL);
 	if (n < 0)
 		return -1;
-	reply[n] = 0;
+	dsc->reply[n] = 0;
 
-	return reply[0] == '+' ? 0 : -1;
+	return dsc->reply[0] == '+' ? 0 : -1;
 }
 
 
-static int dialog(struct netio *netio, const char *fmt, ...)
+static int dialog(struct atnet_dsc *dsc, const char *fmt, ...)
 {
 	va_list ap;
 	int res;
 
 	va_start(ap, fmt);
-	res = dialog_vsend(netio, fmt, ap);
+	res = dialog_vsend(dsc, fmt, ap);
 	va_end(ap);
 	if (res < 0)
 		return res;
 
-	return dialog_recv(netio);
+	return dialog_recv(dsc);
 }
 
 
 /* ----- error handling ---------------------------------------------------- */
 
 
-static int error;
-
-
-static int atnet_error(void *dsc)
+static int atnet_error(void *handle)
 {
-	return error;
+	struct atnet_dsc *dsc = handle;
+
+	return dsc->error;
 }
 
 
-static int atnet_clear_error(void *dsc)
+static int atnet_clear_error(void *handle)
 {
+	struct atnet_dsc *dsc = handle;
 	int ret;
 
-	ret = error;
-	error = 0;
+	ret = dsc->error;
+	dsc->error = 0;
 	return ret;
 }
 
@@ -129,7 +134,7 @@ static void *atnet_open(const char *arg)
 	const struct addrinfo *addr;
 	static struct addrinfo hint = { .ai_socktype = SOCK_STREAM };
 	int res, s;
-	struct netio *netio;
+	struct atnet_dsc *dsc;
 
 	if (arg) {
 		host = strdup(arg);
@@ -168,105 +173,116 @@ static void *atnet_open(const char *arg)
 
 	freeaddrinfo(addrs);
 
-	netio = netio_open(s);
-	if (!netio)
-		return NULL;
+	dsc = malloc(sizeof(*dsc));
+	if (!dsc) {
+		perror("malloc");
+		exit(1);
+	}
 
-	if (dialog_recv(netio) < 0) {
-		netio_close(netio);
+	dsc->netio = netio_open(s);
+	if (!dsc->netio) {
+		free(dsc);
 		return NULL;
 	}
 
-	error = 0;
-	return netio;
+	if (dialog_recv(dsc) < 0) {
+		netio_close(dsc->netio);
+		free(dsc);
+		return NULL;
+	}
+
+	dsc->error = 0;
+	*dsc->reply = 0;
+
+	return dsc;
 }
 
 
-static void atnet_close(void *dsc)
+static void atnet_close(void *handle)
 {
-	struct netio *netio = dsc;
+	struct atnet_dsc *dsc = handle;
 
-	netio_close(netio);
+	netio_close(dsc->netio);
 }
 
 
 /* ----- device mode ------------------------------------------------------- */
 
 
-static void atnet_reset(void *dsc)
+static void atnet_reset(void *handle)
 {
-	struct netio *netio = dsc;
+	struct atnet_dsc *dsc = handle;
 
-	if (error)
+	if (dsc->error)
 		return;
-	if (dialog(netio, "RESET") < 0)
-		error = 1;
+	if (dialog(dsc, "RESET") < 0)
+		dsc->error = 1;
 }
 
 
-static void atnet_reset_rf(void *dsc)
+static void atnet_reset_rf(void *handle)
 {
-	struct netio *netio = dsc;
+	struct atnet_dsc *dsc = handle;
 
-	if (error)
+	if (dsc->error)
 		return;
-	if (dialog(netio, "RESET_RF") < 0)
-		error = 1;
+	if (dialog(dsc, "RESET_RF") < 0)
+		dsc->error = 1;
 }
 
 
-static void atnet_test_mode(void *dsc)
+static void atnet_test_mode(void *handle)
 {
-	struct netio *netio = dsc;
+	struct atnet_dsc *dsc = handle;
 
-	if (error)
+	if (dsc->error)
 		return;
-	if (dialog(netio, "TEST") < 0)
-		error = 1;
+	if (dialog(dsc, "TEST") < 0)
+		dsc->error = 1;
 }
 
 
-static void atnet_slp_tr(void *dsc, int on)
+static void atnet_slp_tr(void *handle, int on)
 {
-	struct netio *netio = dsc;
+	struct atnet_dsc *dsc = handle;
 
-	if (error)
+	if (dsc->error)
 		return;
-	if (dialog(netio, "SLP_TR %d", on) < 0)
-		error = 1;
+	if (dialog(dsc, "SLP_TR %d", on) < 0)
+		dsc->error = 1;
 }
 
 
 /* ----- register access --------------------------------------------------- */
 
 
-static void atnet_reg_write(void *dsc, uint8_t reg, uint8_t value)
+static void atnet_reg_write(void *handle, uint8_t reg, uint8_t value)
 {
-	struct netio *netio = dsc;
+	struct atnet_dsc *dsc = handle;
 
-	if (error)
+	if (dsc->error)
 		return;
-	if (dialog(netio, "SET 0x%02x 0x%02x", reg, value) < 0)
-		error = 1;
+	if (dialog(dsc, "SET 0x%02x 0x%02x", reg, value) < 0)
+		dsc->error = 1;
 }
 
 
-static uint8_t atnet_reg_read(void *dsc, uint8_t reg)
+static uint8_t atnet_reg_read(void *handle, uint8_t reg)
 {
-	struct netio *netio = dsc;
+	struct atnet_dsc *dsc = handle;
 	unsigned long value;
 	char *end;
 
-	if (error)
+	if (dsc->error)
 		return;
-	if (dialog(netio, "GET 0x%02x", reg) < 0) {
-		error = 1;
+	if (dialog(dsc, "GET 0x%02x", reg) < 0) {
+		dsc->error = 1;
 		return 0;
 	}
-	value = strtoul(reply+1, &end, 0);
+	value = strtoul(dsc->reply+1, &end, 0);
 	if (*end || value > 255) {
-		fprintf(stderr, "invalid response \"%s\"\n", reply);
-		error = 1;
+		fprintf(stderr, "invalid response \"%s\"\n", dsc->reply+1);
+		dsc->error = 1;
 		return 0;
 	}
 	return value;
@@ -276,58 +292,59 @@ static uint8_t atnet_reg_read(void *dsc, uint8_t reg)
 /* ----- frame buffer access ----------------------------------------------- */
 
 
-static void atnet_buf_write(void *dsc, const void *buf, int size)
+static void atnet_buf_write(void *handle, const void *buf, int size)
 {
-	struct netio *netio = dsc;
+	struct atnet_dsc *dsc = handle;
 	char tmp[20];
 	int n;
 
-	if (error)
+	if (dsc->error)
 		return;
 
 	n = snprintf(tmp, sizeof(tmp), "WRITE %d ", size);
 	assert(n < sizeof(tmp));
-	if (netio_write(netio, tmp, n) < 0) {
-		error = 1;
+	if (netio_write(dsc->netio, tmp, n) < 0) {
+		dsc->error = 1;
                 return;
 	}
 
-	if (netio_write(netio, buf, size) < 0) {
-		error = 1;
+	if (netio_write(dsc->netio, buf, size) < 0) {
+		dsc->error = 1;
                 return;
 	}
 
-	if (netio_write(netio, "\n", 1) < 0) {
-		error = 1;
+	if (netio_write(dsc->netio, "\n", 1) < 0) {
+		dsc->error = 1;
                 return;
 	}
 
-	if (dialog_recv(netio) < 0)
-		error = 1;
+	if (dialog_recv(dsc) < 0)
+		dsc->error = 1;
 }
 
 
-static int atnet_buf_read(void *dsc, void *buf, int size)
+static int atnet_buf_read(void *handle, void *buf, int size)
 {
-	struct netio *netio = dsc;
+	struct atnet_dsc *dsc = handle;
 	uint8_t tmp[200];
 	int n, got = 0;
 	unsigned long len = 0;
 	char *end;
 
-	if (error)
+	if (dsc->error)
 		return -1;
 
-	if (dialog_send(netio, "READ") < 0)
+	if (dialog_send(dsc, "READ") < 0)
 		goto fail;
 
-	n = netio_read_until(netio, " ", tmp, sizeof(tmp)-1, NULL);
+	n = netio_read_until(dsc->netio, " ", tmp, sizeof(tmp)-1, NULL);
 	if (n < 0)
 		goto fail;
 	tmp[n] = 0;
 	if (*tmp == '-') {
 		fprintf(stderr, "%s ", tmp+1);
-		n = netio_read_until(netio, "\n", tmp, sizeof(tmp)-1, NULL);
+		n = netio_read_until(dsc->netio,
+		    "\n", tmp, sizeof(tmp)-1, NULL);
 		if (n >= 0) {
 			tmp[n] = 0;
 			fprintf(stderr, "%s\n", tmp);
@@ -344,11 +361,11 @@ static int atnet_buf_read(void *dsc, void *buf, int size)
 		goto fail;
 	}
 
-	got = netio_read(netio, buf, len);
+	got = netio_read(dsc->netio, buf, len);
 	if (got < 0)
 		goto fail;
 
-	if (netio_getc(netio, tmp) < 0)
+	if (netio_getc(dsc->netio, tmp) < 0)
 		goto fail;
 	if (*tmp == '\n')
 		return len;
@@ -356,7 +373,7 @@ static int atnet_buf_read(void *dsc, void *buf, int size)
 invalid:
 	fprintf(stderr, "invalid reponse\n");
 fail:
-	error = 1;
+	dsc->error = 1;
 	return -1;
 }
 
@@ -364,22 +381,22 @@ fail:
 /* ----- RF interrupt ------------------------------------------------------ */
 
 
-static int atnet_interrupt(void *dsc)
+static int atnet_interrupt(void *handle)
 {
-	struct netio *netio = dsc;
+	struct atnet_dsc *dsc = handle;
 	unsigned long value;
 	char *end;
 
-	if (error)
+	if (dsc->error)
 		return -1;
-	if (dialog(netio, "POLL") < 0) {
-		error = 1;
+	if (dialog(dsc, "POLL") < 0) {
+		dsc->error = 1;
 		return -1;
 	}
-	value = strtoul(reply+1, &end, 0);
+	value = strtoul(dsc->reply+1, &end, 0);
 	if (*end || value > 1) {
-		fprintf(stderr, "invalid response \"%s\"\n", reply);
-		error = 1;
+		fprintf(stderr, "invalid response \"%s\"\n", dsc->reply+1);
+		dsc->error = 1;
 		return -1;
 	}
 	return value;
@@ -389,11 +406,11 @@ static int atnet_interrupt(void *dsc)
 /* ----- CLKM handling ----------------------------------------------------- */
 
 
-static int atnet_set_clkm(void *dsc, int mhz)
+static int atnet_set_clkm(void *handle, int mhz)
 {
-	struct netio *netio = dsc;
+	struct atnet_dsc *dsc = handle;
 
-	return dialog(netio, "CLKM %d", mhz);
+	return dialog(dsc, "CLKM %d", mhz);
 }
 
 
