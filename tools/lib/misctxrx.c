@@ -94,7 +94,7 @@ out:
 /* ----- Transmit power ---------------------------------------------------- */
 
 
-static double tx_pwr_230[] = {
+static const double tx_pwr_230[] = {
 	 3.0,	 2.6,	 2.1,	 1.6,
 	 1.1,	 0.5,	-0.2,	-1.2,
 	-2.2,	-3.2,	-4.2,	-5.2,
@@ -102,12 +102,15 @@ static double tx_pwr_230[] = {
 };
 
 
-static double tx_pwr_231[] = {
+static const double tx_pwr_231[] = {
 	 3.0,	 2.8,	 2.3,	 1.8,
 	 1.3,	 0.7,	 0.0,	-1,
 	-2,	-3,	-4,	-5,
 	-7,	-9,	-12,	-17
 };
+
+
+#define	POWER_TABLE_SIZE	(sizeof(tx_pwr_230)/sizeof(*tx_pwr_230))
 
 
 void set_power_step(struct atrf_dsc *dsc, int power, int crc)
@@ -132,27 +135,52 @@ void set_power_step(struct atrf_dsc *dsc, int power, int crc)
 }
 
 
-void set_power_dBm(struct atrf_dsc *dsc, double power, int crc)
+static const double *tx_power_table(struct atrf_dsc *dsc)
 {
-	const double *tx_pwr;
-	int n;
-
 	switch (atrf_identify(dsc)) {
 	case artf_at86rf230:
-		tx_pwr = tx_pwr_230;
-		break;
+		return tx_pwr_230;
 	case artf_at86rf231:
-		tx_pwr = tx_pwr_231;
+		return tx_pwr_231;
 		break;
 	default:
 		abort();
 	}
+}
 
-	for (n = 0; n != sizeof(tx_pwr_230)/sizeof(*tx_pwr_230)-1; n++)
+
+int tx_power_dBm2step(struct atrf_dsc *dsc, double power)
+{
+	const double *tx_pwr = tx_power_table(dsc);
+	int n;
+
+	for (n = 0; n != POWER_TABLE_SIZE-1; n++)
 		if (tx_pwr[n] <= power)
 			break;
-	if (fabs(tx_pwr[n]-power) > 0.01)
-		fprintf(stderr, "TX power %.1f dBm\n", tx_pwr[n]);
+	return n;
+}
 
-	set_power_step(dsc, n, crc);
+
+double tx_power_step2dBm(struct atrf_dsc *dsc, int step)
+{
+	const double *tx_pwr = tx_power_table(dsc);
+
+	if (step < 0 || step > POWER_TABLE_SIZE)
+		abort();
+	return tx_pwr[step];
+}
+
+
+void set_power_dBm(struct atrf_dsc *dsc, double power, int crc)
+{
+	int step;
+	double got;
+
+	step = tx_power_dBm2step(dsc, power);
+	got = tx_power_step2dBm(dsc, step);
+
+	if (fabs(got-power) > 0.01)
+		fprintf(stderr, "TX power %.1f dBm\n", got);
+
+	set_power_step(dsc, step, crc);
 }
