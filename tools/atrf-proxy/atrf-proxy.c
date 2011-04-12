@@ -239,10 +239,16 @@ static void loop(const char *driver, int port)
 {
 	struct sockaddr_in addr;
 	int s;
+	int one = 1;
 
 	s = socket(PF_INET, SOCK_STREAM, 0);
 	if (s < 0) {
 		perror("socket");
+		exit(1);
+	}
+
+	if (setsockopt(s, SOL_SOCKET, SO_REUSEADDR, &one, sizeof(one)) < 0) {
+		perror("setsockopt");
 		exit(1);
 	}
 
