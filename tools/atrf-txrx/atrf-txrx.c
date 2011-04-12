@@ -63,22 +63,6 @@ enum rx_res {
 };
 
 
-static double tx_pwr_230[] = {
-	 3.0,	 2.6,	 2.1,	 1.6,
-	 1.1,	 0.5,	-0.2,	-1.2,
-	-2.2,	-3.2,	-4.2,	-5.2,
-	-7.2,	-9.2,	-12.2,	-17.2
-};
-
-
-static double tx_pwr_231[] = {
-	 3.0,	 2.8,	 2.3,	 1.8,
-	 1.3,	 0.7,	 0.0,	-1,
-	-2,	-3,	-4,	-5,
-	-7,	-9,	-12,	-17
-};
-
-
 static volatile int run = 1;
 
 
@@ -139,47 +123,6 @@ static void set_rate(struct atrf_dsc *dsc, uint8_t rate)
 		break;
 	case artf_at86rf231:
 		atrf_reg_write(dsc, REG_TRX_CTRL_2, rate);
-		break;
-	default:
-		abort();
-	}
-}
-
-
-static void set_power(struct atrf_dsc *dsc, double power, int crc)
-{
-	const double *tx_pwr;
-	int n;
-	uint8_t tmp;
-
-	switch (atrf_identify(dsc)) {
-	case artf_at86rf230:
-		tx_pwr = tx_pwr_230;
-		break;
-	case artf_at86rf231:
-		tx_pwr = tx_pwr_231;
-		break;
-	default:
-		abort();
-	}
-
-	for (n = 0; n != sizeof(tx_pwr_230)/sizeof(*tx_pwr_230)-1; n++)
-		if (tx_pwr[n] <= power)
-			break;
-	if (fabs(tx_pwr[n]-power) > 0.01)
-		fprintf(stderr, "TX power %.1f dBm\n", tx_pwr[n]);
-
-	switch (atrf_identify(dsc)) {
-	case artf_at86rf230:
-		atrf_reg_write(dsc, REG_PHY_TX_PWR,
-		    (crc ? TX_AUTO_CRC_ON_230 : 0) | n);
-		break;
-	case artf_at86rf231:
-		tmp = atrf_reg_read(dsc, REG_PHY_TX_PWR);
-		tmp = (tmp & ~TX_PWR_MASK) | n;
-		atrf_reg_write(dsc, REG_PHY_TX_PWR, tmp);
-		atrf_reg_write(dsc, REG_TRX_CTRL_1,
-		    crc ? TX_AUTO_CRC_ON : 0);
 		break;
 	default:
 		abort();
@@ -642,15 +585,15 @@ int main(int argc, char *const *argv)
 			receive(dsc, pcap_file);
 			break;
 		case mode_per:
-			set_power(dsc, power, 0);
+			set_power_dBm(dsc, power, 0);
 			transmit_pattern(dsc, pause_s, 0);
 			break;
 		case mode_ping:
-			set_power(dsc, power, 1);
+			set_power_dBm(dsc, power, 1);
 			ping(dsc, pause_s, 0);
 			break;
 		case mode_cont_tx:
-			set_power(dsc, power, 0);
+			set_power_dBm(dsc, power, 0);
 			status = test_mode(dsc, cont_tx, NULL);
 			break;
 		default:
@@ -679,25 +622,25 @@ int main(int argc, char *const *argv)
 		set_rate(dsc, rate);
 		switch (mode) {
 		case mode_msg:
-			set_power(dsc, power, 1);
+			set_power_dBm(dsc, power, 1);
 			transmit(dsc, argv[optind], times);
 			break;
 		case mode_per:
 			times = strtoul(argv[optind+1], &end, 0);
 			if (*end)
 				usage(*argv);
-			set_power(dsc, power, 0);
+			set_power_dBm(dsc, power, 0);
 			transmit_pattern(dsc, pause_s, times);
 			break;
 		case mode_ping:
 			pause_s = strtof(argv[optind], &end);
 			if (*end)
 				usage(*argv);
-			set_power(dsc, power, 1);
+			set_power_dBm(dsc, power, 1);
 			ping(dsc, pause_s, 1);
 			break;
 		case mode_cont_tx:
-			set_power(dsc, power, 0);
+			set_power_dBm(dsc, power, 0);
 			status = test_mode(dsc, cont_tx, argv[optind]);
 			break;
 		default:

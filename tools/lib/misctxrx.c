@@ -16,10 +16,14 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <signal.h>
+#include <math.h>
 
 #include "at86rf230.h"
 #include "atrf.h"
 #include "misctxrx.h"
+
+
+/* ----- Interrupts -------------------------------------------------------- */
 
 
 static volatile int run = 1;
@@ -84,4 +88,71 @@ out:
 	if (!run)
 		raise(SIGINT);
 	return irq;
+}
+
+
+/* ----- Transmit power ---------------------------------------------------- */
+
+
+static double tx_pwr_230[] = {
+	 3.0,	 2.6,	 2.1,	 1.6,
+	 1.1,	 0.5,	-0.2,	-1.2,
+	-2.2,	-3.2,	-4.2,	-5.2,
+	-7.2,	-9.2,	-12.2,	-17.2
+};
+
+
+static double tx_pwr_231[] = {
+	 3.0,	 2.8,	 2.3,	 1.8,
+	 1.3,	 0.7,	 0.0,	-1,
+	-2,	-3,	-4,	-5,
+	-7,	-9,	-12,	-17
+};
+
+
+void set_power_step(struct atrf_dsc *dsc, int power, int crc)
+{
+	uint8_t tmp;
+
+	switch (atrf_identify(dsc)) {
+	case artf_at86rf230:
+		atrf_reg_write(dsc, REG_PHY_TX_PWR,
+		    (crc ? TX_AUTO_CRC_ON_230 : 0) | power);
+		break;
+	case artf_at86rf231:
+		tmp = atrf_reg_read(dsc, REG_PHY_TX_PWR);
+		tmp = (tmp & ~TX_PWR_MASK) | power;
+		atrf_reg_write(dsc, REG_PHY_TX_PWR, tmp);
+		atrf_reg_write(dsc, REG_TRX_CTRL_1,
+		    crc ? TX_AUTO_CRC_ON : 0);
+		break;
+	default:
+		abort();
+	}
+}
+
+
+void set_power_dBm(struct atrf_dsc *dsc, double power, int crc)
+{
+	const double *tx_pwr;
+	int n;
+
+	switch (atrf_identify(dsc)) {
+	case artf_at86rf230:
+		tx_pwr = tx_pwr_230;
+		break;
+	case artf_at86rf231:
+		tx_pwr = tx_pwr_231;
+		break;
+	default:
+		abort();
+	}
+
+	for (n = 0; n != sizeof(tx_pwr_230)/sizeof(*tx_pwr_230)-1; n++)
+		if (tx_pwr[n] <= power)
+			break;
+	if (fabs(tx_pwr[n]-power) > 0.01)
+		fprintf(stderr, "TX power %.1f dBm\n", tx_pwr[n]);
+
+	set_power_step(dsc, n, crc);
 }
