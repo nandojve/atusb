@@ -25,24 +25,29 @@
 #define TO_DEV		ATUSB_TO_DEV(0)
 
 
+struct atusb_dsc {
+	usb_dev_handle *dev;
+	int error;
+};
+
 /* ----- error handling ---------------------------------------------------- */
 
 
-static int error;
-
-
-static int atusb_error(void *dsc)
+static int atusb_error(void *handle)
 {
-	return error;
+	struct atusb_dsc *dsc = handle;
+
+	return dsc->error;
 }
 
 
-static int atusb_clear_error(void *dsc)
+static int atusb_clear_error(void *handle)
 {
+	struct atusb_dsc *dsc = handle;
 	int ret;
 
-	ret = error;
-	error = 0;
+	ret = dsc->error;
+	dsc->error = 0;
 	return ret;
 }
 
@@ -53,22 +58,31 @@ static int atusb_clear_error(void *dsc)
 static void *atusb_open(const char *arg)
 {
 	usb_dev_handle *dev;
+	struct atusb_dsc *dsc;
 
 	usb_unrestrict();
 	if (arg)
 		restrict_usb_path(arg);
 	dev = open_usb(USB_VENDOR, USB_PRODUCT);
-	if (dev) {
-		error = 0;
-	} else {
+	if (!dev) {
 		fprintf(stderr, ":-(\n");
-		error = 1;
+		return NULL;
 	}
-	return dev;
+
+	dsc = malloc(sizeof(*dsc));
+	if (!dsc) {
+		perror("malloc");
+		exit(1);
+	}
+
+	dsc->dev = dev;
+	dsc->error = 0;
+
+	return dsc;
 }
 
 
-static void atusb_close(void *dsc)
+static void atusb_close(void *handle)
 {
 	/* to do */
 }
@@ -77,53 +91,53 @@ static void atusb_close(void *dsc)
 /* ----- device mode ------------------------------------------------------- */
 
 
-static void atusb_reset(void *dsc)
+static void atusb_reset(void *handle)
 {
-	usb_dev_handle *dev = dsc;
+	struct atusb_dsc *dsc = handle;
 	int res;
 
-	if (error)
+	if (dsc->error)
 		return;
 
 	res =
-	    usb_control_msg(dev, TO_DEV, ATUSB_RESET, 0, 0, NULL, 0, 1000);
+	    usb_control_msg(dsc->dev, TO_DEV, ATUSB_RESET, 0, 0, NULL, 0, 1000);
 	if (res < 0) {
 		fprintf(stderr, "ATUSB_RESET: %d\n", res);
-		error = 1;
+		dsc->error = 1;
 	}
 }
 
 
-static void atusb_reset_rf(void *dsc)
+static void atusb_reset_rf(void *handle)
 {
-	usb_dev_handle *dev = dsc;
+	struct atusb_dsc *dsc = handle;
 	int res;
 
-	if (error)
+	if (dsc->error)
 		return;
 
-	res =
-	    usb_control_msg(dev, TO_DEV, ATUSB_RF_RESET, 0, 0, NULL, 0, 1000);
+	res = usb_control_msg(dsc->dev, TO_DEV, ATUSB_RF_RESET, 0, 0, NULL,
+	    0, 1000);
 	if (res < 0) {
 		fprintf(stderr, "ATUSB_RF_RESET: %d\n", res);
-		error = 1;
+		dsc->error = 1;
 	}
 }
 
 
-static void atusb_test_mode(void *dsc)
+static void atusb_test_mode(void *handle)
 {
-	usb_dev_handle *dev = dsc;
+	struct atusb_dsc *dsc = handle;
 	int res;
 
-	if (error)
+	if (dsc->error)
 		return;
 
 	res =
-	    usb_control_msg(dev, TO_DEV, ATUSB_TEST, 0, 0, NULL, 0, 1000);
+	    usb_control_msg(dsc->dev, TO_DEV, ATUSB_TEST, 0, 0, NULL, 0, 1000);
 	if (res < 0) {
 		fprintf(stderr, "ATUSB_TEST: %d\n", res);
-		error = 1;
+		dsc->error = 1;
 	}
 }
 
@@ -131,37 +145,37 @@ static void atusb_test_mode(void *dsc)
 /* ----- register access --------------------------------------------------- */
 
 
-static void atusb_reg_write(void *dsc, uint8_t reg, uint8_t value)
+static void atusb_reg_write(void *handle, uint8_t reg, uint8_t value)
 {
-	usb_dev_handle *dev = dsc;
+	struct atusb_dsc *dsc = handle;
 	int res;
 
-	if (error)
+	if (dsc->error)
 		return;
 
-	res = usb_control_msg(dev, TO_DEV, ATUSB_REG_WRITE, value, reg,
+	res = usb_control_msg(dsc->dev, TO_DEV, ATUSB_REG_WRITE, value, reg,
 	    NULL, 0, 1000);
 	if (res < 0) {
 		fprintf(stderr, "ATUSB_REG_WRITE: %d\n", res);
-		error = 1;
+		dsc->error = 1;
 	}
 }
 
 
-static uint8_t atusb_reg_read(void *dsc, uint8_t reg)
+static uint8_t atusb_reg_read(void *handle, uint8_t reg)
 {
-	usb_dev_handle *dev = dsc;
+	struct atusb_dsc *dsc = handle;
 	uint8_t value = 0;
 	int res;
 
-	if (error)
+	if (dsc->error)
 		return 0;
 
-	res = usb_control_msg(dev, FROM_DEV, ATUSB_REG_READ, 0, reg,
+	res = usb_control_msg(dsc->dev, FROM_DEV, ATUSB_REG_READ, 0, reg,
 	    (void *) &value, 1, 1000);
 	if (res < 0) {
 		fprintf(stderr, "ATUSB_REG_READ: %d\n", res);
-		error = 1;
+		dsc->error = 1;
 	}
 	return value;
 }
@@ -170,37 +184,36 @@ static uint8_t atusb_reg_read(void *dsc, uint8_t reg)
 /* ----- frame buffer access ----------------------------------------------- */
 
 
-static void atusb_buf_write(void *dsc, const void *buf, int size)
+static void atusb_buf_write(void *handle, const void *buf, int size)
 {
-	usb_dev_handle *dev = dsc;
+	struct atusb_dsc *dsc = handle;
 	int res;
 
-	if (error)
+	if (dsc->error)
 		return;
 
-	res = usb_control_msg(dev, TO_DEV, ATUSB_BUF_WRITE, 0, 0,
+	res = usb_control_msg(dsc->dev, TO_DEV, ATUSB_BUF_WRITE, 0, 0,
 	    (void *) buf, size, 1000);
 	if (res < 0) {
 		fprintf(stderr, "ATUSB_BUF_WRITE: %d\n", res);
-		error = 1;
+		dsc->error = 1;
 	}
-
 }
 
 
-static int atusb_buf_read(void *dsc, void *buf, int size)
+static int atusb_buf_read(void *handle, void *buf, int size)
 {
-	usb_dev_handle *dev = dsc;
+	struct atusb_dsc *dsc = handle;
 	int res;
 
-	if (error)
+	if (dsc->error)
 		return -1;
 
-	res = usb_control_msg(dev, FROM_DEV, ATUSB_BUF_READ, 0, 0,
+	res = usb_control_msg(dsc->dev, FROM_DEV, ATUSB_BUF_READ, 0, 0,
 	    buf, size, 1000);
 	if (res < 0) {
 		fprintf(stderr, "ATUSB_BUF_READ: %d\n", res);
-		error = 1;
+		dsc->error = 1;
 	}
 
 	return res;
@@ -210,20 +223,20 @@ static int atusb_buf_read(void *dsc, void *buf, int size)
 /* ----- RF interrupt ------------------------------------------------------ */
 
 
-static int atusb_interrupt(void *dsc)
+static int atusb_interrupt(void *handle)
 {
-	usb_dev_handle *dev = dsc;
+	struct atusb_dsc *dsc = handle;
 	uint8_t buf;
 	int res;
 
-	if (error)
+	if (dsc->error)
 		return -1;
 	
-	res = usb_control_msg(dev, FROM_DEV, ATUSB_POLL_INT, 0, 0,
+	res = usb_control_msg(dsc->dev, FROM_DEV, ATUSB_POLL_INT, 0, 0,
 	    (void *) &buf, 1, 1000);
 	if (res < 0) {
 		fprintf(stderr, "ATUSB_POLL_INT: %d\n", res);
-		error = 1;
+		dsc->error = 1;
 		return -1;
 	}
 
@@ -240,19 +253,19 @@ static int atusb_interrupt(void *dsc)
  * later.
  */
 
-static int atusb_set_clkm(void *dsc, int mhz)
+static int atusb_set_clkm(void *handle, int mhz)
 {
-	usb_dev_handle *dev = dsc;
+	struct atusb_dsc *dsc = handle;
 	uint8_t ids[3];
 	int res;
 
-	if (error)
+	if (dsc->error)
 		return 0;
-	res = usb_control_msg(dev, FROM_DEV, ATUSB_ID, 0, 0,
+	res = usb_control_msg(dsc->dev, FROM_DEV, ATUSB_ID, 0, 0,
 	    (void *) ids, 3, 1000);
 	if (res < 0) {
 		fprintf(stderr, "ATUSB_ID: %s\n", usb_strerror());
-		error = 1;
+		dsc->error = 1;
 		return 0;
 	}
 	switch (ids[2]) {
@@ -270,6 +283,17 @@ static int atusb_set_clkm(void *dsc, int mhz)
 		return 0;
 	}
 	return atrf_set_clkm_generic(atusb_reg_write, dsc, mhz);
+}
+
+
+/* ----- Driver-specific hacks --------------------------------------------- */
+
+
+void *atusb_dev_handle(void *handle)
+{
+	struct atusb_dsc *dsc = handle;
+
+	return dsc->dev;
 }
 
 

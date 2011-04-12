@@ -46,5 +46,6 @@ int atrf_set_clkm_generic(
     void *handle, int mhz);
 
 void *atben_regs(void *dsc); /* hack for atrf-xtal */
+void *atusb_dev_handle(void *dsc); /* hack for atrf-id */
 
 #endif /* !DRIVER_H */

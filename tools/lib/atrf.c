@@ -44,7 +44,7 @@ void *atrf_usb_handle(struct atrf_dsc *dsc)
 {
 #ifdef HAVE_USB
 	if (dsc->driver == &atusb_driver)
-		return dsc->handle;
+		return atusb_dev_handle(dsc->handle);
 #endif
 	return NULL;
 }
