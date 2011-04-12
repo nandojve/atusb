@@ -1,0 +1,23 @@
+#!/bin/sh
+
+usage()
+{
+	echo "usage: file ..." 1>&2
+	exit 1
+}
+
+[ "$1" ] || usage
+files=
+while [ "$1" ]; do
+	[ "$files" ] && files="$files, "
+	files="$files\"$1\""
+	shift
+done
+
+gnuplot -persist <<EOF
+set yrange [-94:-10]
+set ylabel "RX-TX power (dBm)"
+set xlabel "Frequency (MHz)"
+set style data lines
+plot $files
+EOF

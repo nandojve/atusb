@@ -11,7 +11,7 @@
 #
 
 
-DIRS=atrf-id atrf-proxy atrf-reset atrf-rssi atrf-trim atrf-txrx \
+DIRS=atrf-id atrf-path atrf-proxy atrf-reset atrf-rssi atrf-trim atrf-txrx \
      atrf-xtal
 TARGET_ONLY_DIRS=lib
 
