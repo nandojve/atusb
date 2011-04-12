@@ -35,7 +35,7 @@ static int dialog_vsend(struct netio *netio, const char *fmt, va_list ap)
 {
 	va_list ap2;
 	char *buf;
-	int n;
+	int n, res;
 
 	va_copy(ap2, ap);
 	n = vsnprintf(NULL, 0, fmt, ap2);
@@ -49,9 +49,10 @@ static int dialog_vsend(struct netio *netio, const char *fmt, va_list ap)
 	vsprintf(buf, fmt, ap);
 
 	buf[n] = '\n';
-	if (netio_write(netio, buf, n+1) < 0)
-		return -1;
-	return 0;
+	res = netio_write(netio, buf, n+1);
+	free(buf);
+
+	return res < 0 ? -1 : 0;
 }
 
 
