@@ -165,7 +165,7 @@ double tx_power_step2dBm(struct atrf_dsc *dsc, int step)
 {
 	const double *tx_pwr = tx_power_table(dsc);
 
-	if (step < 0 || step > POWER_TABLE_SIZE)
+	if (step < 0 || step >= POWER_TABLE_SIZE)
 		abort();
 	return tx_pwr[step];
 }
