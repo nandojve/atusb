@@ -2,11 +2,18 @@
 
 usage()
 {
-	echo "usage: file ..." 1>&2
+	echo "usage: [-e] file ..." 1>&2
 	exit 1
 }
 
+style=lines
+if [ "$1" = -e ]; then
+	style=errorlines
+	shift
+fi
+
 [ "$1" ] || usage
+
 files=
 while [ "$1" ]; do
 	[ "$files" ] && files="$files, "
@@ -15,9 +22,12 @@ while [ "$1" ]; do
 done
 
 gnuplot -persist <<EOF
+# the y range is not entirely correct - we have RSSI in [-94, -10], and 
+# TX in [-17, 3], so the theoretically possible range would be [-97, 7].
 set yrange [-94:-10]
 set ylabel "RX-TX power (dBm)"
 set xlabel "Frequency (MHz)"
-set style data lines
+set bars small
+set style data $style
 plot $files
 EOF

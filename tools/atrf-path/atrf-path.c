@@ -50,10 +50,17 @@ static void init_rx(struct atrf_dsc *dsc, int trim, int chan)
 }
 
 
+static double rssi_to_dBm(double rssi)
+{
+	return -91+3*(rssi-1);
+}
+
+
 static void sample(struct atrf_dsc *tx, struct atrf_dsc *rx, int trim_tx,
     int power, int chan, int cont_tx, int samples)
 {
-	int i, rssi = 0;
+	int i, rssi;
+	int sum = 0, min = -1, max = -1;
 	double offset = tx_power_step2dBm(tx, power);
 
 	init_tx(tx, trim_tx, power, chan);
@@ -67,14 +74,20 @@ static void sample(struct atrf_dsc *tx, struct atrf_dsc *rx, int trim_tx,
 		/* according to 8.3.2, PHY_RSSI is updated every 2 us */
 		usleep(2);
 
-		rssi += atrf_reg_read(rx, REG_PHY_RSSI) & RSSI_MASK;
+		rssi = atrf_reg_read(rx, REG_PHY_RSSI) & RSSI_MASK;
+		sum += rssi;
+		if (min == -1 || rssi < min)
+			min = rssi;
+		if (rssi > max)
+			max = rssi;
 	}
 
 	cw_test_end(tx);
 
-	printf("%.1f %.1f\n",
+	printf("%.1f %.2f %.0f %.0f\n",
 	    2350+5*chan+(cont_tx == CONT_TX_M500K ? -0.5 : 0.5),
-	    -91+3*(rssi-1.0)/samples-offset);
+	    rssi_to_dBm((double) sum/samples)-offset,
+	    rssi_to_dBm(min)-offset, rssi_to_dBm(max)-offset);
 }
 
 
