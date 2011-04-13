@@ -21,6 +21,7 @@
 #include "cwtest.h"
 #include "atrf.h"
 
+#include "gui.h"
 #include "sweep.h"
 
 
@@ -211,7 +212,10 @@ int main(int argc, char **argv)
 		return 1;
 
 	sweep.power = 15-power;
-	do_sweeps(&sweep, sweeps);
+	if (sweeps)	/* @@@ hack */
+		do_sweeps(&sweep, sweeps);
+	else
+		gui(&sweep);
 
 	atrf_reg_write(sweep.tx, REG_TRX_STATE, TRX_CMD_TRX_OFF);
 	atrf_reg_write(sweep.rx, REG_TRX_STATE, TRX_CMD_TRX_OFF);
