@@ -139,10 +139,26 @@ static void usage(const char *name)
 {
 	fprintf(stderr,
 "usage: %s [-p power] [-t trim_tx [-t trim_rx]] driver_tx[:arg]\n"
-"%16s driver_rx[:arg] [sweeps [samples]]\n\n"
+"%16s driver_rx[:arg] [sweeps [samples]]\n"
+
+#ifdef HAVE_GFX
+"%6s %s -g [-p power] [-t trim_tx [-t trim_rx]] driver_tx[:arg]\n"
+"%16s driver_rx[:arg] [[sweeps] samples]\n"
+#endif
+    "\n"
+
+#ifdef HAVE_GFX
+"  -g        display results graphically\n"
+#endif
 "  -p power  transmit power, 0 to 15 (default %d)\n"
 "  -t trim   trim capacitor, 0 to 15 (default %d)\n"
-    , name, "", DEFAULT_POWER, DEFAULT_TRIM);
+
+    , name, "",
+#ifdef HAVE_GFX
+    "", name, "",
+#endif
+    DEFAULT_POWER, DEFAULT_TRIM);
+
 	exit(1);
 }
 
@@ -155,14 +171,19 @@ int main(int argc, char **argv)
 		.trim_rx = DEFAULT_TRIM,
 		.samples = 1,
 	};
+	int graphical = 0;
 	int power = DEFAULT_POWER;
 	int sweeps = 1;
 	unsigned long tmp;
 	char *end;
 	int c;
 
-	while ((c = getopt(argc, argv, "p:t:")) != EOF)
+	while ((c = getopt(argc, argv, "gp:t:")) != EOF)
 		switch (c) {
+		case'g':
+			graphical = 1;
+			sweeps = 0;
+			break;
 		case 'p':
 			tmp = strtoul(optarg, &end, 0);
 			if (*end || tmp > 15)
@@ -195,6 +216,10 @@ int main(int argc, char **argv)
 		sweeps = strtoul(argv[optind+2], &end, 0);
 		if (*end)
 			usage(*argv);
+		if (graphical && argc-optind == 3) {
+			sweep.samples = sweeps;
+			sweeps = 0;
+		}
 		/* fall through */
 	case 2:
 		tx_drv = argv[optind];
@@ -212,10 +237,10 @@ int main(int argc, char **argv)
 		return 1;
 
 	sweep.power = 15-power;
-	if (sweeps)	/* @@@ hack */
-		do_sweeps(&sweep, sweeps);
+	if (graphical)
+		gui(&sweep, sweeps);
 	else
-		gui(&sweep);
+		do_sweeps(&sweep, sweeps);
 
 	atrf_reg_write(sweep.tx, REG_TRX_STATE, TRX_CMD_TRX_OFF);
 	atrf_reg_write(sweep.rx, REG_TRX_STATE, TRX_CMD_TRX_OFF);

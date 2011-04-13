@@ -19,9 +19,9 @@
 
 
 #ifdef HAVE_GFX
-void gui(const struct sweep *sweep);
+void gui(const struct sweep *sweep, int sweeps);
 #else
-#define gui(sweep) abort()
+#define gui(sweep, sweeps) abort()
 #endif
 
 #endif /* !GUI_H */

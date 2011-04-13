@@ -109,7 +109,7 @@ static void tstop(void)
 }
 
 
-void gui(const struct sweep *sweep)
+void gui(const struct sweep *sweep, int sweeps)
 {
 	SDL_Surface *surf;
 	SDL_Event event;
@@ -127,7 +127,7 @@ void gui(const struct sweep *sweep)
 		exit(1);
 	}
 
-	while (1) {
+	while (cycle != sweeps || !sweeps) {
 		struct sample res[N_CHAN*2];
 
 		while (SDL_PollEvent(&event))
