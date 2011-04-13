@@ -142,6 +142,8 @@ static void clear(SDL_Surface *s)
 
 /* --- temporarily, for optimizing --- */
 
+#if 0
+
 #include <sys/time.h>
 
 
@@ -167,6 +169,13 @@ static void tstop(void)
 {
 	fprintf(stderr, "%.3f\n", t()-t0);
 }
+
+#else
+
+static void tstart(void) {}
+static void tstop(void) {}
+
+#endif
 
 
 int gui(const struct sweep *sweep, int sweeps)
