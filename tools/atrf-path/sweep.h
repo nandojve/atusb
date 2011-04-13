@@ -19,6 +19,12 @@
 #include "atrf.h"
 
 
+#define	N_CHAN	16
+
+#define	MIN_DIFF	-97.0	/* RSSI(min)-TX(max) = -94 - 3		*/
+#define	MAX_DIFF	7.0	/* RSSI(max)-TX(min) = -10 - (-17)	*/
+
+
 struct sweep {
 	struct atrf_dsc *tx;
 	struct atrf_dsc *rx;
@@ -27,6 +33,8 @@ struct sweep {
 	int power;
 	uint8_t cont_tx;
 	int samples;
+	double min[N_CHAN];
+	double max[N_CHAN];
 };
 
 struct sample {
@@ -35,6 +43,14 @@ struct sample {
 };
 
 
-void do_sweep(const struct sweep *sweep, struct sample *res);
+/*
+ * do_sweep returns whether the signal is within the limits:
+ *
+ *  1: at least one sample is above the maximum
+ *  0: all samples are between minimum and maximum
+ * -1: at least one sample below the minimum, and none above the maximum
+ */
+
+int do_sweep(const struct sweep *sweep, struct sample *res);
 
 #endif /* !SWEEP_H */

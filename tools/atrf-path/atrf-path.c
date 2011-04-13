@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "at86rf230.h"
 
@@ -110,28 +111,44 @@ static void sample(const struct sweep *sweep, int cont_tx,
 }
 
 
-static void do_half_sweep(const struct sweep *sweep, int cont_tx,
+static int do_half_sweep(const struct sweep *sweep, int cont_tx,
     struct sample *res)
 {
-	int chan;
+	int i, chan;
+	int fail = 0;
 
 	if (sweep->cont_tx && sweep->cont_tx != cont_tx)
-		return;
-	for (chan = 11; chan <= 26; chan++) {
+		return 0;
+	chan = 11;
+	for (i = 0; i != N_CHAN; i++) {
 		set_channel(sweep->rx, chan);
 		set_channel(sweep->tx, chan);
 		usleep(155);	/* table 7-2, tTR19 */
 
 		sample(sweep, cont_tx, res, chan == 11 && !sweep->cont_tx);
+		if (res->avg > sweep->max[i])
+			fail = 1;
+		if (!fail && res->avg < sweep->min[i])
+			fail = -1;
+
 		res += 2;
+		chan++;
 	}
+	return fail;
 }
 
 
-void do_sweep(const struct sweep *sweep, struct sample *res)
+int do_sweep(const struct sweep *sweep, struct sample *res)
 {
-	do_half_sweep(sweep, CONT_TX_M500K, res);
-	do_half_sweep(sweep, CONT_TX_P500K, res+1);
+	int fail1, fail2;
+
+	fail1 = do_half_sweep(sweep, CONT_TX_M500K, res);
+	fail2 = do_half_sweep(sweep, CONT_TX_P500K, res+1);
+	if (fail1 > 0 || fail2 > 0)
+		return 1;
+	if (fail1 < 0 || fail2 < 0)
+		return -1;
+	return 0;
 }
 
 
@@ -154,7 +171,7 @@ static void print_sweep(const struct sweep *sweep, const struct sample *res)
 
 static void do_sweeps(const struct sweep *sweep, int sweeps)
 {
-	struct sample res[16*2];	/* 16 channels, 2 offsets */
+	struct sample res[N_CHAN*2];	/* 2 offsets per channel */
 	int i;
 
 	for (i = 0; i != sweeps; i++) {
@@ -162,6 +179,85 @@ static void do_sweeps(const struct sweep *sweep, int sweeps)
 			putchar('\n');
 		do_sweep(sweep, res);
 		print_sweep(sweep, res);
+	}
+}
+
+
+static int do_read_profile(const char *name, struct sweep *sweep)
+{
+	FILE *file;
+	char buf[300];
+	int got;
+	char *p;
+	double min = MIN_DIFF, max = MAX_DIFF;
+	int n = 0;
+
+	file = fopen(name, "r");
+	if (!file) {
+		perror(name);
+		exit(1);
+	}
+	while (fgets(buf, sizeof(buf), file)) {
+		p = strchr(buf, '\n');
+		if (p)
+			*p = 0;
+		p = strchr(buf, '#');
+		if (p)
+			*p = 0;
+		for (p = buf; *p && isspace(*p); p++);
+		if (!*p)
+			continue;
+		got = sscanf(buf, "%lf %lf", &min, &max);
+		switch (got) {
+		case 0:
+			fprintf(stderr, "can't parse \"%s\"\n", buf);
+			exit(1);
+		case 1:
+			max = MAX_DIFF;
+			/* fall through */
+		case 2:
+			if (min < MIN_DIFF) {
+				fprintf(stderr, "minimum is %g dBm\n",
+				    MIN_DIFF);
+				exit(1);
+			}
+			if (max > MAX_DIFF) {
+				fprintf(stderr, "maximum is %g dBm\n",
+				    MAX_DIFF);
+				exit(1);
+			}
+			if (min > max) {
+				fprintf(stderr, "lower bound > upper bound\n");
+				exit(1);
+			}
+			if (n == N_CHAN) {
+				fprintf(stderr, "too many channels\n");
+				exit(1);
+			}
+			sweep->min[n] = min;
+			sweep->max[n] = max;
+			n++;
+			break;
+		default:
+			abort();
+		}
+	}
+	fclose(file);
+	return n;
+}
+
+
+static void read_profile(const char *name, struct sweep *sweep)
+{
+	int n = 0;
+
+	if (name)
+		n = do_read_profile(name, sweep);
+
+	while (n != N_CHAN) {
+		sweep->min[n] = MIN_DIFF;
+		sweep->max[n] = MAX_DIFF;
+		n++;
 	}
 }
 
@@ -175,15 +271,16 @@ static void usage(const char *name)
 "%6s %s -g common_args [[sweeps] samples]\n"
 #endif
     "\n"
-"  common args:  [-p power] [-t trim_tx [-t trim_rx]] [-T offset]\n"
-"                driver_tx[:arg] driver_rx[:arg]\n\n"
+"  common args:  [-p power] [-P profile] [-t trim_tx [-t trim_rx]]\n"
+"                [-T offset] driver_tx[:arg] driver_rx[:arg]\n\n"
 
 #ifdef HAVE_GFX
-"  -g         display results graphically\n"
+"  -g          display results graphically\n"
 #endif
-"  -p power   transmit power, 0 to 15 (default %d)\n"
-"  -t trim    trim capacitor, 0 to 15 (default %d)\n"
-"  -T offset  constant wave offset in MHz, -0.5 or +0.5 (default: scan both)\n"
+"  -p power    transmit power, 0 to 15 (default %d)\n"
+"  -P profile  load profile for pass/fail decisions\n"
+"  -t trim     trim capacitor, 0 to 15 (default %d)\n"
+"  -T offset   constant wave offset in MHz, -0.5 or +0.5 (default: scan both)\n"
 
     , name,
 #ifdef HAVE_GFX
@@ -206,12 +303,13 @@ int main(int argc, char **argv)
 	};
 	int graphical = 0;
 	int power = DEFAULT_POWER;
+	const char *profile = NULL;
 	int sweeps = 1;
 	unsigned long tmp;
 	char *end;
 	int c;
 
-	while ((c = getopt(argc, argv, "gp:t:T:")) != EOF)
+	while ((c = getopt(argc, argv, "gp:P:t:T:")) != EOF)
 		switch (c) {
 		case'g':
 			graphical = 1;
@@ -222,6 +320,9 @@ int main(int argc, char **argv)
 			if (*end || tmp > 15)
 				usage(*argv);
 			power = tmp;
+			break;
+		case 'P':
+			profile = optarg;
 			break;
 		case 't':
 			tmp = strtoul(optarg, &end, 0);
@@ -269,6 +370,8 @@ int main(int argc, char **argv)
 	default:
 		usage(*argv);
 	}
+
+	read_profile(profile, &sweep);
 
 	sweep.tx = atrf_open(tx_drv);
 	if (!sweep.tx)

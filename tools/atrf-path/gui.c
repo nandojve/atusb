@@ -29,11 +29,10 @@
 #define	XRES	320
 #define	YRES	240
 
-#define	N_CHAN	16
-
-
 #define	FG_RGBA		0xffffffff	/* measurement color */
 #define	OK_RGBA		0x00ff00ff
+#define	OVER_RGBA	0xffff00ff
+#define	UNDER_RGBA	0xff0000ff
 
 #define	CHAN_STEP	20	/* 4 pixels/MHz */
 #define	SIDE_STEP	2
@@ -84,6 +83,33 @@ static void draw(SDL_Surface *s, const struct sample *res, int cont_tx)
 }
 
 
+static void indicate(SDL_Surface *s, int fail)
+{
+	static uint32_t last = 0;
+	uint32_t color;
+
+	switch (fail) {
+	case 0:
+		color = OK_RGBA;
+		break;
+	case 1:
+		color = OVER_RGBA;
+		break;
+	case -1:
+		color = UNDER_RGBA;
+		break;
+	default:
+		abort();
+	}
+	if (color == last)
+		color = 0;
+	last = color;
+
+	filledCircleColor(s, STATUS_X, STATUS_Y, STATUS_R, color);
+	aacircleColor(s, STATUS_X, STATUS_Y, STATUS_R, color);
+}
+
+
 static void clear(SDL_Surface *s)
 {
 	SDL_FillRect(s, NULL, SDL_MapRGB(s->format, 0, 0, 0));
@@ -124,6 +150,7 @@ void gui(const struct sweep *sweep, int sweeps)
 	SDL_Surface *surf;
 	SDL_Event event;
 	int cycle = 0;
+	int fail;
 
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		fprintf(stderr, "SDL_init: %s\n", SDL_GetError());
@@ -145,19 +172,14 @@ void gui(const struct sweep *sweep, int sweeps)
 			    event.type == SDL_QUIT)
 				return;
 		tstart();
-		do_sweep(sweep, res);
+		fail = do_sweep(sweep, res);
 		tstop();
 
 		SDL_LockSurface(surf);
 
 		clear(surf);
 
-		if (cycle++ & 1) {
-			filledCircleColor(surf, STATUS_X, STATUS_Y, STATUS_R,
-			    OK_RGBA);
-			aacircleColor(surf, STATUS_X, STATUS_Y, STATUS_R,
-			    OK_RGBA);
-		}
+		indicate(surf, fail);
 		draw(surf, res, sweep->cont_tx);
 
 		SDL_UnlockSurface(surf);
