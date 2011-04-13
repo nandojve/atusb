@@ -18,10 +18,18 @@
 #include "sweep.h"
 
 
+/*
+ * gui returns one of the following values:
+ *
+ * -1	fail
+ *  0	no decision taken
+ *  1	pass
+ */
+
 #ifdef HAVE_GFX
-void gui(const struct sweep *sweep, int sweeps);
+int gui(const struct sweep *sweep, int sweeps);
 #else
-#define gui(sweep, sweeps) abort()
+#define gui(sweep, sweeps) ({ abort(); 0; })
 #endif
 
 #endif /* !GUI_H */

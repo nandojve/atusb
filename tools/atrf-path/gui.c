@@ -169,12 +169,12 @@ static void tstop(void)
 }
 
 
-void gui(const struct sweep *sweep, int sweeps)
+int gui(const struct sweep *sweep, int sweeps)
 {
 	SDL_Surface *surf;
 	SDL_Event event;
 	int cycle;
-	int fail;
+	int fail = 0;
 
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		fprintf(stderr, "SDL_init: %s\n", SDL_GetError());
@@ -191,10 +191,43 @@ void gui(const struct sweep *sweep, int sweeps)
 	for (cycle = 0; cycle != sweeps || !sweeps; cycle++) {
 		struct sample res[N_CHAN*2];
 
+		/*
+		 * Pass/fail logic:
+		 *
+		 * Quit  exit at any time, without making a pass/fail decision
+		 * Pass  exit if the current result is "pass"
+		 *       ignored if the current result is "over"/"under"
+		 * Fail  exit if the current result is "under"
+		 *       ignored if the current result is "pass"
+		 *	 ignored if the current result is "over", because this
+		 *         indicates an invalid measurement, not a defective
+		 *         device
+		 */
+
 		while (SDL_PollEvent(&event))
-			if (event.type == SDL_KEYDOWN ||
-			    event.type == SDL_QUIT)
-				return;
+			switch (event.type) {
+			case SDL_KEYDOWN:
+				switch (event.key.keysym.sym) {
+				case SDLK_f:
+					if (cycle && fail < 0)
+						return -1;
+					break;
+				case SDLK_p:
+					if (cycle && !fail)
+						return 1;
+					break;
+				case SDLK_q:
+					return 0;
+				default:
+					break;
+				}
+				break;
+			case SDL_QUIT:
+				return 0;
+			default:
+				break;
+			}
+
 		tstart();
 		fail = do_sweep(sweep, res);
 		tstop();
@@ -211,4 +244,6 @@ void gui(const struct sweep *sweep, int sweeps)
 		SDL_UnlockSurface(surf);
 		SDL_UpdateRect(surf, 0, 0, 0, 0);
 	}
+
+	return 0;
 }

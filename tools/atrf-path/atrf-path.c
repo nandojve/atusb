@@ -169,17 +169,35 @@ static void print_sweep(const struct sweep *sweep, const struct sample *res)
 }
 
 
-static void do_sweeps(const struct sweep *sweep, int sweeps)
+static int do_sweeps(const struct sweep *sweep, int sweeps)
 {
 	struct sample res[N_CHAN*2];	/* 2 offsets per channel */
+	int decision = 0, fail, pass;
 	int i;
+
+	/*
+	 * The pass/fail logic here goes as follows:
+	 *
+	 * Pass if and only if all sweeps pass.
+	 * Fail if and only if all sweeps are below the minimum.
+	 * Make no decision if any sweeps were above the maximum or if there
+	 * was a mixture of pass and fail.
+	 */
 
 	for (i = 0; i != sweeps; i++) {
 		if (i)
 			putchar('\n');
-		do_sweep(sweep, res);
+		fail = do_sweep(sweep, res);
 		print_sweep(sweep, res);
+		pass = fail < 0 ? -1 : fail > 0 ? 0 : 1;
+		if (!i)
+			decision = pass;
+		else {
+			if (pass != decision)
+				decision = 0;
+		}
 	}
+	return decision;
 }
 
 
@@ -307,7 +325,7 @@ int main(int argc, char **argv)
 	int sweeps = 1;
 	unsigned long tmp;
 	char *end;
-	int c;
+	int c, decision;
 
 	while ((c = getopt(argc, argv, "gp:P:t:T:")) != EOF)
 		switch (c) {
@@ -384,9 +402,22 @@ int main(int argc, char **argv)
 	init_rx(sweep.rx, sweep.trim_rx);
 	init_tx(sweep.tx, sweep.trim_tx, sweep.power);
 	if (graphical)
-		gui(&sweep, sweeps);
+		decision = gui(&sweep, sweeps);
 	else
-		do_sweeps(&sweep, sweeps);
+		decision = do_sweeps(&sweep, sweeps);
+
+	switch (decision) {
+	case -1:
+		printf("#FAIL\n");
+		break;
+	case 0:
+		break;
+	case 1:
+		printf("#PASS\n");
+		break;
+	default:
+		abort();
+	}
 
 	atrf_reg_write(sweep.tx, REG_TRX_STATE, TRX_CMD_TRX_OFF);
 	atrf_reg_write(sweep.rx, REG_TRX_STATE, TRX_CMD_TRX_OFF);
