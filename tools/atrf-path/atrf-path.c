@@ -64,17 +64,21 @@ static double rssi_to_dBm(double rssi)
 }
 
 
-static void sample(const struct sweep *sweep, int chan, int cont_tx,
+static void sample(const struct sweep *sweep, int cont_tx,
     struct sample *res)
 {
 	int i, rssi;
 	int sum = 0, min = -1, max = -1;
 	double offset = tx_power_step2dBm(sweep->tx, sweep->power);
 
-	init_tx(sweep->tx, sweep->trim_tx, sweep->power);
-	set_channel(sweep->tx, chan);
-	usleep(155);	/* table 7-2, tTR19 */
-
+/*
+ * For the 230, we don't have reset-less exit from test mode (yet ?) and
+ * need to set up things from scratch:
+ * 
+ *	init_tx(sweep->tx, sweep->trim_tx, sweep->power);
+ *	set_channel(sweep->tx, chan);
+ *	usleep(155);    / * table 7-2, tTR19 * /
+ */
 	cw_test_begin(sweep->tx, cont_tx);
 	/* table 7-1, tTR10, doubling since it's a "typical" value */
 	usleep(2*16);
@@ -105,8 +109,11 @@ void do_sweep(const struct sweep *sweep, struct sample *res)
 
 	for (chan = 11; chan <= 26; chan++) {
 		set_channel(sweep->rx, chan);
-		sample(sweep, chan, CONT_TX_M500K, res++);
-		sample(sweep, chan, CONT_TX_P500K, res++);
+		set_channel(sweep->tx, chan);
+		usleep(155);	/* table 7-2, tTR19 */
+
+		sample(sweep, CONT_TX_M500K, res++);
+		sample(sweep, CONT_TX_P500K, res++);
 	}
 }
 
@@ -243,6 +250,7 @@ int main(int argc, char **argv)
 
 	sweep.power = 15-power;
 	init_rx(sweep.rx, sweep.trim_rx);
+	init_tx(sweep.tx, sweep.trim_tx, sweep.power);
 	if (graphical)
 		gui(&sweep, sweeps);
 	else
