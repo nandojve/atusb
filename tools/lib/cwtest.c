@@ -111,5 +111,25 @@ void cw_test_end(struct atrf_dsc *dsc)
 	if (atrf_identify(dsc) == artf_at86rf231)
 		atrf_reg_write(dsc, REG_PART_NUM, 0);
 	
-	atrf_reset_rf(dsc);
+	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_FORCE_TRX_OFF);
+
+	/*
+	 * atrf_reset_rf can take a long time. I appears that at least the
+	 * AT86RF231 also exits test mode if we send it to sleep for a
+	 * moment.
+	 */
+	switch (atrf_identify(dsc)) {
+	case artf_at86rf230:
+		atrf_reset_rf(dsc);
+		break;
+	case artf_at86rf231:
+		usleep(2);	/* table 7-1: tTR12(typ) = 1 us */
+		atrf_slp_tr(dsc, 1);
+		usleep(10);	/* table 7-1: tTR3(typ) doesn't really apply */
+		atrf_slp_tr(dsc, 0);
+		usleep(500);	/* table 7-1: tTR2(typ) = 380 */
+		break;
+	default:
+		abort();
+	}
 }
