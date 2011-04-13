@@ -21,11 +21,7 @@
 #include "atrf.h"
 #include "misctxrx.h"
 
-#ifdef HAVE_GFX
 #include "gui.h"
-#else
-#define	gui(dsc) abort()
-#endif
 
 
 static struct timeval t0;
