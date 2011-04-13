@@ -173,7 +173,7 @@ void gui(const struct sweep *sweep, int sweeps)
 {
 	SDL_Surface *surf;
 	SDL_Event event;
-	int cycle = 0;
+	int cycle;
 	int fail;
 
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -188,7 +188,7 @@ void gui(const struct sweep *sweep, int sweeps)
 		exit(1);
 	}
 
-	while (cycle != sweeps || !sweeps) {
+	for (cycle = 0; cycle != sweeps || !sweeps; cycle++) {
 		struct sample res[N_CHAN*2];
 
 		while (SDL_PollEvent(&event))
