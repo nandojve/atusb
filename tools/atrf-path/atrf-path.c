@@ -29,26 +29,31 @@
 #define	DEFAULT_POWER	15
 
 
-static void init_common(struct atrf_dsc *dsc, int trim, int chan)
+static void set_channel(struct atrf_dsc *dsc, int chan)
+{
+	atrf_reg_write(dsc, REG_PHY_CC_CCA, (1 << CCA_MODE_SHIFT) | chan);
+}
+
+
+static void init_common(struct atrf_dsc *dsc, int trim)
 {
 	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_TRX_OFF);
 	atrf_reg_write(dsc, REG_XOSC_CTRL,
 	    (XTAL_MODE_INT << XTAL_MODE_SHIFT) | trim);
 	atrf_set_clkm(dsc, 0);
-	atrf_reg_write(dsc, REG_PHY_CC_CCA, (1 << CCA_MODE_SHIFT) | chan);
 }
 
 
-static void init_tx(struct atrf_dsc *dsc, int trim, int power, int chan)
+static void init_tx(struct atrf_dsc *dsc, int trim, int power)
 {
-	init_common(dsc, trim, chan);
+	init_common(dsc, trim);
 	set_power_step(dsc, power, 0);
 }
 
 
-static void init_rx(struct atrf_dsc *dsc, int trim, int chan)
+static void init_rx(struct atrf_dsc *dsc, int trim)
 {
-	init_common(dsc, trim, chan);
+	init_common(dsc, trim);
 	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_RX_ON);
 }
 
@@ -66,7 +71,8 @@ static void sample(const struct sweep *sweep, int chan, int cont_tx,
 	int sum = 0, min = -1, max = -1;
 	double offset = tx_power_step2dBm(sweep->tx, sweep->power);
 
-	init_tx(sweep->tx, sweep->trim_tx, sweep->power, chan);
+	init_tx(sweep->tx, sweep->trim_tx, sweep->power);
+	set_channel(sweep->tx, chan);
 	usleep(155);	/* table 7-2, tTR19 */
 
 	cw_test_begin(sweep->tx, cont_tx);
@@ -90,7 +96,6 @@ static void sample(const struct sweep *sweep, int chan, int cont_tx,
 	res->avg = rssi_to_dBm((double) sum/sweep->samples)-offset;
 	res->min = rssi_to_dBm(min)-offset;
 	res->max = rssi_to_dBm(max)-offset;
-
 }
 
 
@@ -99,7 +104,7 @@ void do_sweep(const struct sweep *sweep, struct sample *res)
 	int chan;
 
 	for (chan = 11; chan <= 26; chan++) {
-		init_rx(sweep->rx, sweep->trim_rx, chan);
+		set_channel(sweep->rx, chan);
 		sample(sweep, chan, CONT_TX_M500K, res++);
 		sample(sweep, chan, CONT_TX_P500K, res++);
 	}
@@ -237,6 +242,7 @@ int main(int argc, char **argv)
 		return 1;
 
 	sweep.power = 15-power;
+	init_rx(sweep.rx, sweep.trim_rx);
 	if (graphical)
 		gui(&sweep, sweeps);
 	else
