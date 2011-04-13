@@ -21,6 +21,8 @@
 #include "cwtest.h"
 #include "atrf.h"
 
+#include "sweep.h"
+
 
 #define	DEFAULT_TRIM	8
 #define	DEFAULT_POWER	15
@@ -56,25 +58,25 @@ static double rssi_to_dBm(double rssi)
 }
 
 
-static void sample(struct atrf_dsc *tx, struct atrf_dsc *rx, int trim_tx,
-    int power, int chan, int cont_tx, int samples)
+static void sample(const struct sweep *sweep, int chan, int cont_tx,
+    struct sample *res)
 {
 	int i, rssi;
 	int sum = 0, min = -1, max = -1;
-	double offset = tx_power_step2dBm(tx, power);
+	double offset = tx_power_step2dBm(sweep->tx, sweep->power);
 
-	init_tx(tx, trim_tx, power, chan);
+	init_tx(sweep->tx, sweep->trim_tx, sweep->power, chan);
 	usleep(155);	/* table 7-2, tTR19 */
 
-	cw_test_begin(tx, cont_tx);
+	cw_test_begin(sweep->tx, cont_tx);
 	/* table 7-1, tTR10, doubling since it's a "typical" value */
 	usleep(2*16);
 
-	for (i = 0; i != samples; i++) {
+	for (i = 0; i != sweep->samples; i++) {
 		/* according to 8.3.2, PHY_RSSI is updated every 2 us */
 		usleep(2);
 
-		rssi = atrf_reg_read(rx, REG_PHY_RSSI) & RSSI_MASK;
+		rssi = atrf_reg_read(sweep->rx, REG_PHY_RSSI) & RSSI_MASK;
 		sum += rssi;
 		if (min == -1 || rssi < min)
 			min = rssi;
@@ -82,31 +84,52 @@ static void sample(struct atrf_dsc *tx, struct atrf_dsc *rx, int trim_tx,
 			max = rssi;
 	}
 
-	cw_test_end(tx);
+	cw_test_end(sweep->tx);
 
-	printf("%.1f %.2f %.0f %.0f\n",
-	    2350+5*chan+(cont_tx == CONT_TX_M500K ? -0.5 : 0.5),
-	    rssi_to_dBm((double) sum/samples)-offset,
-	    rssi_to_dBm(min)-offset, rssi_to_dBm(max)-offset);
+	res->avg = rssi_to_dBm((double) sum/sweep->samples)-offset;
+	res->min = rssi_to_dBm(min)-offset;
+	res->max = rssi_to_dBm(max)-offset;
+
 }
 
 
-static void do_sweeps(struct atrf_dsc *tx, struct atrf_dsc *rx,
-    int trim_tx, int trim_rx, int power, int sweeps, int samples)
+void do_sweep(const struct sweep *sweep, struct sample *res)
 {
-	int i, chan;
+	int chan;
+
+	for (chan = 11; chan <= 26; chan++) {
+		init_rx(sweep->rx, sweep->trim_rx, chan);
+		sample(sweep, chan, CONT_TX_M500K, res++);
+		sample(sweep, chan, CONT_TX_P500K, res++);
+	}
+}
+
+
+static void print_sweep(const struct sweep *sweep, const struct sample *res)
+{
+	int chan;
+
+	for (chan = 11; chan <= 26; chan++) {
+		printf("%.1f %.2f %.0f %.0f\n",
+		    2350+5*chan-0.5, res->avg, res->min, res->max);
+		res++;
+		printf("%.1f %.2f %.0f %.0f\n",
+		    2350+5*chan+0.5, res->avg, res->min, res->max);
+		res++;
+	}
+}
+
+
+static void do_sweeps(const struct sweep *sweep, int sweeps)
+{
+	struct sample res[16*2];	/* 16 channels, 2 offsets */
+	int i;
 
 	for (i = 0; i != sweeps; i++) {
 		if (i)
 			putchar('\n');
-		for (chan = 11; chan <= 26; chan++) {
-			init_rx(rx, trim_rx, chan);
-
-			sample(tx, rx, trim_tx, power, chan, CONT_TX_M500K,
-			    samples);
-			sample(tx, rx, trim_tx, power, chan, CONT_TX_P500K,
-			    samples);
-		}
+		do_sweep(sweep, res);
+		print_sweep(sweep, res);
 	}
 }
 
@@ -122,14 +145,17 @@ static void usage(const char *name)
 	exit(1);
 }
 
-
+	
 int main(int argc, char **argv)
 {
 	const char *tx_drv, *rx_drv;
-	struct atrf_dsc *tx, *rx;
-	int trim_tx = -1, trim_rx = DEFAULT_TRIM;
+	struct sweep sweep = {
+		.trim_tx = -1,
+		.trim_rx = DEFAULT_TRIM,
+		.samples = 1,
+	};
 	int power = DEFAULT_POWER;
-	int sweeps = 1, samples = 1;
+	int sweeps = 1;
 	unsigned long tmp;
 	char *end;
 	int c;
@@ -146,21 +172,21 @@ int main(int argc, char **argv)
 			tmp = strtoul(optarg, &end, 0);
 			if (*end || tmp > 15)
 				usage(*argv);
-			if (trim_tx == -1)
-				trim_tx = tmp;
+			if (sweep.trim_tx == -1)
+				sweep.trim_tx = tmp;
 			else
-				trim_rx = tmp;
+				sweep.trim_rx = tmp;
 			break;
 		default:
 			usage(*argv);
 		}
 
-	if (trim_tx == -1)
-		trim_tx = DEFAULT_TRIM;
+	if (sweep.trim_tx == -1)
+		sweep.trim_tx = DEFAULT_TRIM;
 
 	switch (argc-optind) {
 	case 4:
-		samples = strtoul(argv[optind+3], &end, 0);
+		sweep.samples = strtoul(argv[optind+3], &end, 0);
 		if (*end)
 			usage(*argv);
 		/* fall through */
@@ -177,20 +203,21 @@ int main(int argc, char **argv)
 		usage(*argv);
 	}
 
-	tx = atrf_open(tx_drv);
-	if (!tx)
+	sweep.tx = atrf_open(tx_drv);
+	if (!sweep.tx)
 		return 1;
-	rx = atrf_open(rx_drv);
-	if (!rx)
+	sweep.rx = atrf_open(rx_drv);
+	if (!sweep.rx)
 		return 1;
 
-	do_sweeps(tx, rx, trim_tx, trim_rx, 15-power, sweeps, samples);
+	sweep.power = 15-power;
+	do_sweeps(&sweep, sweeps);
 
-	atrf_reg_write(tx, REG_TRX_STATE, TRX_CMD_TRX_OFF);
-	atrf_reg_write(rx, REG_TRX_STATE, TRX_CMD_TRX_OFF);
+	atrf_reg_write(sweep.tx, REG_TRX_STATE, TRX_CMD_TRX_OFF);
+	atrf_reg_write(sweep.rx, REG_TRX_STATE, TRX_CMD_TRX_OFF);
 
-	atrf_close(tx);
-	atrf_close(rx);
+	atrf_close(sweep.tx);
+	atrf_close(sweep.rx);
 
 	return 0;
 }
