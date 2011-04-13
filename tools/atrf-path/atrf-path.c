@@ -283,7 +283,7 @@ static void read_profile(const char *name, struct sweep *sweep)
 static void usage(const char *name)
 {
 	fprintf(stderr,
-"usage: %s common_args [sweeps [samples]]\n"
+"usage: %s common_args [[sweeps] samples]\n"
 
 #ifdef HAVE_GFX
 "%6s %s -g common_args [[sweeps] samples]\n"
@@ -376,9 +376,9 @@ int main(int argc, char **argv)
 		sweeps = strtoul(argv[optind+2], &end, 0);
 		if (*end)
 			usage(*argv);
-		if (graphical && argc-optind == 3) {
+		if (argc-optind == 3) {
 			sweep.samples = sweeps;
-			sweeps = 0;
+			sweeps = graphical ? 0 : 1;
 		}
 		/* fall through */
 	case 2:
