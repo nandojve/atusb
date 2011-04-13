@@ -65,7 +65,7 @@ static double rssi_to_dBm(double rssi)
 
 
 static void sample(const struct sweep *sweep, int cont_tx,
-    struct sample *res)
+    struct sample *res, int first)
 {
 	int i, rssi;
 	int sum = 0, min = -1, max = -1;
@@ -79,7 +79,10 @@ static void sample(const struct sweep *sweep, int cont_tx,
  *	set_channel(sweep->tx, chan);
  *	usleep(155);    / * table 7-2, tTR19 * /
  */
-	cw_test_begin(sweep->tx, cont_tx);
+	if (first)
+		cw_test_begin(sweep->tx, cont_tx);
+	else
+		cw_test_resume(sweep->tx);
 	/* table 7-1, tTR10, doubling since it's a "typical" value */
 	usleep(2*16);
 
@@ -105,15 +108,26 @@ static void sample(const struct sweep *sweep, int cont_tx,
 
 void do_sweep(const struct sweep *sweep, struct sample *res)
 {
+	struct sample *r;
 	int chan;
 
+	r = res;
 	for (chan = 11; chan <= 26; chan++) {
 		set_channel(sweep->rx, chan);
 		set_channel(sweep->tx, chan);
 		usleep(155);	/* table 7-2, tTR19 */
 
-		sample(sweep, CONT_TX_M500K, res++);
-		sample(sweep, CONT_TX_P500K, res++);
+		sample(sweep, CONT_TX_M500K, r, chan == 11);
+		r += 2;
+	}
+	r = res+1;
+	for (chan = 11; chan <= 26; chan++) {
+		set_channel(sweep->rx, chan);
+		set_channel(sweep->tx, chan);
+		usleep(155);	/* table 7-2, tTR19 */
+
+		sample(sweep, CONT_TX_P500K, r, chan == 11);
+		r += 2;
 	}
 }
 
