@@ -33,6 +33,7 @@
 #define	OK_RGBA		0x00ff00ff
 #define	OVER_RGBA	0xffff00ff
 #define	UNDER_RGBA	0xff0000ff
+#define	LIMIT_RGBA	0xff0000ff
 
 #define	CHAN_STEP	20	/* 4 pixels/MHz */
 #define	SIDE_STEP	2
@@ -45,10 +46,16 @@
 #define	STATUS_R	8
 
 
+static int avg2y(double avg)
+{
+	return YRES-(avg-Y_MIN)/(Y_MAX-Y_MIN)*YRES-1;
+}
+
+
 static void segment(SDL_Surface *s, int *last_x, int *last_y, int x,
     const struct sample *res, int first)
 {
-	int y = YRES-(res->avg-Y_MIN)/(Y_MAX-Y_MIN)*YRES-1;
+	int y = avg2y(res->avg);
 
 	if (!first) {
 		aalineColor(s, *last_x, *last_y, x, y, FG_RGBA);
@@ -79,6 +86,23 @@ static void draw(SDL_Surface *s, const struct sample *res, int cont_tx)
 		}
 		res++;
 		x += CHAN_STEP-2*SIDE_STEP;
+	}
+}
+
+
+static void draw_limit(SDL_Surface *s, const double *v)
+{
+	int x, y, i, last = 0;
+
+	x = CHAN_X_OFFSET;
+	for (i = 0; i != N_CHAN; i++) {
+		y = avg2y(*v);
+		if (i)
+			vlineColor(s, x-CHAN_STEP/2, last, y, LIMIT_RGBA);
+		hlineColor(s, x-CHAN_STEP/2, x+CHAN_STEP/2, y, LIMIT_RGBA);
+		last = y;
+		x += CHAN_STEP;
+		v++;
 	}
 }
 
@@ -179,6 +203,8 @@ void gui(const struct sweep *sweep, int sweeps)
 
 		clear(surf);
 
+		draw_limit(surf, sweep->min);
+		draw_limit(surf, sweep->max);
 		indicate(surf, fail);
 		draw(surf, res, sweep->cont_tx);
 
