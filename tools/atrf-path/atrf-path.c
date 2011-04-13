@@ -68,6 +68,7 @@ static double rssi_to_dBm(double rssi)
 static void sample(const struct sweep *sweep, int cont_tx,
     struct sample *res, int first)
 {
+	static int need_init = 1;
 	int i, rssi;
 	int sum = 0, min = -1, max = -1;
 	double offset = tx_power_step2dBm(sweep->tx, sweep->power);
@@ -80,10 +81,12 @@ static void sample(const struct sweep *sweep, int cont_tx,
  *	set_channel(sweep->tx, chan);
  *	usleep(155);    / * table 7-2, tTR19 * /
  */
-	if (first)
+	if (first || need_init) {
 		cw_test_begin(sweep->tx, cont_tx);
-	else
+		need_init = 0;
+	} else {
 		cw_test_resume(sweep->tx);
+	}
 	/* table 7-1, tTR10, doubling since it's a "typical" value */
 	usleep(2*16);
 
@@ -119,7 +122,7 @@ static void do_half_sweep(const struct sweep *sweep, int cont_tx,
 		set_channel(sweep->tx, chan);
 		usleep(155);	/* table 7-2, tTR19 */
 
-		sample(sweep, cont_tx, res, chan == 11);
+		sample(sweep, cont_tx, res, chan == 11 && !sweep->cont_tx);
 		res += 2;
 	}
 }
