@@ -75,6 +75,35 @@ static void clear(SDL_Surface *s)
 }
 
 
+/* --- temporarily, for optimizing --- */
+
+#include <sys/time.h>
+
+
+static double t0;
+
+
+static double t(void)
+{
+	struct timeval tv;
+
+	gettimeofday(&tv, NULL);
+	return tv.tv_sec+tv.tv_usec/1000000.0;
+}
+
+
+static void tstart(void)
+{
+	t0 = t();
+}
+
+
+static void tstop(void)
+{
+	fprintf(stderr, "%.3f\n", t()-t0);
+}
+
+
 void gui(const struct sweep *sweep)
 {
 	SDL_Surface *surf;
@@ -99,7 +128,9 @@ void gui(const struct sweep *sweep)
 			if (event.type == SDL_KEYDOWN ||
 			    event.type == SDL_QUIT)
 				return;
+		tstart();
 		do_sweep(sweep, res);
+		tstop();
 
 		SDL_LockSurface(surf);
 
