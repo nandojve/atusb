@@ -33,12 +33,17 @@
 
 
 #define	FG_RGBA		0xffffffff	/* measurement color */
+#define	OK_RGBA		0x00ff00ff
 
 #define	CHAN_STEP	20	/* 4 pixels/MHz */
 #define	SIDE_STEP	2
 #define	CHAN_X_OFFSET	10
 #define	Y_MIN		-94
 #define	Y_MAX		-10
+
+#define	STATUS_X	(XRES-15)
+#define	STATUS_Y	15
+#define	STATUS_R	8
 
 
 static void segment(SDL_Surface *s, int *last_x, int *last_y, int x,
@@ -108,6 +113,7 @@ void gui(const struct sweep *sweep)
 {
 	SDL_Surface *surf;
 	SDL_Event event;
+	int cycle = 0;
 
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		fprintf(stderr, "SDL_init: %s\n", SDL_GetError());
@@ -135,6 +141,13 @@ void gui(const struct sweep *sweep)
 		SDL_LockSurface(surf);
 
 		clear(surf);
+
+		if (cycle++ & 1) {
+			filledCircleColor(surf, STATUS_X, STATUS_Y, STATUS_R,
+			    OK_RGBA);
+			aacircleColor(surf, STATUS_X, STATUS_Y, STATUS_R,
+			    OK_RGBA);
+		}
 		draw(surf, res);
 
 		SDL_UnlockSurface(surf);
