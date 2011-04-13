@@ -47,11 +47,11 @@
 
 
 static void segment(SDL_Surface *s, int *last_x, int *last_y, int x,
-    const struct sample *res, int have_last)
+    const struct sample *res, int first)
 {
 	int y = YRES-(res->avg-Y_MIN)/(Y_MAX-Y_MIN)*YRES-1;
 
-	if (have_last) {
+	if (!first) {
 		aalineColor(s, *last_x, *last_y, x, y, FG_RGBA);
 }
 	*last_x = x;
@@ -59,16 +59,26 @@ static void segment(SDL_Surface *s, int *last_x, int *last_y, int x,
 }
 
 
-static void draw(SDL_Surface *s, const struct sample *res)
+static void draw(SDL_Surface *s, const struct sample *res, int cont_tx)
 {
 	int last_x, last_y;
-	int x, i;
+	int first, x, i;
 
 	x = CHAN_X_OFFSET;
+	first = 1;
 	for (i = 0; i != N_CHAN; i++) {
-		segment(s, &last_x, &last_y, x, res++, i);
+		if (cont_tx != CONT_TX_P500K) {
+			segment(s, &last_x, &last_y, x, res, first);
+			first = 0;
+		}
+		res++;
 		x += 2*SIDE_STEP;
-		segment(s, &last_x, &last_y, x, res++, 1);
+
+		if (cont_tx != CONT_TX_M500K) {
+			segment(s, &last_x, &last_y, x, res, first);
+			first = 0;
+		}
+		res++;
 		x += CHAN_STEP-2*SIDE_STEP;
 	}
 }
@@ -148,7 +158,7 @@ void gui(const struct sweep *sweep, int sweeps)
 			aacircleColor(surf, STATUS_X, STATUS_Y, STATUS_R,
 			    OK_RGBA);
 		}
-		draw(surf, res);
+		draw(surf, res, sweep->cont_tx);
 
 		SDL_UnlockSurface(surf);
 		SDL_UpdateRect(surf, 0, 0, 0, 0);

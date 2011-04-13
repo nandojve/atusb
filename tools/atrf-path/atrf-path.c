@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <string.h>
 
 #include "at86rf230.h"
 
@@ -111,6 +112,8 @@ static void do_half_sweep(const struct sweep *sweep, int cont_tx,
 {
 	int chan;
 
+	if (sweep->cont_tx && sweep->cont_tx != cont_tx)
+		return;
 	for (chan = 11; chan <= 26; chan++) {
 		set_channel(sweep->rx, chan);
 		set_channel(sweep->tx, chan);
@@ -134,11 +137,13 @@ static void print_sweep(const struct sweep *sweep, const struct sample *res)
 	int chan;
 
 	for (chan = 11; chan <= 26; chan++) {
-		printf("%.1f %.2f %.0f %.0f\n",
-		    2350+5*chan-0.5, res->avg, res->min, res->max);
+		if (sweep->cont_tx != CONT_TX_P500K)
+			printf("%.1f %.2f %.0f %.0f\n",
+			    2350+5*chan-0.5, res->avg, res->min, res->max);
 		res++;
-		printf("%.1f %.2f %.0f %.0f\n",
-		    2350+5*chan+0.5, res->avg, res->min, res->max);
+		if (sweep->cont_tx != CONT_TX_M500K)
+			printf("%.1f %.2f %.0f %.0f\n",
+			    2350+5*chan+0.5, res->avg, res->min, res->max);
 		res++;
 	}
 }
@@ -167,14 +172,15 @@ static void usage(const char *name)
 "%6s %s -g common_args [[sweeps] samples]\n"
 #endif
     "\n"
-"  common args:  [-p power] [-t trim_tx [-t trim_rx]] driver_tx[:arg]\n"
-"                driver_rx[:arg]\n\n"
+"  common args:  [-p power] [-t trim_tx [-t trim_rx]] [-T offset]\n"
+"                driver_tx[:arg] driver_rx[:arg]\n\n"
 
 #ifdef HAVE_GFX
-"  -g        display results graphically\n"
+"  -g         display results graphically\n"
 #endif
-"  -p power  transmit power, 0 to 15 (default %d)\n"
-"  -t trim   trim capacitor, 0 to 15 (default %d)\n"
+"  -p power   transmit power, 0 to 15 (default %d)\n"
+"  -t trim    trim capacitor, 0 to 15 (default %d)\n"
+"  -T offset  constant wave offset in MHz, -0.5 or +0.5 (default: scan both)\n"
 
     , name,
 #ifdef HAVE_GFX
@@ -192,6 +198,7 @@ int main(int argc, char **argv)
 	struct sweep sweep = {
 		.trim_tx = -1,
 		.trim_rx = DEFAULT_TRIM,
+		.cont_tx = 0,
 		.samples = 1,
 	};
 	int graphical = 0;
@@ -201,7 +208,7 @@ int main(int argc, char **argv)
 	char *end;
 	int c;
 
-	while ((c = getopt(argc, argv, "gp:t:")) != EOF)
+	while ((c = getopt(argc, argv, "gp:t:T:")) != EOF)
 		switch (c) {
 		case'g':
 			graphical = 1;
@@ -221,6 +228,14 @@ int main(int argc, char **argv)
 				sweep.trim_tx = tmp;
 			else
 				sweep.trim_rx = tmp;
+			break;
+		case 'T':
+			if (!strcmp(optarg, "-0.5"))
+				sweep.cont_tx = CONT_TX_M500K;
+			else if (!strcmp(optarg, "+0.5"))
+				sweep.cont_tx = CONT_TX_P500K;
+			else
+				usage(*argv);
 			break;
 		default:
 			usage(*argv);

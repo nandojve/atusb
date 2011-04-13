@@ -14,6 +14,8 @@
 #ifndef	SWEEP_H
 #define	SWEEP_H
 
+#include <stdint.h>
+
 #include "atrf.h"
 
 
@@ -23,6 +25,7 @@ struct sweep {
 	int trim_tx;
 	int trim_rx;
 	int power;
+	uint8_t cont_tx;
 	int samples;
 };
 
