@@ -20,6 +20,7 @@
 
 
 void cw_test_begin(struct atrf_dsc *dsc, uint8_t cont_tx);
+void cw_test_resume(struct atrf_dsc *dsc);
 void cw_test_end(struct atrf_dsc *dsc);
 
 #endif /* !CW_TEST_H */

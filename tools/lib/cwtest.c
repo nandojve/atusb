@@ -23,6 +23,9 @@
 #include "cwtest.h"
 
 
+static int last_cont_tx; /* @@@ hack for resuming on the 230 */
+
+
 static void enter_test_mode_230(struct atrf_dsc *dsc, uint8_t cont_tx)
 {
 	atrf_buf_write(dsc, "", 1);
@@ -42,7 +45,7 @@ static void enter_test_mode_230(struct atrf_dsc *dsc, uint8_t cont_tx)
 }
 
 
-static void enter_test_mode_231(struct atrf_dsc *dsc, uint8_t cont_tx)
+static void prepare_test_mode_231(struct atrf_dsc *dsc, uint8_t cont_tx)
 {
 	uint8_t buf[127];
 	uint8_t status;
@@ -80,7 +83,11 @@ static void enter_test_mode_231(struct atrf_dsc *dsc, uint8_t cont_tx)
 	atrf_reg_write(dsc, REG_RX_CTRL, 0xa7);				/*11 */
 
 	atrf_buf_write(dsc, buf, sizeof(buf));				/*12 */
+}
 
+
+static void start_test_mode_231(struct atrf_dsc *dsc)
+{
 	atrf_reg_write(dsc, REG_PART_NUM, 0x54);			/*13 */
 	atrf_reg_write(dsc, REG_PART_NUM, 0x46);			/*14 */
 	
@@ -96,9 +103,26 @@ void cw_test_begin(struct atrf_dsc *dsc, uint8_t cont_tx)
 	switch (atrf_identify(dsc)) {
 	case artf_at86rf230:
 		enter_test_mode_230(dsc, cont_tx);
+		last_cont_tx = cont_tx;
 		break;
 	case artf_at86rf231:
-		enter_test_mode_231(dsc, cont_tx);
+		prepare_test_mode_231(dsc, cont_tx);
+		start_test_mode_231(dsc);
+		break;
+	default:
+		abort();
+	}
+}
+
+
+void cw_test_resume(struct atrf_dsc *dsc)
+{
+	switch (atrf_identify(dsc)) {
+	case artf_at86rf230:
+		enter_test_mode_230(dsc, last_cont_tx);
+		break;
+	case artf_at86rf231:
+		start_test_mode_231(dsc);
 		break;
 	default:
 		abort();
