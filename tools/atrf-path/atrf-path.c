@@ -164,14 +164,14 @@ static void do_sweeps(const struct sweep *sweep, int sweeps)
 static void usage(const char *name)
 {
 	fprintf(stderr,
-"usage: %s [-p power] [-t trim_tx [-t trim_rx]] driver_tx[:arg]\n"
-"%16s driver_rx[:arg] [sweeps [samples]]\n"
+"usage: %s common_args [sweeps [samples]]\n"
 
 #ifdef HAVE_GFX
-"%6s %s -g [-p power] [-t trim_tx [-t trim_rx]] driver_tx[:arg]\n"
-"%16s driver_rx[:arg] [[sweeps] samples]\n"
+"%6s %s -g common_args [[sweeps] samples]\n"
 #endif
     "\n"
+"  common args:  [-p power] [-t trim_tx [-t trim_rx]] driver_tx[:arg]\n"
+"                driver_rx[:arg]\n\n"
 
 #ifdef HAVE_GFX
 "  -g        display results graphically\n"
@@ -179,9 +179,9 @@ static void usage(const char *name)
 "  -p power  transmit power, 0 to 15 (default %d)\n"
 "  -t trim   trim capacitor, 0 to 15 (default %d)\n"
 
-    , name, "",
+    , name,
 #ifdef HAVE_GFX
-    "", name, "",
+    "", name,
 #endif
     DEFAULT_POWER, DEFAULT_TRIM);
 
