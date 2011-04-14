@@ -1,0 +1,53 @@
+#!/usr/bin/perl
+#
+# atrf-path/genpathprof - Generate profile for atrf-path
+#
+# Written 2011 by Werner Almesberger
+# Copyright 2011 Werner Almesberger
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+
+sub usage
+{
+	print STDERR <<"END"
+usage: $0 below above [file ...]
+
+  below/above define either absolute values or clearances:
+    10   = 10.0 dBm
+    -3.5 = -3.5 dBm
+    +5   = 5 dBm below or above the minimum/maximum measurement
+END
+;
+	exit(1);
+}
+
+$below = shift @ARGV;
+$above = shift @ARGV;
+
+&usage unless defined $below && defined $above;
+
+while (<>) {
+	next unless /^(\d+)\.5\s+(-?\d+(\.\d*))\s+/;
+	$f = int(($1+2.5)/5)*5;
+	$min{$f} = $2 if $min{$f} > $2 || !defined $min{$f};
+	$max{$f} = $2 if $max{$f} < $2 || !defined $max{$f};
+}
+print "# min\tmax\t  Chan\tMHz\n";
+for ($i = 0; $i != 16; $i++) {
+	$f = 2405+5*$i;
+	if ($below =~ /^\+/) {
+		$min = $min{$f}-$';
+	} else {
+		$min = $below;
+	}
+	if ($above =~ /^\+/) {
+		$max = $max{$f}+$';
+	} else {
+		$max = $above;
+	}
+	printf("%.2f\t%.2f\t# %d\t%d\n", $min, $max, $i+11, $f);
+}
