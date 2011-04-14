@@ -107,6 +107,32 @@ static void draw_limit(SDL_Surface *s, const double *v)
 }
 
 
+static void disc(SDL_Surface *s, uint32_t color)
+{
+	filledCircleColor(s, STATUS_X, STATUS_Y, STATUS_R, color);
+	aacircleColor(s, STATUS_X, STATUS_Y, STATUS_R, color);
+}
+
+
+static void triangle(SDL_Surface *s, int cx, int cy, int r, uint32_t color)
+{
+	filledTrigonColor(s, cx, cy-r, cx+r*1.2, cy+r, cx-r*1.2, cy+r, color);
+//	aatrigonColor(s, cx, cy-r, cx+r*1.2, cy+r, cx-r*1.2, cy+r, color);
+}
+
+
+static void up(SDL_Surface *s, uint32_t color)
+{
+	triangle(s, STATUS_X, STATUS_Y, STATUS_R, color);
+}
+
+
+static void down(SDL_Surface *s, uint32_t color)
+{
+	triangle(s, STATUS_X, STATUS_Y, -STATUS_R, color);
+}
+
+
 static void indicate(SDL_Surface *s, int fail)
 {
 	static uint32_t last = 0;
@@ -128,9 +154,19 @@ static void indicate(SDL_Surface *s, int fail)
 	if (color == last)
 		color = 0;
 	last = color;
-
-	filledCircleColor(s, STATUS_X, STATUS_Y, STATUS_R, color);
-	aacircleColor(s, STATUS_X, STATUS_Y, STATUS_R, color);
+	switch (color) {
+	case OK_RGBA:
+		disc(s, color);
+		break;
+	case OVER_RGBA:
+		up(s, color);
+		break;
+	case UNDER_RGBA:
+		down(s, color);
+		break;
+	default:
+		break;
+	}
 }
 
 
