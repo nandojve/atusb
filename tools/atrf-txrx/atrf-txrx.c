@@ -137,8 +137,8 @@ static void receive_message(struct atrf_dsc *dsc)
 	uint8_t ed, lqi;
 
 	fprintf(stderr, "Ready.\n");
-	wait_for_interrupt(dsc, IRQ_TRX_END, IRQ_TRX_END | IRQ_RX_START,
-	    10, 0);
+	wait_for_interrupt(dsc, IRQ_TRX_END,
+	    IRQ_TRX_END | IRQ_RX_START | IRQ_AMI, 10, 0);
 	if (!run)
 		return;
 
@@ -216,7 +216,7 @@ static void receive_pcap(struct atrf_dsc *dsc, const char *name)
 	write_pcap_hdr(file);
 	while (run) {
 		wait_for_interrupt(dsc,
-		    IRQ_TRX_END, IRQ_TRX_END | IRQ_RX_START,
+		    IRQ_TRX_END, IRQ_TRX_END | IRQ_RX_START | IRQ_AMI,
 		    10, 0);
 		if (!run)
 			break;
