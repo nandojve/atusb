@@ -626,7 +626,7 @@ int main(int argc, char *const *argv)
 			transmit(dsc, argv[optind], times);
 			break;
 		case mode_per:
-			times = strtoul(argv[optind+1], &end, 0);
+			times = strtoul(argv[optind], &end, 0);
 			if (*end)
 				usage(*argv);
 			set_power_dBm(dsc, power, 0);
