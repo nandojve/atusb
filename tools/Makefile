@@ -12,7 +12,7 @@
 
 
 DIRS=atrf-id atrf-path atrf-proxy atrf-reset atrf-rssi atrf-trim atrf-txrx \
-     atrf-xtal
+     atrf-xmit atrf-xtal
 TARGET_ONLY_DIRS=lib
 
 ifeq ($(TARGET),ben_jlime)
