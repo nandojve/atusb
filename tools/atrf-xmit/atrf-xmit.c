@@ -120,7 +120,7 @@ static void usage(const char *name)
 {
 	fprintf(stderr,
 "usage: %s [-c channel] [-p power] [-t trim_tx [-t trim_rx]]\n"
-"%15s driver_tx[:arg] driver_rx[:arg] packets\n\n"
+"%15s driver_tx[:arg] driver_rx[:arg] [packets]\n\n"
 "  -c channel  transmit/receive channel, 11 to 26 (default %d)\n"
 "  -p power    transmit power, 0 to 15 (default %d)\n"
 "  -t trim     trim capacitor, 0 to 15 (default %d)\n"
