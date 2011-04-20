@@ -23,7 +23,7 @@ if [ ${DUT#net:} = $DUT ]; then
 	LOCAL_DUT=$DUT
 else
 	LOCAL_EXEC="ssh `echo $DUT | sed 's/^net://;s/,.*$//'`"
-	LOCAL_DUT=default
+	LOCAL_DUT=`atrf-id -d $DUT -s -s`
 fi
 
 
