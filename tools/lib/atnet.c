@@ -31,6 +31,7 @@
 struct atnet_dsc {
 	struct netio *netio;
 	int error;
+	char *spec;
 	char reply[1000];
 };
 
@@ -192,6 +193,7 @@ static void *atnet_open(const char *arg)
 	}
 
 	dsc->error = 0;
+	dsc->spec = NULL;
 	*dsc->reply = 0;
 
 	return dsc;
@@ -203,6 +205,28 @@ static void atnet_close(void *handle)
 	struct atnet_dsc *dsc = handle;
 
 	netio_close(dsc->netio);
+	free(dsc->spec);
+}
+
+
+/* ----- driver specification ---------------------------------------------- */
+
+
+static const char *atnet_driver_spec(void *handle)
+{
+	struct atnet_dsc *dsc = handle;
+
+	if (dialog(dsc, "SPEC") < 0) {
+		dsc->error = 1;
+		return NULL;
+	}
+	free(dsc->spec);
+	dsc->spec = strdup(dsc->reply+1);
+	if (!dsc->spec) {
+		perror("strdup");
+		exit(1);
+	}
+	return dsc->spec;
 }
 
 
@@ -421,6 +445,7 @@ struct atrf_driver atnet_driver = {
 	.name		= "net",
 	.open		= atnet_open,
 	.close		= atnet_close,
+	.driver_spec	= atnet_driver_spec,
 	.error		= atnet_error,
 	.clear_error	= atnet_clear_error,
 	.reset		= atnet_reset,

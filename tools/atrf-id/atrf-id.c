@@ -158,7 +158,12 @@ static void show_info(struct atrf_dsc *dsc)
 
 static void usage(const char *name)
 {
-	fprintf(stderr, "usage: %s [-d driver[:arg]]\n", name);
+	fprintf(stderr,
+"usage: %s [-d driver[:arg]] [-s [-s]]\n\n"
+"  -d driver[:arg]  use the specified driver (default: %s)\n"
+"  -s               print only the local driver specification\n"
+"  -s -s            print only the remote driver specification\n"
+    , name, atrf_default_driver_name());
 	exit(1);
 }
 
@@ -167,12 +172,16 @@ int main(int argc, char *const *argv)
 {
 	const char *driver = NULL;
 	struct atrf_dsc *dsc;
+	int spec_only = 0;
 	int c;
 
-	while ((c = getopt(argc, argv, "d:")) != EOF)
+	while ((c = getopt(argc, argv, "d:s")) != EOF)
 		switch (c) {
 		case 'd':
 			driver = optarg;
+			break;
+		case 's':
+			spec_only++;
 			break;
 		default:
 			usage(*argv);
@@ -184,7 +193,18 @@ int main(int argc, char *const *argv)
 	if (!dsc)
 		return 1;
 
-	show_info(dsc);
+	if (spec_only) {
+		const char *spec = atrf_driver_spec(dsc, spec_only > 1);
+
+		if (spec)
+			printf("%s\n", spec);
+		else {
+			fprintf(stderr, "can't obtain specification\n");
+			exit(1);
+		}
+	} else {
+		show_info(dsc);
+	}
 
 	atrf_close(dsc);
 

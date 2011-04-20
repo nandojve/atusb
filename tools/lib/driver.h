@@ -21,6 +21,7 @@ struct atrf_driver {
 	const char *name;
 	void *(*open)(const char *arg);
 	void (*close)(void *dsc);
+	const char *(*driver_spec)(void *dsc);
 	int (*error)(void *dsc);
 	int (*clear_error)(void *dsc);
 	void (*reset)(void *dsc);

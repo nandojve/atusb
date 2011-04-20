@@ -24,6 +24,7 @@
 struct atrf_dsc {
 	const struct atrf_driver *driver;
 	void *handle;
+	char *spec;
 	enum atrf_chip_id chip_id;
 };
 
@@ -164,6 +165,15 @@ struct atrf_dsc *atrf_open(const char *spec)
 	}
 	dsc->driver = driver;
 	dsc->handle = handle;
+	if (spec) {
+		dsc->spec = strdup(spec);
+		if (!dsc->spec) {
+			perror("strdup");
+			exit(1);
+		}
+	} else {
+		dsc->spec= NULL;
+	}
 	dsc->chip_id = identify(dsc);
 	return dsc;
 }
@@ -173,7 +183,18 @@ void atrf_close(struct atrf_dsc *dsc)
 {
 	if (dsc->driver->close)
 		dsc->driver->close(dsc->handle);
+	free(dsc->spec);
 	free(dsc);
+}
+
+
+const char *atrf_driver_spec(struct atrf_dsc *dsc, int last)
+{
+	if (!dsc->spec)
+		return dsc->driver->name;
+	if (!last || !dsc->driver->driver_spec)
+		return dsc->spec;
+	return dsc->driver->driver_spec(dsc->handle);
 }
 
 

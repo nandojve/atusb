@@ -8,6 +8,10 @@ Messages
 +[greeting]
 -message
 
+SPEC
++driver_spec
+-message
+
 RESET
 +[comment]
 -message

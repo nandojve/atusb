@@ -32,6 +32,7 @@ void *atrf_ben_regs(struct atrf_dsc *dsc); /* hack for atrf-xtal */
 const char *atrf_default_driver_name(void);
 struct atrf_dsc *atrf_open(const char *spec);
 void atrf_close(struct atrf_dsc *dsc);
+const char *atrf_driver_spec(struct atrf_dsc *dsc, int last);
 
 int atrf_error(struct atrf_dsc *dsc);
 int atrf_clear_error(struct atrf_dsc *dsc);

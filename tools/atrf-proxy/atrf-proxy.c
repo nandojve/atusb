@@ -151,6 +151,15 @@ static int cmd_zero(struct atrf_dsc *dsc, struct netio *netio, const char *cmd)
 {
 	int res;
 
+	if (!strcasecmp(cmd, "spec")) {
+		const char *spec = atrf_driver_spec(dsc, 1);
+
+		if (spec)
+			return netio_printf(netio, "+%s\n", spec);
+		else
+			return netio_printf(netio,
+			    "-can't obtain specification\n");
+	}
 	if (!strcasecmp(cmd, "reset")) {
 		atrf_reset(dsc);
 		return netio_printf(netio, "+\n");
