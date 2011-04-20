@@ -18,9 +18,10 @@ xtal_ben()
 }
 
 
-identify
+begin ben.profile
 # power ?
 gpio_ben
+identify
 xtal_ben
 spectrum
 transmit
