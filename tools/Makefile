@@ -27,4 +27,4 @@ include ../makefiles/Makefile.recurse
 .PHONY:		upload
 
 upload:		
-		scp `for n in $(DIRS); do echo $$n/$$n; done` $(HOST):
+		scp `for n in $(DIRS); do echo $$n/$$n; done` $(HOST):/usr/bin/
