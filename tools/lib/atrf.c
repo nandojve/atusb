@@ -110,7 +110,7 @@ const char *atrf_default_driver_name(void)
 }
 
 
-static const struct atrf_driver *select_driver(const char *arg,
+static const struct atrf_driver *select_driver(const char *spec,
     const char **opt)
 {
 	const struct atrf_driver **drv;
@@ -123,19 +123,19 @@ static const struct atrf_driver *select_driver(const char *arg,
 	}
 
 	*opt = NULL;
-	if (!arg || !strcmp(arg, "default"))
+	if (!spec || !strcmp(spec, "default"))
 		return *drivers;
 	
-	end = strchr(arg, ':');
+	end = strchr(spec, ':');
 	if (!end)
-		end = strchr(arg, 0);
-	len = end-arg;
+		end = strchr(spec, 0);
+	len = end-spec;
 	for (drv = drivers; *drv; drv++)
-		if (!strncmp((*drv)->name, arg, len) &&
+		if (!strncmp((*drv)->name, spec, len) &&
 		    strlen((*drv)->name) == len)
 			break;
 	if (!*drv) {
-		fprintf(stderr, "no driver \"%.*s\" found\n", (int) len, arg);
+		fprintf(stderr, "no driver \"%.*s\" found\n", (int) len, spec);
 		return NULL;
 	}
 	if (*end)
@@ -144,14 +144,14 @@ static const struct atrf_driver *select_driver(const char *arg,
 }
 
 
-struct atrf_dsc *atrf_open(const char *arg)
+struct atrf_dsc *atrf_open(const char *spec)
 {
 	struct atrf_dsc *dsc;
 	const struct atrf_driver *driver;
 	const char *opt;
 	void *handle;
 
-	driver = select_driver(arg, &opt);
+	driver = select_driver(spec, &opt);
 	if (!driver)
 		return NULL;
 	handle = driver->open(opt);
