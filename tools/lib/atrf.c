@@ -123,9 +123,8 @@ static const struct atrf_driver *select_driver(const char *arg,
 	}
 
 	*opt = NULL;
-	if (!arg) {
+	if (!arg || !strcmp(arg, "default"))
 		return *drivers;
-	}
 	
 	end = strchr(arg, ':');
 	if (!end)
