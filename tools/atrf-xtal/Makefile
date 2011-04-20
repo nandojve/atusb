@@ -26,8 +26,10 @@ install:
 uninstall:
 
 clean:
+		rm -f atben.o atrf-xtal.o
 
-spotless:
+spotless:	clean
+		rm -f atrf-xtal
 
 else
 
