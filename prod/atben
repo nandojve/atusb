@@ -1,0 +1,26 @@
+#!/bin/sh
+
+. ./Common
+
+
+gpio_ben()
+{
+	step "GPIO scan"
+	todo
+}
+
+
+xtal_ben()
+{
+	step "Crystal frequency"
+	cmd "$LOCAL_EXEC atrf-xtal -d $LOCAL_DUT 100"
+	expect_re '4350[012]\.'	# @@@ very crude ...
+}
+
+
+identify
+# power ?
+gpio_ben
+xtal_ben
+spectrum
+transmit

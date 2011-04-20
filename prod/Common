@@ -1,0 +1,132 @@
+#!/bin/sh
+
+DIV1=------------------------------------------------------------------------
+DIV2=========================================================================
+
+
+usage()
+{
+	echo "usage: $0 ref_dev test_dev" 1>&2
+	exit 1
+}
+
+
+[ "$2" -a -z "$3" ] || usage
+REF=$1
+# DUT = Device Under Test
+DUT=$2
+LOG=_log
+>$LOG
+
+if [ ${DUT#net:} = $DUT ]; then
+	LOCAL_EXEC=
+	LOCAL_DUT=$DUT
+else
+	LOCAL_EXEC="ssh `echo $DUT | sed 's/^net://;s/,.*$//'`"
+	LOCAL_DUT=default
+fi
+
+step()
+{
+	echo -n " ....  $1"
+	step=$1
+	cmd=
+	>_out
+	echo $DIV2 >>$LOG
+}
+
+
+finish()
+{
+	echo "$cmd" >>$LOG
+	echo | sed "c$DIV1" >>$LOG
+	cat _out >>$LOG
+	sed "1i$DIV1" >>$LOG
+}
+
+
+pass()
+{
+	echo '\r\033[42;30m PASS \033[0m '
+	echo "$step: PASS" >>$LOG
+	finish </dev/null
+}
+
+
+fail()
+{
+	echo '\r\033[41;37m FAIL \033[0m '
+	echo "$step: FAIL" >>$LOG
+	finish
+#
+# to do: allow looping back
+#
+	exit 1
+}
+
+
+todo()
+{
+	echo '\r\033[43;30m TODO \033[0m '
+	echo "$step: TODO" >>$LOG
+	finish </dev/null
+}
+
+
+cmd()
+{
+	cmd=$1
+}
+
+
+expect()
+{
+	eval "$cmd" >_out 2>&1 || { echo "exit code $?" | fail; exit 1; }
+	fgrep -q "$1" _out || { echo "expected $1" | fail; exit 1; }
+	pass
+}
+
+
+expect_re()
+{
+	eval "$cmd" >_out 2>&1 || { echo "exit code $?" | fail; exit 1; }
+	grep -q "$1" _out || { echo "expected $1" | fail; exit 1; }
+	pass
+}
+
+
+identify()
+{
+	step "Identification"
+	cmd "atrf-id -d $DUT"
+	expect "AT86RF231, part 0x03 version 2 manufacturer xxxx001f (Atmel)"
+}
+
+
+spectrum()
+{
+	step "Spectrum"
+# todo:
+# - trim values (maybe)
+# - profile
+# - decide on power
+# - decide on offset
+	cmd "atrf-path -g -T +0.5 $REF $DUT 10"
+	expect PASS
+}
+
+
+transmit()
+{
+	step "Receive"
+# todo:
+# - trim values (maybe)
+# - channel
+# - tolerate imperfection (e.g., 99/100|100/100)
+	cmd "atrf-xmit -p 0 $REF $DUT 100"
+	expect 100/100
+
+	step "Send"
+	cmd "atrf-xmit -p 15 $DUT $REF 100"
+	expect 100/100
+}
