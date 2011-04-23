@@ -16,7 +16,9 @@
  *
  * - the MMC driver - disable it with
  *   echo jz4740-mmc.0 >/sys/bus/platform/drivers/jz4740-mmc/unbind
- * - the AT86RF230/1 kernel driver - use a kernel that doesn't have it
+ * - the AT86RF230/1 kernel driver - either use a kernel that doesn't have
+ *   it or disable it with
+ *   echo spi2.0 >/sys/bus/spi/drivers/at86rf230/unbind
  * - anything that accesses the screen - kill GUI, X server, etc.
  * - the screen blanker - either disable it or make sure the screen stays
  *   dark, e.g., with
