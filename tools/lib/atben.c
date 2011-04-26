@@ -232,7 +232,7 @@ static void *atben_open(const char *arg)
 	PDDATC = VDD_OFF;
 
 #ifdef OLD
-	/* set the MSC clock to 316 MHz / 21 = 16 MHz */
+	/* set the MSC clock to 336 MHz / 21 = 16 MHz */
 	MSCCDR = 20;
 	/*
 	 * Enable the MSC clock. We need to do this before accessing any
