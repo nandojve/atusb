@@ -59,6 +59,7 @@ endif
 # ----- Rules -----------------------------------------------------------------
 
 .PHONY:		all clean upload prog version.c
+.PHONY:		prog-app prog-read on off reset
 
 all:		$(NAME).bin boot.hex
 
