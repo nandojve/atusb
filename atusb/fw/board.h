@@ -63,6 +63,7 @@
 
 
 void reset_rf(void);
+void reset_cpu(void);
 uint8_t read_irq(void);
 
 void led(int on);

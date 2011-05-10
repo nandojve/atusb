@@ -61,6 +61,12 @@ void reset_rf(void)
 }
 
 
+void reset_cpu(void)
+{
+	WDTCSR = 1 << WDE;
+}
+
+
 uint8_t read_irq(void)
 {
 	return PIN(IRQ_RF);
@@ -90,6 +96,13 @@ void panic(void)
 
 void board_init(void)
 {
+	/* Disable the watchdog timer */
+
+	MCUSR = 0;		/* Remove override */
+	WDTCSR |= 1 << WDCE;	/* Enable change */
+	WDTCSR = 1 << WDCE;	/* Disable watchdog while still enabling
+				   change */
+
 	/* We start with a 1 MHz/8 clock. Disable the prescaler. */
 
 	CLKPR = 1 << CLKPCE;

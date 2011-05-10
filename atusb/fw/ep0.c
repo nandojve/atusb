@@ -82,12 +82,10 @@ static int my_setup(const struct setup_request *setup)
 		usb_send(&eps[0], buf+i, size, NULL, NULL);
 		return 1;
 
-#ifdef NOTYET
 	case ATUSB_TO_DEV(ATUSB_RESET):
 		debug("ATUSB_RESET\n");
-		RSTSRC = SWRSF;
+		reset_cpu();
 		while (1);
-#endif
 
 	case ATUSB_TO_DEV(ATUSB_RF_RESET):
 		debug("ATUSB_RF_RESET\n");
