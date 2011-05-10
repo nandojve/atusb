@@ -58,7 +58,7 @@ endif
 
 # ----- Rules -----------------------------------------------------------------
 
-.PHONY:		all clean upload prog version.c
+.PHONY:		all clean upload prog dfu version.c
 .PHONY:		prog-app prog-read on off reset
 
 all:		$(NAME).bin boot.hex
@@ -142,6 +142,9 @@ prog:
 prog-read:
 		ssh $(HOST) avrdude -F -p $(CHIP) -c nanonote_atusb \
 		  -U flash:r:mcu.bin:r
+
+dfu:		$(NAME).bin
+		dfu-util -d 20b7:1540 -D $(NAME).bin
 
 on:
 		ssh $(HOST) poke 0x10010318 4

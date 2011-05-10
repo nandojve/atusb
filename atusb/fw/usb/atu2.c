@@ -167,24 +167,6 @@ stall:
 }
 
 
-void usb_poll(void)
-{
-	uint8_t flags, i;
-
-	flags = UDINT;
-	if (flags & EORSTI) {
-		UDINT &= ~(1 << EORSTI);
-		if (user_reset)
-			user_reset();
-	}
-	flags = UEINT;
-	for (i = 0; i != NUM_EPS; i++)
-		if (1 || flags & (1 << i))
-			handle_ep(i);
-	/* @@@ USB bus reset */
-}
-
-
 static void ep_init(void)
 {
 	UENUM = 0;
@@ -197,6 +179,25 @@ static void ep_init(void)
 
 	eps[0].state = EP_IDLE;
 	eps[0].size = 64;
+}
+
+
+void usb_poll(void)
+{
+	uint8_t flags, i;
+
+	flags = UDINT;
+	if (flags & (1 << EORSTI)) {
+		if (user_reset)
+			user_reset();
+		ep_init();
+		UDINT &= ~(1 << EORSTI);
+	}
+	flags = UEINT;
+	for (i = 0; i != NUM_EPS; i++)
+		if (1 || flags & (1 << i))
+			handle_ep(i);
+	/* @@@ USB bus reset */
 }
 
 
@@ -222,7 +223,7 @@ void usb_init(void)
 	USBCON &= ~(1 << FRZCLK);	/* thaw the clock */
 
 	UDCON &= ~(1 << DETACH);	/* attach the pull-up */
-	UDCON |= 1 << RSTCPU;		/* reset CPU on bus reset */
+//	UDCON |= 1 << RSTCPU;		/* reset CPU on bus reset */
 
 	ep_init();
 }
