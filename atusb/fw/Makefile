@@ -144,7 +144,7 @@ prog-read:
 		  -U flash:r:mcu.bin:r
 
 dfu:		$(NAME).bin
-		dfu-util -d 20b7:1540 -t 64 -D $(NAME).bin
+		dfu-util -d 20b7:1540 -D $(NAME).bin
 
 on:
 		ssh $(HOST) poke 0x10010318 4
