@@ -24,7 +24,7 @@ Requires a very recent toolchain, because ATmega32U2 is relatively new.
 
   make prog
 
-  This takes about 15 seconds. If the programming fails with an error
+  This takes about 30 seconds. If the programming fails with an error
   message like "Yikes!  Invalid device signature.", verify that the
   atusb-pgm board is properly connected and placed, then try again.
 
