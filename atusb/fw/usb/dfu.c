@@ -94,11 +94,16 @@ static const uint8_t functional_descriptor[] = {
 };
 
 
+/*
+ * The worst-case activity would be flashing a one page and erasing another
+ * one, would should take less than 10 ms. A 100 ms timeout ought to be plenty.
+ */
+
 struct dfu dfu = {
-	OK,
-	LE(1000), 0,
-	dfuIDLE,
-	0,
+	OK,			/* bStatus */
+	LE(100), 0,		/* bwPollTimeout, 100 ms */
+	dfuIDLE,		/* bState */
+	0,			/* iString */
 };
 
 
