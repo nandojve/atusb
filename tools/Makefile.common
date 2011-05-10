@@ -49,7 +49,7 @@ else
     AR		= $(AR_quiet)
 endif
 
-CFLAGS += $(CFLAGS_$(TARGET)) -I../../atusb/fw/include -I../include \
+CFLAGS += -g $(CFLAGS_$(TARGET)) -I../../atusb/fw/include -I../include \
           $(MACROS_$(TARGET))
 LDLIBS = $(LDLIBS_$(TARGET)) -L../lib -latrf $(LDLIBS_$(TARGET))
 OBJS += $(OBJS_$(TARGET))
