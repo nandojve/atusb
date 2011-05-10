@@ -31,6 +31,7 @@
 #include "dfu.h"
 
 #include "../board.h"
+#include "../sernum.h"
 
 
 #ifndef NULL
@@ -54,7 +55,11 @@ const uint8_t device_descriptor[] = {
 	LE(0x0001),		/* bcdDevice */
 	0,			/* iManufacturer */
 	0,			/* iProduct */
+#ifdef HAS_BOARD_SERNUM
+	1,			/* iSerialNumber */
+#else
 	0,			/* iSerialNumber */
+#endif
 	1			/* bNumConfigurations */
 };
 
@@ -262,7 +267,7 @@ static int my_descr(uint8_t type, uint8_t index, const uint8_t **reply,
     uint8_t *size)
 {
 	if (type != DFU_DT_FUNCTIONAL)
-		return 0;
+		return sernum_get_descr(type, index, reply, size);
 	*reply = functional_descriptor;
 	*size = sizeof(functional_descriptor);
 	return 1;

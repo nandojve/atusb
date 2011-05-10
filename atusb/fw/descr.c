@@ -34,7 +34,11 @@ const uint8_t device_descriptor[18] = {
 	LE(0x0001),		/* bcdDevice */
 	0,			/* iManufacturer */
 	0,			/* iProduct */
+#ifdef HAS_BOARD_SERNUM
+	1,			/* iSerialNumber */
+#else
 	0,			/* iSerialNumber */
+#endif
 	1			/* bNumConfigurations */
 };
 

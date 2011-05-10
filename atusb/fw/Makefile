@@ -29,8 +29,8 @@ OBJCOPY = $(AVR_PREFIX)objcopy
 SIZE = $(AVR_PREFIX)size
 
 USB_OBJS  = usb.o atu2.o
-OBJS = atusb.o board.o spi.o descr.o ep0.o $(USB_OBJS)
-BOOT_OBJS = boot.o board.o spi.o flash.o dfu.o $(USB_OBJS)
+OBJS = atusb.o board.o sernum.o spi.o descr.o ep0.o $(USB_OBJS)
+BOOT_OBJS = boot.o board.o sernum.o spi.o flash.o dfu.o $(USB_OBJS)
 
 vpath %.c usb/
 

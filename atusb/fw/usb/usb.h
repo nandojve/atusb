@@ -1,8 +1,8 @@
 /*
  * fw/usb//usb.h - USB hardware setup and standard device requests
  *
- * Written 2008, 2009 by Werner Almesberger
- * Copyright 2008, 2009 Werner Almesberger
+ * Written 2008, 2009, 2011 by Werner Almesberger
+ * Copyright 2008, 2009, 2011 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -73,6 +73,14 @@
 #define	GET_INTERFACE		0x0a
 #define	SET_INTERFACE		0x0b
 #define	SYNCH_FRAME		0x0c
+
+/*
+ * USB Language ID codes
+ *
+ * http://www.usb.org/developers/docs/USB_LANGIDs.pdf
+ */
+
+#define	USB_LANGID_ENGLISH_US	0x409
 
 
 /*

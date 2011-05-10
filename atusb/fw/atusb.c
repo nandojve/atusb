@@ -18,6 +18,7 @@
 #include "usb.h"
 
 #include "board.h"
+#include "sernum.h"
 #include "spi.h"
 #include "atusb/ep0.h"
 
@@ -27,6 +28,8 @@ int main(void)
 	board_init();
 	spi_init();
 	reset_rf();
+
+	user_get_descriptor = sernum_get_descr;
 
 	/* now we should be at 8 MHz */
 

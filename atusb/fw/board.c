@@ -15,13 +15,18 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <avr/boot.h>
 
 #define F_CPU   8000000UL
 #include <util/delay.h>
 
+#include "usb.h"
 #include "at86rf230.h"
 #include "board.h"
 #include "spi.h"
+
+
+uint8_t board_sernum[42] = { 42, USB_DT_STRING };
 
 
 static void set_clkm(void)
@@ -94,6 +99,25 @@ void panic(void)
 }
 
 
+static char hex(uint8_t nibble)
+{
+	return nibble < 10 ? '0'+nibble : 'a'+nibble-10;
+}
+
+
+static void get_sernum(void)
+{
+	uint8_t sig;
+	int i;
+
+	for (i = 0; i != 10; i++) {
+		sig = boot_signature_byte_get(i+0xe);
+		board_sernum[(i << 2)+2] = hex(sig >> 4);
+		board_sernum[(i << 2)+4] = hex(sig & 0xf);
+	}
+}
+
+
 void board_init(void)
 {
 	/* Disable the watchdog timer */
@@ -111,6 +135,8 @@ void board_init(void)
 	/* set up all the outputs; default port value is 0 */
 
 	OUT(LED);
-	OUT(nRST_RF);   /* resets the transceiver */
+	OUT(nRST_RF);   /* this also resets the transceiver */
 	OUT(SLP_TR);
+
+	get_sernum();
 }
