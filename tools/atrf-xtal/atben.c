@@ -28,6 +28,7 @@
  */
 
 
+#include <stdint.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/mman.h>
@@ -143,7 +144,7 @@ static void ben_setup(struct atrf_dsc *dsc)
 
 	/*
 	 * Ironically, switching the LCD clock on and off many times only
-	 * increases the risk of a hang. Therefore, we leave stop it during
+	 * increases the risk of a hang. Therefore, we leave it stopped during
 	 * all the measurements and only enable it again at the end.
 	 */
 	disable_lcd();
