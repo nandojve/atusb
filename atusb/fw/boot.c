@@ -14,6 +14,7 @@
 #include <stdint.h>
 
 #include <avr/io.h>
+#include <avr/pgmspace.h>
 
 #define F_CPU   8000000UL
 #include <util/delay.h>
@@ -34,6 +35,11 @@ static void (*run_payload)(void) = 0;
 
 int main(void)
 {
+	/*
+	 * pgm_read_byte gets cached and there doesn't seem to be any other
+	 * way to dissuade gcc from doing this.
+	 */
+	volatile int zero = 0;
 	uint32_t loop = 0;
 
 	board_init();
@@ -49,7 +55,7 @@ int main(void)
 
 	while (loop != MS_TO_LOOPS(2000)) {
 		usb_poll();
-		if (dfu.state == dfuIDLE)
+		if (dfu.state == dfuIDLE && pgm_read_byte(zero) != 0xff)
 			loop++;
 		else
 			loop = 0;
