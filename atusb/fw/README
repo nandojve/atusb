@@ -1,9 +1,44 @@
-Requires very recent toolchain, because ATmega32U2 is relatively new.
+Requires a very recent toolchain, because ATmega32U2 is relatively new.
 
-Building:
+- Building:
 
-make
-make upload prog
+  make
+
+- Uploading the firmware to a Ben (for flashing with the atusb-pgm cable):
+
+  make HOST=<hostname> upload
+
+  Example:
+
+  make HOST=ben upload
+
+  HOST defaults to "jlime".
+
+- Flashing the boot loader:
+
+  Prerequisite: avrdude on the Ben.
+
+  Disconnect the atusb board from USB. Insert the atusb-pgm connector into
+  the Ben. Place the atusb-pgm adapter on the exposed contact pads of the
+  atusb board and push it down. Then run
+
+  make prog
+
+  This takes about 15 seconds. If the programming fails with an error
+  message like "Yikes!  Invalid device signature.", verify that the
+  atusb-pgm board is properly connected and placed, then try again.
+
+- Uploading the application:
+
+  Prerequisite: dfu-util installed on the PC.
+
+  Insert atusb into the PC, then run
+
+  make dfu
+
+  Note: since the boot loader resets the USB bus after timing out,
+  this operation can fail with a message like "No DFU capable USB device
+  found". Just retry, and it will eventually get through.
 
 --------------------------
 
