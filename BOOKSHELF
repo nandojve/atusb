@@ -128,3 +128,7 @@ D: http://61.222.192.61/mccsemi/up_pdf/MMST3904(SOT-323).PDF
 N: 73412-0110
 A: u.fl-receptacle
 D: http://www.molex.com/pdm_docs/sd/734120110_sd.pdf
+
+# dfu
+N: dfu
+D: http://www.usb.org/developers/devclass_docs/DFU_1.1.pdf
