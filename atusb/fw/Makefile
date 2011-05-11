@@ -28,7 +28,9 @@ OBJCOPY = $(AVR_PREFIX)objcopy
 #OBJDUMP = $(AVR_PREFIX)objdump
 SIZE = $(AVR_PREFIX)size
 
-USB_OBJS  = usb.o atu2.o
+USB_ID = 20b7:1540
+
+USB_OBJS = usb.o atu2.o
 OBJS = atusb.o board.o sernum.o spi.o descr.o ep0.o $(USB_OBJS)
 BOOT_OBJS = boot.o board.o sernum.o spi.o flash.o dfu.o $(USB_OBJS)
 
@@ -58,7 +60,7 @@ endif
 
 # ----- Rules -----------------------------------------------------------------
 
-.PHONY:		all clean upload prog dfu version.c
+.PHONY:		all clean upload prog dfu update version.c
 .PHONY:		prog-app prog-read on off reset
 
 all:		$(NAME).bin boot.hex
@@ -144,7 +146,12 @@ prog-read:
 		  -U flash:r:mcu.bin:r
 
 dfu:		$(NAME).bin
-		dfu-util -d 20b7:1540 -D $(NAME).bin
+		dfu-util -d $(USB_ID) -D $(NAME).bin
+
+update:		$(NAME).bin
+		-atrf-reset -a
+		usbwait -r -i 0.01 -t 5 $(USB_ID)
+		$(MAKE) dfu
 
 on:
 		ssh $(HOST) poke 0x10010318 4
