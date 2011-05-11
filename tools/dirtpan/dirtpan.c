@@ -145,10 +145,14 @@ static void debug_dirt(const char *label, void *buf, int size)
 }
 
 
-static void debug_event(const char *label)
+static void debug_timeout(const char *label)
 {
 	if (!debug)
 		return;
+	if (debug == 1) {
+		fprintf(stderr, "*%c", *label);
+		return;
+	}
 	debug_label(label);
 	fprintf(stderr, "\n");
 }
@@ -347,7 +351,7 @@ static void tx_pck(void *buf, int size)
 
 static void ack_timeout(void)
 {
-	debug_event("ACK-TO");
+	debug_timeout("ACK-TO");
 	if (++retries == MAX_TRIES)
 		state = s_idle;
 	else
@@ -357,7 +361,7 @@ static void ack_timeout(void)
 
 static void reass_timeout(void)
 {
-	debug_event("REASS-TO");
+	debug_timeout("REASS-TO");
 	state = s_idle;
 }
 
