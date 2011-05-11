@@ -263,6 +263,14 @@ static void rx_pck(void *buf, int size)
 		send_ack(seq);
 	switch (state) {
 	case s_tx:
+		if (type == pt_first) {
+			/*
+			 * @@@ Not optimal - we break the tie but lose a
+			 * perfectly good frame.
+			 */
+			state = s_idle;
+			return;
+		}
 		if (type != pt_ack)
 			return;
 		if (seq != my_seq)
