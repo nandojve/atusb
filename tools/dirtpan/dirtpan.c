@@ -259,6 +259,8 @@ static void rx_pck(void *buf, int size)
 	type = ctrl & PT_MASK;
 	seq = !!(ctrl & SEQ);
 
+	if (type == pt_first || type == pt_next)
+		send_ack(seq);
 	switch (state) {
 	case s_tx:
 		if (type != pt_ack)
@@ -283,18 +285,14 @@ static void rx_pck(void *buf, int size)
 		}
 		if (type != pt_next)
 			return;
-		if (seq == peer_seq) {
-			send_ack(seq); /* retransmission */
-			return;
-		}
+		if (seq == peer_seq)
+			return; /* retransmission */
 		goto recv_more;
 	case s_idle:
 		if (type == pt_first)
 			break;
-		if (type == pt_next) {
-			send_ack(seq); /* get rid of it */
+		if (type == pt_next)
 			return;
-		}
 		return;
 	default:
 		abort();
@@ -310,7 +308,6 @@ static void rx_pck(void *buf, int size)
 
 recv_more:
 	if (left < size-1) {
-		send_ack(seq); /* get rid of it */
 		state = s_idle;
 		return;
 	}
@@ -318,7 +315,6 @@ recv_more:
 	pos += size-1;
 	left -= size-1;
 	peer_seq = seq;
-	send_ack(seq);
 
 	if (!left) {
 		debug_ip("<-", packet, pos-(void *) packet);
