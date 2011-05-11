@@ -435,6 +435,7 @@ static void event(void)
 static int open_net(uint16_t pan, uint16_t me, uint16_t peer)
 {
 	struct sockaddr_ieee802154 addr;
+	int zero = 0;
 	int s;
 
 	s = socket(PF_IEEE802154, SOCK_DGRAM, 0);
@@ -456,6 +457,12 @@ static int open_net(uint16_t pan, uint16_t me, uint16_t peer)
 	addr.addr.short_addr = peer;
 	if (connect(s, (struct sockaddr *) &addr, sizeof(addr)) < 0) {
 		perror("connect 802.15.4");
+		exit(1);
+	}
+
+	if (setsockopt(s, SOL_IEEE802154, WPAN_WANTACK, &zero, sizeof(zero))
+	    < 0) {
+		perror("setsockopt SOL_IEEE802154 WPAN_WANTACK");
 		exit(1);
 	}
 
