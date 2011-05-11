@@ -17,9 +17,11 @@
 #include <unistd.h>
 #include <string.h>
 #include <fcntl.h>
+#include <signal.h>
 #include <assert.h>
 #include <sys/types.h>
 #include <sys/time.h>
+#include <sys/wait.h>
 #include <sys/select.h>
 #include <sys/ioctl.h>
 #include <sys/socket.h>
@@ -474,10 +476,10 @@ static int open_net(uint16_t pan, uint16_t me, uint16_t peer)
 }
 
 
-static int open_tun(void)
+static int open_tun(const char *cmd)
 {
 	struct ifreq ifr;
-	int fd;
+	int fd, res;
 
 	fd = open(TUN_DEV, O_RDWR);
 	if (fd < 0) {
@@ -493,9 +495,33 @@ static int open_tun(void)
 		exit(1);
 	}
 
-	fprintf(stderr, "%s\n", ifr.ifr_name);
+	if (!cmd) {
+		fprintf(stderr, "%s\n", ifr.ifr_name);
+		return fd;
+	}
 
-	return fd;
+	if (setenv("ITF", ifr.ifr_name, 1) < 0) {
+		perror("setenv");
+		exit(1);
+	}
+
+	res = system(cmd);
+	if (res < 0) {
+		perror("system");
+		exit(1);
+	}
+	if (WIFEXITED(res)) {
+		if (!WEXITSTATUS(res))
+			return fd;
+		exit(WEXITSTATUS(res));
+	}
+	if (WIFSIGNALED(res)) {
+		raise(WTERMSIG(res));
+		exit(1);
+	}
+
+	fprintf(stderr, "cryptic exit status %d\n", res);
+	exit(1);
 }
 
 
@@ -504,8 +530,9 @@ static int open_tun(void)
 
 static void usage(const char *name)
 {
-	fprintf(stderr, "usage: %s [-d [-d]] pan_id src_addr dst_addr\n",
-	    name);
+	fprintf(stderr,
+"usage: %s [-d [-d]] pan_id src_addr dst_addr [command]\n"
+    , name);
 	exit(1);
 }
 
@@ -526,6 +553,7 @@ static uint16_t addr(const char *name, const char *s)
 
 int main(int argc, char **argv)
 {
+	const char *cmd = NULL;
 	uint16_t pan, src, dst;
 	int c;
 
@@ -539,6 +567,9 @@ int main(int argc, char **argv)
 		}
 
 	switch (argc-optind) {
+	case 4:
+		cmd = argv[optind+3];
+		/* fall through */
 	case 3:
 		pan = addr(*argv, argv[optind]);
 		src = addr(*argv, argv[optind+1]);
@@ -549,7 +580,7 @@ int main(int argc, char **argv)
 	}
 
 	net = open_net(pan, src, dst);
-	tun = open_tun();
+	tun = open_tun(cmd);
 	while (1)
 		event();
 
