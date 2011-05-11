@@ -110,7 +110,7 @@ static void dump(const void *buf, int size)
 
 static void debug_ip(const char *label, void *buf, int size)
 {
-	if (!debug)
+	if (debug < 2)
 		return;
 	debug_label(label);
 	fprintf(stderr, ", %d: ", size);
@@ -125,10 +125,18 @@ static void debug_dirt(const char *label, void *buf, int size)
 
 	if (!debug)
 		return;
+	if (debug == 1) {
+		if (size) {
+			fprintf(stderr, "%c%d",
+			    (label[1] == '>' ? "FNA?" : "fna?")[*p & PT_MASK],
+			    *p & SEQ ? 0 : 1);
+		}
+		return;
+	}
 	debug_label(label);
-	fprintf(stderr, ", %d", size);
+	fprintf(stderr, ", %d+1: ", size-1);
 	if (size) {
-		fprintf(stderr, ": %02x(%c%d) ",
+		fprintf(stderr, "%02x(%c%d) | ",
 		    *p, "FNA?"[*p & PT_MASK], *p & SEQ ? 0 : 1);
 		dump(buf+1, size-1);
 	}
@@ -481,7 +489,8 @@ static int open_tun(void)
 
 static void usage(const char *name)
 {
-	fprintf(stderr, "usage: %s [-d] pan_id src_addr dst_addr\n", name);
+	fprintf(stderr, "usage: %s [-d [-d]] pan_id src_addr dst_addr\n",
+	    name);
 	exit(1);
 }
 
