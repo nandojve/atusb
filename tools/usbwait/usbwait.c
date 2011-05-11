@@ -24,19 +24,27 @@
 
 static useconds_t interval_us = DEFAULT_POLL_S*1000000;
 static unsigned long timeout = 0;
+static int need_removal = 0;
 
 
 static void wait_for_usb(void)
 {
 	struct timeval to, now;
+	usb_dev_handle *dev;
 
 	gettimeofday(&to, NULL);
 	to.tv_sec += timeout;
 
 	while (1) {
 		usb_rescan();
-		if (open_usb(0, 0))
-			return;
+		dev = open_usb(0, 0);
+		if (dev) {
+			if (!need_removal)
+				return;
+			usb_close(dev);
+		} else {
+			need_removal = 0;
+		}
 		if (timeout) {
 			gettimeofday(&now, NULL);
 			if (now.tv_sec > to.tv_sec)
@@ -59,9 +67,10 @@ static void wait_for_usb(void)
 static void usage(const char *name)
 {
 	fprintf(stderr,
-"usage: %s [-i poll_s] [-p path] [-t timeout_s] [vendor]:[product]\n\n"
+"usage: %s [-i poll_s] [-p path] [-r] [-t timeout_s] [vendor]:[product]\n\n"
 "  -i poll_s     poll interval in seconds (default: %g s)\n"
 "  -p path       USB device path\n"
+"  -r            wait for device removal first\n"
 "  -t timeout_s  timeout in seconds (default: infinite)\n"
   , name, DEFAULT_POLL_S);
 	exit(1);
@@ -73,7 +82,7 @@ int main(int argc, char **argv)
 	char *end;
 	int c;
 
-	while ((c = getopt(argc, argv, "i:p:t:")) != EOF)
+	while ((c = getopt(argc, argv, "i:p:rt:")) != EOF)
 		switch (c) {
 		case 'i':
 			interval_us = strtod(optarg, &end)*1000000;
@@ -82,6 +91,9 @@ int main(int argc, char **argv)
 			break;
 		case 'p':
 			restrict_usb_path(optarg);
+			break;
+		case 'r':
+			need_removal = 1;
 			break;
 		case 't':
 			timeout = strtoul(optarg, &end, 0);
