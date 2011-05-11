@@ -183,7 +183,7 @@ static struct timeval *timeout(int ms)
 		t.tv_sec--;
 		t.tv_usec += 1000000;
 	}
-	while (t.tv_usec > 1000000) {
+	while (t.tv_usec >= 1000000) {
 		t.tv_sec++;
 		t.tv_usec -= 1000000;
 	}
