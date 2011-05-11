@@ -29,11 +29,11 @@
 static uint16_t vendor = 0;
 static uint16_t product = 0;
 static const struct usb_device *restricted_path = NULL;
+static int initialized = 0;
 
 
 static void initialize(void)
 {
-	static int initialized = 0;
 
 	if (initialized)
 		return;
@@ -42,6 +42,12 @@ static void initialize(void)
 	usb_init();
 	usb_find_busses();
 	usb_find_devices();
+}
+
+
+void usb_rescan(void)
+{
+	initialized = 0;
 }
 
 
