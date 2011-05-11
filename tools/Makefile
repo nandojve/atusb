@@ -11,8 +11,9 @@
 #
 
 
-DIRS=atrf-id atrf-path atrf-proxy atrf-reset atrf-rssi atrf-trim atrf-txrx \
-     atrf-xmit atrf-xtal
+BEN_DIRS=atrf-id atrf-path atrf-proxy atrf-reset atrf-rssi atrf-trim \
+	 atrf-txrx atrf-xmit atrf-xtal
+DIRS=$(BEN_DIRS) usbwait
 TARGET_ONLY_DIRS=lib
 
 ifeq ($(TARGET),ben_jlime)
@@ -27,4 +28,5 @@ include ../makefiles/Makefile.recurse
 .PHONY:		upload
 
 upload:		
-		scp `for n in $(DIRS); do echo $$n/$$n; done` $(HOST):/usr/bin/
+		scp `for n in $(BEN_DIRS); do \
+		    echo $$n/$$n; done` $(HOST):/usr/bin/
