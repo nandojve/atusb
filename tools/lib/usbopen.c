@@ -62,15 +62,18 @@ usb_dev_handle *open_usb(uint16_t default_vendor, uint16_t default_product)
 
 	initialize();
 
+	if (!vendor)
+		vendor = default_vendor;
+	if (!product)
+		product = default_product;
+
 	for (bus = usb_get_busses(); bus; bus = bus->next)
 		for (dev = bus->devices; dev; dev = dev->next) {
 			if (restricted_path && restricted_path != dev)
 				continue;
-			if (dev->descriptor.idVendor !=
-			    (vendor ? vendor : default_vendor))
+			if (vendor && dev->descriptor.idVendor != vendor)
 				continue;
-			if (dev->descriptor.idProduct !=
-			    (product ? product : default_product))
+			if (product && dev->descriptor.idProduct != product)
 				continue;
 			handle = usb_open(dev);
 #ifdef DO_FULL_USB_BUREAUCRACY
@@ -103,7 +106,7 @@ usb_dev_handle *open_usb(uint16_t default_vendor, uint16_t default_product)
 
 static void bad_id(const char *id)
 {
-	fprintf(stderr, "\"%s\" is not a valid vendor:product ID\n", id);
+	fprintf(stderr, "\"%s\" is not a valid [vendor]:[product] ID\n", id);
 	exit(1);
 }
 
@@ -113,18 +116,29 @@ void parse_usb_id(const char *id)
 	unsigned long tmp;
 	char *end;
 
-	tmp = strtoul(id, &end, 16);
-	if (*end != ':')
+	if (*id == ':') {
+		vendor = 0;
+		end = (char *) id; /* ugly */
+	} else {
+		tmp = strtoul(id, &end, 16);
+		if (*end != ':')
+			bad_id(id);
+		if (tmp > 0xffff)
+			bad_id(id);
+		vendor = tmp;
+	}
+	if (!*end)
 		bad_id(id);
-	if (tmp > 0xffff)
-		bad_id(id);
-	vendor = tmp;
-	tmp = strtoul(end+1, &end, 16);
-	if (*end)
-		bad_id(id);
-	if (tmp > 0xffff)
-		bad_id(id);
-	product = tmp;
+	if (!end[1])
+		product = 0;
+	else {
+		tmp = strtoul(end+1, &end, 16);
+		if (*end)
+			bad_id(id);
+		if (tmp > 0xffff)
+			bad_id(id);
+		product = tmp;
+	}
 }
 
 
