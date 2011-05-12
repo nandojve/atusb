@@ -1,7 +1,5 @@
 Setup between two Bens:
 
-(for reference - doesn't work yet)
-
 Ben1:
 	iz add wpan-phy0
 	ip link set wpan0 address de:ad:be:af:ca:fe:ba:be
@@ -21,3 +19,16 @@ Ben2:
 
 Based on
 http://sourceforge.net/apps/trac/linux-zigbee/wiki/GettingStarted-0.2
+
+
+Instead of izchat, you can also set up crude IPv4 networking. For
+this, we need two IPv4 addresses, let's call them $IP1 for Ben1 and
+$IP2 for Ben2.
+
+Ben1:
+	dirtpan 777 1 8001 'ifconfig $ITF $IP1 dstaddr $IP2 up'     
+Ben2:
+	dirtpan 777 8001 1 'ifconfig $ITF $IP2 dstaddr $IP1 up'
+
+$ITF is an environment variable dirtpan sets to the name of the TUN
+interface (tun0, etc.) before it invokes ifconfig.

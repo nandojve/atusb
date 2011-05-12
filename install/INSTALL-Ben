@@ -99,3 +99,21 @@
 	make
 
 	scp src/iz src/izcoordinator src/izchat $NN:/usr/sbin/
+	cd ..
+
+7. Build dirtpan, a crude IPv4-over-IEEE 802.15.4 tunnel
+
+	git clone git://projects.qi-hardware.com/ben-wpan.git
+	git clone git://projects.qi-hardware.com/f32xbase.git
+
+	# If compiling dirtpan.c fails due a missing ieee802145.h header,
+	# copy it over from lowpan-tools:
+
+	cp lowpan-tools-0.2.2/include/ieee802154.h tools/dirtpan/
+
+	cd ben-wpan/tools
+  OWRT	make TARGET=ben_openwrt
+  OWRT	make -C dirtpan TARGET=ben_openwrt
+  JLime	make TARGET=ben_jlime
+  JLime	make -C dirtpan TARGET=ben_jlime
+	scp dirtpan/dirtpan $NN:/usr/sbin
