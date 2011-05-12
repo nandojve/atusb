@@ -11,6 +11,7 @@
  */
 
 
+#include <stdarg.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -58,18 +59,12 @@ enum packet_type {
 #define	T_ACK_MS	50
 
 
-static enum state {
-	s_idle,
-	s_tx,
-	s_rx,
-} state = s_idle;
-
-
 static int tun, net;
-static uint8_t packet[MAX_PACKET+1];
-static void *pos;
-static int left;
-static int my_seq = 0, peer_seq;
+static uint8_t rx_packet[MAX_PACKET], tx_packet[MAX_PACKET+1];
+static void *rx_pos, *tx_pos;
+static int rx_left, tx_left;
+static int txing = 0, rxing = 0;
+static int rx_seq, tx_seq = 0;
 static int retries;
 static int debug = 0;
 
@@ -79,23 +74,8 @@ static int debug = 0;
 
 static void debug_label(const char *label)
 {
-	const char *t;
-
-	switch (state) {
-	case s_idle:
-		t = "--";
-		break;
-	case s_tx:
-		t = "tx";
-		break;
-	case s_rx:
-		t = "rx";
-		break;
-	default:
-		t = "???";
-		break;
-	}
-	fprintf(stderr, "%s(%s)", label, t);
+	fprintf(stderr, "%s(%c%c)",
+	    label, txing ? 'T' : '-', rxing ? 'R' : '-');
 }
 
 
@@ -163,36 +143,73 @@ static void debug_timeout(const char *label)
 /* ----- Timers ------------------------------------------------------------ */
 
 
-static struct timeval t0;
+static struct timeval t_reass, t_ack;
 
 
-static void start_timer(void)
+static void start_timer(struct timeval *t, int ms)
 {
-	gettimeofday(&t0, NULL);
+	assert(!t->tv_sec && !t->tv_usec);
+	gettimeofday(t, NULL);
+	t->tv_usec += 1000*ms;
+	while (t->tv_usec >= 1000000) {
+		t->tv_sec++;
+		t->tv_usec -= 1000000;
+	}
 }
 
 
-static struct timeval *timeout(int ms)
+static void stop_timer(struct timeval *t)
 {
-	static struct timeval t;
+	assert(t->tv_sec || t->tv_usec);
+	t->tv_sec = 0;
+	t->tv_usec = 0;
+}
 
-	gettimeofday(&t, NULL);
-	t.tv_sec -= t0.tv_sec;
-	t.tv_usec -= t0.tv_usec;
-	t.tv_usec += 1000*ms;
 
-	while (t.tv_usec < 0) {
-		t.tv_sec--;
-		t.tv_usec += 1000000;
+static const struct timeval *next_timer(int n, ...)
+{
+	va_list ap;
+	const struct timeval *next = NULL;
+	const struct timeval *t;
+
+	va_start(ap, n);
+	while (n--) {
+		t = va_arg(ap, const struct timeval *);
+		if (!t->tv_sec && !t->tv_usec)
+			continue;
+		if (next) {
+			if (next->tv_sec < t->tv_sec)
+				continue;
+			if (next->tv_sec == t->tv_sec &&
+			    next->tv_usec < t->tv_usec)
+				continue;
+		}
+		next = t;
 	}
-	while (t.tv_usec >= 1000000) {
-		t.tv_sec++;
-		t.tv_usec -= 1000000;
-	}
-	if (t.tv_sec < 0)
-		t.tv_sec = t.tv_usec = 0;
+	va_end(ap);
+	return next;
+}
 
-	return &t;
+
+static struct timeval *timer_delta(const struct timeval *t)
+{
+	static struct timeval d;
+
+	if (!t)
+		return NULL;
+
+	gettimeofday(&d, NULL);
+	d.tv_sec = t->tv_sec-d.tv_sec;
+	d.tv_usec = t->tv_usec-d.tv_usec;
+
+	while (d.tv_usec < 0) {
+		d.tv_sec--;
+		d.tv_usec += 1000000;
+	}
+	if (d.tv_sec < 0)
+		d.tv_sec = d.tv_usec = 0;
+
+	return &d;
 }
 
 
@@ -201,7 +218,7 @@ static struct timeval *timeout(int ms)
 
 static inline int send_size(void)
 {
-	return left > MAX_FRAG ? MAX_FRAG : left;
+	return tx_left > MAX_FRAG ? MAX_FRAG : tx_left;
 }
 
 
@@ -228,11 +245,11 @@ static void send_frame(void *buf, int size)
 
 static void send_more(void)
 {
-	uint8_t *p = pos-1;
+	uint8_t *p = tx_pos-1;
 
-	*p = (pos == packet+1 ? pt_first : pt_next) | (my_seq ? SEQ : 0);
+	*p = (tx_pos == tx_packet+1 ? pt_first : pt_next) | (tx_seq ? SEQ : 0);
 	send_frame(p, send_size()+1);
-	start_timer();
+	start_timer(&t_ack, T_ACK_MS);
 }
 
 
@@ -261,75 +278,67 @@ static void rx_pck(void *buf, int size)
 	type = ctrl & PT_MASK;
 	seq = !!(ctrl & SEQ);
 
-	if (type == pt_first || type == pt_next)
+	switch (type) {
+	case pt_first:
 		send_ack(seq);
-	switch (state) {
-	case s_tx:
-		if (type == pt_first) {
-			/*
-			 * @@@ Not optimal - we break the tie but lose a
-			 * perfectly good frame.
-			 */
-			state = s_idle;
+		if (rxing) {
+			stop_timer(&t_reass);
+			rxing = 0;
+		}
+		break;
+	case pt_next:
+		send_ack(seq);
+		if (!rxing)
+			return;
+		if (seq == rx_seq)
+			return; /* retransmission */
+		break;
+	case pt_ack:
+		if (!txing)
+			return;
+		if (seq != tx_seq)
+			return;
+		stop_timer(&t_ack);
+		tx_pos += send_size();
+		tx_left -= send_size();
+		if (!tx_left) {
+			txing = 0;
 			return;
 		}
-		if (type != pt_ack)
-			return;
-		if (seq != my_seq)
-			return;
-		pos += send_size();
-		left -= send_size();
-		if (!left) {
-			state = s_idle;
-			return;
-		}
-		my_seq = !my_seq;
+		tx_seq = !tx_seq;
 		retries = 0;
 		send_more();
-		return;
-	case s_rx:
-		if (type == pt_first) {
-			start_timer();
-			state = s_idle;
-			break;
-		}
-		if (type != pt_next)
-			return;
-		if (seq == peer_seq)
-			return; /* retransmission */
-		goto recv_more;
-	case s_idle:
-		if (type == pt_first)
-			break;
-		if (type == pt_next)
-			return;
 		return;
 	default:
 		abort();
 	}
 
-	if (size < 5)
-		return;
-	left = p[3] << 8 | p[4];
-	if (left > MAX_PACKET+1)
-		return;
-	state = s_rx;
-	pos = packet;
+	if (!rxing) {
+		if (size < 5)
+			return;
+		rx_left = p[3] << 8 | p[4];
+		if (rx_left > MAX_PACKET)
+			return;
+		start_timer(&t_reass, T_REASS_MS);
+		rxing = 1;
+		rx_pos = rx_packet;
+	}
 
-recv_more:
-	if (left < size-1) {
-		state = s_idle;
+	if (rx_left < size-1) {
+		stop_timer(&t_reass);
+		rxing = 0;
 		return;
 	}
-	memcpy(pos, buf+1, size-1);
-	pos += size-1;
-	left -= size-1;
-	peer_seq = seq;
+	memcpy(rx_pos, buf+1, size-1);
+	rx_pos += size-1;
+	rx_left -= size-1;
+	rx_seq = seq;
 
-	if (!left) {
-		debug_ip("<-", packet, pos-(void *) packet);
-		write_buf(tun, packet, pos-(void *) packet);
-		state = s_idle;
+	if (!rx_left) {
+		debug_ip("<-", rx_packet, rx_pos-(void *) rx_packet);
+		write_buf(tun, rx_packet, rx_pos-(void *) rx_packet);
+		stop_timer(&t_reass);
+		rxing = 0;
 	}
 }
 
@@ -339,17 +348,17 @@ static void tx_pck(void *buf, int size)
 	const uint8_t *p = buf;
 
 	debug_ip(">-", buf, size);
-	assert(state == s_idle);
-	state = s_tx;
-	pos = packet+1;
-	left = p[2] << 8 | p[3];
-	assert(left <= MAX_PACKET);
-	assert(left == size);
+	assert(!txing);
+	txing = 1;
+	tx_pos = tx_packet+1;
+	tx_left = p[2] << 8 | p[3];
+	assert(tx_left <= MAX_PACKET);
+	assert(tx_left == size);
 	/*
-	 * We could avoid the memcpy by reading directly into "packet"
+	 * @@@ We could avoid the memcpy by reading directly into "tx_packet"
 	 */
-	memcpy(pos, buf, size);
-	my_seq = !my_seq;
+	memcpy(tx_pos, buf, size);
+	tx_seq = !tx_seq;
 	retries = 0;
 	send_more();
 }
@@ -358,8 +367,10 @@ static void tx_pck(void *buf, int size)
 static void ack_timeout(void)
 {
 	debug_timeout("ACK-TO");
+	assert(txing);
+	stop_timer(&t_ack);
 	if (++retries == MAX_TRIES)
-		state = s_idle;
+		txing = 0;
 	else
 		send_more();
 }
@@ -368,7 +379,9 @@ static void ack_timeout(void)
 static void reass_timeout(void)
 {
 	debug_timeout("REASS-TO");
-	state = s_idle;
+	assert(rxing);
+	stop_timer(&t_reass);
+	rxing = 0;
 }
 
 
@@ -378,43 +391,32 @@ static void reass_timeout(void)
 static void event(void)
 {
 	uint8_t buf[MAX_PACKET];
-	struct timeval *to;
+	const struct timeval *to;
 	fd_set rset;
 	int res;
 	ssize_t got;
 
 	FD_ZERO(&rset);
 	FD_SET(net, &rset);
-	switch (state) {
-	case s_idle:
+
+	/* only accept more work if we're idle */
+	if (!txing && !rxing)
 		FD_SET(tun, &rset);
-		to = NULL;
-		break;
-	case s_rx:
-		to = timeout(T_REASS_MS);
-		break;
-	case s_tx:
-		to = timeout(T_ACK_MS);
-		break;
-	default:
-		abort();
-	}
-	res = select(net > tun ? net+1 : tun+1, &rset, NULL, NULL, to);
+
+	to = next_timer(2, &t_reass, &t_ack);
+
+	res = select(net > tun ? net+1 : tun+1, &rset, NULL, NULL,
+	    timer_delta(to));
 	if (res < 0) {
 		perror("select");
 		return;
 	}
 	if (!res) {
-		switch (state) {
-		case s_rx:
+		assert(to);
+		if (to == &t_reass)
 			reass_timeout();
-			break;
-		case s_tx:
+		else
 			ack_timeout();
-			break;
-		default:
-			abort();
-		}
 	}
 	if (FD_ISSET(tun, &rset)) {
 		got = read(tun, buf, sizeof(buf));
