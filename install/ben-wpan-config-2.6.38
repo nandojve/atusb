@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux/mips 2.6.38 Kernel Configuration
-# Mon Mar 28 20:32:10 2011
+# Thu May 12 14:20:23 2011
 #
 CONFIG_MIPS=y
 
@@ -419,7 +419,9 @@ CONFIG_IPV6_NDISC_NODETYPE=y
 # CONFIG_WAN_ROUTER is not set
 # CONFIG_PHONET is not set
 CONFIG_IEEE802154=y
+# CONFIG_IEEE802154_PROTO_DEBUG is not set
 CONFIG_MAC802154=y
+# CONFIG_MAC802154_DEBUG is not set
 # CONFIG_NET_SCHED is not set
 # CONFIG_DCB is not set
 # CONFIG_BATMAN_ADV is not set
@@ -606,7 +608,7 @@ CONFIG_NETDEVICES=y
 # CONFIG_BONDING is not set
 # CONFIG_MACVLAN is not set
 # CONFIG_EQUALIZER is not set
-# CONFIG_TUN is not set
+CONFIG_TUN=y
 # CONFIG_VETH is not set
 # CONFIG_MII is not set
 # CONFIG_PHYLIB is not set
@@ -621,6 +623,7 @@ CONFIG_WLAN=y
 #
 # CONFIG_WAN is not set
 CONFIG_IEEE802154_DRIVERS=y
+# CONFIG_IEEE802154_DRIVER_DEBUG is not set
 # CONFIG_IEEE802154_FAKEHARD is not set
 # CONFIG_IEEE802154_FAKELB is not set
 # CONFIG_IEEE802154_SERIAL is not set
