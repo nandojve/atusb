@@ -8,18 +8,26 @@ need to be installed on Ben and PC, and configuration settings
 @@@
 
 
+<!-- ====================================================================== -->
+
+
+<H2>PC software installation</H2>
+
+@@@
+
+
 <!-- ---------------------------------------------------------------------- -->
 
 
-<H3>PC software installation</H3>
+<H3>Install ben-wpan tools</H3>
 
 @@@
 
-<H4>Install ben-wpan tools</H4>
 
-@@@
+<!-- ---------------------------------------------------------------------- -->
 
-<H4>Register Ben host name</H4>
+
+<H3>Register Ben host name</H3>
 
 To simplify accessing the Ben via TCP/IP, its IP address should be
 registered in the hosts file on the PC. If the Ben is running OpenWrt,
@@ -42,10 +50,10 @@ echo 192.168.1.202 jlime >>/etc/hosts
 </PRE>
 
 
-<!-- ---------------------------------------------------------------------- -->
+<!-- ====================================================================== -->
 
 
-<H3>Ben system setup</H3>
+<H2>Ben system setup</H2>
 
 The configuration setting described in this section are lost on each
 reset or reboot and either need to be entered again or a setup script
@@ -53,7 +61,10 @@ running at boot time has to
 This needs to be done each time the Ben is booted.
 
 
-<H4>Enable network access</H4>
+<!-- ---------------------------------------------------------------------- -->
+
+
+<H3>Enable network access</H3>
 
 Once the Ben has booted and started USB networking, the interface
 on the PC side is configured as follows:
@@ -68,7 +79,10 @@ ifconfig usb0 192.168.1.200 up
 </PRE>
 
 
-<H4>Silence other 8:10 card users</H4>
+<!-- ---------------------------------------------------------------------- -->
+
+
+<H3>Silence other 8:10 card users</H3>
 
 Before running any of the ben-wpan utilities, other users of the 8:10
 card slot have to be disabled. In a Ben running the regular OpenWrt or
@@ -85,7 +99,10 @@ echo spi2.0 >/sys/bus/spi/drivers/at86rf230/unbind
 </PRE>
 
 
-<H4>Start atrf-proxy</H4>
+<!-- ---------------------------------------------------------------------- -->
+
+
+<H3>Start atrf-proxy</H3>
 
 On the Ben, launch the proxy daemon. We pass the option -b to background it:
 <PRE>
@@ -93,12 +110,16 @@ atrf-proxy -b
 </PRE>
 
 
+<!-- ====================================================================== -->
+
+
+<H2>Ben software installation</H2>
+
+
 <!-- ---------------------------------------------------------------------- -->
 
 
-<H3>Ben software installation</H3>
-
-<H4>Password-less remote access</H4>
+<H3>Password-less remote access</H3>
 
 To enable password-less remote access from the PC, setup to betwork
 access to the Ben and run the following command:
@@ -107,10 +128,10 @@ ssh ben 'cat >>/etc/dropbear/authorized_keys' <~/.ssh/id_rsa.pub
 </PRE>
 
 
-<!-- ---------------------------------------------------------------------- -->
+<!-- ====================================================================== -->
 
 
-<H3>Test profiles</H3>
+<H2>Test profiles</H2>
 
 
 <P>

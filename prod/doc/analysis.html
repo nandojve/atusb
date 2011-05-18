@@ -4,20 +4,22 @@
 <H1>Production and testing: Fault analysis</H1>
 
 
-<!-- ---------------------------------------------------------------------- -->
+<!-- ====================================================================== -->
 
 
-<H3>Component placement and orientation</H3>
-
-<!-- ---------------------------------------------------------------------- -->
+<H2>Component placement and orientation</H2>
 
 
-<H3>Supply voltages</H3>
-
-<!-- ---------------------------------------------------------------------- -->
+<!-- ====================================================================== -->
 
 
-<H3>Clock frequency</H3>
+<H2>Supply voltages</H2>
+
+
+<!-- ====================================================================== -->
+
+
+<H2>Clock frequency</H2>
 
 The flawless performance of the crystal oscillator is crucial for
 operation. Anomalies are easy to detect with even a low-cost oscilloscope
@@ -35,7 +37,10 @@ applies to <B>atben</B> as well as to <B>atusb</B>.
 <P>
 
 
-<H4>Measuring the clock on atben</H4>
+<!-- ---------------------------------------------------------------------- -->
+
+
+<H3>Measuring the clock on atben</H3>
 
 <B>atben</B> normally does not output a clock signal. A 1 MHz clock
 can be enabled with the following command:
@@ -56,7 +61,10 @@ of any IEEE 802.15.4 frame or pressing Ctrl-C will terminate the command.
 <P>
 
 
-<H4>Measuring the clock on atusb</H4>
+<!-- ---------------------------------------------------------------------- -->
+
+
+<H3>Measuring the clock on atusb</H3>
 
 The transceiver provides the clock for the microcontroller in <B>atusb</B>.
 A clock signal is therefore always available. Immediately after reset,
@@ -76,7 +84,10 @@ enables USB.
 </TABLE>
 
 
-<H4>Precision measurements</H4>
+<!-- ---------------------------------------------------------------------- -->
+
+
+<H3>Precision measurements</H3>
 
 <P>
 <HR>
