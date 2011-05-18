@@ -1,0 +1,86 @@
+<TITLE>Production and testing: Fault analysis</TITLE>
+<BODY>
+<HTML>
+<H1>Production and testing: Fault analysis</H1>
+
+
+<!-- ---------------------------------------------------------------------- -->
+
+
+<H3>Component placement and orientation</H3>
+
+<!-- ---------------------------------------------------------------------- -->
+
+
+<H3>Supply voltages</H3>
+
+<!-- ---------------------------------------------------------------------- -->
+
+
+<H3>Clock frequency</H3>
+
+The flawless performance of the crystal oscillator is crucial for
+operation. Anomalies are easy to detect with even a low-cost oscilloscope
+and pinpoint specific problems and help to select further analysis steps.
+<P>
+The crystal used in <B>atben</B> and <B>atusb</B> has a nominal tolerance
+of +/- 15 ppm at 22-28 C. Low-cost oscilloscopes typically have a timing
+accuracy of
++/- 100 ppm, which means that only major excursions can be detected by
+measuring the clock output with such an instrument. Full-speed USB only
+requires an accuracy of +/- 2500 ppm.
+We can therefore consider all results within a range of +/- 1000 ppm as
+sufficient, and perform more precise measurements by other means. This
+applies to <B>atben</B> as well as to <B>atusb</B>.
+<P>
+
+
+<H4>Measuring the clock on atben</H4>
+
+<B>atben</B> normally does not output a clock signal. A 1 MHz clock
+can be enabled with the following command:
+<PRE>
+atrf-txrx -d net:ben -C 1
+</PRE>
+This configures <B>atben</B> as a promiscuous receiver. The reception
+of any IEEE 802.15.4 frame or pressing Ctrl-C will terminate the command.
+<P>
+<TABLE>
+<TR><TH align="left">Clock<TH align="left">Action
+<TR><TD>0 Hz<TD>Check voltages; check that the clock is enabled;
+  check for shorts around crystal; check connectivity of crystal
+<TR><TD>0.999-1.001 MHz, ~3.3 Vpp<TD>Perform precision measurement with
+  <B>atrf-xtal</B>
+<TR><TD>Other<TD>Check voltages; check for contamination around crystal
+</TABLE>
+<P>
+
+
+<H4>Measuring the clock on atusb</H4>
+
+The transceiver provides the clock for the microcontroller in <B>atusb</B>.
+A clock signal is therefore always available. Immediately after reset,
+the transceiver generates a 1 MHz clock. When the microcontrolled comes out
+of reset, it raises the transceiver's clock output to 8 MHz and then
+enables USB.
+<P>
+<TABLE>
+<TR><TH align="left">Clock<TH align="left">Action
+<TR><TD>0 Hz<TD>Check voltages; check for shorts around crystal; check
+  connectivity of crystal
+<TR><TD>0.999-1.001 MHz, ~3.3 Vpp<TD>Check presence of firmware; check for
+  shorts on SPI signals; check connectivity of SPI signals
+<TR><TD>7.992-8.008 MHz, ~3.3 Vpp<TD>Perform precision measurement with
+  <B>atrf-xtal</B>
+<TR><TD>Other<TD>Check voltages; check for contamination around crystal
+</TABLE>
+
+
+<H4>Precision measurements</H4>
+
+<P>
+<HR>
+Last update: 2011-05-18&nbsp;&nbsp;<I>Werner Almesberger</I>
+<HR>
+</BODY>
+</HTML>
