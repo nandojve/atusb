@@ -434,7 +434,7 @@ static int atnet_set_clkm(void *handle, int mhz)
 {
 	struct atnet_dsc *dsc = handle;
 
-	return dialog(dsc, "CLKM %d", mhz);
+	return dialog(dsc, "CLKM %d", mhz) == 0;
 }
 
 
