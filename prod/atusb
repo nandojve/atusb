@@ -3,30 +3,17 @@
 . ./Common
 
 
-flash()
-{
-	step "Flash boot loader"
-	todo
-}
-
-
 enumerate()
 {
 	step "Enumeration"
-	todo
+	cmd "usbwait -t 5 20b7:1540 && echo okay"
+	expect okay
 }
 
 
 led()
 {
 	step "LED"
-	todo
-}
-
-
-dfu()
-{
-	step "DFU application"
 	todo
 }
 
@@ -46,13 +33,11 @@ xtal_usb()
 
 
 begin usb.profile
-flash
 enumerate
 led
-dfu
 # power ?
 gpio_usb
-# identify	# local anomaly (using a 230-based card at the moment)
+identify
 xtal_usb
 spectrum
 transmit
