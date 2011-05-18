@@ -533,7 +533,14 @@ static int open_tun(const char *cmd)
 static void usage(const char *name)
 {
 	fprintf(stderr,
-"usage: %s [-d [-d]] pan_id src_addr dst_addr [command]\n"
+"usage: %s [-b] [-d [-d]] pan_id src_addr dst_addr [command]\n\n"
+"  pan_id    PAN (network) identifier\n"
+"  src_addr  source short address\n"
+"  dst_addr  destination short address\n"
+"  command   configuration command to run after creating the TUN interface.\n"
+"            The environment variable $ITF is set to the interface name.\n\n"
+"  -b        background the process after initialization\n"
+"  -d ...    increase verbosity of debug output\n"
     , name);
 	exit(1);
 }
@@ -557,10 +564,14 @@ int main(int argc, char **argv)
 {
 	const char *cmd = NULL;
 	uint16_t pan, src, dst;
+	int foreground = 1;
 	int c;
 
-	while ((c = getopt(argc, argv, "d")) != EOF)
+	while ((c = getopt(argc, argv, "bd")) != EOF)
 		switch (c) {
+		case 'b':
+			foreground = 0;
+			break;
 		case 'd':
 			debug++;
 			break;
@@ -583,8 +594,10 @@ int main(int argc, char **argv)
 
 	net = open_net(pan, src, dst);
 	tun = open_tun(cmd);
-	while (1)
-		event();
+
+	if (foreground || !daemonize())
+		while (1)
+			event();
 
 	return 0;
 }
