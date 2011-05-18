@@ -1,0 +1,125 @@
+<TITLE>Production and testing</TITLE>
+<BODY>
+<HTML>
+<H1>Production and testing</H1>
+
+This document gives a high-level description of the production test process
+for <B>atben</B> and <B>atusb</B> boards, plus - in the case of <B>atusb</B>
+the production steps required between the boards leaving the SMT line and the
+actual testing.
+<P>
+The testing serves two purposes:
+<OL>
+  <LI>Ascertain the correctness of the preceding production steps, and
+  <LI>identify suffering from random production flaws and either discard
+    them or prepare them for repair.
+</OL>
+The results of testing and fault analysis also provide feedback for the
+SMT process and steps preceding it.
+<P>
+The following diagram illustrates the workflow:
+<P>
+<IMG src="flow.png">
+<P>
+Only <B>atusb</B> boards contain firmware and need flashing (which is
+a two-step process, see below). The functional tests and further fault
+analysis are largely the same for <B>atben</B> and <B>atusb</B>.
+<P>
+Devices accepted for further use can then be packaged for shipping.
+Defective devices can be discarded or retained for a deeper analysis.
+
+
+<H2>Terminology</H2>
+
+<DL>
+  <DT>Ben</DT>
+  <DD>a device capable of hosting the <B>atben</B> and <B>atusb-pgm</B>
+    boards. In the production process, a Ben can perform three different
+    roles:
+    <OL>
+      <LI> Host an <B>atben</B> board acting as DUT
+      <LI> Host an <B>atben</B> board acting as reference
+      <LI> Host an <B>atusb-pgm</B> used for flashing the boot loader
+    </OL>
+    In this document, we assume that a single Ben is used in all
+    three roles, with the board in its 8:10 card slot changed as
+    the role requires.
+  <DT>PC</DT>
+  <DD>a device capable of connecting to a Ben via USB, and of hosting an
+    <B>atusb</B> board. In the production process, a PC can perform three
+    different roles:
+    <OL>
+      <LI> Host an <B>atusb</B> board acting as DUT
+      <LI> Host an <B>atusb</B> board acting as reference
+      <LI> Control a Ben via USB (for convenience)
+    </OL>
+    In this document, we assume that a single PC is used in all
+    three roles, with one USB host port permanently connecting to the
+    Ben, and a second USB host port populated with <B>atusb</B> boards
+    as needed.
+  <DT>DUT</DT>
+  <DD>Device Under Test. An <B>atben</B> or <B>atusb</B> board that
+    has left SMT, and is being prepared for testing or in the process
+    of being tested.
+  <DT>Reference</DT>
+  <DD>An <B>atben</B> or <B>atusb</B> device that is known to work and
+    and that acts as a peer for RF communication with the DUT.
+  <DT>SMT</DT>
+  <DD>In this context, the actual process of soldering components to
+    the unpopulated PCB, and all related tasks providing an input to
+    this process. Such related tasks include the configuration of the
+    SMT line, and testing and conditioning of the components to solder.
+</DL>
+
+
+<H2>Setup</H2>
+
+<H3>PC software installation</H3>
+<H3>Ben software installation</H3>
+<H3>Ben software setup</H3>
+<H3>Test profiles</H3>
+
+
+<H2>Flashing (atusb only)<H2>
+
+<H3>Flashing the boot loader</H3>
+
+<P>
+<IMG src="setup-C.png">
+<P>
+
+
+<H3>Flashing the application</H3>
+
+<P>
+<IMG src="setup-D.png">
+<P>
+
+
+<H2>Functional test</H2>
+
+<H3>Test setup for atben</H3>
+
+<P>
+<IMG src="setup-A.png">
+<P>
+
+<H3>Test setup for atusb</H3>
+
+<P>
+<IMG src="setup-B.png">
+<P>
+
+<H3>Test procedure</H3>
+
+<H2>Fault analysis</H2>
+
+<H3>Component orientation</H3>
+<H3>Clock frequency</H3>
+
+<P>
+<HR>
+Last update: 2011-05-17&nbsp;&nbsp;<I>Werner Almesberger</I>
+<HR>
+</BODY>
+</HTML>
