@@ -37,6 +37,7 @@ MAIN = atrf-xtal
 
 include ../Makefile.common
 
+LDLIBS += -lm
 CFLAGS += -O9
 
 OBJS_$(TARGET) = atben.o

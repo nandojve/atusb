@@ -14,6 +14,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <string.h>
+#include <math.h>
 
 #include "atrf.h"
 
@@ -61,35 +63,37 @@ static int cmp(const void *a, const void *b)
 
 
 
-static void eval(unsigned *res, int rep)
+static double eval(unsigned *res, int rep)
 {
 	double sum = 0;
 	int n = 0;
 	int i;
 
 	qsort(res, rep, sizeof(*res), cmp);
-	if (rep < 8) {
-		printf("%u\n", res[rep >> 1]);
-		return;
-	}
+	if (rep < 8)
+		return res[rep >> 1];
 	for (i = rep/8; i != rep-rep/8; i++) {
 		sum += res[i];
 		n++;
 	}
-	printf("%f\n", (double) sum/n);
+	return (double) sum/n;
 }
 
 
 static void usage(const char *name)
 {
 	fprintf(stderr,
-"%s [-d driver[:arg]] [-r] [-s size] [-t trim] [repetitions]\n\n"
+"usage: %s [-b count [-p ppm]] [-d driver[:arg]] [-r] [-s size] [-t trim]\n"
+"       %*s [repetitions]\n\n"
+"  -b count         base count for relative result\n"
 "  -d driver[:arg]  use the specified driver (default: %s)\n"
+"  -p ppm           maximum deviation from base count\n"
 "  -r               instead of printing a mean value, dump the raw samples\n"
 "  -s size          payload size in bytes, 0-127 (default: %d bytes)\n"
 "  -t trim          trim capacitor setting, 0-15 (default: %d)\n"
 "  repetitions      number of measurements (default: 1)\n"
-  , name, atrf_default_driver_name(), DEFAULT_SIZE, DEFAULT_TRIM);
+    , name, strlen(name), "",
+    atrf_default_driver_name(), DEFAULT_SIZE, DEFAULT_TRIM);
 	exit(1);
 }
 
@@ -100,16 +104,28 @@ int main(int argc, char *const *argv)
 	struct atrf_dsc *dsc;
 	int size = DEFAULT_SIZE;
 	int trim = DEFAULT_TRIM;
+	double base = 0, ppm = 0;
+	double avg, rel;
 	int rep = 1;
 	int dump_raw = 0;
 	char *end;
 	unsigned *res;
 	int c, i;
 
-	while ((c = getopt(argc, argv, "d:rs:t:")) != EOF)
+	while ((c = getopt(argc, argv, "b:d:p:rs:t:")) != EOF)
 		switch (c) {
+		case 'b':
+			base = strtof(optarg, &end);
+			if (*end)
+				usage(*argv);
+			break;
 		case 'd':
 			driver = optarg;
+			break;
+		case 'p':
+			ppm = strtof(optarg, &end);
+			if (*end)
+				usage(*argv);
 			break;
 		case 'r':
 			dump_raw = 1;
@@ -131,6 +147,9 @@ int main(int argc, char *const *argv)
 		default:
 			usage(*argv);
 		}
+
+	if (ppm && !base)
+		usage(*argv);
 
 	switch (argc-optind) {
 	case 0:
@@ -169,7 +188,18 @@ int main(int argc, char *const *argv)
 		exit(0);
 	}
 
-	eval(res, rep);
+	avg = eval(res, rep);
+	if (!base)
+		printf("%f\n", avg);
+	else {
+		rel = (avg/base-1)*1000000;
+		printf("%+f ppm", rel);
+		if (ppm && fabs(rel) > ppm) {
+			printf(" (outside bounds)\n");
+			return 1;
+		}
+		putchar('\n');
+	}
 	
 	return 0;
 }
