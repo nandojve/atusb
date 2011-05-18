@@ -29,6 +29,9 @@ Devices accepted for further use can then be packaged for shipping.
 Defective devices can be discarded or retained for a deeper analysis.
 
 
+<!-- ====================================================================== -->
+
+
 <H2>Terminology</H2>
 
 <DL>
@@ -73,21 +76,97 @@ Defective devices can be discarded or retained for a deeper analysis.
 </DL>
 
 
-<H2>Setup</H2>
+<!-- ====================================================================== -->
+
+
+<H2>Software setup</H2>
+
+Before performing any production tests, various pieces of software
+need to be installed on Ben and PC, and configuration settings 
+@@@
+
+
+<!-- ---------------------------------------------------------------------- -->
+
 
 <H3>PC software installation</H3>
-<H3>Ben software installation</H3>
+
+@@@
+
+<H4>Install ben-wpan tools</H4>
+
+@@@
+
+<H4>Register Ben host name</H4>
+
+To simplify accessing the Ben via TCP/IP, its IP address should be
+registered in the hosts file on the PC. If the Ben is running OpenWrt,
+use the following command:
+<PRE>
+echo 192.168.254.101 ben >>/etc/hosts
+</PRE>
+<P>
+If the Ben is running Jlime, the address would be as follows:
+<PRE>
+echo 192.168.1.202 ben >>/etc/hosts
+</PRE>
+<P>
+If using the same PC with Bens running OpenWrt and Jlime, one may choose
+different host names depending on the distribution, and adapt the commands
+used in the production and testing process accordingly. For example,
+<PRE>
+echo 192.168.254.101 ben >>/etc/hosts
+echo 192.168.1.202 jlime >>/etc/hosts
+</PRE>
+
+
+<!-- ---------------------------------------------------------------------- -->
+
+
 <H3>Ben software setup</H3>
+
+This needs to be done each time the Ben is booted.
+
+<H4>Enable network access</H4>
+<H4>Silence other 8:10 card users</H4>
+
+
+<!-- ---------------------------------------------------------------------- -->
+
+
+<H3>Ben software installation</H3>
+
+<H4>Password-less remote access</H4>
+
+To enable password-less remote access from the PC, setup to betwork
+access to the Ben and run the following command:
+<PRE>
+ssh ben 'cat >>/etc/dropbear/authorized_keys' <~/.ssh/id_rsa.pub
+</PRE>
+
+
+<!-- ---------------------------------------------------------------------- -->
+
+
 <H3>Test profiles</H3>
 
 
+<!-- ====================================================================== -->
+
+
 <H2>Flashing (atusb only)<H2>
+
+<!-- ---------------------------------------------------------------------- -->
+
 
 <H3>Flashing the boot loader</H3>
 
 <P>
 <IMG src="setup-C.png">
 <P>
+
+
+<!-- ---------------------------------------------------------------------- -->
 
 
 <H3>Flashing the application</H3>
@@ -97,7 +176,13 @@ Defective devices can be discarded or retained for a deeper analysis.
 <P>
 
 
+<!-- ====================================================================== -->
+
+
 <H2>Functional test</H2>
+
+<!-- ---------------------------------------------------------------------- -->
+
 
 <H3>Test setup for atben</H3>
 
@@ -105,19 +190,38 @@ Defective devices can be discarded or retained for a deeper analysis.
 <IMG src="setup-A.png">
 <P>
 
+<!-- ---------------------------------------------------------------------- -->
+
+
 <H3>Test setup for atusb</H3>
 
 <P>
 <IMG src="setup-B.png">
 <P>
 
+<!-- ---------------------------------------------------------------------- -->
+
+
 <H3>Test procedure</H3>
+
+
+<!-- ====================================================================== -->
+
 
 <H2>Fault analysis</H2>
 
+<!-- ---------------------------------------------------------------------- -->
+
+
 <H3>Component placement and orientation</H3>
 
+<!-- ---------------------------------------------------------------------- -->
+
+
 <H3>Supply voltages</H3>
+
+<!-- ---------------------------------------------------------------------- -->
+
 
 <H3>Clock frequency</H3>
 
