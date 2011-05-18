@@ -23,6 +23,7 @@
 
 #include "atrf.h"
 #include "netio.h"
+#include "daemon.h"
 
 
 #define	DEFAULT_PORT	0x1540	/* 5440 */
@@ -303,7 +304,13 @@ static void loop(const char *driver, int port)
 
 static void usage(const char *name)
 {
-	fprintf(stderr, "usage: %s [-d driver[:arg]] [-v ...] [port]\n", name);
+	fprintf(stderr,
+"usage: %s [-b] [-d driver[:arg]] [-v ...] [port]\n\n"
+"  port             listen on the specified port (default: %d)\n\n"
+"  -b               background the process after initialization\n"
+"  -d driver[:arg]  use the specified driver (default: %s)\n"
+"  -v ...           increase verbosity level\n"
+    , name, DEFAULT_PORT, atrf_default_driver_name());
 	exit(1);
 }
 
@@ -312,11 +319,15 @@ int main(int argc, char **argv)
 {
 	unsigned long port = DEFAULT_PORT;
 	const char *driver = NULL;
+	int foreground = 1;
 	char *end;
 	int c;
 
-	while ((c = getopt(argc, argv, "d:v")) != EOF)
+	while ((c = getopt(argc, argv, "bd:v")) != EOF)
 		switch (c) {
+		case 'b':
+			foreground = 0;
+			break;
 		case 'd':
 			driver = optarg;
 			break;
@@ -340,7 +351,8 @@ int main(int argc, char **argv)
 		usage(*argv);
 	}
 
-	loop(driver, port);
+	if (foreground || !daemonize())
+		loop(driver, port);
 
 	return 0;
 }
