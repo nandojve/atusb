@@ -28,6 +28,9 @@
 #define	PSDU_SIZE	127
 
 
+static int verbose = 0;
+
+
 static void init_common(struct atrf_dsc *dsc, int trim, int channel)
 {
 	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_TRX_OFF);
@@ -100,7 +103,14 @@ static int xfer_one(struct atrf_dsc *tx, struct atrf_dsc *rx)
 	 * @@@ We should analyze the CRC here to see if the first or the second
 	 * byte got corrupted.
 	 */
-	printf("%d\n", i+1);
+	if (verbose) {
+		printf("%d", i+1);
+		for (i = 0; i != n-2; i++)
+			printf("%s%02x", i ? " " : "\t", buf[i]);
+		printf("\n");
+	} else {
+		printf("%d\n", i+1);
+	}
 	return 0;
 }
 
@@ -119,11 +129,12 @@ static void xfer(struct atrf_dsc *tx, struct atrf_dsc *rx, int packets)
 static void usage(const char *name)
 {
 	fprintf(stderr,
-"usage: %s [-c channel] [-p power] [-t trim_tx [-t trim_rx]]\n"
+"usage: %s [-c channel] [-p power] [-t trim_tx [-t trim_rx]] [-v]\n"
 "%15s driver_tx[:arg] driver_rx[:arg] [packets]\n\n"
 "  -c channel  transmit/receive channel, 11 to 26 (default %d)\n"
 "  -p power    transmit power, 0 to 15 (default %d)\n"
 "  -t trim     trim capacitor, 0 to 15 (default %d)\n"
+"  -v          verbose reporting of transmission errors\n"
     , name, "",
     DEFAULT_CHANNEL, DEFAULT_POWER, DEFAULT_TRIM);
 	exit(1);
@@ -142,13 +153,16 @@ int main(int argc, char **argv)
 	char *end;
 	int c;
 
-	while ((c = getopt(argc, argv, "c:p:t:")) != EOF)
+	while ((c = getopt(argc, argv, "c:p:t:v")) != EOF)
 		switch (c) {
 		case 'c':
 			tmp = strtoul(optarg, &end, 0);
 			if (*end || tmp < 11 || tmp > 26)
 				usage(*argv);
 			channel = tmp;
+			break;
+		case 'v':
+			verbose++;
 			break;
 		case 'p':
 			tmp = strtoul(optarg, &end, 0);
