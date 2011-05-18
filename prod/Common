@@ -95,7 +95,7 @@ cmd()
 expect()
 {
 	eval "$cmd" >_out 2>&1 || { echo "exit code $?" | fail; exit 1; }
-	fgrep -q "$1" _out || { echo "expected $1" | fail; exit 1; }
+	fgrep -q "$@" _out || { echo "expected $*" | fail; exit 1; }
 	pass
 }
 
@@ -103,7 +103,7 @@ expect()
 expect_re()
 {
 	eval "$cmd" >_out 2>&1 || { echo "exit code $?" | fail; exit 1; }
-	grep -q "$1" _out || { echo "expected $1" | fail; exit 1; }
+	grep -q "$@" _out || { echo "expected $*" | fail; exit 1; }
 	pass
 }
 
