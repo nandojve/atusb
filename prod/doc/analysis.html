@@ -29,7 +29,7 @@ Voltages should be tested in the following order: USB, then I/O, then
 digital, and finally analog. The table below gives the permissible
 ranges. Any voltages outside of these ranges indicate a problem.
 <P>
-<TABLE>
+<TABLE frame="border" cellpadding="2">
   <TR><TH>Domain<TH>Nominal<TH>Minimum<TH>Maximum
   <TR><TD>USB<TD>5.0 V<TD>4.5 V<TD>5.25 V
   <TR><TD>I/O<TD>3.3 V<TD>3.0 V<TD>3.6 V
@@ -90,12 +90,12 @@ operation. Anomalies are easy to detect with even a low-cost oscilloscope
 and pinpoint specific problems and help to select further analysis steps.
 <P>
 The crystal used in <B>atben</B> and <B>atusb</B> has a nominal tolerance
-of +/- 15 ppm at 22-28 C. Low-cost oscilloscopes typically have a timing
+of +/&minus; 15 ppm at 22-28 C. Low-cost oscilloscopes typically have a timing
 accuracy of
-+/- 100 ppm, which means that only major excursions can be detected by
++/&minus; 100 ppm, which means that only major excursions can be detected by
 measuring the clock output with such an instrument. Full-speed USB only
-requires an accuracy of +/- 2500 ppm.
-We can therefore consider all results within a range of +/- 1000 ppm as
+requires an accuracy of +/&minus; 2500 ppm.
+We can therefore consider all results within a range of +/&minus; 1000 ppm as
 sufficient, and perform more precise measurements by other means. This
 applies to <B>atben</B> as well as to <B>atusb</B>.
 <P>
@@ -114,7 +114,7 @@ atrf-txrx -d net:ben -C 1
 This configures <B>atben</B> as a promiscuous receiver. The reception
 of any IEEE 802.15.4 frame or pressing Ctrl-C will terminate the command.
 <P>
-<TABLE>
+<TABLE frame="border" cellpadding="2">
 <TR><TH align="left">Clock<TH align="left">Action
 <TR><TD>0 Hz<TD>Check voltages; check that the clock is enabled;
   check for shorts around crystal; check connectivity of crystal
@@ -136,7 +136,7 @@ the transceiver generates a 1 MHz clock. When the microcontrolled comes out
 of reset, it raises the transceiver's clock output to 8 MHz and then
 enables USB.
 <P>
-<TABLE>
+<TABLE frame="border" cellpadding="2">
 <TR><TH align="left">Clock<TH align="left">Action
 <TR><TD>0 Hz<TD>Check voltages; check for shorts around crystal; check
   connectivity of crystal
@@ -154,7 +154,7 @@ enables USB.
 <H3>Precision measurements</H3>
 
 The clock frequency of <B>atben</B> can be measured with an accuracy
-of about +/- 100 ppm using the program <B>atrf-xtal</B>. <B>atrf-xtal</B>
+of about +/&minus; 100 ppm using the program <B>atrf-xtal</B>. <B>atrf-xtal</B>
 runs directly on the Ben and measures the duration of packet transmissions.
 The transmission time depends on the bit clock which is in turn derived
 from the oscillator.
@@ -169,10 +169,10 @@ The number reported is the number of poll loops the CPU counted. This
 value should be compared to a reference count obtained with a known to
 be good <B>atben</B> board and the same Ben at a comparable temperature.
 <P>
-<TABLE>
+<TABLE frame="border" cellpadding="2">
 <TR><TH align="left">Difference<TH align="left">Action
-<TR><TD>&gt; +/- 50 ppm<TD>Correct operation
-<TR><TD>&lt; -80 ppm<TD>Check soldering of capacitors;
+<TR><TD>&gt; +/&minus; 50 ppm<TD>Correct operation
+<TR><TD>&lt; &minus;80 ppm<TD>Check soldering of capacitors;
   check for contamination around crystal
 <TR><TD>&gt; +120 ppm<TD>idem
 <TR><TD>Other<TD>Divergence can be compensated by adjusting trim value
