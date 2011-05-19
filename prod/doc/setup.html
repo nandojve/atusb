@@ -56,8 +56,8 @@ echo 192.168.1.202 jlime >>/etc/hosts
 <H2>Ben system setup</H2>
 
 The configuration setting described in this section are lost on each
-reset or reboot and either need to be entered again or a setup script
-running at boot time has to be written.
+reset or reboot and either need to be entered again. Alternatively,
+a setup script running at boot time can be written.
 
 
 <!-- ---------------------------------------------------------------------- -->
@@ -150,8 +150,10 @@ clock count with an accuracy of about +/&minus;20 ppm:
 atrf-xtal 1000 >ben.xtal
 </PRE>
 <P>
-Note that this value depends on the tolerance of the crystal in the Ben
-and is also affected by temperature. The above accuracy can therefore
+This takes about 5 seconds.
+<P>
+Note that the result depends on the tolerance of the crystal in the Ben
+and is also affected by temperature. Good accuracy can therefore
 only be obtained if this measurement is performed individually on each
 Ben, and if a stable temperature is maintained.
 
@@ -167,7 +169,7 @@ Ben, and if a stable temperature is maintained.
 Up: <A href="index.html">Production and testing</A>&nbsp;
 Next: <A href="flash.html">Flashing (<B>atusb</B> only)</A>&nbsp;
 <HR>
-Last update: 2011-05-18&nbsp;&nbsp;<I>Werner Almesberger</I>
+Last update: 2011-05-19&nbsp;&nbsp;<I>Werner Almesberger</I>
 <HR>
 </BODY>
 </HTML>
