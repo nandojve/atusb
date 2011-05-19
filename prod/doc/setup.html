@@ -27,6 +27,14 @@ need to be installed on Ben and PC, and configuration settings
 <!-- ---------------------------------------------------------------------- -->
 
 
+<H3>Install test scripts</H3>
+
+@@@
+
+
+<!-- ---------------------------------------------------------------------- -->
+
+
 <H3>Register Ben host name</H3>
 
 To simplify accessing the Ben via TCP/IP, its IP address should be
@@ -48,6 +56,42 @@ used in the production and testing process accordingly. For example,
 echo 192.168.254.101 ben >>/etc/hosts
 echo 192.168.1.202 jlime >>/etc/hosts
 </PRE>
+
+
+<!-- ---------------------------------------------------------------------- -->
+
+
+<H3>Customize test scripts</H3>
+
+@@@
+
+
+<!-- ====================================================================== -->
+
+
+<H2>Ben software installation</H2>
+
+@@@
+
+
+<!-- ---------------------------------------------------------------------- -->
+
+
+<H3>Password-less remote access</H3>
+
+To enable password-less remote access from the PC, set up network
+access to the Ben and run the following command:
+<PRE>
+ssh ben 'cat >>/etc/dropbear/authorized_keys' <~/.ssh/id_rsa.pub
+</PRE>
+
+
+<!-- ---------------------------------------------------------------------- -->
+
+
+<H3>Install ben-wpan tools</H3>
+
+@@@
 
 
 <!-- ====================================================================== -->
@@ -112,24 +156,6 @@ atrf-proxy -b
 <!-- ====================================================================== -->
 
 
-<H2>Ben software installation</H2>
-
-
-<!-- ---------------------------------------------------------------------- -->
-
-
-<H3>Password-less remote access</H3>
-
-To enable password-less remote access from the PC, set up network
-access to the Ben and run the following command:
-<PRE>
-ssh ben 'cat >>/etc/dropbear/authorized_keys' <~/.ssh/id_rsa.pub
-</PRE>
-
-
-<!-- ====================================================================== -->
-
-
 <H2>Test profiles</H2>
 
 Some of the functional tests measure characteristics that are strongly
@@ -162,6 +188,8 @@ Ben, and if a stable temperature is maintained.
 
 
 <H3>Signal strength</H3>
+
+@@@
 
 
 <P>
