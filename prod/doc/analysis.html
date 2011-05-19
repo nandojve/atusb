@@ -158,11 +158,7 @@ of about +/&minus; 100 ppm using the program <B>atrf-xtal</B>. <B>atrf-xtal</B>
 runs directly on the Ben and measures the duration of packet transmissions.
 The transmission time depends on the bit clock which is in turn derived
 from the oscillator.
-<P>
-<B>atrf-xtal</B> requires exclusive access to the <B>atben</B>. If a
-proxy is running, it has to be removed first.
 <PRE>
-killall atrf-proxy
 atrf-xtal 100
 </PRE>
 The number reported is the number of poll loops the CPU counted. This
