@@ -15,6 +15,70 @@
 
 <H2>Supply voltages</H2>
 
+The transceiver has three voltage domains:
+<UL>
+  <LI>The supply and I/O voltage, which is nominally 3.3 V in
+    <B>atben</B> and <B>atusb</B>,
+  <LI>the digital (core) supply, which is nominally 1.8 V, and
+  <LI>the analog (RF) supply, which is nominally 1.8 V.
+</UL>
+<BR>
+On <B>atusb</B>, there is also the USB voltage domain at nominally 5.0 V.
+<P>
+Voltages should be tested in the following order: USB, then I/O, then
+digital, and finally analog. The table below gives the permissible
+ranges. Any voltages outside of these ranges indicate a problem.
+<P>
+<TABLE>
+  <TR><TH>Domain<TH>Nominal<TH>Minimum<TH>Maximum
+  <TR><TD>USB<TD>5.0 V<TD>4.5 V<TD>5.25 V
+  <TR><TD>I/O<TD>3.3 V<TD>3.0 V<TD>3.6 V
+  <TR><TD>Digital<TD>1.8 V<TD>1.7 V<TD>1.9 V
+  <TR><TD>Analog<TD>1.8 V<TD>1.7 V<TD>1.9 V
+</TABLE>
+<P>
+
+<H3>Measurement setup</H3>
+
+The measurements should be performed either with a digital multimeter.
+To enable all voltage domains, put the transceiver in receive mode:
+<PRE>
+atrf-txrx
+</PRE>
+or
+<PRE>
+atrf-txrx -d net:ben
+</PRE>
+Exit with Ctrl-C.
+<P>
+To produce periodic transmissions in addition to enabling all voltage
+domains, use
+<PRE>
+atrf-txrx -p 3 -E 0
+</PRE>
+or
+<PRE>
+atrf-txrx -d net:ben -p 3 -E 0
+</PRE>
+Again, exit with Ctrl-C. Note that the transmissions may disturb nearby
+equipment operating in the 2.4 GHz band, such as 802.11 networks. This
+can be prevented by shorting the antenna to ground.
+<P>
+In case the board does not accept commands, only the USB and I/O voltage
+can be checked. If they are correct, proceed with checking the clock.
+
+
+<!-- ---------------------------------------------------------------------- -->
+
+
+<H3>Measurement points on atben</H3>
+
+
+<!-- ---------------------------------------------------------------------- -->
+
+
+<H3>Measurement points on atusb</H3>
+
 
 <!-- ====================================================================== -->
 
