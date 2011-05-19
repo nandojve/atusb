@@ -8,7 +8,7 @@
 all:	ben
 
 ben:	ben.profile
-	./atben net:ben net:jlime
+	./atben usb net:ben
 
 usb:	usb.profile
 	./atusb net:ben usb
