@@ -120,7 +120,7 @@ atrf-proxy -b
 
 <H3>Password-less remote access</H3>
 
-To enable password-less remote access from the PC, setup to betwork
+To enable password-less remote access from the PC, set up network
 access to the Ben and run the following command:
 <PRE>
 ssh ben 'cat >>/etc/dropbear/authorized_keys' <~/.ssh/id_rsa.pub
@@ -131,6 +131,35 @@ ssh ben 'cat >>/etc/dropbear/authorized_keys' <~/.ssh/id_rsa.pub
 
 
 <H2>Test profiles</H2>
+
+Some of the functional tests measure characteristics that are strongly
+influenced by the test setup. It is therefore not possible to provide
+universally applicable reference values, but they have to be measured
+in the actual test environment.
+
+
+<!-- ---------------------------------------------------------------------- -->
+
+
+<H3>Clock count (atben only)</H3>
+
+Insert a known to be good <B>atben</B> board and run the following
+command directly on the Ben to record the reference value for the
+clock count with an accuracy of about +/&minus;20 ppm:
+<PRE>
+atrf-xtal 1000 >ben.xtal
+</PRE>
+<P>
+Note that this value depends on the tolerance of the crystal in the Ben
+and is also affected by temperature. The above accuracy can therefore
+only be obtained if this measurement is performed individually on each
+Ben, and if a stable temperature is maintained.
+
+
+<!-- ---------------------------------------------------------------------- -->
+
+
+<H3>Signal strength</H3>
 
 
 <P>
