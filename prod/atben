@@ -13,12 +13,12 @@ gpio_ben()
 xtal_ben()
 {
 	step "Crystal frequency"
-	cmd "$LOCAL_EXEC atrf-xtal -d $LOCAL_DUT 100"
-	expect_re '4350[012]\.'	# @@@ very crude ...
+	cmd "$LOCAL_EXEC atrf-xtal -d $LOCAL_DUT -b \\\`cat $CLKREF\\\` -p 50 100"
+	expect_re ppm	# we catch any problems via the exit code
 }
 
 
-begin ben.profile
+begin ben.profile ben.xtal
 # power ?
 gpio_ben
 identify

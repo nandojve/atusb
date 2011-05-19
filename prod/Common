@@ -114,13 +114,20 @@ expect_re()
 begin()
 {
 	if [ -z "$1" ]; then
-		echo "usage: begin profile" 1>&2
+		echo "usage: begin profile [clock-ref]" 1>&2
 		exit 1
 	fi
 	PROFILE=$1
 	if [ ! -r $PROFILE ]; then
 		echo "$PROFILE not found" 1>&2
 		exit 1
+	fi
+	if [ "$2" ]; then
+		CLKREF=$2
+		if ! $LOCAL_EXEC "[ -r $CLKREF ]"; then
+			echo "$CLKREF not found" 1>&2
+			exit 1
+		fi
 	fi
 }
 
