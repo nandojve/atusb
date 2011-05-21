@@ -11,7 +11,7 @@ of the following two parts:
   <LI>The application (via DFU, using <B>dfu-util</B>)
 </OL>
 <P>
-Note that <B>atben</B> has no microcontroller and there does not need
+Note that <B>atben</B> has no microcontroller and therefore does not need
 any flashing.
 
 
@@ -21,9 +21,33 @@ any flashing.
 
 <H2>Flashing the boot loader</H2>
 
+The following image shows the setup for flashing the boot loader:
 <P>
 <IMG src="setup-C.png">
 <P>
+To flash the boot loader,
+<UL>
+  <LI>insert the <B>atusb-pgm</B> board into the Ben
+  <LI>place the <B>atusb</B> board (DUT) on the table near the Ben,
+    without connecting it to USB
+  <LI>place <B>atusb-pgm</B> onto <B>atusb</B> as shown in the image below
+    and gently push it on the contacts
+    <P>
+    <A href="http://downloads.qi-hardware.com/people/werner/wpan/tmp/atusb-programming.jpg"><IMG
+    src="http://downloads.qi-hardware.com/people/werner/wpan/tmp/atusb-programming.jpg"
+    width="250"></A>
+    <P>
+  <LI>finally, run
+    <PRE>
+    make flash
+    </PRE>
+</UL>
+<P>
+The flashing takes about 20-30 seconds. If it should fail, make sure you
+properly placed <B>atusb-pgm</B> and try again. If it keeps on failing,
+remove <B>atusb-pgm</B> from the Ben and insert it again.
+If flashing fails despite numerous attempts, proceed to the
+<A href="analysis.html">fault analysis</A>.
 
 
 <!-- ====================================================================== -->
@@ -31,9 +55,19 @@ any flashing.
 
 <H2>Flashing the application</H2>
 
+The flashing script proceeds automatically to the flashing of the
+application. All you need to do is insert the <B>atusb</B> board
+into the PC:
 <P>
 <IMG src="setup-D.png">
 <P>
+The flashing script will wait up to 30 seconds for enumeration.
+Once the <B>atusb</B> board has been detected, the script transfers
+the application with DFU. After this, you can proceed with the
+<A href="test.html">functional test</A>.
+<P>
+If the board fails to enumerate, proceed with the
+<A href="analysis.html">fault analysis</A>.
 
 <P>
 <HR>
