@@ -18,6 +18,12 @@ DUT=$2
 LOG=_log
 >$LOG
 
+if [ ${REF#net:} = $REF ]; then
+	REF_EXEC=
+else
+	REF_EXEC="ssh `echo $REF | sed 's/^net://;s/,.*$//'`"
+fi
+
 if [ ${DUT#net:} = $DUT ]; then
 	LOCAL_EXEC=
 	LOCAL_DUT=$DUT
@@ -92,9 +98,22 @@ cmd()
 #####  Evaluation  ############################################################
 
 
-expect()
+_doit()
 {
 	eval "$cmd" >_out 2>&1 || { echo "exit code $?" | fail; exit 1; }
+}
+
+
+doit()
+{
+	_doit
+	pass
+}
+
+
+expect()
+{
+	_doit
 	fgrep -q "$@" _out || { echo "expected $*" | fail; exit 1; }
 	pass
 }
@@ -102,7 +121,7 @@ expect()
 
 expect_re()
 {
-	eval "$cmd" >_out 2>&1 || { echo "exit code $?" | fail; exit 1; }
+	_doit
 	grep -q "$@" _out || { echo "expected $*" | fail; exit 1; }
 	pass
 }
@@ -113,14 +132,12 @@ expect_re()
 
 begin()
 {
-	if [ -z "$1" ]; then
-		echo "usage: begin profile [clock-ref]" 1>&2
-		exit 1
-	fi
-	PROFILE=$1
-	if [ ! -r $PROFILE ]; then
-		echo "$PROFILE not found" 1>&2
-		exit 1
+	if [ "$1" ]; then
+		PROFILE=$1
+		if [ ! -r $PROFILE ]; then
+			echo "$PROFILE not found" 1>&2
+			exit 1
+		fi
 	fi
 	if [ "$2" ]; then
 		CLKREF=$2

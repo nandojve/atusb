@@ -3,7 +3,7 @@
 #
 
 
-.PHONY:	all ben usb
+.PHONY:	all ben usb flash
 
 all:	ben
 
@@ -12,6 +12,9 @@ ben:	ben.profile
 
 usb:	usb.profile
 	./atusb net:ben usb
+
+flash:
+	./atusb-flash net:ben usb
 
 ben.profile:
 	cp ../tools/atrf-path/profile.example $@

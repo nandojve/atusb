@@ -1,0 +1,47 @@
+#!/bin/sh
+
+. ./Common
+
+
+USB_ID=20b7:1540
+FW_BOOT_FILE=boot.hex
+FW_APP_FILE=atusb.bin
+
+
+#
+# This invocation of avrdude is derived from ben-wpan/atusb/fw/Makefile,
+# target "prog".
+#
+
+flash()
+{
+	step "Flash boot loader"
+	cmd "$REF_EXEC avrdude -F -p atmega32u2 -c nanonote_atusb -e \
+                  -U flash:w:$FW_BOOT_FILE:i \
+                  -U lfuse:w:0x60:m \
+                  -U hfuse:w:0xd8:m \
+                  -U lock:w:0x2f:m"
+	expect "lock verified"
+}
+
+
+enumerate()
+{
+	step "Enumeration"
+	cmd "$LOCAL_EXEC usbwait -i 0.1 -t 30 $USB_ID"
+	doit
+}
+
+
+dfu()
+{
+	step "DFU application"
+	cmd "$LOCAL_EXEC dfu-util -d $USB_ID -D $FW_APP_FILE"
+	expect "No error"
+}
+
+
+begin
+flash
+enumerate
+dfu
