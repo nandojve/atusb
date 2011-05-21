@@ -146,6 +146,11 @@ enables USB.
   <B>atrf-xtal</B>
 <TR><TD>Other<TD>Check voltages; check for contamination around crystal
 </TABLE>
+<P>
+Note that, if testing a board into which no boot loader has been flashed
+yet, the clock frequency should be 1 MHz. If an unsuccessful attempt has
+been made to flash the boot loader, the frequency may be 1 MHz or 8 MHz,
+depending on how much code was successfully flashed.
 
 
 <!-- ---------------------------------------------------------------------- -->
