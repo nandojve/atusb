@@ -35,6 +35,23 @@ need to be installed on Ben and PC, and configuration settings
 <!-- ---------------------------------------------------------------------- -->
 
 
+<H3>Install firmware binary</H3>
+
+The binary of the application running on <B>atusb</B> is transferred from
+the PC. To download a pre-compiled version, use this command:
+
+<PRE>
+wget -O atusb.bin \
+     http://downloads.qi-hardware.com/people/werner/wpan/bindist/atusb-de72af351f661b538add81cbc9965278a2f8c40c.bin
+</PRE>
+
+Instructions for building the binary from sources are
+<A href="http://projects.qi-hardware.com/index.php/p/ben-wpan/source/tree/master/atusb/fw/README">here</A>.
+
+
+<!-- ---------------------------------------------------------------------- -->
+
+
 <H3>Register Ben host name</H3>
 
 To simplify accessing the Ben via TCP/IP, its IP address should be
@@ -92,6 +109,43 @@ ssh ben 'cat >>/etc/dropbear/authorized_keys' <~/.ssh/id_rsa.pub
 <H3>Install ben-wpan tools</H3>
 
 @@@
+
+
+<!-- ---------------------------------------------------------------------- -->
+
+
+<H3>Install avrdude</H3>
+
+The <B>atusb</B> boot loader is flashed using <B>avrdude</B>. A pre-compiled
+static binary (suitable for OpenWrt and Jlime) can be installed by running
+the following two command on the Ben:
+
+<PRE>
+wget http://downloads.qi-hardware.com/people/werner/wpan/bindist/avrdude-5.10-de72af351f661b538add81cbc9965278a2f8c40c.tar.gz
+tar -xz -C / -f avrdude-5.10-de72af351f661b538add81cbc9965278a2f8c40c.tar.gz
+</PRE>
+
+Instructions for building <B>avrdude</B> from sources are
+<A href="http://projects.qi-hardware.com/index.php/p/ben-blinkenlights/source/tree/master/avrdude/README
+">here</A>.
+
+
+
+<!-- ---------------------------------------------------------------------- -->
+
+
+<H3>Install boot-loader binary</H3>
+
+The binary of the boot loader running on <B>atusb</B> is transferred from
+the Ben. To download a pre-compiled version, use this command:
+
+<PRE>
+wget -O boot.hex \
+   http://downloads.qi-hardware.com/people/werner/wpan/bindist/boot-de72af351f661b538add81cbc9965278a2f8c40c.hex
+</PRE>
+
+Instructions for building the binary from sources are
+<A href="http://projects.qi-hardware.com/index.php/p/ben-wpan/source/tree/master/atusb/fw/README">here</A>.
 
 
 <!-- ====================================================================== -->
