@@ -38,9 +38,15 @@ ranges. Any voltages outside of these ranges indicate a problem.
 </TABLE>
 <P>
 
+
+<!-- ---------------------------------------------------------------------- -->
+
+
 <H3>Measurement setup</H3>
 
-The measurements should be performed either with a digital multimeter.
+The measurements should be performed with a digital multimeter.
+The transceiver's analog and digital supplies (1.8 V) are only
+activated when sending or receiving.
 To enable all voltage domains, put the transceiver in receive mode:
 <PRE>
 atrf-txrx
@@ -168,7 +174,7 @@ atrf-xtal 100
 </PRE>
 The number reported is the number of poll loops the CPU counted. This
 value should be compared to a reference count obtained with a known to
-be good <B>atben</B> board and the same Ben at a comparable temperature.
+be good <B>atben</B> board on the same Ben at a comparable temperature.
 <P>
 <TABLE frame="border" cellpadding="2">
 <TR><TH align="left">Difference<TH align="left">Action
@@ -184,7 +190,7 @@ be good <B>atben</B> board and the same Ben at a comparable temperature.
 Up: <A href="index.html">Production and testing</A>&nbsp;
 Prev: <A href="test.html">Functional test</A>&nbsp;
 <HR>
-Last update: 2011-05-18&nbsp;&nbsp;<I>Werner Almesberger</I>
+Last update: 2011-05-26&nbsp;&nbsp;<I>Werner Almesberger</I>
 <HR>
 </BODY>
 </HTML>
