@@ -1,5 +1,8 @@
 PNGS=flow.png setup-A.png setup-B.png setup-C.png setup-D.png
+HTMLS=index.html setup.html flash.html test.html analysis.html
 JPGS=atusb-programming.jpg
+
+.PHONY:		all upload clean
 
 all:		$(PNGS) $(JPGS)
 
@@ -13,6 +16,10 @@ setup-%.png:	setup.fig
 
 atusb-programming.jpg:
 		wget http://downloads.qi-hardware.com/people/werner/wpan/tmp/atusb-programming.jpg
+
+upload:		$(HTMLS) $(PNGS) $(JPGS)
+		rsync -e ssh $^ \
+		    www-data@downloads.qi-hardware.com:werner/wpan/prod/
 
 clean:
 		rm -f $(PNGS)
