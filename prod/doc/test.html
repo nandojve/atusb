@@ -5,11 +5,12 @@
 
 
 <!-- ====================================================================== -->
-<!-- ---------------------------------------------------------------------- -->
 
 
 <H2>Test setup for atben</H2>
 
+To test an <B>atben</B> board, place a reference <B>atusb</B> board into
+the PC, insert the
 <P>
 <IMG src="setup-A.png">
 <P>
@@ -30,6 +31,159 @@
 
 <H2>Test procedure</H2>
 
+The test process is started with
+<PRE>
+make ben
+</PRE>
+for an <B>atben</B> DUT and with
+<PRE>
+make usb
+</PRE>
+for an <B>atusb</B> DUT. It performs the following steps:
+<UL>
+  <LI>Enumeration (<B>atusb</B> only)
+  <LI>LED (<B>atusb</B> only; not yet implemented)
+  <LI>GPIO scan (not yet implemented)
+  <LI>Identification
+  <LI>Crystal frequency (only implemented on <B>atben</B>)
+  <LI>Spectrum
+  <LI>Receive
+  <LI>Send
+</UL>
+
+Of these tests, only "LED" and "Spectrum" require operator input. The
+other tests run without interaction.
+<P>
+The test scripts log the commands they execute and their output in the
+file <B>_log</B>.
+
+
+<!-- ---------------------------------------------------------------------- -->
+
+
+<H3>Enumeration (atusb only)</H3>
+
+The enumeration test verifies that the <B>atusb</B> board has been
+identified by the PC's USB stack. If this test fails, the board may
+not be plugged in correctly or it may be missing the firmware. A
+board that has passed both stages of the firmware flashing process
+should always pass the enumeration test.
+
+
+<!-- ---------------------------------------------------------------------- -->
+
+
+<H3>LED (atusb only)</H3>
+
+@@@
+
+
+<!-- ---------------------------------------------------------------------- -->
+
+
+<H3>GPIO scan</H3>
+
+@@@
+
+
+<!-- ---------------------------------------------------------------------- -->
+
+
+<H3>Identification</H3>
+
+This test reads the transceiver's registers that contain values identifying
+the manufacturer, the chip's part number, and the chip revision. If an
+<B>atusb</B> board fails this test, this probably means that the MISO signal
+between transceiver and the microcontroller has a problem.
+<P>
+On <B>atben</B>, failure may simply indicate an improperly
+inserted board. Eject the board, re-insert, and try again. If the test
+keeps on failing, this may indicate a problem with MOSI, MISO, nSEL,
+SCLK, the power supply, the crystal oscillator, or possibly the position
+of the transceiver chip.
+<P>
+Note: this test is meant as a higher level test. The GPIO test should
+eventually provide more detailed results for problems with the SPI interface.
+
+
+<!-- ---------------------------------------------------------------------- -->
+
+
+<H3>Crystal frequency (atben only)</H3>
+
+This test measures the frequency of the crystal oscillator in the DUT.
+On <B>atben</B>, it does this by transmitting packets, and measuring
+the time between the SLP_TR pulse that starts the transmission and the
+interrupt signaling the end of the transmission.
+<P>
+If this test fails, this may indicate that the load capacitors of the
+crystal are missing, badly soldered, or have the wrong value. It could
+also mean that the crystal itself is defective. Another possible cause
+of oscillator malfunction could be flux residues bridging traces.
+<P>
+The <A href="fault.html">fault analysis page</A> has more details on
+testing the crystal oscillator.
+
+
+<!-- ---------------------------------------------------------------------- -->
+
+
+<H3>Spectrum</H3>
+
+The spectrum test measures the reception of a signal sent from the
+reference device to the DUT. It does this across the entire frequency
+range in which the WPAN boards operate, allowing the detection of
+frequency-dependent anomalies.
+<P>
+This test depends on numerous external factors, like the exact position
+and orientation of the two devices with respect to each other, and the
+presence of any items that can reflect or absorb RF signals. Such items
+include metal chairs and human bodies. Because of the test's sensitivity
+to environmental factors, the operator needs to decide when the result
+represents a valid measurement and then confirm the result shown.
+<P>
+The image below shows the typical display during the spectrum test:
+the white line is the measured signal strength. The red lines indicate
+the minimum and maximum allowed values. The green circle in the upper
+right corner indicates that the signal strength is within the limits.
+A downward-pointing red triangle would indicate that the signal is too
+weak, an upward-pointing yellow triangle would indicate that the signal
+is too strong.
+<P>
+<A href="atrf-path.png"><IMG src="atrf-path-small.png"</A>
+<P>
+To finish the test, the operator must type either <B>P</B>, <B>F</B>,
+or <B>Q</B> in the window shown. <B>P</B> means "pass" and can only be
+entered if the measurement is within the limits. <B>F</B> means "fail"
+and can only be entered if the measurements is outside the limits.
+<B>Q</B>, quit, can be entered at any time and also fails the test.
+
+
+<!-- ---------------------------------------------------------------------- -->
+
+
+<H3>Receive</H3>
+
+In the receive test, the reference device sends a number of frames to the
+DUT. The test program verifies correct reception of all the frames. A
+device that has passed all the preceding tests should not encounter
+problems in the receive test. If it does, there may be a problem with
+the bypassing of the transceiver's 1.8 V supplies.
+
+
+<!-- ---------------------------------------------------------------------- -->
+
+
+<H3>Send</H3>
+
+The send test is like the receive test, but with the DUT acting as the
+sender and the reference acting as the receiver. If a device passes the
+receive test but fails the send test, there is probably an issue with
+the bypass capacitors of the analog 1.8 V supply.
+<P>
+Another possible cause could a problem with the SLP_TR signal. The
+GPIO test should eventually catch this issue, but it may currently
+remain undetected until the send test.
 
 <P>
 <HR>
@@ -37,7 +191,7 @@ Up: <A href="index.html">Production and testing</A>&nbsp;
 Prev: <A href="flash.html">Flashing (<B>atusb</B> only)</A>&nbsp;
 Next: <A href="analysis.html">Fault analysis</A>&nbsp;
 <HR>
-Last update: 2011-05-18&nbsp;&nbsp;<I>Werner Almesberger</I>
+Last update: 2011-05-26&nbsp;&nbsp;<I>Werner Almesberger</I>
 <HR>
 </BODY>
 </HTML>

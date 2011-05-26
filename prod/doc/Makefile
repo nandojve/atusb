@@ -1,6 +1,6 @@
 PNGS=flow.png setup-A.png setup-B.png setup-C.png setup-D.png
 HTMLS=index.html setup.html flash.html test.html analysis.html
-JPGS=atusb-programming.jpg
+JPGS=atusb-programming.jpg atrf-path.png atrf-path-small.png
 
 .PHONY:		all upload clean
 
@@ -16,6 +16,13 @@ setup-%.png:	setup.fig
 
 atusb-programming.jpg:
 		wget http://downloads.qi-hardware.com/people/werner/wpan/tmp/atusb-programming.jpg
+
+atrf-path.png:
+		wget http://downloads.qi-hardware.com/people/werner/wpan/tmp/atrf-path.png
+
+atrf-path-small.png: \
+		  atrf-path.png
+		convert -scale 50% $< $@
 
 upload:		$(HTMLS) $(PNGS) $(JPGS)
 		rsync -e ssh $^ \
