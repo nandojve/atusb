@@ -2,6 +2,9 @@ PNGS=flow.png setup-A.png setup-B.png setup-C.png setup-D.png
 HTMLS=index.html setup.html flash.html test.html analysis.html
 JPGS=atusb-programming.jpg atrf-path.png atrf-path-small.png
 
+DL=http://downloads.qi-hardware.com/people/werner/wpan/tmp
+
+
 .PHONY:		all upload clean
 
 all:		$(PNGS) $(JPGS)
@@ -15,10 +18,10 @@ setup-%.png:	setup.fig
 		    { rm -f $@; exit 1; }
 
 atusb-programming.jpg:
-		wget http://downloads.qi-hardware.com/people/werner/wpan/tmp/atusb-programming.jpg
+		wget $(DL)/atusb-programming.jpg
 
 atrf-path.png:
-		wget http://downloads.qi-hardware.com/people/werner/wpan/tmp/atrf-path.png
+		wget $(DL)/atrf-path.png
 
 atrf-path-small.png: \
 		  atrf-path.png
