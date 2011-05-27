@@ -6,7 +6,7 @@
 <MACRO name="__PI" bgcolor size="+2" rowspan="1">
   <TD align="center" valign="top" rowspan="<ROWSPAN>">
   <TABLE border=0 cellspacing=3 cellpadding=2 bgcolor="<BGCOLOR>">
-    <TR><TD nowrap="nowrap"><FONT size="<SIZE>"><B><BODY></B>
+    <TR><TD nowrap="nowrap"><FONT size="<SIZE>" face="sans"><B><BODY></B>
   </TABLE>
 </MACRO>
 
@@ -57,7 +57,8 @@
   <__PI_SEP>
   <TD align="center">
   <TABLE border=0 cellspacing=3 cellpadding=2 bgcolor="#ffff00">
-    <TR><TD nowrap="nowrap"><A href="<HREF>"<FONT size="+1"><B><BODY></B></A>
+    <TR><TD nowrap="nowrap"><A href="<HREF>"<FONT size="+1"
+      face="sans"><B><BODY></B></A>
   </TABLE>
 </MACRO>
 
@@ -65,7 +66,7 @@
   <P>
   <TABLE width="99%" border=0 cellspacing=0 cellpadding=2 bgcolor="#f0f0a0">
     <TR><TD>&nbsp;<A name="<REF>"><FONT
-    size="+2"><B><TITLE></B></FONT></A></TD>
+      size="+2"><B><TITLE></B></FONT></A></TD>
   </TABLE></TD>
   <P>
 </MACRO>
