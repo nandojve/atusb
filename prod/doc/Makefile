@@ -1,15 +1,17 @@
-PNGS=flow.png setup-A.png setup-B.png setup-C.png setup-D.png \
-     atben-A.png atusb-A.png atben-B.png atusb-B.png \
-     atben-A-small.png atusb-A-small.png atben-B-small.png atusb-B-small.png
-HTMLS=index.html setup.html flash.html test.html analysis.html
-JPGS=atusb-programming.jpg atrf-path.png atrf-path-small.png
+DOWNLOADED=atusb-programming.jpg atrf-path.png
+GENERATED=index.html setup.html flash.html test.html analysis.html \
+	  flow.png setup-A.png setup-B.png setup-C.png setup-D.png \
+	  atben-A.png atusb-A.png atben-B.png atusb-B.png \
+	  atben-A-small.png atusb-A-small.png \
+	  atben-B-small.png atusb-B-small.png \
+	  atrf-path-small.png
 
 DL=http://downloads.qi-hardware.com/people/werner/wpan/tmp
 
 
-.PHONY:		all upload clean
+.PHONY:		all upload clean spotless
 
-all:		$(HTMLS) $(PNGS) $(JPGS)
+all:		$(DOWNLOADED) $(GENERATED)
 
 %.html:		%.hmac style.inc hmac.pl
 		perl hmac.pl $*.hmac >$@ || { rm -f $@; exit 1; }
@@ -58,9 +60,12 @@ atrf-path-small.png: \
 		  atrf-path.png
 		convert -scale 50% $< $@
 
-upload:		$(HTMLS) $(PNGS) $(JPGS)
+upload:		$(GENERATED) $(DOWNLOADS)
 		rsync -e ssh $^ \
 		    www-data@downloads.qi-hardware.com:werner/wpan/prod/
 
 clean:
-		rm -f $(PNGS)
+		rm -f $(GENERATED)
+
+spotless:	clean
+		rm -f $(DOWNLOADED)
