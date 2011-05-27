@@ -13,9 +13,9 @@
 </PAGE_BAR>
 
 <SECTION_BAR>
-  <SECTION_ITEM href="#pcsw">PC software</SECTION_ITEM>
-  <SECTION_ITEM href="#bensw">Ben software</SECTION_ITEM>
-  <SECTION_ITEM href="#bensys">Ben system</SECTION_ITEM>
+  <SECTION_ITEM href="#pcsw">PC installation</SECTION_ITEM>
+  <SECTION_ITEM href="#bensw">Ben installation</SECTION_ITEM>
+  <SECTION_ITEM href="#bensys">Ben setup</SECTION_ITEM>
   <SECTION_ITEM href="#profiles">Test profiles</SECTION_ITEM>
 </SECTION_BAR>
 

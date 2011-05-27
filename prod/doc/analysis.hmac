@@ -13,7 +13,7 @@
 </PAGE_BAR>
 
 <SECTION_BAR>
-  <SECTION_ITEM href="#components">Components</SECTION_ITEM>
+  <SECTION_ITEM href="#orientation">Component orientation</SECTION_ITEM>
   <SECTION_ITEM href="#voltages">Voltages</SECTION_ITEM>
   <SECTION_ITEM href="#clock">Clock frequency</SECTION_ITEM>
 </SECTION_BAR>
@@ -22,7 +22,7 @@
 <!-- ====================================================================== -->
 
 
-<SECTION ref="components" title="Component placement and orientation">
+<SECTION ref="orientation" title="Component orientation">
 
 
 <!-- ====================================================================== -->
