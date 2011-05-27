@@ -2,8 +2,14 @@
 #
 # hmac.pl - Simple macro pre-processor for HTML
 #
-# Written 2001 by Werner Almesberger
+# Written 2001, 2011 by Werner Almesberger
 # Copyright 2001 EPFL DSC-ICA, Network Robots
+# Copyright 2001, 2011 Werner Almesberger
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 #
 
 #------------------------------------------------------------------------------
@@ -148,6 +154,7 @@ sub define_macro
 {
     local ($in) = @_;
     local ($a,$b,$c,$d);
+    local ($name, $need, $prm, %arg);
 
     $in =~ s/<MACRO\b/$BM/gi;
     $in =~ s|</MACRO>|$EM|gi;
@@ -210,7 +217,8 @@ sub define_macro
 sub expand_macro
 {
     local ($in) = @_;
-    local ($found,$a,$b,$c);
+    local ($a,$b,$c);
+    local ($mac, $done, $prm, %arg);
 
     undef $a;
     for $mac (keys %mac) {
