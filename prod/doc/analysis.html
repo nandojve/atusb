@@ -104,7 +104,6 @@ requires an accuracy of +/&minus; 2500 ppm.
 We can therefore consider all results within a range of +/&minus; 1000 ppm as
 sufficient, and perform more precise measurements by other means. This
 applies to <B>atben</B> as well as to <B>atusb</B>.
-<P>
 
 
 <!-- ---------------------------------------------------------------------- -->
@@ -119,6 +118,10 @@ atrf-txrx -d net:ben -C 1
 </PRE>
 This configures <B>atben</B> as a promiscuous receiver. The reception
 of any IEEE 802.15.4 frame or pressing Ctrl-C will terminate the command.
+<P>
+The clock signal (CLKM) is available on the test pad shown here:
+<P>
+<A href="atben-A.png"><IMG src="atben-A-small.png"></A>
 <P>
 <TABLE frame="border" cellpadding="2">
 <TR><TH align="left">Clock<TH align="left">Action
@@ -141,6 +144,12 @@ A clock signal is therefore always available. Immediately after reset,
 the transceiver generates a 1 MHz clock. When the microcontrolled comes out
 of reset, it raises the transceiver's clock output to 8 MHz and then
 enables USB.
+<P>
+The clock signal is available at the terminals of several components,
+either as the direct output from the transceiver (CLKM) or after passing
+a low-pass filter (CLK):
+<P>
+<A href="atusb-A.png"><IMG src="atusb-A-small.png"></A>
 <P>
 <TABLE frame="border" cellpadding="2">
 <TR><TH align="left">Clock<TH align="left">Action

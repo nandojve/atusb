@@ -1,4 +1,6 @@
-PNGS=flow.png setup-A.png setup-B.png setup-C.png setup-D.png
+PNGS=flow.png setup-A.png setup-B.png setup-C.png setup-D.png \
+     atben-A.png atusb-A.png \
+     atben-A-small.png atusb-A-small.png
 HTMLS=index.html setup.html flash.html test.html analysis.html
 JPGS=atusb-programming.jpg atrf-path.png atrf-path-small.png
 
@@ -17,6 +19,28 @@ setup-%.png:	setup.fig
 		    fig2dev -L png -m 0.7 -S 4 >$@ || \
 		    { rm -f $@; exit 1; }
 
+atben-%-small.png: \
+		  atben.fig
+		./figfilt `echo $@ | tr -cd 'A-Z'` $< | \
+		    fig2dev -L png -m 0.5 -S 4 >$@ || \
+		    { rm -f $@; exit 1; }
+
+atben-%.png:	atben.fig
+		./figfilt `echo $@ | tr -cd 'A-Z'` $< | \
+		    fig2dev -L png -m 2 -S 4 >$@ || \
+		    { rm -f $@; exit 1; }
+
+atusb-%-small.png: \
+		  atusb.fig
+		./figfilt `echo $@ | tr -cd 'A-Z'` $< | \
+		    fig2dev -L png -m 0.5 -S 4 >$@ || \
+		    { rm -f $@; exit 1; }
+
+atusb-%.png:	atusb.fig
+		./figfilt `echo $@ | tr -cd 'A-Z'` $< | \
+		    fig2dev -L png -m 2 -S 4 >$@ || \
+		    { rm -f $@; exit 1; }
+
 atusb-programming.jpg:
 		wget $(DL)/atusb-programming.jpg
 
@@ -26,6 +50,10 @@ atrf-path.png:
 atrf-path-small.png: \
 		  atrf-path.png
 		convert -scale 50% $< $@
+
+%-front.png:
+		$(MAKE) -C ../../$* $@
+		mv ../../$*/$@ .
 
 upload:		$(HTMLS) $(PNGS) $(JPGS)
 		rsync -e ssh $^ \
