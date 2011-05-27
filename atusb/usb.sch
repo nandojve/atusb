@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Thu May 19 14:21:05 2011
+EESchema Schematic File Version 2  date Fri May 27 04:26:53 2011
 LIBS:power
 LIBS:device
 LIBS:conn
@@ -14,8 +14,8 @@ EELAYER END
 $Descr A4 11700 8267
 Sheet 2 3
 Title "IEEE 802.15.4 USB Transceiver (AT86RF231)"
-Date "19 may 2011"
-Rev "20110519"
+Date "27 may 2011"
+Rev "20110527"
 Comp "Werner Almesberger"
 Comment1 ""
 Comment2 ""
@@ -28,11 +28,7 @@ Wire Wire Line
 	7800 2250 7800 2600
 Connection ~ 4000 4200
 Wire Wire Line
-	4000 5350 4000 4650
-Wire Wire Line
-	4000 4650 4000 4200
-Wire Wire Line
-	4000 4200 4000 4000
+	4000 5350 4000 4000
 Wire Wire Line
 	10400 6450 7500 6450
 Wire Wire Line
@@ -59,9 +55,7 @@ Wire Wire Line
 	6150 4200 6350 4200
 Connection ~ 4000 4650
 Wire Wire Line
-	6350 4650 5050 4650
-Wire Wire Line
-	5050 4650 4000 4650
+	6350 4650 4000 4650
 Wire Wire Line
 	5150 4350 6350 4350
 Wire Wire Line
@@ -71,17 +65,11 @@ Wire Wire Line
 Wire Wire Line
 	5350 2400 5550 2400
 Wire Wire Line
-	5700 3900 5700 4050
-Wire Wire Line
-	5700 4050 5700 4800
-Wire Wire Line
-	5700 4800 5700 5800
+	5700 3900 5700 5800
 Wire Wire Line
 	4450 4350 4300 4500
 Wire Wire Line
-	4300 4500 3000 4500
-Wire Wire Line
-	3000 4500 2350 4500
+	4300 4500 2350 4500
 Wire Wire Line
 	4300 4350 4450 4500
 Wire Wire Line
@@ -97,15 +85,11 @@ Connection ~ 5700 4800
 Wire Wire Line
 	5700 4800 6350 4800
 Wire Wire Line
-	4300 4350 3500 4350
-Wire Wire Line
-	3500 4350 2350 4350
+	4300 4350 2350 4350
 Wire Wire Line
 	2550 4650 2550 4850
 Wire Wire Line
-	1000 4850 1000 4650
-Wire Wire Line
-	1000 4650 1000 4200
+	1000 4850 1000 4200
 Connection ~ 1000 4650
 Wire Wire Line
 	1200 4650 1000 4650

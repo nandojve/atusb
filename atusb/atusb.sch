@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Thu May 19 14:17:30 2011
+EESchema Schematic File Version 2  date Fri May 27 04:26:53 2011
 LIBS:power
 LIBS:device
 LIBS:conn
@@ -14,8 +14,8 @@ EELAYER END
 $Descr A4 11700 8267
 Sheet 1 3
 Title "IEEE 802.15.4 USB Transceiver (AT86RF231)"
-Date "19 may 2011"
-Rev "20110519"
+Date "27 may 2011"
+Rev "20110527"
 Comp "Werner Almesberger"
 Comment1 ""
 Comment2 ""
