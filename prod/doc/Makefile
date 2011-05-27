@@ -19,6 +19,10 @@ setup-%.png:	setup.fig
 		    fig2dev -L png -m 0.7 -S 4 >$@ || \
 		    { rm -f $@; exit 1; }
 
+%-front.png:
+		$(MAKE) -C ../../$* $@
+		mv ../../$*/$@ .
+
 atben-%-small.png: \
 		  atben.fig
 		./figfilt `echo $@ | tr -cd 'A-Z'` $< | \
@@ -50,10 +54,6 @@ atrf-path.png:
 atrf-path-small.png: \
 		  atrf-path.png
 		convert -scale 50% $< $@
-
-%-front.png:
-		$(MAKE) -C ../../$* $@
-		mv ../../$*/$@ .
 
 upload:		$(HTMLS) $(PNGS) $(JPGS)
 		rsync -e ssh $^ \
