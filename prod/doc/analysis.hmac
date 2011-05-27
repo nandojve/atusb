@@ -177,7 +177,7 @@ the right:
 <P>
 <A href="atben-A.png"><IMG src="atben-A-small.png" align="left"></A>
 &nbsp;
-<IMG src="atben-clkm.png">
+<IMG src="scope-atben-clkm.png">
 <P>
 <TABLE frame="border" cellpadding="2">
 <TR><TH align="left">Clock<TH align="left">Action
@@ -207,9 +207,9 @@ a low-pass filter (CLK):
 <P>
 <A href="atusb-A.png"><IMG src="atusb-A-small.png"></A>
 &nbsp;
-<IMG src="atusb-clkm.png">
+<IMG src="scope-atusb-clkm.png">
 &nbsp;
-<IMG src="atusb-clk.png">
+<IMG src="scope-atusb-clk.png">
 <P>
 The left screen shot shows the clock (CLKM) before the low-pass filter
 while the right screen shows the clock (CLK) after the the low-pass
