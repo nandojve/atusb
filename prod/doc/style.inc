@@ -21,7 +21,7 @@
   <TABLE width="99%" border=0 cellspacing=0 cellpadding=0>
     <TR>
     <__PI bgcolor="#d080ff"><A href="index.html"><B><TITLE></B></A></__PI>
-    <TD align="left">
+    <TD align="left" width="99%">
     <TABLE border=0 cellspacing=0 cellpadding=0>
       <TR>
       <BODY>
