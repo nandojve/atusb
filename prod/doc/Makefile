@@ -5,6 +5,7 @@ GENERATED=index.html setup.html flash.html test.html analysis.html \
 	  atben-A-small.png atusb-A-small.png \
 	  atben-B-small.png atusb-B-small.png \
 	  atrf-path-small.png
+ORIGINAL=atben-clkm.png atusb-clkm.png atusb-clk.png
 
 DL=http://downloads.qi-hardware.com/people/werner/wpan/tmp
 
@@ -61,7 +62,7 @@ atrf-path-small.png: \
 		  atrf-path.png
 		convert -scale 50% $< $@
 
-upload:		$(GENERATED) $(DOWNLOADS)
+upload:		$(GENERATED) $(DOWNLOADED) $(ORIGINAL)
 		rsync -e ssh $^ \
 		    www-data@downloads.qi-hardware.com:werner/wpan/prod/
 

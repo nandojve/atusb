@@ -24,6 +24,8 @@
 
 <SECTION ref="orientation" title="Component orientation">
 
+@@@
+
 
 <!-- ====================================================================== -->
 
@@ -42,7 +44,7 @@ On <B>atusb</B>, there is also the USB voltage domain at nominally 5.0 V.
 <P>
 Voltages should be tested in the following order: USB, then I/O, then
 digital, and finally analog. The table below gives the permissible
-ranges. Any voltages outside of these ranges indicate a problem.
+ranges. Any voltages outside these ranges indicate a problem.
 <P>
 <TABLE frame="border" cellpadding="2">
   <TR><TH>Domain<TH>Nominal<TH>Minimum<TH>Maximum
@@ -51,7 +53,6 @@ ranges. Any voltages outside of these ranges indicate a problem.
   <TR><TD>Digital<TD>1.8 V<TD>1.7 V<TD>1.9 V
   <TR><TD>Analog<TD>1.8 V<TD>1.7 V<TD>1.9 V
 </TABLE>
-<P>
 
 
 <!-- ---------------------------------------------------------------------- -->
@@ -170,9 +171,13 @@ atrf-txrx -d net:ben -C 1
 This configures <B>atben</B> as a promiscuous receiver. The reception
 of any IEEE 802.15.4 frame or pressing Ctrl-C will terminate the command.
 <P>
-The clock signal (CLKM) is available on the test pad shown here:
+The clock signal (CLKM) is available on the test pad shown on the image
+on the left, and it should look roughly as shown in the screen shot on
+the right:
 <P>
-<A href="atben-A.png"><IMG src="atben-A-small.png"></A>
+<A href="atben-A.png"><IMG src="atben-A-small.png" align="left"></A>
+&nbsp;
+<IMG src="atben-clkm.png">
 <P>
 <TABLE frame="border" cellpadding="2">
 <TR><TH align="left">Clock<TH align="left">Action
@@ -201,6 +206,14 @@ either as the direct output from the transceiver (CLKM) or after passing
 a low-pass filter (CLK):
 <P>
 <A href="atusb-A.png"><IMG src="atusb-A-small.png"></A>
+&nbsp;
+<IMG src="atusb-clkm.png">
+&nbsp;
+<IMG src="atusb-clk.png">
+<P>
+The left screen shot shows the clock (CLKM) before the low-pass filter
+while the right screen shows the clock (CLK) after the the low-pass
+filter.
 <P>
 <TABLE frame="border" cellpadding="2">
 <TR><TH align="left">Clock<TH align="left">Action
