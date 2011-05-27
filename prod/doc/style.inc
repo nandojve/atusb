@@ -18,6 +18,7 @@
 </MACRO>
 
 <MACRO name="PAGE_BAR" title>
+  <MACRO name="__TITLE"><TITLE></MACRO>
   <TABLE width="99%" border=0 cellspacing=0 cellpadding=0>
     <TR>
     <__PI bgcolor="#d080ff" size="+3" rowspan="2"><A
@@ -34,11 +35,19 @@
 <MACRO name="PAGE_ITEM" href>
   <__PI_SEP>
   <__PI bgcolor="#c0d0ff"><A href="<HREF>"><BODY></A></__PI>
+  <MACRO name="__ENDREFS">
+    <__ENDREFS>
+    <__ENDREF href="<HREF>" bgcolor="#c0d0ff"><BODY></__ENDREF>
+  </MACRO>
 </MACRO>
 
 <MACRO name="PAGE_CURR" href>
   <__PI_SEP>
   <__PI bgcolor="#ffff00"><BODY></__PI>
+  <MACRO name="__ENDREFS">
+    <__ENDREFS>
+    <__ENDREF href="<HREF>" bgcolor="#ffff00"><BODY></__ENDREF>
+  </MACRO>
 </MACRO>
 
 <MACRO name="SECTION_BAR" title>
@@ -75,4 +84,25 @@
 <P>
 <B><FONT size="+1"><TITLE></B></FONT>
 <P>
+</MACRO>
+
+<MACRO name="__ENDREF" href bgcolor>
+  <__PI_SEP>
+  <TD align="center">
+  <TABLE border=0 cellspacing=3 cellpadding=2 bgcolor="<BGCOLOR>">
+    <TR><TD nowrap="nowrap"><A href="<HREF>"<FONT size="+1"
+      face="sans"><B><BODY></B></A>
+  </TABLE>
+</MACRO>
+
+<MACRO name="END">
+  <P>
+  <TABLE width="99%" border=0 cellspacing=0 cellpadding=0>
+    <TR>
+      <__PI bgcolor="#d080ff" size="+1"><A
+        href="index.html"><B><__TITLE></B></A></__PI>
+      <__ENDREFS>
+      <__PI_SEP>
+      <TD align="left" width="99%" bgcolor="#d080ff">
+  </TABLE>
 </MACRO>
