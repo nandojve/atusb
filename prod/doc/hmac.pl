@@ -198,7 +198,8 @@ sub define_macro
 	die "NAME parameter is missing" unless defined $name;
 	$d =~ s/$BM/<MACRO/gi;
 	$d =~ s|$EM|</MACRO>|gi;
-	$mac{$name} = $d;
+#	$mac{$name} = $d;
+	$mac{$name} = &expand_macro_list($d, $name);
 	$args{$name} = { %arg };
     }
     else {
@@ -214,14 +215,14 @@ sub define_macro
 # Expand first macro
 #
 
-sub expand_macro
+sub expand_macro_list
 {
-    local ($in) = @_;
+    local ($in, @mac) = @_;
     local ($a,$b,$c);
     local ($mac, $done, $prm, %arg);
 
     undef $a;
-    for $mac (keys %mac) {
+    for $mac (@mac) {
 	if ($in =~ /<$mac\b(("[^"]*"|[^>])*)>/is) {
 	    ($a,$b,$c) = ($`,$1,$') if length $` < length $a || !defined $a;
 	}
@@ -258,4 +259,12 @@ sub expand_macro
 	return $a.$b.$c;
     }
     return $in;
+}
+
+
+sub expand_macro
+{
+    local ($in) = @_;
+
+    return &expand_macro_list($in, keys %mac);
 }
