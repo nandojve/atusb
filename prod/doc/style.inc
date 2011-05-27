@@ -3,10 +3,10 @@
 <!-- Written 2011 by Werner Almesberger -->
 
 
-<MACRO name="__PI" bgcolor>
-  <TD align="center">
+<MACRO name="__PI" bgcolor size="+2" rowspan="1">
+  <TD align="center" valign="top" rowspan="<ROWSPAN>">
   <TABLE border=0 cellspacing=3 cellpadding=2 bgcolor="<BGCOLOR>">
-    <TR><TD nowrap="nowrap"><FONT size="+3"><B><BODY></B>
+    <TR><TD nowrap="nowrap"><FONT size="<SIZE>"><B><BODY></B>
   </TABLE>
 </MACRO>
 
@@ -20,7 +20,8 @@
 <MACRO name="PAGE_BAR" title>
   <TABLE width="99%" border=0 cellspacing=0 cellpadding=0>
     <TR>
-    <__PI bgcolor="#d080ff"><A href="index.html"><B><TITLE></B></A></__PI>
+    <__PI bgcolor="#d080ff" size="+3" rowspan="2"><A
+      href="index.html"><B><TITLE></B></A></__PI>
     <TD align="left" width="99%">
     <TABLE border=0 cellspacing=0 cellpadding=0>
       <TR>
@@ -41,7 +42,7 @@
 </MACRO>
 
 <MACRO name="SECTION_BAR" title>
-    <TR><TD align="left" bgcolor="#ffffff">
+    <TR><!-- <TD align="left" bgcolor="#ffffff"> -->
     <TD align="left">
     <TABLE border=0 cellspacing=0 cellpadding=0>
       <TR>
@@ -56,7 +57,7 @@
   <__PI_SEP>
   <TD align="center">
   <TABLE border=0 cellspacing=3 cellpadding=2 bgcolor="#ffff00">
-    <TR><TD nowrap="nowrap"><A href="<HREF>"<FONT size="+2"><B><BODY></B></A>
+    <TR><TD nowrap="nowrap"><A href="<HREF>"<FONT size="+1"><B><BODY></B></A>
   </TABLE>
 </MACRO>
 
