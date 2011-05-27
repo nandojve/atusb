@@ -14,7 +14,8 @@ DL=http://downloads.qi-hardware.com/people/werner/wpan/tmp
 all:		$(DOWNLOADED) $(GENERATED)
 
 %.html:		%.hmac style.inc hmac.pl
-		perl hmac.pl $*.hmac >$@ || { rm -f $@; exit 1; }
+		perl hmac.pl -DGEN_DATE=`date -u +'%Y-%m-%d'` $*.hmac >$@ || \
+		    { rm -f $@; exit 1; }
 		
 flow.png:	flow.fig
 		fig2dev -L png -m 0.7 -S 4 $< $@ || { rm -f $@; exit 1; }

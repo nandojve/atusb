@@ -95,7 +95,7 @@
   </TABLE>
 </MACRO>
 
-<MACRO name="END">
+<MACRO name="END" author date>
   <P>
   <TABLE width="99%" border=0 cellspacing=0 cellpadding=0>
     <TR>
@@ -105,4 +105,7 @@
       <__PI_SEP>
       <TD align="left" width="99%" bgcolor="#d080ff">
   </TABLE>
+  <P>
+  Last update: <DATE>&nbsp;&nbsp;<I><AUTHOR></I>
+  <HR>
 </MACRO>

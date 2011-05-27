@@ -200,10 +200,6 @@ Another possible cause could a problem with the SLP_TR signal. The
 GPIO test should eventually catch this issue, but it may currently
 remain undetected until the send test.
 
-<END>
-<P>
-<HR>
-Last update: 2011-05-27&nbsp;&nbsp;<I>Werner Almesberger</I>
-<HR>
+<END author="Werner Almesberger" date="<GEN_DATE>">
 </BODY>
 </HTML>

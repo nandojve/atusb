@@ -88,10 +88,6 @@ the application with DFU. After this, you can proceed with the
 If the board fails to enumerate, proceed with the
 <A href="analysis.html">fault analysis</A>.
 
-<END>
-<P>
-<HR>
-Last update: 2011-05-27&nbsp;&nbsp;<I>Werner Almesberger</I>
-<HR>
+<END author="Werner Almesberger" date="<GEN_DATE>">
 </BODY>
 </HTML>
