@@ -1,19 +1,34 @@
-<TITLE>Production and testing: Fault analysis</TITLE>
-<BODY>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <HTML>
-<H1>Production and testing: Fault analysis</H1>
+<TITLE>Production and testing: Fault analysis</TITLE>
+<BODY bgcolor="#ffffff" link="#000000" vlink="#404040">
+
+<INCLUDE file="style.inc">
+
+<PAGE_BAR title="Production and testing">
+  <PAGE_ITEM href="setup.html">Software setup</PAGE_ITEM>
+  <PAGE_ITEM href="flash.html">Flashing</PAGE_ITEM>
+  <PAGE_ITEM href="test.html">Functional test</PAGE_ITEM>
+  <PAGE_CURR href="analysis.html">Fault analysis</PAGE_CURR>
+</PAGE_BAR>
+
+<SECTION_BAR>
+  <SECTION_ITEM href="#components">Components</SECTION_ITEM>
+  <SECTION_ITEM href="#voltages">Voltages</SECTION_ITEM>
+  <SECTION_ITEM href="#clock">Clock frequency</SECTION_ITEM>
+</SECTION_BAR>
 
 
 <!-- ====================================================================== -->
 
 
-<H2>Component placement and orientation</H2>
+<SECTION ref="components" title="Component placement and orientation">
 
 
 <!-- ====================================================================== -->
 
 
-<H2>Supply voltages</H2>
+<SECTION ref="voltages" title="Supply voltages">
 
 The transceiver has three voltage domains:
 <UL>
@@ -42,7 +57,7 @@ ranges. Any voltages outside of these ranges indicate a problem.
 <!-- ---------------------------------------------------------------------- -->
 
 
-<H3>Measurement setup</H3>
+<SUBSECTION title="Measurement setup">
 
 The measurements should be performed with a digital multimeter.
 The transceiver's analog and digital supplies (1.8 V) are only
@@ -77,7 +92,7 @@ can be checked. If they are correct, proceed with checking the clock.
 <!-- ---------------------------------------------------------------------- -->
 
 
-<H3>Measurement points on atben</H3>
+<SUBSECTION title="Measurement points on atben">
 
 The supply voltages on <B>atben</B> can be measured at the terminals of
 components as shown in this table:
@@ -100,7 +115,7 @@ This image shows the location of the measurement points:
 <!-- ---------------------------------------------------------------------- -->
 
 
-<H3>Measurement points on atusb</H3>
+<SUBSECTION title="Measurement points on atusb">
 
 The supply voltages on <B>atusb</B> can be measured at the terminals of
 components as shown in this table:
@@ -125,9 +140,9 @@ This image shows the location of the measurement points:
 <!-- ====================================================================== -->
 
 
-<H2>Clock frequency</H2>
+<SECTION ref="clock" title="Clock frequency">
 
-The flawless performance of the crystal oscillator is crucial for
+The precision of the crystal oscillator is crucial for
 operation. Anomalies are easy to detect with even a low-cost oscilloscope
 and pinpoint specific problems and help to select further analysis steps.
 <P>
@@ -145,7 +160,7 @@ applies to <B>atben</B> as well as to <B>atusb</B>.
 <!-- ---------------------------------------------------------------------- -->
 
 
-<H3>Measuring the clock on atben</H3>
+<SUBSECTION title="Measuring the clock on atben">
 
 <B>atben</B> normally does not output a clock signal. A 1 MHz clock
 can be enabled with the following command:
@@ -173,7 +188,7 @@ The clock signal (CLKM) is available on the test pad shown here:
 <!-- ---------------------------------------------------------------------- -->
 
 
-<H3>Measuring the clock on atusb</H3>
+<SUBSECTION title="Measuring the clock on atusb">
 
 The transceiver provides the clock for the microcontroller in <B>atusb</B>.
 A clock signal is therefore always available. Immediately after reset,
@@ -207,7 +222,7 @@ depending on how much code was successfully flashed.
 <!-- ---------------------------------------------------------------------- -->
 
 
-<H3>Precision measurements</H3>
+<SUBSECTION title="Precision measurements">
 
 The clock frequency of <B>atben</B> can be measured with an accuracy
 of about +/&minus; 100 ppm using the program <B>atrf-xtal</B>. <B>atrf-xtal</B>
@@ -231,9 +246,6 @@ be good <B>atben</B> board on the same Ben at a comparable temperature.
 </TABLE>
 
 <P>
-<HR>
-Up: <A href="index.html">Production and testing</A>&nbsp;
-Prev: <A href="test.html">Functional test</A>&nbsp;
 <HR>
 Last update: 2011-05-27&nbsp;&nbsp;<I>Werner Almesberger</I>
 <HR>
