@@ -79,9 +79,22 @@ can be checked. If they are correct, proceed with checking the clock.
 
 <H3>Measurement points on atben</H3>
 
+The supply voltages on <B>atben</B> can be measured at the terminals of
+components as shown in this table:
+<P>
+<TABLE frame="border" cellpadding="2">
+  <TR><TH>Domain<TH>Voltage<TH>Component
+  <TR><TD>I/O<TD>3.3 V<TD>C3, C6
+  <TR><TD>Digital<TD>1.8 V<TD>C5
+  <TR><TD>Analog<TD>1.8 V<TD>C4
+</TABLE>
+<P>
+Ground can be accessed at the cover of the crystal.
+Note that the fiducials are not connected to ground.
+<P>
+This image shows the location of the measurement points:
 <P>
 <A href="atben-B.png"><IMG src="atben-B-small.png"></A>
-<P>
 
 
 <!-- ---------------------------------------------------------------------- -->
@@ -89,9 +102,24 @@ can be checked. If they are correct, proceed with checking the clock.
 
 <H3>Measurement points on atusb</H3>
 
+The supply voltages on <B>atusb</B> can be measured at the terminals of
+components as shown in this table:
+<P>
+<TABLE frame="border" cellpadding="2">
+  <TR><TH>Domain<TH>Voltage<TH>Component
+  <TR><TD>USB<TD>5.0 V<TD>C1
+  <TR><TD>I/O<TD>3.3 V<TD>C2, C10, C13
+  <TR><TD>Digital<TD>1.8 V<TD>C12
+  <TR><TD>Analog<TD>1.8 V<TD>C11
+</TABLE>
+<P>
+Ground can be accessed at the cover of the crystal, at the shield of the
+USB connector, or at the test point P11.
+Note that the fiducials are not connected to ground.
+<P>
+This image shows the location of the measurement points:
 <P>
 <A href="atusb-B.png"><IMG src="atusb-B-small.png"></A>
-<P>
 
 
 <!-- ====================================================================== -->
@@ -207,7 +235,7 @@ be good <B>atben</B> board on the same Ben at a comparable temperature.
 Up: <A href="index.html">Production and testing</A>&nbsp;
 Prev: <A href="test.html">Functional test</A>&nbsp;
 <HR>
-Last update: 2011-05-26&nbsp;&nbsp;<I>Werner Almesberger</I>
+Last update: 2011-05-27&nbsp;&nbsp;<I>Werner Almesberger</I>
 <HR>
 </BODY>
 </HTML>
