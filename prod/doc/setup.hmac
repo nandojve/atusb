@@ -44,7 +44,25 @@ need to be installed on Ben and PC, and configuration settings
 
 <SUBSECTION title="Install ben-wpan tools">
 
-@@@
+To build the ben-wpan tools and install them under
+<SAMP>/usr/local/</SAMP> on the local machine,
+run the following commands:
+<PRE>
+git clone git://projects.qi-hardware.com/ben-wpan.git
+git clone git://projects.qi-hardware.com/f32xbase.git
+cd ben-wpan/tools
+make
+make install
+</PRE>
+<P>
+A different directory prefix can be chosen by overriding the
+<B>INSTALL_PREFIX</B> variable, e.g.,
+<PRE>
+make INSTALL_PREFIX=/usr install
+</PRE>
+<P>
+Note that the test scripts expect <SAMP>${INSTALL_PREFIX}/bin</SAMP>
+to be in <B>PATH</B>.
 
 
 <!-- ---------------------------------------------------------------------- -->
@@ -52,7 +70,10 @@ need to be installed on Ben and PC, and configuration settings
 
 <SUBSECTION title="Install test scripts">
 
-@@@
+The test scripts are in the directory <SAMP>prod/</SAMP> of the
+<B>ben-wpan</B> project. They currently are designed to be run from
+this directory. Therefore, all that's necessary is to check out the
+repository, as shown above.
 
 
 <!-- ---------------------------------------------------------------------- -->
@@ -131,7 +152,41 @@ ssh ben 'cat >>/etc/dropbear/authorized_keys' <~/.ssh/id_rsa.pub
 
 <SUBSECTION title="Install ben-wpan tools">
 
-@@@
+To build and install the <B>ben-wpan</B> tools on the Ben, first set
+up networking between the PC and the Ben. If you have not yet checked
+out the project's repository, run these commands:
+
+<PRE>
+git clone git://projects.qi-hardware.com/ben-wpan.git
+git clone git://projects.qi-hardware.com/f32xbase.git
+cd ben-wpan/tools
+</PRE>
+
+If you have already checked out the repository, <B>cd</B> to
+<SAMP>ben-wpan/tools/</SAMP> and run
+
+<PRE>
+make clean
+</PRE>
+
+Next, if on OpenWrt, compile the tools with
+<PRE>
+make TARGET=ben_openwrt
+</PRE>
+
+If on Jlime, use
+<PRE>
+make TARGET=ben_jlime
+</PRE>
+
+Finally, upload the tools to the Ben and install them under
+<SAMP>/usr/bin/</SAMP> with
+
+<PRE>
+make HOST=ben install
+</PRE>
+
+Where <B>ben</B> is the host name or IP address assigned to the Ben.
 
 
 <!-- ---------------------------------------------------------------------- -->
