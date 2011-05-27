@@ -25,7 +25,9 @@
 <SECTION ref="atben" title="Test setup for atben">
 
 To test an <B>atben</B> board, place a reference <B>atusb</B> board into
-the PC, insert the
+the PC, insert the <B>atben</B> board into the Ben, and place both devices
+at the same location and with the same orientation used when acquiring the
+signal strength profile.
 <P>
 <IMG src="setup-A.png">
 <P>
@@ -36,6 +38,8 @@ the PC, insert the
 
 <SECTION ref="atusb" title="Test setup for atusb">
 
+The test setup is the same as for <B>atben</B> testing, except that the
+DUT and reference device roles are reversed.
 <P>
 <IMG src="setup-B.png">
 <P>
