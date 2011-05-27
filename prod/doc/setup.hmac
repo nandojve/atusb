@@ -26,9 +26,10 @@
 
 <SECTION ref="intro" title="Introduction">
 
-Before performing any production tests, various pieces of software
-need to be installed on Ben and PC, and configuration settings 
-@@@
+Before performing production tests, various pieces of software
+need to be installed on Ben and PC, and configuration settings may
+have to be adjusted. The following sections describe the installation
+and configuration process.
 
 
 <!-- ====================================================================== -->
@@ -36,7 +37,15 @@ need to be installed on Ben and PC, and configuration settings
 
 <SECTION ref="pcsw" title="PC software installation">
 
-@@@
+For a DUT and reference device role, the <B>ben-wpan</B> utilities
+and the test scripts have to be installed on the PC. For flashing the
+<B>atusb</B> application
+firmware, also <B>dfu-util</B> and the firmware binary are required.
+<P>
+The instructions below assume that a complete development environment
+is already present on the PC. If any prerequisitres are not met,
+compilation will fail, and you'll have to install the corresponding
+package and try again.
 
 
 <!-- ---------------------------------------------------------------------- -->
@@ -74,6 +83,29 @@ The test scripts are in the directory <SAMP>prod/</SAMP> of the
 <B>ben-wpan</B> project. They currently are designed to be run from
 this directory. Therefore, all that's necessary is to check out the
 repository, as shown above.
+
+
+<!-- ---------------------------------------------------------------------- -->
+
+
+<SUBSECTION title="Install dfu-util">
+
+<B>dfu-util</B> is used to transfer the application firmware to
+<B>atusb</B> boards. To build <B>dfu-util</B> from source, run these
+commands:
+
+<PRE>
+git clone git://git.openezx.org/dfu-util.git
+cd dfu-util
+./autogen.sh
+./configure
+make
+make install
+</PRE>
+
+Note that some Linux distributions already provide a pre-compiled
+version of <B>dfu-util</B>, which could be used instead of building
+it from source.
 
 
 <!-- ---------------------------------------------------------------------- -->
@@ -132,7 +164,13 @@ echo 192.168.1.202 jlime >>/etc/hosts
 
 <SECTION ref="bensw" title="Ben software installation">
 
-@@@
+For a DUT and reference device role, the <B>ben-wpan</B> utilities
+have to be installed on a Ben. For flashing the <B>atusb</B> boot
+loader, also <B>avrdude</B> and the boot loader binary are needed.
+<P>
+The instructions below apply for OpenWrt and Jlime. For building
+things from source, a cross-compilation toolchain has to be installed
+on the PC.
 
 
 <!-- ---------------------------------------------------------------------- -->
@@ -206,7 +244,6 @@ tar -xz -C / -f avrdude-5.10-de72af351f661b538add81cbc9965278a2f8c40c.tar.gz
 Instructions for building <B>avrdude</B> from sources are
 <A href="http://projects.qi-hardware.com/index.php/p/ben-blinkenlights/source/tree/master/avrdude/README
 ">here</A>.
-
 
 
 <!-- ---------------------------------------------------------------------- -->
