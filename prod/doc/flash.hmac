@@ -13,10 +13,16 @@
 </PAGE_BAR>
 
 <SECTION_BAR>
+  <SECTION_ITEM href="#intro">Introduction</SECTION_ITEM>
   <SECTION_ITEM href="#boot">Boot loader</SECTION_ITEM>
   <SECTION_ITEM href="#app">Application</SECTION_ITEM>
 </SECTION_BAR>
-<P>
+
+
+<!-- ====================================================================== -->
+
+
+<SECTION ref="intro" title="Introduction">
 
 The microcontroller of <B>atusb</B> contains firmware that must be
 loaded before the testing process can commence. The firmware consists

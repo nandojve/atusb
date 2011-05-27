@@ -13,13 +13,18 @@
 </PAGE_BAR>
 
 <SECTION_BAR>
+  <SECTION_ITEM href="#intro">Introduction</SECTION_ITEM>
   <SECTION_ITEM href="#pcsw">PC installation</SECTION_ITEM>
   <SECTION_ITEM href="#bensw">Ben installation</SECTION_ITEM>
   <SECTION_ITEM href="#bensys">Ben setup</SECTION_ITEM>
   <SECTION_ITEM href="#profiles">Test profiles</SECTION_ITEM>
 </SECTION_BAR>
 
-<P>
+
+<!-- ====================================================================== -->
+
+
+<SECTION ref="intro" title="Introduction">
 
 Before performing any production tests, various pieces of software
 need to be installed on Ben and PC, and configuration settings 

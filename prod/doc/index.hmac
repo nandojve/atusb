@@ -13,10 +13,16 @@
 </PAGE_BAR>
 
 <SECTION_BAR>
+  <SECTION_ITEM href="#intro">Introduction</SECTION_ITEM>
   <SECTION_ITEM href="#terminology">Terminology</SECTION_ITEM>
   <SECTION_ITEM href="#details">Detailed description</SECTION_ITEM>
 </SECTION_BAR>
-<P>
+
+
+<!-- ====================================================================== -->
+
+
+<SECTION ref="intro" title="Introduction">
 
 This document gives a high-level description of the production test process
 for <B>atben</B> and <B>atusb</B> boards, plus - in the case of <B>atusb</B>
