@@ -1,13 +1,28 @@
-<TITLE>Production and testing: Functional test</TITLE>
-<BODY>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <HTML>
-<H1>Production and testing: Functional test</H1>
+<TITLE>Production and testing: Functional test</TITLE>
+<BODY bgcolor="#ffffff" link="#000000" vlink="#404040">
+
+<INCLUDE file="style.inc">
+
+<PAGE_BAR title="Production and testing">
+  <PAGE_ITEM href="setup.html">Software setup</PAGE_ITEM>
+  <PAGE_ITEM href="flash.html">Flashing</PAGE_ITEM>
+  <PAGE_CURR href="test.html">Functional test</PAGE_CURR>
+  <PAGE_ITEM href="analysis.html">Fault analysis</PAGE_ITEM>
+</PAGE_BAR>
+
+<SECTION_BAR>
+  <SECTION_ITEM href="#atben">atben setup</SECTION_ITEM>
+  <SECTION_ITEM href="#atusb">atusb setup</SECTION_ITEM>
+  <SECTION_ITEM href="#procedure">Test procedure</SECTION_ITEM>
+</SECTION_BAR>
 
 
 <!-- ====================================================================== -->
 
 
-<H2>Test setup for atben</H2>
+<SECTION ref="atben" title="Test setup for atben">
 
 To test an <B>atben</B> board, place a reference <B>atusb</B> board into
 the PC, insert the
@@ -19,7 +34,7 @@ the PC, insert the
 <!-- ====================================================================== -->
 
 
-<H2>Test setup for atusb</H2>
+<SECTION ref="atusb" title="Test setup for atusb">
 
 <P>
 <IMG src="setup-B.png">
@@ -29,7 +44,7 @@ the PC, insert the
 <!-- ====================================================================== -->
 
 
-<H2>Test procedure</H2>
+<SECTION ref="procedure" title="Test procedure">
 
 The test process is started with
 <PRE>
@@ -61,7 +76,7 @@ file <B>_log</B>.
 <!-- ---------------------------------------------------------------------- -->
 
 
-<H3>Enumeration (atusb only)</H3>
+<SUBSECTION title="Enumeration (atusb only)">
 
 The enumeration test verifies that the <B>atusb</B> board has been
 identified by the PC's USB stack. If this test fails, the board may
@@ -73,7 +88,7 @@ should always pass the enumeration test.
 <!-- ---------------------------------------------------------------------- -->
 
 
-<H3>LED (atusb only)</H3>
+<SUBSECTION title="LED (atusb only)">
 
 @@@
 
@@ -81,7 +96,7 @@ should always pass the enumeration test.
 <!-- ---------------------------------------------------------------------- -->
 
 
-<H3>GPIO scan</H3>
+<SUBSECTION title="GPIO scan">
 
 @@@
 
@@ -89,7 +104,7 @@ should always pass the enumeration test.
 <!-- ---------------------------------------------------------------------- -->
 
 
-<H3>Identification</H3>
+<SUBSECTION title="Identification">
 
 This test reads the transceiver's registers that contain values identifying
 the manufacturer, the chip's part number, and the chip revision. If an
@@ -109,7 +124,7 @@ eventually provide more detailed results for problems with the SPI interface.
 <!-- ---------------------------------------------------------------------- -->
 
 
-<H3>Crystal frequency (atben only)</H3>
+<SUBSECTION title="Crystal frequency (atben only)">
 
 This test measures the frequency of the crystal oscillator in the DUT.
 On <B>atben</B>, it does this by transmitting packets, and measuring
@@ -128,7 +143,7 @@ testing the crystal oscillator.
 <!-- ---------------------------------------------------------------------- -->
 
 
-<H3>Spectrum</H3>
+<SUBSECTION title="Spectrum">
 
 The spectrum test measures the reception of a signal sent from the
 reference device to the DUT. It does this across the entire frequency
@@ -162,7 +177,7 @@ and can only be entered if the measurements is outside the limits.
 <!-- ---------------------------------------------------------------------- -->
 
 
-<H3>Receive</H3>
+<SUBSECTION title="Receive">
 
 In the receive test, the reference device sends a number of frames to the
 DUT. The test program verifies correct reception of all the frames. A
@@ -174,7 +189,7 @@ the bypassing of the transceiver's 1.8 V supplies.
 <!-- ---------------------------------------------------------------------- -->
 
 
-<H3>Send</H3>
+<SUBSECTION title="Send">
 
 The send test is like the receive test, but with the DUT acting as the
 sender and the reference acting as the receiver. If a device passes the
@@ -187,11 +202,7 @@ remain undetected until the send test.
 
 <P>
 <HR>
-Up: <A href="index.html">Production and testing</A>&nbsp;
-Prev: <A href="flash.html">Flashing (<B>atusb</B> only)</A>&nbsp;
-Next: <A href="analysis.html">Fault analysis</A>&nbsp;
-<HR>
-Last update: 2011-05-26&nbsp;&nbsp;<I>Werner Almesberger</I>
+Last update: 2011-05-27&nbsp;&nbsp;<I>Werner Almesberger</I>
 <HR>
 </BODY>
 </HTML>

@@ -1,7 +1,22 @@
-<TITLE>Production and testing: Flashing</TITLE>
-<BODY>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <HTML>
-<H1>Production and testing: Flashing</H1>
+<TITLE>Production and testing: Flashing</TITLE>
+<BODY bgcolor="#ffffff" link="#000000" vlink="#404040">
+
+<INCLUDE file="style.inc">
+
+<PAGE_BAR title="Production and testing">
+  <PAGE_ITEM href="setup.html">Software setup</PAGE_ITEM>
+  <PAGE_CURR href="flash.html">Flashing</PAGE_CURR>
+  <PAGE_ITEM href="test.html">Functional test</PAGE_ITEM>
+  <PAGE_ITEM href="analysis.html">Fault analysis</PAGE_ITEM>
+</PAGE_BAR>
+
+<SECTION_BAR>
+  <SECTION_ITEM href="#boot">Boot loader</SECTION_ITEM>
+  <SECTION_ITEM href="#app">Application</SECTION_ITEM>
+</SECTION_BAR>
+<P>
 
 The microcontroller of <B>atusb</B> contains firmware that must be
 loaded before the testing process can commence. The firmware consists
@@ -18,7 +33,7 @@ any flashing.
 <!-- ====================================================================== -->
 
 
-<H2>Flashing the boot loader</H2>
+<SECTION ref="boot" title="Flashing the boot loader">
 
 The following image shows the setup for flashing the boot loader:
 <P>
@@ -51,7 +66,7 @@ If flashing fails despite numerous attempts, proceed to the
 <!-- ====================================================================== -->
 
 
-<H2>Flashing the application</H2>
+<SECTION ref="app" title="Flashing the application">
 
 The flashing script proceeds automatically to the flashing of the
 application. All you need to do is insert the <B>atusb</B> board
@@ -69,11 +84,7 @@ If the board fails to enumerate, proceed with the
 
 <P>
 <HR>
-Up: <A href="index.html">Production and testing</A>&nbsp;
-Prev: <A href="setup.html">Software setup</A>
-Next: <A href="test.html">Functional test</A>&nbsp;
-<HR>
-Last update: 2011-05-26&nbsp;&nbsp;<I>Werner Almesberger</I>
+Last update: 2011-05-27&nbsp;&nbsp;<I>Werner Almesberger</I>
 <HR>
 </BODY>
 </HTML>

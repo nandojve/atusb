@@ -1,7 +1,25 @@
-<TITLE>Production and testing: Software setup</TITLE>
-<BODY>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <HTML>
-<H1>Production and testing: Software setup</H1>
+<TITLE>Production and testing: Software setup</TITLE>
+<BODY bgcolor="#ffffff" link="#000000" vlink="#404040">
+
+<INCLUDE file="style.inc">
+
+<PAGE_BAR title="Production and testing">
+  <PAGE_CURR href="setup.html">Software setup</PAGE_CURR>
+  <PAGE_ITEM href="flash.html">Flashing</PAGE_ITEM>
+  <PAGE_ITEM href="test.html">Functional test</PAGE_ITEM>
+  <PAGE_ITEM href="analysis.html">Fault analysis</PAGE_ITEM>
+</PAGE_BAR>
+
+<SECTION_BAR>
+  <SECTION_ITEM href="#pcsw">PC software</SECTION_ITEM>
+  <SECTION_ITEM href="#bensw">Ben software</SECTION_ITEM>
+  <SECTION_ITEM href="#bensys">Ben system</SECTION_ITEM>
+  <SECTION_ITEM href="#profiles">Test profiles</SECTION_ITEM>
+</SECTION_BAR>
+
+<P>
 
 Before performing any production tests, various pieces of software
 need to be installed on Ben and PC, and configuration settings 
@@ -11,7 +29,7 @@ need to be installed on Ben and PC, and configuration settings
 <!-- ====================================================================== -->
 
 
-<H2>PC software installation</H2>
+<SECTION ref="pcsw" title="PC software installation">
 
 @@@
 
@@ -19,7 +37,7 @@ need to be installed on Ben and PC, and configuration settings
 <!-- ---------------------------------------------------------------------- -->
 
 
-<H3>Install ben-wpan tools</H3>
+<SUBSECTION title="Install ben-wpan tools">
 
 @@@
 
@@ -27,7 +45,7 @@ need to be installed on Ben and PC, and configuration settings
 <!-- ---------------------------------------------------------------------- -->
 
 
-<H3>Install test scripts</H3>
+<SUBSECTION title="Install test scripts">
 
 @@@
 
@@ -35,7 +53,7 @@ need to be installed on Ben and PC, and configuration settings
 <!-- ---------------------------------------------------------------------- -->
 
 
-<H3>Install firmware binary</H3>
+<SUBSECTION title="Install firmware binary">
 
 The binary of the application running on <B>atusb</B> is transferred from
 the PC. To download a pre-compiled version, use this command:
@@ -52,7 +70,7 @@ Instructions for building the binary from sources are
 <!-- ---------------------------------------------------------------------- -->
 
 
-<H3>Register Ben host name</H3>
+<SUBSECTION title="Register Ben host name">
 
 To simplify accessing the Ben via TCP/IP, its IP address should be
 registered in the hosts file on the PC. If the Ben is running OpenWrt,
@@ -78,7 +96,7 @@ echo 192.168.1.202 jlime >>/etc/hosts
 <!-- ---------------------------------------------------------------------- -->
 
 
-<H3>Customize test scripts</H3>
+<SUBSECTION title="Customize test scripts">
 
 @@@
 
@@ -86,7 +104,7 @@ echo 192.168.1.202 jlime >>/etc/hosts
 <!-- ====================================================================== -->
 
 
-<H2>Ben software installation</H2>
+<SECTION ref="bensw" title="Ben software installation">
 
 @@@
 
@@ -94,7 +112,7 @@ echo 192.168.1.202 jlime >>/etc/hosts
 <!-- ---------------------------------------------------------------------- -->
 
 
-<H3>Password-less remote access</H3>
+<SUBSECTION title="Password-less remote access">
 
 To enable password-less remote access from the PC, set up network
 access to the Ben and run the following command:
@@ -106,7 +124,7 @@ ssh ben 'cat >>/etc/dropbear/authorized_keys' <~/.ssh/id_rsa.pub
 <!-- ---------------------------------------------------------------------- -->
 
 
-<H3>Install ben-wpan tools</H3>
+<SUBSECTION title="Install ben-wpan tools">
 
 @@@
 
@@ -114,7 +132,7 @@ ssh ben 'cat >>/etc/dropbear/authorized_keys' <~/.ssh/id_rsa.pub
 <!-- ---------------------------------------------------------------------- -->
 
 
-<H3>Install avrdude</H3>
+<SUBSECTION title="Install avrdude">
 
 The <B>atusb</B> boot loader is flashed using <B>avrdude</B>. A pre-compiled
 static binary (suitable for OpenWrt and Jlime) can be installed by running
@@ -134,7 +152,7 @@ Instructions for building <B>avrdude</B> from sources are
 <!-- ---------------------------------------------------------------------- -->
 
 
-<H3>Install boot-loader binary</H3>
+<SUBSECTION title="Install boot-loader binary">
 
 The binary of the boot loader running on <B>atusb</B> is transferred from
 the Ben. To download a pre-compiled version, use this command:
@@ -151,7 +169,7 @@ Instructions for building the binary from sources are
 <!-- ====================================================================== -->
 
 
-<H2>Ben system setup</H2>
+<SECTION ref="bensys" title="Ben system setup">
 
 The configuration setting described in this section are lost on each
 reset or reboot and either need to be entered again. Alternatively,
@@ -161,7 +179,7 @@ a setup script running at boot time can be written.
 <!-- ---------------------------------------------------------------------- -->
 
 
-<H3>Enable network access</H3>
+<SUBSECTION title="Enable network access">
 
 Once the Ben has booted and started USB networking, the interface
 on the PC side is configured as follows:
@@ -179,7 +197,7 @@ ifconfig usb0 192.168.1.200 up
 <!-- ---------------------------------------------------------------------- -->
 
 
-<H3>Silence other 8:10 card users</H3>
+<SUBSECTION title="Silence other 8:10 card users">
 
 Before running any of the ben-wpan utilities, other users of the 8:10
 card slot have to be disabled. In a Ben running the regular OpenWrt or
@@ -199,7 +217,7 @@ echo spi2.0 >/sys/bus/spi/drivers/at86rf230/unbind
 <!-- ---------------------------------------------------------------------- -->
 
 
-<H3>Start atrf-proxy</H3>
+<SUBSECTION title="Start atrf-proxy">
 
 On the Ben, launch the proxy daemon. We pass the option -b to background it:
 <PRE>
@@ -210,7 +228,7 @@ atrf-proxy -b
 <!-- ====================================================================== -->
 
 
-<H2>Test profiles</H2>
+<SECTION ref="profiles" title="Test profiles">
 
 Some of the functional tests measure characteristics that are strongly
 influenced by the test setup. It is therefore not possible to provide
@@ -221,7 +239,7 @@ in the actual test environment.
 <!-- ---------------------------------------------------------------------- -->
 
 
-<H3>Clock count (atben only)</H3>
+<SUBSECTION title="Clock count (atben only)">
 
 Insert a known to be good <B>atben</B> board and run the following
 command directly on the Ben to record the reference value for the
@@ -241,17 +259,14 @@ Ben, and if a stable temperature is maintained.
 <!-- ---------------------------------------------------------------------- -->
 
 
-<H3>Signal strength</H3>
+<SUBSECTION title="Signal strength">
 
 @@@
 
 
 <P>
 <HR>
-Up: <A href="index.html">Production and testing</A>&nbsp;
-Next: <A href="flash.html">Flashing (<B>atusb</B> only)</A>&nbsp;
-<HR>
-Last update: 2011-05-19&nbsp;&nbsp;<I>Werner Almesberger</I>
+Last update: 2011-05-27&nbsp;&nbsp;<I>Werner Almesberger</I>
 <HR>
 </BODY>
 </HTML>
