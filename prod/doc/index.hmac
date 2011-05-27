@@ -1,7 +1,22 @@
-<TITLE>Production and testing</TITLE>
-<BODY>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <HTML>
-<H1>Production and testing</H1>
+<TITLE>Production and testing</TITLE>
+<BODY bgcolor="#ffffff" link="#000000" vlink="#404040">
+
+<INCLUDE file="style.inc">
+
+<PAGE_BAR title="Production and testing">
+  <PAGE_ITEM href="setup.html">Software setup</PAGE_ITEM>
+  <PAGE_ITEM href="flash.html">Flashing</PAGE_ITEM>
+  <PAGE_ITEM href="test.html">Functional test</PAGE_ITEM>
+  <PAGE_ITEM href="analysis.html">Fault analysis</PAGE_ITEM>
+</PAGE_BAR>
+
+<SECTION_BAR>
+  <SECTION_ITEM href="#terminology">Terminology</SECTION_ITEM>
+  <SECTION_ITEM href="#details">Detailed description</SECTION_ITEM>
+</SECTION_BAR>
+<P>
 
 This document gives a high-level description of the production test process
 for <B>atben</B> and <B>atusb</B> boards, plus - in the case of <B>atusb</B>
@@ -32,7 +47,7 @@ Defective devices can be discarded or retained for a deeper analysis.
 <!-- ====================================================================== -->
 
 
-<H2>Terminology</H2>
+<SECTION ref="terminology" title="Terminology">
 
 <DL>
   <DT>Ben</DT>
@@ -62,7 +77,7 @@ Defective devices can be discarded or retained for a deeper analysis.
     as needed.
   <DT>DUT</DT>
   <DD>Device Under Test. An <B>atben</B> or <B>atusb</B> board that
-    has left SMT, and is being prepared for testing or in the process
+    has left SMT, and is being prepared for testing or is in the process
     of being tested.
   <DT>Reference device</DT>
   <DD>An <B>atben</B> or <B>atusb</B> device that is known to work and
@@ -79,7 +94,7 @@ Defective devices can be discarded or retained for a deeper analysis.
 <!-- ====================================================================== -->
 
 
-<H2>Detailed description</H2>
+<SECTION ref="details" title="Detailed description">
 
 The following pages describe the preparation and the execution of the
 production and test process:
@@ -93,7 +108,7 @@ production and test process:
 
 <P>
 <HR>
-Last update: 2011-05-19&nbsp;&nbsp;<I>Werner Almesberger</I>
+Last update: 2011-05-27&nbsp;&nbsp;<I>Werner Almesberger</I>
 <HR>
 </BODY>
 </HTML>
