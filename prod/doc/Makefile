@@ -1,6 +1,6 @@
 PNGS=flow.png setup-A.png setup-B.png setup-C.png setup-D.png \
-     atben-A.png atusb-A.png \
-     atben-A-small.png atusb-A-small.png
+     atben-A.png atusb-A.png atben-B.png atusb-B.png \
+     atben-A-small.png atusb-A-small.png atben-B-small.png atusb-B-small.png
 HTMLS=index.html setup.html flash.html test.html analysis.html
 JPGS=atusb-programming.jpg atrf-path.png atrf-path-small.png
 
