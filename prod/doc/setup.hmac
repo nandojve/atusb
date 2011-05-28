@@ -157,7 +157,17 @@ echo 192.168.1.202 jlime >>/etc/hosts
 
 <SUBSECTION title="Customize test scripts">
 
-@@@
+If using <SAMP>prod/Makefile</SAMP> to run the production test process,
+the names of the drivers for DUT and reference device are defined
+through variables at the beginning of the Makefile. In particular,
+if the host name or IP address under which the Ben is reached differs from
+"ben", the value of <B>ATBEN_DUT</B> and <B>ATUSB_REF</B> will have be
+changed accordingly.
+<P>
+The scripts <SAMP>atusb</SAMP> and <SAMP>atusb-flash</SAMP> also contain
+configuration variables. If the names of the files containing the
+<B>atusb</B> firmware binaries are not <SAMP>boot.hex</SAMP> and
+<SAMP>atusb.bin</SAMP>, <SAMP>atusb-flash</SAMP> needs to be adapted.
 
 
 <!-- ====================================================================== -->
