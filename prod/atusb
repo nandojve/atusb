@@ -3,10 +3,13 @@
 . ./Common
 
 
+USB_ID=20b7:1540
+
+
 enumerate()
 {
 	step "Enumeration"
-	cmd "usbwait -t 5 20b7:1540 && echo okay"
+	cmd "usbwait -t 5 $USB_ID && echo okay"
 	expect okay
 }
 
