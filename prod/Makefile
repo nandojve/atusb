@@ -15,9 +15,12 @@ ATBEN_DUT=net:ben
 ATBEN_REF=usb
 ATUSB_DUT=usb
 ATUSB_REF=net:ben
+SPECTRUM_MARGIN=+5 +5
+
+GENPATHPROF=../tools/atrf-path/genpathprof
 
 
-.PHONY:	all ben usb flash
+.PHONY:	all ben usb flash spectrum spotless
 
 all:	ben
 
@@ -30,8 +33,19 @@ usb:	usb.profile
 flash:
 	./atusb-flash $(ATUSB_REF) $(ATUSB_DUT)
 
+spectrum:
+	atrf-path -g -T +0.5 $(ATBEN_REF) $(ATBEN_DUT) 10 | \
+	  $(GENPATHPROF) $(SPECTRUM_MARGIN) >ben.profile || \
+	  { rm -rf ben.profile; exit 1; }
+	atrf-path -g -T +0.5 $(ATUSB_REF) $(ATUSB_DUT) 10 | \
+	  $(GENPATHPROF) $(SPECTRUM_MARGIN) >usb.profile || \
+	  { rm -rf usb.profile; exit 1; }
+
 ben.profile:
 	cp ../tools/atrf-path/profile.example $@
 
 usb.profile:
 	cp ../tools/atrf-path/profile.example $@
+
+spotless:
+	rm -f ben.profile usb.profile
