@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <string.h>
 
 #include "SDL.h"
 #include "SDL_gfxPrimitives.h"
@@ -34,6 +35,7 @@
 #define	OVER_RGBA	0xffff00ff
 #define	UNDER_RGBA	0xff0000ff
 #define	LIMIT_RGBA	0xff0000ff
+#define	DUMP_RGBA	0x4040ffff
 
 #define	CHAN_STEP	20	/* 4 pixels/MHz */
 #define	SIDE_STEP	2
@@ -46,6 +48,10 @@
 #define	STATUS_R	8
 
 
+static struct sample **dumps = NULL;
+static int n_dumps = 0;
+
+
 static int avg2y(double avg)
 {
 	return YRES-(avg-Y_MIN)/(Y_MAX-Y_MIN)*YRES-1;
@@ -53,19 +59,20 @@ static int avg2y(double avg)
 
 
 static void segment(SDL_Surface *s, int *last_x, int *last_y, int x,
-    const struct sample *res, int first)
+    const struct sample *res, int first, uint32_t color)
 {
 	int y = avg2y(res->avg);
 
 	if (!first) {
-		aalineColor(s, *last_x, *last_y, x, y, FG_RGBA);
+		aalineColor(s, *last_x, *last_y, x, y, color);
 }
 	*last_x = x;
 	*last_y = y;
 }
 
 
-static void draw(SDL_Surface *s, const struct sample *res, int cont_tx)
+static void draw(SDL_Surface *s, const struct sample *res, int cont_tx,
+    uint32_t color)
 {
 	int last_x, last_y;
 	int first, x, i;
@@ -74,14 +81,14 @@ static void draw(SDL_Surface *s, const struct sample *res, int cont_tx)
 	first = 1;
 	for (i = 0; i != N_CHAN; i++) {
 		if (cont_tx != CONT_TX_P500K) {
-			segment(s, &last_x, &last_y, x, res, first);
+			segment(s, &last_x, &last_y, x, res, first, color);
 			first = 0;
 		}
 		res++;
 		x += 2*SIDE_STEP;
 
 		if (cont_tx != CONT_TX_M500K) {
-			segment(s, &last_x, &last_y, x, res, first);
+			segment(s, &last_x, &last_y, x, res, first, color);
 			first = 0;
 		}
 		res++;
@@ -176,6 +183,36 @@ static void clear(SDL_Surface *s)
 }
 
 
+static void dump(const struct sweep *sweep, const struct sample *res)
+{
+	const size_t size = sizeof(struct sample)*N_CHAN*2;
+
+	print_sweep(sweep, res);
+
+	dumps = realloc(dumps, (n_dumps+1)*sizeof(struct sample *));
+	if (!dumps) {
+		perror("realloc");
+		exit(1);
+	}
+	dumps[n_dumps] = malloc(size);
+	if (!dumps[n_dumps]) {
+		perror("malloc");
+		exit(1);
+	}
+	memcpy(dumps[n_dumps], res, size);
+	n_dumps++;
+}
+
+
+static void draw_dumps(SDL_Surface *s, int cont_tx)
+{
+	int i;
+
+	for (i = 0; i != n_dumps; i++)
+		draw(s, dumps[i], cont_tx, DUMP_RGBA);
+}
+
+
 /* --- temporarily, for optimizing --- */
 
 #if 0
@@ -263,7 +300,7 @@ int gui(const struct sweep *sweep, int sweeps)
 					break;
 				case SDLK_d:
 					if (cycle)
-						print_sweep(sweep, res);
+						dump(sweep, res);
 					break;
 				case SDLK_q:
 					return 0;
@@ -285,10 +322,11 @@ int gui(const struct sweep *sweep, int sweeps)
 
 		clear(surf);
 
+		draw_dumps(surf, sweep->cont_tx);
 		draw_limit(surf, sweep->min);
 		draw_limit(surf, sweep->max);
 		indicate(surf, fail);
-		draw(surf, res, sweep->cont_tx);
+		draw(surf, res, sweep->cont_tx, FG_RGBA);
 
 		SDL_UnlockSurface(surf);
 		SDL_UpdateRect(surf, 0, 0, 0, 0);
