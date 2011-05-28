@@ -261,6 +261,10 @@ int gui(const struct sweep *sweep, int sweeps)
 					if (cycle && !fail)
 						return 1;
 					break;
+				case SDLK_d:
+					if (cycle)
+						print_sweep(sweep, res);
+					break;
 				case SDLK_q:
 					return 0;
 				default:

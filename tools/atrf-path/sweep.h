@@ -53,4 +53,6 @@ struct sample {
 
 int do_sweep(const struct sweep *sweep, struct sample *res);
 
+void print_sweep(const struct sweep *sweep, const struct sample *res);
+
 #endif /* !SWEEP_H */
