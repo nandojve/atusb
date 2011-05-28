@@ -29,6 +29,12 @@ the PC, insert the <B>atben</B> board into the Ben, and place both devices
 at the same location and with the same orientation used when acquiring the
 signal strength profile.
 <P>
+The two devices should be about 1 m apart, with as few metal or watery
+objects between or near them as possible. Location and orientation should
+be easily reproducible, e.g., by marking the device's edges on the table
+with tape. Other transmitters in the 2.4 GHz band will interfere with
+measurements and should be kept as far away and as inactive as possible.
+<P>
 <IMG src="setup-A.png">
 <P>
 

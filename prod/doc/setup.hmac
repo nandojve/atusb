@@ -164,6 +164,11 @@ if the host name or IP address under which the Ben is reached differs from
 "ben", the value of <B>ATBEN_DUT</B> and <B>ATUSB_REF</B> will have be
 changed accordingly.
 <P>
+The Makefile also contains the variable <B>SPECTRUM_MARGIN</B> that
+defines how many dB of tolerance should be allowed below and above the
+reference signal strength. The default is to allow a margin of 5 dB in
+either direction.
+<P>
 The scripts <SAMP>atusb</SAMP> and <SAMP>atusb-flash</SAMP> also contain
 configuration variables. If the names of the files containing the
 <B>atusb</B> firmware binaries are not <SAMP>boot.hex</SAMP> and
@@ -369,7 +374,32 @@ Ben, and if a stable temperature is maintained.
 
 <SUBSECTION title="Signal strength">
 
-@@@
+The signal strength of a DUT is assesses by comparing it with
+measurements previously obtained in the same setup, with a known to
+be good device taking the role of the DUT. It is therefore necessary
+to establish a reference profile each time the test environment changes,
+e.g., when changing location or when using a different reference device.
+<P>
+The physical arrangement of the devices should have the characteristics
+described in <A href="test.html#atben">the test section</A>. The orientation
+of the devices should be chosen such that the overall signal strength is
+near its maximum, that the spectrum is relatively "flat", and that small
+changes in the orientation only produce small variations in the measured
+signal strength.
+<P>
+To generate the profiles for <B>atben</B> and <B>atusb</B>, simply run
+<PRE>
+make spectrum
+</PRE>
+Then place the devices appropriately and press <B>D</B> in the measurement
+window to use the displayed spectrum as the reference. Multiple spectra
+can be merged into the reference, e.g., if environmental conditions cause
+significant variations. Spectra included in the reference are shown in blue.
+<P>
+After a obtaining the reference spectrum, press <B>Q</B> to exit. The
+Makefile will then record the signal strength limits for an <B>atben</B>
+DUT in the file <SAMP>ben.profile</SAMP> and proceed with the reverse
+measurement, i.e., with <B>atusb</B> acting as the DUT.
 
 
 <END author="Werner Almesberger" date="<GEN_DATE>">
