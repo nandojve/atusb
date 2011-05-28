@@ -43,7 +43,8 @@ and the test scripts have to be installed on the PC. For flashing the
 firmware, also <B>dfu-util</B> and the firmware binary are required.
 <P>
 The instructions below assume that a complete development environment
-is already present on the PC. If any prerequisitres are not met,
+is already present on the PC, including <B>SDL</B> and <B>SDL_gfx</B>.
+If any prerequisites are not met,
 compilation will fail, and you'll have to install the corresponding
 package and try again.
 
