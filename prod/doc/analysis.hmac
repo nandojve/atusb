@@ -24,7 +24,50 @@
 
 <SECTION ref="orientation" title="Component orientation">
 
-@@@
+There are several components whose footprint has a 180&deg; or even 90&deg; 
+rotational symmetry, but the component's electrical function is not symmetric.
+Therefore, if such a component is incorrectly rotated, it will appear to the
+casual observer to be properly placed, but it will not work.
+<P>
+These components are:
+<UL>
+  <LI>the transceiver chip,
+  <LI>the microcontroller (<B>atusb</B> only),
+  <LI>the balun, and
+  <LI>the LED (<B>atusb</B> only)
+</UL>
+
+
+<!-- ---------------------------------------------------------------------- -->
+
+
+<SUBSECTION title="atben components">
+
+<B>atben</B> only has the transceiver and the balun. The markings on
+both face towards the crystal and the antenna:
+<P>
+<A href="atben-compor.jpg"><IMG src="atben-compor.png"></A>
+<P>
+The corner next to pin 1 of the transceiver is marked with small dot.
+The picture above also shows the orientation of the text printed on
+the package. The balun is marked with a square between pins 1 and 6.
+
+
+<!-- ---------------------------------------------------------------------- -->
+
+
+<SUBSECTION title="atusb components">
+
+In <B>atusb</B>, the marking on the transceiver is on the corner between
+the crystal and the antenna. The marking on the balun faces towards the
+antenna. The microcontroller's "top" side faces towards the USB connector.
+<P>
+<A href="atusb-compor.jpg"><IMG src="atusb-compor.png"></A>
+<P>
+It is difficult to determine the LED's orientation by visual inspection.
+An efficient approach is to touch the LED's terminals with the probes
+of a multimeter set to measure resistance. The small current used for
+the measurement will light the LED.
 
 
 <!-- ====================================================================== -->

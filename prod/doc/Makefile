@@ -4,8 +4,10 @@ GENERATED=index.html setup.html flash.html test.html analysis.html \
 	  atben-A.png atusb-A.png atben-B.png atusb-B.png \
 	  atben-A-small.png atusb-A-small.png \
 	  atben-B-small.png atusb-B-small.png \
-	  atrf-path-small.png
-ORIGINAL=scope-atben-clkm.png scope-atusb-clkm.png scope-atusb-clk.png
+	  atrf-path-small.png \
+	  atben-compor.png atusb-compor.png
+ORIGINAL=scope-atben-clkm.png scope-atusb-clkm.png scope-atusb-clk.png \
+         atben-compor.jpg atusb-compor.jpg
 
 DL=http://downloads.qi-hardware.com/people/werner/wpan/tmp
 
@@ -36,6 +38,10 @@ atben-%-small.png: \
 		    fig2dev -L png -m 0.5 -S 4 >$@ || \
 		    { rm -f $@; exit 1; }
 
+atben-compor.png: \
+		  atben-compor.fig
+		fig2dev -L png -m 0.25 -S 4 $< >$@ || { rm -f $@; exit 1; }
+
 atben-%.png:	atben.fig
 		./figfilt `echo $@ | tr -cd 'A-Z'` $< | \
 		    fig2dev -L png -m 2 -S 4 >$@ || \
@@ -46,6 +52,10 @@ atusb-%-small.png: \
 		./figfilt `echo $@ | tr -cd 'A-Z'` $< | \
 		    fig2dev -L png -m 0.5 -S 4 >$@ || \
 		    { rm -f $@; exit 1; }
+
+atusb-compor.png: \
+		  atusb-compor.fig
+		fig2dev -L png -m 0.25 -S 4 $< >$@ || { rm -f $@; exit 1; }
 
 atusb-%.png:	atusb.fig
 		./figfilt `echo $@ | tr -cd 'A-Z'` $< | \
