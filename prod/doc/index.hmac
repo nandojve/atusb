@@ -56,7 +56,7 @@ Defective devices can be discarded or retained for a deeper analysis.
 <SECTION ref="terminology" title="Terminology">
 
 <DL>
-  <DT>Ben</DT>
+  <DT><B><I>Ben</I></B></DT>
   <DD>a device capable of hosting the <B>atben</B> and <B>atusb-pgm</B>
     boards. In the production process, a Ben can perform three different
     roles:
@@ -68,7 +68,7 @@ Defective devices can be discarded or retained for a deeper analysis.
     In this document, we assume that a single Ben is used in all
     three roles, with the board in its 8:10 card slot changed as
     the role requires.
-  <DT>PC</DT>
+  <DT><B><I>PC</I></B></DT>
   <DD>a device capable of connecting to a Ben via USB, and of hosting an
     <B>atusb</B> board. In the production process, a PC can perform three
     different roles:
@@ -81,14 +81,14 @@ Defective devices can be discarded or retained for a deeper analysis.
     three roles, with one USB host port permanently connecting to the
     Ben, and a second USB host port populated with <B>atusb</B> boards
     as needed.
-  <DT>DUT</DT>
+  <DT><B><I>DUT</I></B></DT>
   <DD>Device Under Test. An <B>atben</B> or <B>atusb</B> board that
     has left SMT, and is being prepared for testing or is in the process
     of being tested.
-  <DT>Reference device</DT>
+  <DT><B><I>Reference device</I></B></DT>
   <DD>An <B>atben</B> or <B>atusb</B> device that is known to work and
     and that acts as a peer for RF communication with the DUT.
-  <DT>SMT</DT>
+  <DT><B><I>SMT</I></B></DT>
   <DD>In this context, the actual process of soldering components to
     the unpopulated PCB, and all related tasks providing an input to
     this process. Such related tasks include the configuration of the
