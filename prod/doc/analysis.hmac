@@ -48,7 +48,7 @@ both face towards the crystal and the antenna:
 <P>
 <A href="atben-compor.jpg"><IMG src="atben-compor.png"></A>
 <P>
-The corner next to pin 1 of the transceiver is marked with small dot.
+The corner next to pin 1 of the transceiver is marked with a small dot.
 The picture above also shows the orientation of the text printed on
 the package. The balun is marked with a square between pins 1 and 6.
 
@@ -309,7 +309,7 @@ be good <B>atben</B> board on the same Ben at a comparable temperature.
 <TR><TD>&lt; &minus;80 ppm<TD>Check soldering of capacitors;
   check for contamination around crystal
 <TR><TD>&gt; +120 ppm<TD>idem
-<TR><TD>Other<TD>Divergence can be compensated by adjusting trim value
+<TR><TD>Other<TD>Deviation can be compensated by adjusting trim value
 </TABLE>
 
 <END author="Werner Almesberger" date="<GEN_DATE>">
