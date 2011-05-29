@@ -104,7 +104,6 @@
 7. Build dirtpan, a crude IPv4-over-IEEE 802.15.4 tunnel
 
 	git clone git://projects.qi-hardware.com/ben-wpan.git
-	git clone git://projects.qi-hardware.com/f32xbase.git
 
 	# If compiling dirtpan.c fails due a missing ieee802145.h header,
 	# copy it over from lowpan-tools:

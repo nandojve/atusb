@@ -14,10 +14,8 @@ ifeq ($(TARGET),)
 TARGET = host
 endif
 
-F32XBASE = ../../../f32xbase
-
 ifneq ($(MAIN),)
-include $(F32XBASE)/lib/Makefile.common
+include ../../makefiles/Makefile.basic
 endif
 
 CC_host = gcc

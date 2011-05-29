@@ -59,7 +59,6 @@ To build the ben-wpan tools and install them under
 run the following commands:
 <PRE>
 git clone git://projects.qi-hardware.com/ben-wpan.git
-git clone git://projects.qi-hardware.com/f32xbase.git
 cd ben-wpan/tools
 make
 make install
@@ -212,7 +211,6 @@ out the project's repository, run these commands:
 
 <PRE>
 git clone git://projects.qi-hardware.com/ben-wpan.git
-git clone git://projects.qi-hardware.com/f32xbase.git
 cd ben-wpan/tools
 </PRE>
 
