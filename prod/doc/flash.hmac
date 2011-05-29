@@ -56,7 +56,7 @@ To flash the boot loader,
     <A href="atusb-programming.jpg"><IMG
       src="atusb-programming.jpg" width="250"></A>
     <P>
-  <LI>finally, run
+  <LI>finally, <SAMP>cd</SAMP> to <SAMP>ben-wpan/prod/</SAMP> and run
     <PRE>
     make flash
     </PRE>

@@ -29,8 +29,10 @@ the PC, insert the <B>atben</B> board into the Ben, and place both devices
 at the same location and with the same orientation used when acquiring the
 signal strength profile.
 <P>
-The two devices should be about 1 m apart, with as few metal or watery
-objects between or near them as possible. Location and orientation should
+The two devices should be about 1 m apart. Their vicinity should be free
+from obstructions and items that can reflect or absorb RF signals. Such
+items include metal chairs and human bodies.
+Location and orientation should
 be easily reproducible, e.g., by marking the device's edges on the table
 with tape. Other transmitters in the 2.4 GHz band will interfere with
 measurements and should be kept as far away and as inactive as possible.
@@ -56,7 +58,8 @@ DUT and reference device roles are reversed.
 
 <SECTION ref="procedure" title="Test procedure">
 
-The test process is started with
+The test process is started from the directory <SAMP>ben-wpan/prod/</SAMP>
+with
 <PRE>
 make ben
 </PRE>
@@ -162,8 +165,8 @@ frequency-dependent anomalies.
 <P>
 This test depends on numerous external factors, like the exact position
 and orientation of the two devices with respect to each other, and the
-presence of any items that can reflect or absorb RF signals. Such items
-include metal chairs and human bodies. Because of the test's sensitivity
+presence of obstacles and conductive items (metal, people, etc.).
+Because of the test's sensitivity
 to environmental factors, the operator needs to decide when the result
 represents a valid measurement and then confirm the result shown.
 <P>

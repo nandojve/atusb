@@ -32,8 +32,8 @@ actual testing.
 The testing serves two purposes:
 <OL>
   <LI>Ascertain the correctness of the preceding production steps, and
-  <LI>identify suffering from random production flaws and either discard
-    them or prepare them for repair.
+  <LI>identify boards suffering from random production flaws and either
+    discard them or prepare them for repair.
 </OL>
 The results of testing and fault analysis also provide feedback for the
 SMT process and steps preceding it.
@@ -43,7 +43,7 @@ The following diagram illustrates the workflow:
 <IMG src="flow.png">
 <P>
 Only <B>atusb</B> boards contain firmware and need flashing (which is
-a two-step process, see below). The functional tests and further fault
+a two-step process, see below). The functional tests and fault
 analysis are largely the same for <B>atben</B> and <B>atusb</B>.
 <P>
 Devices accepted for further use can then be packaged for shipping.
@@ -69,13 +69,15 @@ Defective devices can be discarded or retained for a deeper analysis.
     three roles, with the board in its 8:10 card slot changed as
     the role requires.
   <DT><B><I>PC</I></B></DT>
-  <DD>a device capable of connecting to a Ben via USB, and of hosting an
+  <DD>a device running Linux. Capable of connecting to a Ben via USB, and
+    of hosting an
     <B>atusb</B> board. In the production process, a PC can perform three
     different roles:
     <OL>
       <LI> Host an <B>atusb</B> board acting as DUT
       <LI> Host an <B>atusb</B> board acting as reference
-      <LI> Control a Ben via USB (for convenience)
+      <LI> Control a Ben via USB (for convenience and to coordinate tests
+        involving a sender and a receiver)
     </OL>
     In this document, we assume that a single PC is used in all
     three roles, with one USB host port permanently connecting to the

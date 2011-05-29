@@ -106,7 +106,8 @@ components as shown in this table:
 </TABLE>
 <P>
 Ground can be accessed at the cover of the crystal.
-Note that the fiducials are not connected to ground.
+Note that the fiducials, while looking like test points,
+are not connected to anything.
 <P>
 This image shows the location of the measurement points:
 <P>
@@ -131,7 +132,7 @@ components as shown in this table:
 <P>
 Ground can be accessed at the cover of the crystal, at the shield of the
 USB connector, or at the test point P11.
-Note that the fiducials are not connected to ground.
+Note that the fiducials are not connected to anything.
 <P>
 This image shows the location of the measurement points:
 <P>
@@ -144,9 +145,15 @@ This image shows the location of the measurement points:
 <SECTION ref="clock" title="Clock frequency">
 
 The precision of the crystal oscillator is crucial for
-operation. Anomalies are easy to detect with even a low-cost oscilloscope
-and pinpoint specific problems and help to select further analysis steps.
-<P>
+operation. Anomalies are easy to detect with even a low-cost oscilloscope.
+This can pinpoint specific problems and help to select further analysis steps.
+
+
+<!-- ---------------------------------------------------------------------- -->
+
+
+<SUBSECTION title="Oscillator tolerances">
+
 The crystal used in <B>atben</B> and <B>atusb</B> has a nominal tolerance
 of +/&minus; 15 ppm at 22-28 C. Low-cost oscilloscopes typically have a timing
 accuracy of
@@ -154,8 +161,12 @@ accuracy of
 measuring the clock output with such an instrument. Full-speed USB only
 requires an accuracy of +/&minus; 2500 ppm.
 We can therefore consider all results within a range of +/&minus; 1000 ppm as
-sufficient, and perform more precise measurements by other means. This
+sufficient for an initial assessment, and perform more precise measurements
+by other means. This
 applies to <B>atben</B> as well as to <B>atusb</B>.
+<P>
+IEEE 802.15.4 requires the transceiver frequency to be accurate
+within +/&minus; 40 ppm.
 
 
 <!-- ---------------------------------------------------------------------- -->
@@ -197,7 +208,7 @@ the right:
 
 The transceiver provides the clock for the microcontroller in <B>atusb</B>.
 A clock signal is therefore always available. Immediately after reset,
-the transceiver generates a 1 MHz clock. When the microcontrolled comes out
+the transceiver generates a 1 MHz clock. When the microcontroller comes out
 of reset, it raises the transceiver's clock output to 8 MHz and then
 enables USB.
 <P>
@@ -222,7 +233,7 @@ filter.
 <TR><TD>0.999-1.001 MHz, ~3.3 Vpp<TD>Check presence of firmware; check for
   shorts on SPI signals; check connectivity of SPI signals
 <TR><TD>7.992-8.008 MHz, ~3.3 Vpp<TD>Perform precision measurement with
-  atrf-xtal
+  atrf-xtal (@@@)
 <TR><TD>Other<TD>Check voltages; check for contamination around crystal
 </TABLE>
 <P>
