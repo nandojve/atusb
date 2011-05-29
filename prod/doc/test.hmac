@@ -80,7 +80,7 @@ Of these tests, only "LED" and "Spectrum" require operator input. The
 other tests run without interaction.
 <P>
 The test scripts log the commands they execute and their output in the
-file <B>_log</B>.
+file <SAMP>_log</SAMP>.
 
 
 <!-- ---------------------------------------------------------------------- -->

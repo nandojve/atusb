@@ -184,7 +184,7 @@ the right:
 <TR><TD>0 Hz<TD>Check voltages; check that the clock is enabled;
   check for shorts around crystal; check connectivity of crystal
 <TR><TD>0.999-1.001 MHz, ~3.3 Vpp<TD>Perform precision measurement with
-  <B>atrf-xtal</B>
+  atrf-xtal
 <TR><TD>Other<TD>Check voltages; check for contamination around crystal
 </TABLE>
 <P>
@@ -222,7 +222,7 @@ filter.
 <TR><TD>0.999-1.001 MHz, ~3.3 Vpp<TD>Check presence of firmware; check for
   shorts on SPI signals; check connectivity of SPI signals
 <TR><TD>7.992-8.008 MHz, ~3.3 Vpp<TD>Perform precision measurement with
-  <B>atrf-xtal</B>
+  atrf-xtal
 <TR><TD>Other<TD>Check voltages; check for contamination around crystal
 </TABLE>
 <P>
@@ -238,7 +238,7 @@ depending on how much code was successfully flashed.
 <SUBSECTION title="Precision measurements">
 
 The clock frequency of <B>atben</B> can be measured with an accuracy
-of about +/&minus; 100 ppm using the program <B>atrf-xtal</B>. <B>atrf-xtal</B>
+of about +/&minus; 100 ppm using the program atrf-xtal. atrf-xtal
 runs directly on the Ben and measures the duration of packet transmissions.
 The transmission time depends on the bit clock which is in turn derived
 from the oscillator.

@@ -28,8 +28,8 @@ The microcontroller of <B>atusb</B> contains firmware that must be
 loaded before the testing process can commence. The firmware consists
 of the following two parts:
 <OL>
-  <LI>The boot loader (via serial programming, using <B>avrdude</B>)
-  <LI>The application (via DFU, using <B>dfu-util</B>)
+  <LI>The boot loader (via serial programming, using avrdude)
+  <LI>The application (via DFU, using dfu-util)
 </OL>
 <P>
 Note that <B>atben</B> has no microcontroller and therefore does not need
