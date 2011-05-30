@@ -289,7 +289,7 @@ depending on how much code was successfully flashed.
 <!-- ---------------------------------------------------------------------- -->
 
 
-<SUBSECTION title="Precision measurements">
+<SUBSECTION title="Precision measurements (atben)">
 
 The clock frequency of <B>atben</B> can be measured with an accuracy
 of about +/&minus; 100 ppm using the program atrf-xtal. atrf-xtal
@@ -297,7 +297,7 @@ runs directly on the Ben and measures the duration of packet transmissions.
 The transmission time depends on the bit clock which is in turn derived
 from the oscillator.
 <PRE>
-atrf-xtal 100
+ben# atrf-xtal 100
 </PRE>
 The number reported is the number of poll loops the CPU counted. This
 value should be compared to a reference count obtained with a known to
@@ -305,12 +305,34 @@ be good <B>atben</B> board on the same Ben at a comparable temperature.
 <P>
 <TABLE frame="border" cellpadding="2">
 <TR><TH align="left">Difference<TH align="left">Action
-<TR><TD>&gt; +/&minus; 50 ppm<TD>Correct operation
+<TR><TD>&lt; +/&minus; 50 ppm<TD>Correct operation
 <TR><TD>&lt; &minus;80 ppm<TD>Check soldering of capacitors;
   check for contamination around crystal
 <TR><TD>&gt; +120 ppm<TD>idem
 <TR><TD>Other<TD>Deviation can be compensated by adjusting trim value
 </TABLE>
+
+
+<!-- ---------------------------------------------------------------------- -->
+
+
+<SUBSECTION title="Precision measurements (atusb)">
+
+The clock frequency of <B>atusb</B> can be measured with an accuracy
+of about +/&minus; 1 ppm relative to the PC's NTP-disciplined clock.
+<PRE>
+pc# atrf-xtal 10000
+</PRE>
+This measurement runs for 10&minus;60 seconds, depending on system load.
+Note that, in order to reach such a high precision, it is imperative
+that the PC clock be disciplined by NTP.
+<P>
+<TABLE frame="border" cellpadding="2">
+<TR><TH align="left">Difference<TH align="left">Action
+<TR><TD>&lt; +/&minus; 30 ppm<TD>Correct operation
+<TR><TD>Other<TD>See the <B>atben</B> section above
+</TABLE>
+
 
 <END author="Werner Almesberger" date="<GEN_DATE>">
 </BODY>
