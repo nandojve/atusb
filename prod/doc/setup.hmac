@@ -118,7 +118,7 @@ the PC. To download a pre-compiled version, use this command:
 
 <PRE>
 wget -O atusb.bin \
-     http://downloads.qi-hardware.com/people/werner/wpan/bindist/atusb-de72af351f661b538add81cbc9965278a2f8c40c.bin
+     http://downloads.qi-hardware.com/people/werner/wpan/bindist/atusb-61e656e.bin
 </PRE>
 
 Instructions for building the binary from sources are
