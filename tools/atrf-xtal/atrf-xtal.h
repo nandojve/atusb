@@ -19,5 +19,7 @@
 
 void do_atben(struct atrf_dsc *dsc, int size, int trim, int rep,
     int dump_raw, double base, double ppm);
+void do_atusb(struct atrf_dsc *dsc, int trim, int dump_raw, double ppm,
+    int n);
 
 #endif /* !ATRF_XTAL_H */

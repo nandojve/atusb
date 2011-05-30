@@ -11,37 +11,26 @@
 #
 
 
-ifeq ($(TARGET),)
-TARGET = host
-endif
-
-ifeq ($(TARGET),host)
-
-.PHONY:		all install uninstall clean spotless
-
-all:
-
-install:
-
-uninstall:
-
-clean:
-		rm -f atben.o atrf-xtal.o
-
-spotless:	clean
-		rm -f atrf-xtal
-
-else
-
 MAIN = atrf-xtal
 
 include ../Makefile.common
 
 LDLIBS += -lm
-CFLAGS += -O9
 
-OBJS_$(TARGET) = atben.o
+MACROS_host += -DHAVE_ATUSB
+OBJS_host = atusb.o
+LDLIBS_host += -lgsl -lgslcblas
+
+CFLAGS_ben_openwrt += -O9
+MACROS_ben_openwrt += -DHAVE_ATBEN
+OBJS_ben_openwrt = atben.o
+
+CFLAGS_ben_jlime += -O9
+MACROS_ben_jlime += -DHAVE_ATBEN
+OBJS_ben_jlime = atben.o
+
 
 $(MAIN):        $(OBJS_$(TARGET))
 
-endif
+clean::
+		rm -f $(OBJS_host) $(OBJS_ben_openwrt) $(OBJS_ben_jlime)
