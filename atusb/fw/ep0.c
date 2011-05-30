@@ -12,6 +12,7 @@
 
 
 #include <stdint.h>
+#include <string.h>
 
 #include <avr/io.h>
 
@@ -57,6 +58,7 @@ static int my_setup(const struct setup_request *setup)
 {
 	unsigned tmp;
 	uint8_t i;
+	uint64_t tmp64;
 
 	switch (setup->bmRequestType | setup->bRequest << 8) {
 	case ATUSB_FROM_DEV(ATUSB_ID):
@@ -99,6 +101,16 @@ static int my_setup(const struct setup_request *setup)
 			return 0;
 		*buf = read_irq();
 		usb_send(&eps[0], buf, 1, NULL, NULL);
+		return 1;
+
+	case ATUSB_FROM_DEV(ATUSB_TIMER):
+		debug("ATUSB_TIMER\n");
+		size = setup->wLength;
+		if (size > sizeof(tmp64))
+			size = sizeof(tmp64);
+		tmp64 = timer_read();
+		memcpy(buf, &tmp64, sizeof(tmp64));
+		usb_send(&eps[0], buf, size, NULL, NULL);
 		return 1;
 
 	case ATUSB_TO_DEV(ATUSB_REG_WRITE):

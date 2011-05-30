@@ -29,6 +29,9 @@
 uint8_t board_sernum[42] = { 42, USB_DT_STRING };
 
 
+static uint32_t timer_h = 0;	/* 2^(16+32) / 8 MHz = ~1.1 years */
+
+
 static void set_clkm(void)
 {
 	/* switch CLKM to 8 MHz */
@@ -99,6 +102,36 @@ void panic(void)
 }
 
 
+void timer_poll(void)
+{
+	if (!(TIFR1 & (1 << TOV1)))
+		return;
+	TIFR1 = 1 << TOV1;
+	timer_h++;
+}
+
+
+uint64_t timer_read(void)
+{
+	uint32_t high;
+	uint8_t low, mid;
+
+	do {
+		timer_poll();
+		high = timer_h;
+		low = TCNT1L;
+		mid = TCNT1H;
+	}
+	while (TIFR1 & (1 << TOV1));
+
+	/*
+	 * We need all these casts because the intermediate results are handled
+	 * as if they were signed and thus get sign-expanded. Sounds wrong-ish.
+	 */
+	return (uint64_t) high << 16 | (uint64_t) mid << 8 | (uint64_t) low;
+}
+
+
 static char hex(uint8_t nibble)
 {
 	return nibble < 10 ? '0'+nibble : 'a'+nibble-10;
@@ -137,6 +170,11 @@ void board_init(void)
 	OUT(LED);
 	OUT(nRST_RF);   /* this also resets the transceiver */
 	OUT(SLP_TR);
+
+	/* configure timer 1 as a free-running CLK counter */
+
+	TCCR1A = 0;
+	TCCR1B = 1 << CS10;
 
 	get_sernum();
 }

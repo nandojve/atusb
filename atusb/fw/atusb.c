@@ -36,6 +36,8 @@ int main(void)
 	usb_init();
 	ep0_init();
 
-	while (1)
+	while (1) {
 		usb_poll();
+		timer_poll();
+	}
 }

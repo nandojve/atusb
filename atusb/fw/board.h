@@ -74,6 +74,9 @@ uint8_t read_irq(void);
 void led(int on);
 void panic(void);
 
+void timer_poll(void);
+uint64_t timer_read(void);
+
 void board_init(void);
 
 #endif /* !BOARD_H */

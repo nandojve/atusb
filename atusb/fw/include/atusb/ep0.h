@@ -24,6 +24,7 @@
  * host->	ATUSB_RF_RESET		-		-	0
  * ->host	ATUSB_POLL_INT		-		-	1
  * host->	ATUSB_TEST		-		-	0
+ * ->host	ATUSB_TIMER		-		-	#bytes (6)
  *
  * host->	ATUSB_REG_WRITE		value		addr	0
  * ->host	ATUSB_REG_READ		-		addr	1
@@ -64,13 +65,14 @@
 
 
 enum atspi_requests {
-	ATUSB_ID			= 0x00,
+	ATUSB_ID			= 0x00,	/* system status/control grp */
 	ATUSB_BUILD,
 	ATUSB_RESET,
-	ATUSB_RF_RESET			= 0x10,
+	ATUSB_RF_RESET			= 0x10,	/* debug/test group */
 	ATUSB_POLL_INT,
-	ATUSB_TEST,
-	ATUSB_REG_WRITE			= 0x20,
+	ATUSB_TEST,			/* atusb-sil only */
+	ATUSB_TIMER,
+	ATUSB_REG_WRITE			= 0x20,	/* transceiver group */
 	ATUSB_REG_READ,
 	ATUSB_BUF_WRITE,
 	ATUSB_BUF_READ,
