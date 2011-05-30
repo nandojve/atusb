@@ -43,7 +43,7 @@ and the test scripts have to be installed on the PC. For flashing the
 firmware, also dfu-util and the firmware binary are required.
 <P>
 The instructions below assume that a complete development environment
-is already present on the PC, including SDL and SDL_gfx.
+is already present on the PC, including SDL, SDL_gfx, and GSL.
 If any prerequisites are not met,
 compilation will fail, and you'll have to install the corresponding
 package and try again.
@@ -106,6 +106,21 @@ make install
 Note that some Linux distributions already provide a pre-compiled
 version of dfu-util, which could be used instead of building
 it from source.
+
+
+<!-- ---------------------------------------------------------------------- -->
+
+
+<SUBSECTION title="Install and run NTP">
+
+The clock frequency test for <B>atusb</B> measures the clock frequency
+relative to the PC clock. Many PC clocks are highly inaccurate, which
+would render the result of the measurement meaningless. To improve the
+quality of the reference clock, it should be disciplined by NTP.
+<P>
+If NTP is not available, it may be necessary to increase the test's
+tolerance by changing the variable <SAMP>CLOCK_DRIFT_PPM</SAMP> in
+the script <SAMP>atusb</SAMP>.
 
 
 <!-- ---------------------------------------------------------------------- -->

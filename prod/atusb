@@ -4,6 +4,7 @@
 
 
 USB_ID=20b7:1540
+CLOCK_DRIFT_PPM=50
 
 
 enumerate()
@@ -31,7 +32,8 @@ gpio_usb()
 xtal_usb()
 {
 	step "Crystal frequency"
-	todo
+	cmd "$LOCAL_EXEC atrf-xtal -d $LOCAL_DUT -p $CLOCK_DRIFT_PPM"
+	expect_re ppm   # we catch any problems via the exit code
 }
 
 

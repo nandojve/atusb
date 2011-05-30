@@ -73,7 +73,7 @@ for an <B>atusb</B> DUT. It performs the following steps:
   <LI>LED (<B>atusb</B> only; not yet implemented)
   <LI>GPIO scan (not yet implemented)
   <LI>Identification
-  <LI>Crystal frequency (only implemented on <B>atben</B>)
+  <LI>Crystal frequency
   <LI>Spectrum
   <LI>Receive
   <LI>Send
@@ -137,12 +137,14 @@ eventually provide more detailed results for problems with the SPI interface.
 <!-- ---------------------------------------------------------------------- -->
 
 
-<SUBSECTION title="Crystal frequency (atben only)">
+<SUBSECTION title="Crystal frequency">
 
 This test measures the frequency of the crystal oscillator in the DUT.
 On <B>atben</B>, it does this by transmitting packets, and measuring
 the time between the SLP_TR pulse that starts the transmission and the
 interrupt signaling the end of the transmission.
+On <B>atusb</B>, the microcontroller counts the clock cycles and the
+number of cycles is compared with the PC's NTP-disciplined clock.
 <P>
 If this test fails, this may indicate that the load capacitors of the
 crystal are missing, badly soldered, or have the wrong value. It could
