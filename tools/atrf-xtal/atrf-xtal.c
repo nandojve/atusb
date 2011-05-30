@@ -80,6 +80,49 @@ static double eval(unsigned *res, int rep)
 }
 
 
+static void do_atben(struct atrf_dsc *dsc, int size, int trim, int rep,
+    int dump_raw, double base, double ppm)
+{
+	unsigned *res;
+	double avg, rel;
+	int i;
+
+	res = malloc(rep*sizeof(*res));
+	if (!res) {
+		perror("malloc");
+		exit(1);
+	}
+
+	setup(dsc, size, trim);
+
+	for (i = 0; i != rep; i++)
+		res[i] = sample(dsc);
+
+	cleanup(dsc);
+
+	atrf_close(dsc);
+
+	if (dump_raw) {
+		for (i = 0; i != rep; i++)
+			printf("%u\n", res[i]);
+		exit(0);
+	}
+
+	avg = eval(res, rep);
+	if (!base)
+		printf("%f\n", avg);
+	else {
+		rel = (avg/base-1)*1000000;
+		printf("%+f ppm", rel);
+		if (ppm && fabs(rel) > ppm) {
+			printf(" (outside bounds)\n");
+			exit(1);
+		}
+		putchar('\n');
+	}
+}
+
+
 static void usage(const char *name)
 {
 	fprintf(stderr,
@@ -105,12 +148,10 @@ int main(int argc, char *const *argv)
 	int size = DEFAULT_SIZE;
 	int trim = DEFAULT_TRIM;
 	double base = 0, ppm = 0;
-	double avg, rel;
 	int rep = 1;
 	int dump_raw = 0;
 	char *end;
-	unsigned *res;
-	int c, i;
+	int c;
 
 	while ((c = getopt(argc, argv, "b:d:p:rs:t:")) != EOF)
 		switch (c) {
@@ -163,43 +204,11 @@ int main(int argc, char *const *argv)
 		usage(*argv);
 	}
 
-	res = malloc(rep*sizeof(*res));
-	if (!res) {
-		perror("malloc");
-		exit(1);
-	}
-
 	dsc = atrf_open(driver);
 	if (!dsc)
 		return 1;
 
-	setup(dsc, size, trim);
+	do_atben(dsc, size, trim, rep, dump_raw, base, ppm);
 
-	for (i = 0; i != rep; i++)
-		res[i] = sample(dsc);
-
-	cleanup(dsc);
-
-	atrf_close(dsc);
-
-	if (dump_raw) {
-		for (i = 0; i != rep; i++)
-			printf("%u\n", res[i]);
-		exit(0);
-	}
-
-	avg = eval(res, rep);
-	if (!base)
-		printf("%f\n", avg);
-	else {
-		rel = (avg/base-1)*1000000;
-		printf("%+f ppm", rel);
-		if (ppm && fabs(rel) > ppm) {
-			printf(" (outside bounds)\n");
-			return 1;
-		}
-		putchar('\n');
-	}
-	
 	return 0;
 }
