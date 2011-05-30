@@ -1,5 +1,5 @@
 /*
- * atrf-xtal/atben.c - ATBEN-specific low-level driver
+ * atrf-xtal/atben.c - ATBEN-specific driver and evaluation
  *
  * Written 2011 by Werner Almesberger
  * Copyright 2011 Werner Almesberger
@@ -30,7 +30,9 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <unistd.h>
+#include <math.h>
 #include <sys/mman.h>
 
 #include "at86rf230.h"
@@ -151,7 +153,7 @@ static void ben_setup(struct atrf_dsc *dsc)
 }
 
 
-/* ----- Interface --------------------------------------------------------- */
+/* ----- Low-level interface ----------------------------------------------- */
 
 
 void atben_setup(struct atrf_dsc *dsc, int size, int trim)
@@ -208,4 +210,74 @@ unsigned atben_sample(struct atrf_dsc *dsc)
 void atben_cleanup(struct atrf_dsc *dsc)
 {
 	enable_lcd();
+}
+
+
+/* ----- Acquisition and evaluation ---------------------------------------- */
+
+
+static int cmp(const void *a, const void *b)
+{
+	return *(unsigned *) a-*(unsigned *) b;
+}
+
+
+
+static double eval(unsigned *res, int rep)
+{
+	double sum = 0;
+	int n = 0;
+	int i;
+
+	qsort(res, rep, sizeof(*res), cmp);
+	if (rep < 8)
+		return res[rep >> 1];
+	for (i = rep/8; i != rep-rep/8; i++) {
+		sum += res[i];
+		n++;
+	}
+	return (double) sum/n;
+}
+
+
+void do_atben(struct atrf_dsc *dsc, int size, int trim, int rep,
+    int dump_raw, double base, double ppm)
+{
+	unsigned *res;
+	double avg, rel;
+	int i;
+
+	res = malloc(rep*sizeof(*res));
+	if (!res) {
+		perror("malloc");
+		exit(1);
+	}
+
+	atben_setup(dsc, size, trim);
+
+	for (i = 0; i != rep; i++)
+		res[i] = atben_sample(dsc);
+
+	atben_cleanup(dsc);
+
+	atrf_close(dsc);
+
+	if (dump_raw) {
+		for (i = 0; i != rep; i++)
+			printf("%u\n", res[i]);
+		exit(0);
+	}
+
+	avg = eval(res, rep);
+	if (!base)
+		printf("%f\n", avg);
+	else {
+		rel = (avg/base-1)*1000000;
+		printf("%+f ppm", rel);
+		if (ppm && fabs(rel) > ppm) {
+			printf(" (outside bounds)\n");
+			exit(1);
+		}
+		putchar('\n');
+	}
 }

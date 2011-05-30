@@ -15,7 +15,6 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
-#include <math.h>
 
 #include "atrf.h"
 
@@ -24,103 +23,6 @@
 
 #define	DEFAULT_SIZE	127
 #define	DEFAULT_TRIM	8
-
-
-static void setup(struct atrf_dsc *dsc, int size, int trim)
-{
-#ifdef __mips__
-	atben_setup(dsc, size, trim);
-#else
-#error	Only ATBEN is supported for now
-#endif
-}
-
-
-unsigned sample(struct atrf_dsc *dsc)
-{
-#ifdef __mips__
-	return atben_sample(dsc);
-#else
-#error	Only ATBEN is supported for now
-#endif
-}
-
-
-void cleanup(struct atrf_dsc *dsc)
-{
-#ifdef __mips__
-	atben_cleanup(dsc);
-#else
-#error	Only ATBEN is supported for now
-#endif
-}
-
-
-static int cmp(const void *a, const void *b)
-{
-	return *(unsigned *) a-*(unsigned *) b;
-}
-
-
-
-static double eval(unsigned *res, int rep)
-{
-	double sum = 0;
-	int n = 0;
-	int i;
-
-	qsort(res, rep, sizeof(*res), cmp);
-	if (rep < 8)
-		return res[rep >> 1];
-	for (i = rep/8; i != rep-rep/8; i++) {
-		sum += res[i];
-		n++;
-	}
-	return (double) sum/n;
-}
-
-
-static void do_atben(struct atrf_dsc *dsc, int size, int trim, int rep,
-    int dump_raw, double base, double ppm)
-{
-	unsigned *res;
-	double avg, rel;
-	int i;
-
-	res = malloc(rep*sizeof(*res));
-	if (!res) {
-		perror("malloc");
-		exit(1);
-	}
-
-	setup(dsc, size, trim);
-
-	for (i = 0; i != rep; i++)
-		res[i] = sample(dsc);
-
-	cleanup(dsc);
-
-	atrf_close(dsc);
-
-	if (dump_raw) {
-		for (i = 0; i != rep; i++)
-			printf("%u\n", res[i]);
-		exit(0);
-	}
-
-	avg = eval(res, rep);
-	if (!base)
-		printf("%f\n", avg);
-	else {
-		rel = (avg/base-1)*1000000;
-		printf("%+f ppm", rel);
-		if (ppm && fabs(rel) > ppm) {
-			printf(" (outside bounds)\n");
-			exit(1);
-		}
-		putchar('\n');
-	}
-}
 
 
 static void usage(const char *name)
@@ -135,7 +37,7 @@ static void usage(const char *name)
 "  -s size          payload size in bytes, 0-127 (default: %d bytes)\n"
 "  -t trim          trim capacitor setting, 0-15 (default: %d)\n"
 "  repetitions      number of measurements (default: 1)\n"
-    , name, strlen(name), "",
+    , name, (int) strlen(name), "",
     atrf_default_driver_name(), DEFAULT_SIZE, DEFAULT_TRIM);
 	exit(1);
 }

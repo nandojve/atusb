@@ -17,8 +17,7 @@
 #include "atrf.h"
 
 
-void atben_setup(struct atrf_dsc *dsc, int size, int trim);
-unsigned atben_sample(struct atrf_dsc *dsc);
-void atben_cleanup(struct atrf_dsc *dsc);
+void do_atben(struct atrf_dsc *dsc, int size, int trim, int rep,
+    int dump_raw, double base, double ppm);
 
 #endif /* !ATRF_XTAL_H */
