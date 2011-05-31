@@ -21,7 +21,9 @@ flash()
                   -U lfuse:w:0x60:m \
                   -U hfuse:w:0xd8:m \
                   -U lock:w:0x2f:m"
+	LIVE=true
 	expect "lock verified"
+	LIVE=false
 }
 
 

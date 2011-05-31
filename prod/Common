@@ -18,6 +18,8 @@ DUT=$2
 LOG=_log
 >$LOG
 
+LIVE=
+
 if [ ${REF#net:} = $REF ]; then
 	REF_EXEC=
 else
@@ -100,7 +102,14 @@ cmd()
 
 _doit()
 {
-	eval "$cmd" >_out 2>&1 || { echo "exit code $?" | fail; exit 1; }
+	if ${LIVE:-false}; then
+		echo
+		script -c "$cmd" -q _out ||
+		    { echo "exit code $?" | fail; exit 1; }
+	else
+		eval "$cmd" >_out 2>&1 ||
+		    { echo "exit code $?" | fail; exit 1; }
+	fi
 }
 
 
