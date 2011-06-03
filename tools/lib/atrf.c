@@ -305,6 +305,18 @@ int atrf_buf_read(struct atrf_dsc *dsc, void *buf, int size)
 }
 
 
+void atrf_sram_write(struct atrf_dsc *dsc, uint8_t addr, uint8_t value)
+{
+	dsc->driver->sram_write(dsc->handle, addr, value);
+}
+
+
+uint8_t atrf_sram_read(struct atrf_dsc *dsc, uint8_t addr)
+{
+	return dsc->driver->sram_read(dsc->handle, addr);
+}
+
+
 int atrf_interrupt(struct atrf_dsc *dsc)
 {
 	return
