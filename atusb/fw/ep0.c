@@ -169,7 +169,7 @@ static int my_setup(const struct setup_request *setup)
 		size = setup->wLength+2;
 		usb_recv(&eps[0], buf+2, setup->wLength, do_buf_write, NULL);
 		return 1;
-	case ATUSB_TO_DEV(ATUSB_SRAM_READ):
+	case ATUSB_FROM_DEV(ATUSB_SRAM_READ):
 		debug("ATUSB_SRAM_READ\n");
 		if (setup->wIndex > SRAM_SIZE)
 			return 0;
@@ -178,10 +178,10 @@ static int my_setup(const struct setup_request *setup)
 		spi_begin();
 		spi_send(AT86RF230_SRAM_READ);
 		spi_send(setup->wIndex);
-		for (i = 0; i != size; i++)
+		for (i = 0; i != setup->wLength; i++)
 			buf[i] = spi_recv();
 		spi_end();
-		usb_send(&eps[0], buf, size, NULL, NULL);
+		usb_send(&eps[0], buf, setup->wLength, NULL, NULL);
 		return 1;
 
 	default:
