@@ -402,6 +402,42 @@ fail:
 }
 
 
+/* ----- SRAM access ------------------------------------------------------- */
+
+
+static void atnet_sram_write(void *handle, uint8_t addr, uint8_t value)
+{
+	struct atnet_dsc *dsc = handle;
+
+	if (dsc->error)
+		return;
+	if (dialog(dsc, "SETRAM 0x%02x 0x%02x", addr, value) < 0)
+		dsc->error = 1;
+}
+
+
+static uint8_t atnet_sram_read(void *handle, uint8_t addr)
+{
+	struct atnet_dsc *dsc = handle;
+	unsigned long value;
+	char *end;
+
+	if (dsc->error)
+		return;
+	if (dialog(dsc, "GETRAM 0x%02x", addr) < 0) {
+		dsc->error = 1;
+		return 0;
+	}
+	value = strtoul(dsc->reply+1, &end, 0);
+	if (*end || value > 255) {
+		fprintf(stderr, "invalid response \"%s\"\n", dsc->reply+1);
+		dsc->error = 1;
+		return 0;
+	}
+	return value;
+}
+
+
 /* ----- RF interrupt ------------------------------------------------------ */
 
 
@@ -457,5 +493,7 @@ struct atrf_driver atnet_driver = {
 	.reg_read	= atnet_reg_read,
 	.buf_write	= atnet_buf_write,
 	.buf_read	= atnet_buf_read,
+	.sram_write	= atnet_sram_write,
+	.sram_read	= atnet_sram_read,
 	.interrupt	= atnet_interrupt,
 };

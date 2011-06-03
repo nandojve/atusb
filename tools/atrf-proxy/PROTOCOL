@@ -48,6 +48,14 @@ READ
 +length raw-data
 -message
 
+SETRAM addr value
++[comment]
+-message
+
+GETRAM addr
++value
+-message
+
 POLL
 +0|1
 -message
