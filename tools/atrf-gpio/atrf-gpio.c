@@ -1,0 +1,204 @@
+/*
+ * atrf-gpio/atrf-gpio.c - ATBEN/ATUSB GPIO test
+ *
+ * Written 2011 by Werner Almesberger
+ * Copyright 2011 Werner Almesberger
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ */
+
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <string.h>
+
+#include "at86rf230.h"
+#include "atrf.h"
+
+#include "atrf-gpio.h"
+
+
+static void atben(struct atrf_dsc *dsc, const char *pattern, const char *next)
+{
+#ifdef HAVE_ATBEN
+	do_atben(dsc, pattern, next);
+#else
+	fprintf(stderr, "not compiled with ATBEN support\n");
+	exit(1);
+#endif
+}
+
+
+static void atusb(struct atrf_dsc *dsc, const char *pattern, const char *next)
+{
+#ifdef HAVE_ATUSB
+	do_atusb(dsc, pattern, next);
+#else
+	fprintf(stderr, "not compiled with ATUSB support\n");
+	exit(1);
+#endif
+}
+
+
+static void bad_reg_op(const char *arg)
+{
+	fprintf(stderr, "invalid operation \"%s\"\n", arg);
+	exit(1);
+}
+
+
+static int reg_op(struct atrf_dsc *dsc, const char *arg, int doit)
+{
+	const char *p;
+	char *end;
+	unsigned long reg, value;
+	uint8_t got;
+
+	p = strchr(arg, '=');
+	if (!p)
+		p = strchr(arg, ':');
+	if (!p)
+		p = strchr(arg, '!');
+	if (!p)
+		p = strchr(arg, '/');
+	if (!p)
+		return 0;
+	reg = strtoul(arg, &end, 0);
+	if (end != p || reg > 0xff)
+		bad_reg_op(arg);
+	value = strtoul(p+1, &end, 0);
+	if (*end || value > 0xff)
+		bad_reg_op(arg);
+	if (!doit)
+		return 1;
+	switch (*p) {
+	case '=':
+		atrf_reg_write(dsc, reg, value);
+		break;
+	case ':':
+		got = atrf_reg_read(dsc, reg);
+		if (end != p+1 && got != value) {
+			fprintf(stderr,
+			    "register 0x%02lx: got 0x%02x expected 0x%02lx\n",
+			    reg, got, value);
+			exit(1);
+		}
+		break;
+	case '!':
+		atrf_sram_write(dsc, reg, value);
+		break;
+	case '/':
+		got = atrf_sram_read(dsc, reg);
+		if (got != value) {
+			fprintf(stderr,
+			    "got 0x%02x expected 0x%02lx\n", got, value);
+			exit(1);
+		}
+		break;
+	default:
+		abort();
+	}
+	return 1;
+}
+
+
+static void usage(const char *name)
+{
+	fprintf(stderr,
+"usage: %s [-d driver[:arg]] command|pattern ...\n"
+"  -d driver[:arg]  use the specified driver (default: %s)\n\n"
+"  command is one of:\n"
+"    reg=value    set transceiver register\n"
+"    reg:[value]  read transceiver register and (optionally) verify value\n"
+"    addr!value   write one byte to SRAM\n"
+"    addr/value   read and verify one byte from SRAM\n"
+"    #...         comment\n\n"
+"  pattern is a sequence of the following characters:\n"
+"    0 = output a strong 0             1 = output a strong 1\n"
+"    L = pull up, expect to read 0     H = pull up, expect to read 1\n"
+"    l = no pull-up, expect to read 0  h = no pull-up, expect to read 1\n"
+"    Z = pull up, don't read           z = no pull-up, don't read\n"
+"    x = don't care                    . = separator\n"
+    , name, atrf_default_driver_name());
+	exit(1);
+}
+
+
+/*
+ * 0	strong 0 out
+ * 1	strong 1 out
+ * H	pull-up, read 1
+ * L	pull-up, read 0
+ * h	no pull-up, read 1
+ * l	no pull-up, read 0
+ * Z	pull-up, don't read
+ * z	no pull-up, don't read
+ * x	don't care
+ * .	separator
+ */
+
+
+int main(int argc, char *const *argv)
+{
+	const char *driver = NULL;
+	struct atrf_dsc *dsc;
+	int trx_off = 1;
+	int c, i;
+	const char *s;
+
+	while ((c = getopt(argc, argv, "d:p")) != EOF)
+		switch (c) {
+		case 'd':
+			driver = optarg;
+			break;
+		case 'p':
+			trx_off = 0;
+			break;
+		default:
+			usage(*argv);
+		}
+
+	for (i = optind; i != argc; i++) {
+		if (*argv[i] == '#')
+			continue;
+		if (reg_op(NULL, argv[i], 0))
+			continue;
+		for (s = argv[i]; *s; s++)
+			if (!strchr("01HLhlZzx.", *s))
+				fprintf(stderr,
+				    "invalid configuration '%c' in \"%s\"\n",
+				    *s, argv[i]);
+	}
+
+	dsc = atrf_open(driver);
+	if (!dsc)
+		return 1;
+
+	atrf_reset_rf(dsc);
+
+	if (trx_off) {
+		atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_TRX_OFF);
+		do usleep(100);
+		while ((atrf_reg_read(dsc, REG_TRX_STATUS) & TRX_STATUS_MASK)
+		    != TRX_STATUS_TRX_OFF);
+	}
+
+	for (i = optind; i != argc; i++) {
+		if (*argv[i] == '#')
+			continue;
+		if (reg_op(dsc, argv[i], 1))
+			continue;
+		if (atrf_usb_handle(dsc))
+			atusb(dsc, argv[i], argv[i+1]);
+		else
+			atben(dsc, argv[i], argv[i+1]);
+	}
+
+//	atrf_close(dsc);
+
+	return 0;
+}
