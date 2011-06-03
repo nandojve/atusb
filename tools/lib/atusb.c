@@ -220,6 +220,45 @@ static int atusb_buf_read(void *handle, void *buf, int size)
 }
 
 
+/* ----- SRAM access ------------------------------------------------------- */
+
+
+static void atusb_sram_write(void *handle, uint8_t addr, uint8_t value)
+{
+	struct atusb_dsc *dsc = handle;
+	int res;
+
+	if (dsc->error)
+		return;
+
+	res = usb_control_msg(dsc->dev, TO_DEV, ATUSB_SRAM_WRITE, 0, addr,
+	    &value, 1, 1000);
+	if (res < 0) {
+		fprintf(stderr, "ATUSB_SRAM_WRITE: %d\n", res);
+		dsc->error = 1;
+	}
+}
+
+
+static uint8_t atusb_sram_read(void *handle, uint8_t addr)
+{
+	struct atusb_dsc *dsc = handle;
+	uint8_t value = 0;
+	int res;
+
+	if (dsc->error)
+		return 0;
+
+	res = usb_control_msg(dsc->dev, FROM_DEV, ATUSB_SRAM_READ, 0, addr,
+	    (void *) &value, 1, 1000);
+	if (res < 0) {
+		fprintf(stderr, "ATUSB_SRAM_READ: %d\n", res);
+		dsc->error = 1;
+	}
+	return value;
+}
+
+
 /* ----- RF interrupt ------------------------------------------------------ */
 
 
@@ -315,5 +354,7 @@ struct atrf_driver atusb_driver = {
 	.reg_read	= atusb_reg_read,
 	.buf_write	= atusb_buf_write,
 	.buf_read	= atusb_buf_read,
+	.sram_write	= atusb_sram_write,
+	.sram_read	= atusb_sram_read,
 	.interrupt	= atusb_interrupt,
 };
