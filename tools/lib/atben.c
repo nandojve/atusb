@@ -326,6 +326,32 @@ static int atben_buf_read(void *handle, void *buf, int size)
 }
 
 
+static void atben_sram_write(void *handle, uint8_t addr, uint8_t v)
+{
+	struct atben_dsc *dsc = handle;
+
+	spi_begin(dsc);
+	spi_send(dsc, AT86RF230_SRAM_WRITE);
+	spi_send(dsc, addr);
+	spi_send(dsc, v);
+	spi_end(dsc);
+}
+
+
+static uint8_t atben_sram_read(void *handle, uint8_t addr)
+{
+	struct atben_dsc *dsc = handle;
+	uint8_t res;
+
+	spi_begin(dsc);
+	spi_send(dsc, AT86RF230_SRAM_READ);
+	spi_send(dsc, addr);
+	res = spi_recv(dsc);
+	spi_end(dsc);
+	return res;
+}
+
+
 /* ----- SLP_TR ------------------------------------------------------------ */
 
 
@@ -377,5 +403,7 @@ struct atrf_driver atben_driver = {
 	.reg_read	= atben_reg_read,
 	.buf_write	= atben_buf_write,
 	.buf_read	= atben_buf_read,
+	.sram_write	= atben_sram_write,
+	.sram_read	= atben_sram_read,
 	.interrupt	= atben_interrupt,
 };
