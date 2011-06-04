@@ -111,7 +111,31 @@ should always pass the enumeration test.
 
 <SUBSECTION title="GPIO scan">
 
-@@@
+The GPIO scan outputs a series of test patterns on the I/O lines driving
+the transceiver and compares the state at which the lines settle with a
+set of expected values. This allows the detection of unconnected pins
+and of shorted traces.
+<P>
+If the GPIO scan encounters an inconsistency, it fails the test and writes
+a report to the
+file <SAMP>_log</SAMP>. This report contains a list of GPIO pins with their
+configuration, the expected value, and their actual value.
+<P>
+For example, a short between SLP_TR and VDD on an <B>atben</B> board would
+be reported as follows:
+<PRE>
+name    cfg exp got
+SCLK    Z   -   1
+MISO    Z   -   1
+SLP_TR  Z   0   1       ***
+MOSI    Z   -   1
+nSEL    Z   1   1
+IRQ     Z   0   0
+at "zzlzhl", next "# reset state"
+</PRE>
+The configuration is <B>0</B> for a pin driven low, <B>1</B> for a pin driven
+high, <B>Z</B> for a pin in Hi-Z state, and <B>R</B> for Hi-Z state with a
+pull-up.
 
 
 <!-- ---------------------------------------------------------------------- -->
