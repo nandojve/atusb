@@ -53,6 +53,21 @@ static void set_clkm(void)
 
 void reset_rf(void)
 {
+	/* set up all the outputs; default port value is 0 */
+
+	DDRB = 0;
+	DDRC = 0;
+	DDRD = 0;
+	PORTB = 0;
+	PORTC = 0;
+	PORTD = 0;
+
+	OUT(LED);
+	OUT(nRST_RF);   /* this also resets the transceiver */
+	OUT(SLP_TR);
+
+	spi_init();
+
 	/* AT86RF231 data sheet, 12.4.13, reset pulse width: 625 ns (min) */
 
 	CLR(nRST_RF);
@@ -151,6 +166,40 @@ static void get_sernum(void)
 }
 
 
+int gpio(uint8_t port, uint8_t data, uint8_t dir, uint8_t mask, uint8_t *res)
+{
+	switch (port) {
+	case 1:
+		DDRB = (DDRB & ~mask) | dir;
+		PORTB = (PORTB & ~mask) | data;
+		_delay_ms(1);
+		res[0] = PINB;
+		res[1] = PORTB;
+		res[2] = DDRB;
+		break;
+	case 2:
+		DDRC = (DDRC & ~mask) | dir;
+		PORTC = (PORTC & ~mask) | data;
+		_delay_ms(1);
+		res[0] = PINC;
+		res[1] = PORTC;
+		res[2] = DDRC;
+		break;
+	case 3:
+		DDRD = (DDRD & ~mask) | dir;
+		PORTD = (PORTD & ~mask) | data;
+		_delay_ms(1);
+		res[0] = PIND;
+		res[1] = PORTD;
+		res[2] = DDRD;
+		break;
+	default:
+		return 0;
+	}
+	return 1;
+}
+
+
 void board_init(void)
 {
 	/* Disable the watchdog timer */
@@ -164,12 +213,6 @@ void board_init(void)
 
 	CLKPR = 1 << CLKPCE;
 	CLKPR = 0;
-
-	/* set up all the outputs; default port value is 0 */
-
-	OUT(LED);
-	OUT(nRST_RF);   /* this also resets the transceiver */
-	OUT(SLP_TR);
 
 	/* configure timer 1 as a free-running CLK counter */
 

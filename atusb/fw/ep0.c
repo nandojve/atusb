@@ -113,6 +113,16 @@ static int my_setup(const struct setup_request *setup)
 		usb_send(&eps[0], buf, size, NULL, NULL);
 		return 1;
 
+	case ATUSB_FROM_DEV(ATUSB_GPIO):
+		debug("ATUSB_GPIO\n");
+		if (setup->wLength < 3)
+			return 0;
+		if (!gpio(setup->wIndex, setup->wValue, setup->wValue >> 8,
+		    setup->wIndex >> 8, buf))
+			return 0;
+		usb_send(&eps[0], buf, 3, NULL, NULL);
+		return 1;
+
 	case ATUSB_TO_DEV(ATUSB_REG_WRITE):
 		debug("ATUSB_REG_WRITE\n");
 		spi_begin();
