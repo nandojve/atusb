@@ -73,7 +73,7 @@ static char decode_cfg(uint32_t bit)
 {
 	if (*pddir & bit)
 		return *pddat & bit ? '1' : '0';
-	return *pdpe & bit ? 'Z' : 'P';
+	return *pdpe & bit ? 'Z' : 'R';
 }
 
 
@@ -85,9 +85,10 @@ static void dump_pd(uint32_t expect, uint32_t got, uint32_t mask)
 	for (pin = pins; pin->name; pin++) {
 		uint32_t bit = 1 << pin->bit;
 
-		fprintf(stderr, "%s\t%c   %d   %d",
+		fprintf(stderr, "%s\t%c   %c   %d",
 		    pin->name, decode_cfg(bit),
-		    !!(expect & bit), !!(got & bit));
+		    mask & bit ? expect & bit ? '1' : '0' : '-',
+		    !!(got & bit));
 		if ((expect ^ got) & mask & bit)
 			fprintf(stderr, "\t***");
 		fputc('\n', stderr);
