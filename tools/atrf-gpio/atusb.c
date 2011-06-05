@@ -28,7 +28,7 @@
 static const char *name[24] = {
 	"PB0",		"PB1/P16",	"PB2/P15",	"PB3/P14",
 	"PB4/SLP_TR",	"PB5",		"PB6/LED",	"PB7",
-	"PC0",		"PC1/P13",	"PC2",		"PC3",
+	"PC0",		"PC1/P13",	"PC2",		"PC3(NC)",
 	"PC4",		"PC5",		"PC6",		"PC7/nRST_RF",
 	"PD0/IRQ_RF",	"PD1/nSS",	"PD2/MISO",	"PD3/MOSI",
 	"PD4",		"PD5/SCLK",	"PD6",		"PD7"
@@ -40,7 +40,7 @@ static uint8_t orig_data[3], orig_dir[3];
 
 
 static uint8_t gpio(struct atrf_dsc *dsc,
-    uint8_t port, uint8_t *dir, uint8_t *data, uint8_t mask)
+    uint8_t port, uint8_t *data, uint8_t *dir, uint8_t mask)
 {
 	uint8_t buf[3];
 	int res;
@@ -52,14 +52,18 @@ static uint8_t gpio(struct atrf_dsc *dsc,
 		fprintf(stderr, "ATUSB_GPIO: %s\n", usb_strerror());
 		exit(1);
 	}
+	if (res != 3) {
+		fprintf(stderr, "ATUSB_GPIO: expected 3 bytes, got %d\n", res);
+		exit(1);
+	}
 	*data = buf[1];
 	*dir = buf[2];
 	return buf[0];
 }
 
 
-static void dump(const uint8_t *expect, const uint8_t *got,
-    const uint8_t *read)
+static void dump(const uint8_t *data, const uint8_t *dir,
+    const uint8_t *expect, const uint8_t *got, const uint8_t *read)
 {
 	int i;
 
@@ -68,11 +72,13 @@ static void dump(const uint8_t *expect, const uint8_t *got,
 		int port = i >> 3;
 		int bit = 1 << (i & 7);
 
-		fprintf(stderr, "%-16s%c   %d   %d",
-		    name[i], '?',
-		    !!(expect[port] & bit), !!(got[port] & bit));
+		fprintf(stderr, "%-16s%c   %c   %d", name[i],
+		    dir[port] & bit ? data[port] & bit ? '1' : '0' :
+		    data[port] & bit ? 'R' : 'Z',
+		    read[port] & bit ? expect[port] & bit ? '1' : '0' : '-',
+		    !!(got[port] & bit));
 		if ((expect[port] ^ got[port]) & read[port] & bit)
-			fprintf(stderr, "\t***\n");
+			fprintf(stderr, "\t***");
 		fputc('\n', stderr);
 	}
 }
@@ -153,10 +159,10 @@ void do_atusb(struct atrf_dsc *dsc, const char *pattern, const char *next)
 	}
 
 	for (i = 0; i <= port; i++)
-		got[i] = gpio(dsc, i+1, data+i, dir+i, 0);
+		got[i] = gpio(dsc, i+1, data+i, dir+i, mask[i]);
 	for (i = 0; i <= port; i++)
 		if ((got[i] & read[i]) != expect[i]) {
-			dump(expect, got, read);
+			dump(data, dir, expect, got, read);
 			fprintf(stderr, "at \"%s\", next \"%s\"\n", pattern,
 			    next);
 			exit(1);
