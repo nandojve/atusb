@@ -172,30 +172,43 @@ int gpio(uint8_t port, uint8_t data, uint8_t dir, uint8_t mask, uint8_t *res)
 	case 1:
 		DDRB = (DDRB & ~mask) | dir;
 		PORTB = (PORTB & ~mask) | data;
-		_delay_ms(1);
+		break;
+	case 2:
+		DDRC = (DDRC & ~mask) | dir;
+		PORTC = (PORTC & ~mask) | data;
+		break;
+	case 3:
+		DDRD = (DDRD & ~mask) | dir;
+		PORTD = (PORTD & ~mask) | data;
+		break;
+	default:
+		return 0;
+	}
+
+	/* disable the UART so that we can meddle with these pins as well. */
+	UCSR1B = 0;
+	_delay_ms(1);
+
+	switch (port) {
+	case 1:
 		res[0] = PINB;
 		res[1] = PORTB;
 		res[2] = DDRB;
 		break;
 	case 2:
-		DDRC = (DDRC & ~mask) | dir;
-		PORTC = (PORTC & ~mask) | data;
-		_delay_ms(1);
 		res[0] = PINC;
 		res[1] = PORTC;
 		res[2] = DDRC;
 		break;
 	case 3:
-		DDRD = (DDRD & ~mask) | dir;
-		PORTD = (PORTD & ~mask) | data;
-		_delay_ms(1);
 		res[0] = PIND;
 		res[1] = PORTD;
 		res[2] = DDRD;
 		break;
-	default:
-		return 0;
 	}
+
+	spi_init();
+
 	return 1;
 }
 
