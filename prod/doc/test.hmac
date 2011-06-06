@@ -210,7 +210,7 @@ is too strong.
 <A href="atrf-path.png"><IMG src="atrf-path-small.png"</A>
 <P>
 To finish the test, the operator must type either <B>P</B>, <B>F</B>,
-or <B>Q</B> in the window shown. <B>P</B> means "pass" and can only be
+or <B>Q</B>. <B>P</B> means "pass" and can only be
 entered if the measurement is within the limits. <B>F</B> means "fail"
 and can only be entered if the measurements is outside the limits.
 <B>Q</B>, quit, can be entered at any time and also fails the test.

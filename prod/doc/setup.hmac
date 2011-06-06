@@ -409,8 +409,8 @@ To generate the profiles for <B>atben</B> and <B>atusb</B>, simply run
 <PRE>
 make spectrum
 </PRE>
-Then place the devices appropriately and press <B>D</B> in the measurement
-window to use the displayed spectrum as the reference. Multiple spectra
+Then place the devices appropriately and press <B>D</B>
+to use the displayed spectrum as the reference. Multiple spectra
 can be merged into the reference, e.g., if unavoidable environmental
 variations cause
 significant changes. Spectra included in the reference are shown in blue.
