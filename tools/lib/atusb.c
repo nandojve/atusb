@@ -259,6 +259,32 @@ static uint8_t atusb_sram_read(void *handle, uint8_t addr)
 }
 
 
+/* ----- SLP_TR ------------------------------------------------------------ */
+
+
+static void atusb_slp_tr(void *handle, int on, int pulse)
+{
+	struct atusb_dsc *dsc = handle;
+	int res;
+
+	if (dsc->error)
+		return;
+
+	if (!on || !pulse) {
+		fprintf(stderr,
+		    "SLP_TR mode on=%d pulse=%d not supported\n", on, pulse);
+		return;
+	}
+
+	res = usb_control_msg(dsc->dev, TO_DEV, ATUSB_SLP_TR, 0, 0, NULL, 0,
+	    1000);
+	if (res < 0) {
+		fprintf(stderr, "ATUSB_SLP_TR: %d\n", res);
+		dsc->error = 1;
+	}
+}
+
+
 /* ----- RF interrupt ------------------------------------------------------ */
 
 
@@ -348,7 +374,7 @@ struct atrf_driver atusb_driver = {
 	.reset		= atusb_reset,
 	.reset_rf	= atusb_reset_rf,
 	.test_mode	= atusb_test_mode,
-	.slp_tr		= NULL,	/* @@@ not yet */
+	.slp_tr		= atusb_slp_tr,
 	.set_clkm	= atusb_set_clkm,
 	.reg_write	= atusb_reg_write,
 	.reg_read	= atusb_reg_read,
