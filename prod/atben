@@ -53,7 +53,7 @@ gpio_ben()
 
 	step "GPIO scan (SLP_TR)"
 	cmd "$LOCAL_EXEC \"atrf-gpio -d $LOCAL_DUT	\
-		00!85	'# write 0x55 to the buffer'	\
+		'00!85'	'# write 0x55 to the buffer'	\
 		00/85	'# read back the buffer value'	\
 		xx1hxo	'# enter SLEEP'			\
 		xx0hxo	'# leave SLEEP'			\
