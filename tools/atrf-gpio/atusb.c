@@ -39,6 +39,21 @@ static struct atrf_dsc *orig_dsc;
 static uint8_t orig_data[3], orig_dir[3];
 
 
+static void dump_port(int port, uint8_t data, uint8_t dir, uint8_t mask)
+{
+	int i;
+
+	fprintf(stderr, "name\t\tcfg\n");
+	for (i = 0; i != 8; i++) {
+		int bit = 1 << (i & 7);
+
+		fprintf(stderr, "%-16s%c\n", name[port*8+i],
+		    mask & bit ? dir & bit ? data & bit ? '1' : '0' :
+		    data & bit ? 'R' : 'Z' : 'x');
+	}
+}
+
+
 static uint8_t gpio(struct atrf_dsc *dsc,
     uint8_t port, uint8_t *data, uint8_t *dir, uint8_t mask)
 {
@@ -49,6 +64,7 @@ static uint8_t gpio(struct atrf_dsc *dsc,
             FROM_DEV, ATUSB_GPIO, *dir << 8 | *data, mask << 8 | port,
 	    (void *) buf, sizeof(buf), 1000);
 	if (res < 0) {
+		dump_port(port-1, *data, *dir, mask);
 		fprintf(stderr, "ATUSB_GPIO: %s\n", usb_strerror());
 		exit(1);
 	}
