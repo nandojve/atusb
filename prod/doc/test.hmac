@@ -71,7 +71,7 @@ for an <B>atusb</B> DUT. It performs the following steps:
 <UL>
   <LI>Enumeration (<B>atusb</B> only)
   <LI>LED (<B>atusb</B> only; not yet implemented)
-  <LI>GPIO scan (not yet implemented)
+  <LI>GPIO scan
   <LI>Identification
   <LI>Crystal frequency
   <LI>Spectrum
@@ -131,7 +131,7 @@ SLP_TR  Z   0   1       ***
 MOSI    Z   -   1
 nSEL    Z   1   1
 IRQ     Z   0   0
-at "zzlzhl", next "# reset state"
+at "zzozho", next "# reset state"
 </PRE>
 The configuration is <B>0</B> for a pin driven low, <B>1</B> for a pin driven
 high, <B>Z</B> for a pin in Hi-Z state, and <B>R</B> for Hi-Z state with a
