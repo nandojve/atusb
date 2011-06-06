@@ -70,7 +70,7 @@ make usb
 for an <B>atusb</B> DUT. It performs the following steps:
 <UL>
   <LI>Enumeration (<B>atusb</B> only)
-  <LI>LED (<B>atusb</B> only; not yet implemented)
+  <LI>LED (<B>atusb</B> only)
   <LI>GPIO scan
   <LI>Identification
   <LI>Crystal frequency
@@ -103,7 +103,10 @@ should always pass the enumeration test.
 
 <SUBSECTION title="LED (atusb only)">
 
-@@@
+In the LED test, the <B>atusb</B> LED blinks quickly until the operator
+decides whether it is working properly.
+To finish the test, the operator must type either <B>P</B> to pass, or
+<B>F</B>, or <B>Q</B> to fail.
 
 
 <!-- ---------------------------------------------------------------------- -->
