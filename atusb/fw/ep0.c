@@ -123,6 +123,11 @@ static int my_setup(const struct setup_request *setup)
 		usb_send(&eps[0], buf, 3, NULL, NULL);
 		return 1;
 
+	case ATUSB_TO_DEV(ATUSB_SLP_TR):
+		debug("ATUSB_SLP_TR\n");
+		slp_tr();
+		return 1;
+
 	case ATUSB_TO_DEV(ATUSB_REG_WRITE):
 		debug("ATUSB_REG_WRITE\n");
 		spi_begin();

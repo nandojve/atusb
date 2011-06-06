@@ -26,6 +26,7 @@
  * host->	ATUSB_TEST		-		-	0
  * ->host	ATUSB_TIMER		-		-	#bytes (6)
  * ->host	ATUSB_GPIO		dir+data	mask+p#	3
+ * host->	ATUSB_SLP_TR		-		-	0
  *
  * host->	ATUSB_REG_WRITE		value		addr	0
  * ->host	ATUSB_REG_READ		-		addr	1
@@ -74,6 +75,7 @@ enum atspi_requests {
 	ATUSB_TEST,			/* atusb-sil only */
 	ATUSB_TIMER,
 	ATUSB_GPIO,
+	ATUSB_SLP_TR,
 	ATUSB_REG_WRITE			= 0x20,	/* transceiver group */
 	ATUSB_REG_READ,
 	ATUSB_BUF_WRITE,

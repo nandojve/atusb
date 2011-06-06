@@ -96,6 +96,13 @@ uint8_t read_irq(void)
 }
 
 
+void slp_tr(void)
+{
+	SET(SLP_TR);
+	CLR(SLP_TR);
+}
+
+
 void led(int on)
 {
 	if (on)

@@ -70,6 +70,7 @@ extern uint8_t board_sernum[42];
 void reset_rf(void);
 void reset_cpu(void);
 uint8_t read_irq(void);
+void slp_tr(void);
 
 void led(int on);
 void panic(void);
