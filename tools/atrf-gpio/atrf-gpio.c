@@ -227,9 +227,10 @@ static void pass_fail(void)
 static void usage(const char *name)
 {
 	fprintf(stderr,
-"usage: %s [-c] [-d driver[:arg]] command|pattern ...\n"
+"usage: %s [-c] [-d driver[:arg]] [-p] command|pattern ...\n\n"
 "  -c               cycle, waiting for Pass/Fail/Quit input\n"
-"  -d driver[:arg]  use the specified driver (default: %s)\n\n"
+"  -d driver[:arg]  use the specified driver (default: %s)\n"
+"  -p               stay in P_ON state instead of entering TRX_OFF\n\n"
 "  command is one of:\n"
 "    reg=value    set transceiver register\n"
 "    reg:[value[/mask]]\n"
@@ -289,6 +290,9 @@ int main(int argc, char *const *argv)
 		default:
 			usage(*argv);
 		}
+
+	if (optind == argc)
+		usage(*argv);
 
 	for (i = optind; i != argc; i++) {
 		if (*argv[i] == '#')
