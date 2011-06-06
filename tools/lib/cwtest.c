@@ -148,9 +148,9 @@ void cw_test_end(struct atrf_dsc *dsc)
 		break;
 	case artf_at86rf231:
 		usleep(2);	/* table 7-1: tTR12(typ) = 1 us */
-		atrf_slp_tr(dsc, 1);
+		atrf_slp_tr(dsc, 1, 0);
 		usleep(10);	/* table 7-1: tTR3(typ) doesn't really apply */
-		atrf_slp_tr(dsc, 0);
+		atrf_slp_tr(dsc, 0, 0);
 		usleep(500);	/* table 7-1: tTR2(typ) = 380 */
 		break;
 	default:

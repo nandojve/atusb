@@ -355,7 +355,7 @@ static uint8_t atben_sram_read(void *handle, uint8_t addr)
 /* ----- SLP_TR ------------------------------------------------------------ */
 
 
-static void atben_slp_tr(void *handle, int on)
+static void atben_slp_tr(void *handle, int on, int pulse)
 {
 	struct atben_dsc *dsc = handle;
 
@@ -363,6 +363,12 @@ static void atben_slp_tr(void *handle, int on)
 		PDDATS = SLP_TR;
 	else
 		PDDATC = SLP_TR;
+	if (!pulse)
+		return;
+	if (on)
+		PDDATC = SLP_TR;
+	else
+		PDDATS = SLP_TR;
 }
 
 

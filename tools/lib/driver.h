@@ -27,7 +27,7 @@ struct atrf_driver {
 	void (*reset)(void *dsc);
 	void (*reset_rf)(void *dsc);
 	void (*test_mode)(void *dsc);
-	void (*slp_tr)(void *dsc, int on);
+	void (*slp_tr)(void *dsc, int on, int pulse);
 	int (*set_clkm)(void *dsc, int mhz);
 	void (*reg_write)(void *dsc, uint8_t reg, uint8_t value);
 	uint8_t (*reg_read)(void *dsc, uint8_t reg);

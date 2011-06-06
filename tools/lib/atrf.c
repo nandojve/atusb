@@ -226,11 +226,11 @@ int atrf_test_mode(struct atrf_dsc *dsc)
 }
 
 
-int atrf_slp_tr(struct atrf_dsc *dsc, int on)
+int atrf_slp_tr(struct atrf_dsc *dsc, int on, int pulse)
 {
 	if (!dsc->driver->slp_tr)
 		return 0;
-	dsc->driver->slp_tr(dsc->handle, on);
+	dsc->driver->slp_tr(dsc->handle, on, pulse);
 	return 1;
 }
 

@@ -178,8 +178,7 @@ unsigned atben_sample(struct atrf_dsc *dsc)
 	 * high overhead, though, so we optimize it below.
 	 */
 
-	atrf_slp_tr(dsc, 1);
-	atrf_slp_tr(dsc, 0);
+	atrf_slp_tr(dsc, 1, 1);
 	while (i) {
 		if (atrf_interrupt(dsc))
 			break;

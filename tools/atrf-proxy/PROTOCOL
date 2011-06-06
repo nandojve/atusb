@@ -24,7 +24,7 @@ TEST
 +[comment]
 -message
 
-SLP_TR 0|1
+SLP_TR 0|1 0|1
 +[comment]
 -message
 

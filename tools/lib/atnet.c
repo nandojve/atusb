@@ -266,13 +266,13 @@ static void atnet_test_mode(void *handle)
 }
 
 
-static void atnet_slp_tr(void *handle, int on)
+static void atnet_slp_tr(void *handle, int on, int pulse)
 {
 	struct atnet_dsc *dsc = handle;
 
 	if (dsc->error)
 		return;
-	if (dialog(dsc, "SLP_TR %d", on) < 0)
+	if (dialog(dsc, "SLP_TR %d %d", on, pulse) < 0)
 		dsc->error = 1;
 }
 

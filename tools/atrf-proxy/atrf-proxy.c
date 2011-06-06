@@ -116,6 +116,20 @@ static int cmd_two(struct atrf_dsc *dsc, struct netio *netio, const char *cmd)
 			return netio_printf(netio, "-I/O error\n");
 		return netio_printf(netio, "+\n");
 	}
+	if (!strcasecmp(cmd, "slp_tr")) {
+		int val;
+
+		if (n > 1)
+			return netio_printf(netio, "-bad argument\n");
+		val = get_num(netio, 1, &ret);
+		if (val < 0)
+			return ret;
+		if (val > 1)
+			return netio_printf(netio, "-bad argument\n");
+		if (atrf_slp_tr(dsc, n, val) < 0)
+			return netio_printf(netio, "-I/O error\n");
+		return netio_printf(netio, "+\n");
+	}
 	abort();
 }
 
@@ -130,18 +144,13 @@ static int cmd_more(struct atrf_dsc *dsc, struct netio *netio, const char *cmd)
 		return cmd_two(dsc, netio, cmd);
 	if (!strcasecmp(cmd, "write"))
 		return cmd_two(dsc, netio, cmd);
+	if (!strcasecmp(cmd, "slp_tr"))
+		return cmd_two(dsc, netio, cmd);
 
 	n = get_num(netio, 1, &ret);
 	if (n < 0)
 		return ret;
 
-	if (!strcasecmp(cmd, "slp_tr")) {
-		if (n > 1)
-			return netio_printf(netio, "-bad argument\n");
-		if (atrf_slp_tr(dsc, n) < 0)
-			return netio_printf(netio, "-I/O error\n");
-		return netio_printf(netio, "+\n");
-	}
 	if (!strcasecmp(cmd, "clkm")) {
 		if (n > 16)
 			return netio_printf(netio, "-bad argument\n");
