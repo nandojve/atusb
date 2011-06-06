@@ -66,11 +66,11 @@ static uint8_t gpio(struct atrf_dsc *dsc,
 	if (res < 0) {
 		dump_port(port-1, *data, *dir, mask);
 		fprintf(stderr, "ATUSB_GPIO: %s\n", usb_strerror());
-		exit(1);
+		_exit(1);
 	}
 	if (res != 3) {
 		fprintf(stderr, "ATUSB_GPIO: expected 3 bytes, got %d\n", res);
-		exit(1);
+		_exit(1);
 	}
 	*data = buf[1];
 	*dir = buf[2];
