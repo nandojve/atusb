@@ -142,18 +142,13 @@ void cw_test_end(struct atrf_dsc *dsc)
 	 * AT86RF231 also exits test mode if we send it to sleep for a
 	 * moment.
 	 */
-	switch (atrf_identify(dsc)) {
-	case artf_at86rf230:
+	if (atrf_identify(dsc) == artf_at86rf230 || atrf_usb_handle(dsc))
 		atrf_reset_rf(dsc);
-		break;
-	case artf_at86rf231:
+	else {
 		usleep(2);	/* table 7-1: tTR12(typ) = 1 us */
 		atrf_slp_tr(dsc, 1, 0);
 		usleep(10);	/* table 7-1: tTR3(typ) doesn't really apply */
 		atrf_slp_tr(dsc, 0, 0);
 		usleep(500);	/* table 7-1: tTR2(typ) = 380 */
-		break;
-	default:
-		abort();
 	}
 }
