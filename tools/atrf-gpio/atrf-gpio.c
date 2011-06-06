@@ -55,8 +55,29 @@ static int reg_op(struct atrf_dsc *dsc, const char *arg, int doit)
 {
 	const char *p;
 	char *end;
-	unsigned long reg, value;
+	unsigned long reg, value, mask = 0xff;
 	uint8_t got;
+
+	if (!strcmp(arg, "delay")) {
+		if (doit)
+			usleep(10000);
+		return 1;
+	}
+	if (!strcmp(arg, "frame")) {
+		if (doit)
+			atrf_buf_write(dsc, "", 1);
+		return 1;
+	}
+	if (!strcmp(arg, "reset")) {
+		if (doit)
+			atrf_reset_rf(dsc);
+		return 1;
+	}
+	if (!strcmp(arg, "slp_tr")) {
+		if (doit)
+			atrf_slp_tr(dsc, 1, 1);
+		return 1;
+	}
 
 	p = strchr(arg, '=');
 	if (!p)
@@ -71,20 +92,31 @@ static int reg_op(struct atrf_dsc *dsc, const char *arg, int doit)
 	if (end != p || reg > 0xff)
 		bad_reg_op(arg);
 	value = strtoul(p+1, &end, 0);
-	if (*end || value > 0xff)
+	if (value > 0xff)
 		bad_reg_op(arg);
+	if (*end) {
+		if (*p != ':')
+			bad_reg_op(arg);
+		if (*end != '/')
+			bad_reg_op(arg);
+		mask = strtoul(end+1, &end, 0);
+		if (*end || mask > 0xff)
+			bad_reg_op(arg);
+	}
+
 	if (!doit)
 		return 1;
+
 	switch (*p) {
 	case '=':
 		atrf_reg_write(dsc, reg, value);
 		break;
 	case ':':
 		got = atrf_reg_read(dsc, reg);
-		if (end != p+1 && got != value) {
+		if (end != p+1 && ((got ^ value) & mask)) {
 			fprintf(stderr,
-			    "register 0x%02lx: got 0x%02x expected 0x%02lx\n",
-			    reg, got, value);
+			    "register 0x%02lx: got 0x%02x expected "
+			    "0x%02lx/0x%02lx\n", reg, got, value, mask);
 			exit(1);
 		}
 		break;
@@ -113,9 +145,14 @@ static void usage(const char *name)
 "  -d driver[:arg]  use the specified driver (default: %s)\n\n"
 "  command is one of:\n"
 "    reg=value    set transceiver register\n"
-"    reg:[value]  read transceiver register and (optionally) verify value\n"
+"    reg:[value[/mask]]\n"
+"                 read transceiver register and (optionally) verify value\n"
 "    addr!value   write one byte to SRAM\n"
 "    addr/value   read and verify one byte from SRAM\n"
+"    delay        wait 10 ms\n"
+"    frame        write a one-byte frame to the frame buffer\n"
+"    reset        reset the transceiver\n"
+"    slp_tr       pulse SLP_TR\n"
 "    #...         comment\n\n"
 "  pattern is a sequence of the following characters:\n"
 "    0 = output a strong 0               1 = output a strong 1\n"
