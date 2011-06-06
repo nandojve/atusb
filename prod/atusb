@@ -17,8 +17,23 @@ enumerate()
 
 led()
 {
+#
+#		BBBBBBBB CCCCCCCC DDDDDDDD
+#		01234567 01234567 01234567
+#
+#		-xxxS-L- -x-----n InMM-S--     
+#		    T E         R RSIO C
+#
 	step "LED"
-	todo
+	cmd "echo >/dev/tty;						\
+		echo 'Press [P]ass if the LED blinks, [F]ail if not'	\
+		  >/dev/tty;						\
+		atrf-gpio -c -p						\
+                xxxxxx1x.xxxxxxxx.xxxxxxxx				\
+		delay=50						\
+                xxxxxx0x.xxxxxxxx.xxxxxxxx				\
+		delay=200"
+	doit
 }
 
 
