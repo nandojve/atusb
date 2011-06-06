@@ -18,35 +18,35 @@ gpio_ben()
 
 	step "GPIO scan (P_ON)"
 	cmd "$LOCAL_EXEC \"atrf-gpio -d $LOCAL_DUT -p \
-		zzlzhl	'# reset state'		\
-		0zlzhl	'# test SCLK'		\
-       		zz1zhl	'# test SLP_TR'		\
-       		zzl0hl	'# test MOSI'		\
-       		zzlz0l	'# test nSEL'\""
+		zzozho	'# reset state'		\
+		0zozho	'# test SCLK'		\
+       		zz1zho	'# test SLP_TR'		\
+       		zzo0ho	'# test MOSI'		\
+       		zzoz0o	'# test nSEL'\""
 	doit
 
 	# TRX_OFF state (transceiver pull-up/downs inactive)
 
 	step "GPIO scan (TRX_OFF)"
 	cmd "$LOCAL_EXEC \"atrf-gpio -d $LOCAL_DUT \
-		hzHhhl	'# TRX_OFF state'	\
-		0zHhhl	'# test SCLK'		\
-		hz0hhl	'# test SLP_TR'		\
-		hzH0hl	'# test MOSI'		\
-		hzHh0l	'# test nSEL'\""
+		hzHhho	'# TRX_OFF state'	\
+		0zHhho	'# test SCLK'		\
+		hz0hho	'# test SLP_TR'		\
+		hzH0ho	'# test MOSI'		\
+		hzHh0o	'# test nSEL'\""
 	doit
 
 	# INT
 
 	step "GPIO scan (INT)"
 	cmd "$LOCAL_EXEC \"atrf-gpio -d $LOCAL_DUT -p	\
-		xxxxxl	'# reset state'			\
+		xxxxxo	'# reset state'			\
 		0x04=1	'# TRX_CTRL_1.IRQ_POLARITY = 1'	\
 		xxxxxh	'# test INT (1)'		\
 		xxxx0h	'# test INT (2)'		\
 		xxxx1h	'# restore nSEL'		\
 		0x04=0	'# TRX_CTRL_1.IRQ_POLARITY = 0'	\
-		xxxxhl	'# test INT again'\""
+		xxxxho	'# test INT again'\""
 	doit
 
 	# SLP_TR
@@ -55,11 +55,10 @@ gpio_ben()
 	cmd "$LOCAL_EXEC \"atrf-gpio -d $LOCAL_DUT	\
 		00!85	'# write 0x55 to the buffer'	\
 		00/85	'# read back the buffer value'	\
-		xx1hxl	'# enter SLEEP'			\
-		xx0hxl	'# leave SLEEP'			\
+		xx1hxo	'# enter SLEEP'			\
+		xx0hxo	'# leave SLEEP'			\
 		00/0xff	'# read back the buffer value'\""
 	doit
-
 }
 
 
