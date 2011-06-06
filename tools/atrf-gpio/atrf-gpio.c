@@ -118,11 +118,11 @@ static void usage(const char *name)
 "    addr/value   read and verify one byte from SRAM\n"
 "    #...         comment\n\n"
 "  pattern is a sequence of the following characters:\n"
-"    0 = output a strong 0             1 = output a strong 1\n"
-"    L = pull up, expect to read 0     H = pull up, expect to read 1\n"
-"    l = no pull-up, expect to read 0  h = no pull-up, expect to read 1\n"
-"    Z = pull up, don't read           z = no pull-up, don't read\n"
-"    x = don't care                    . = separator\n"
+"    0 = output a strong 0               1 = output a strong 1\n"
+"    L = pull up, expect to read 0       H = pull up, expect to read 1\n"
+"    l/o = no pull-up, expect to read 0  h = no pull-up, expect to read 1\n"
+"    Z = pull up, don't read             z = no pull-up, don't read\n"
+"    x = don't care                      . = separator\n"
     , name, atrf_default_driver_name());
 	exit(1);
 }
@@ -134,7 +134,7 @@ static void usage(const char *name)
  * H	pull-up, read 1
  * L	pull-up, read 0
  * h	no pull-up, read 1
- * l	no pull-up, read 0
+ * l/o	no pull-up, read 0
  * Z	pull-up, don't read
  * z	no pull-up, don't read
  * x	don't care
@@ -168,7 +168,7 @@ int main(int argc, char *const *argv)
 		if (reg_op(NULL, argv[i], 0))
 			continue;
 		for (s = argv[i]; *s; s++)
-			if (!strchr("01HLhlZzx.", *s))
+			if (!strchr("01HLhloZzx.", *s))
 				fprintf(stderr,
 				    "invalid configuration '%c' in \"%s\"\n",
 				    *s, argv[i]);

@@ -160,6 +160,7 @@ void do_atusb(struct atrf_dsc *dsc, const char *pattern, const char *next)
 			expect[port] |= bit;
 			/* fall through */
 		case 'l':
+		case 'o':
 			read[port] |= bit;
 			/* fall through */
 		case 'z':

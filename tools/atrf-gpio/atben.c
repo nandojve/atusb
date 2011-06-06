@@ -159,6 +159,7 @@ void do_atben(struct atrf_dsc *dsc, const char *pattern, const char *next)
 			expect |= bit;
 			/* fall through */
 		case 'l':
+		case 'o':
 			read |= bit;
 			/* fall through */
 		case 'z':
