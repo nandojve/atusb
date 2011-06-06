@@ -56,14 +56,14 @@ static void atusb(struct atrf_dsc *dsc, const char *pattern, const char *next)
 /* ----- Commands ---------------------------------------------------------- */
 
 
-static void bad_reg_op(const char *arg)
+static void bad_command(const char *arg)
 {
-	fprintf(stderr, "invalid operation \"%s\"\n", arg);
+	fprintf(stderr, "invalid command \"%s\"\n", arg);
 	exit(1);
 }
 
 
-static int reg_op(struct atrf_dsc *dsc, const char *arg, int doit)
+static int command(struct atrf_dsc *dsc, const char *arg, int doit)
 {
 	const char *p;
 	char *end;
@@ -78,7 +78,7 @@ static int reg_op(struct atrf_dsc *dsc, const char *arg, int doit)
 	if (!strncmp(arg, "delay=", 6)) {
 		value = strtoul(arg+6, &end, 0);
 		if (!value || *end)
-			bad_reg_op(arg);
+			bad_command(arg);
 		if (doit)
 			usleep(value*1000);
 		return 1;
@@ -110,18 +110,18 @@ static int reg_op(struct atrf_dsc *dsc, const char *arg, int doit)
 		return 0;
 	reg = strtoul(arg, &end, 0);
 	if (end != p || reg > 0xff)
-		bad_reg_op(arg);
+		bad_command(arg);
 	value = strtoul(p+1, &end, 0);
 	if (value > 0xff)
-		bad_reg_op(arg);
+		bad_command(arg);
 	if (*end) {
 		if (*p != ':')
-			bad_reg_op(arg);
+			bad_command(arg);
 		if (*end != '/')
-			bad_reg_op(arg);
+			bad_command(arg);
 		mask = strtoul(end+1, &end, 0);
 		if (*end || mask > 0xff)
-			bad_reg_op(arg);
+			bad_command(arg);
 	}
 
 	if (!doit)
@@ -293,7 +293,7 @@ int main(int argc, char *const *argv)
 	for (i = optind; i != argc; i++) {
 		if (*argv[i] == '#')
 			continue;
-		if (reg_op(NULL, argv[i], 0))
+		if (command(NULL, argv[i], 0))
 			continue;
 		for (s = argv[i]; *s; s++)
 			if (!strchr("01HLhloZzx.", *s))
@@ -322,7 +322,7 @@ int main(int argc, char *const *argv)
 		for (i = optind; i != argc; i++) {
 			if (*argv[i] == '#')
 				continue;
-			if (reg_op(dsc, argv[i], 1))
+			if (command(dsc, argv[i], 1))
 				continue;
 			if (atrf_usb_handle(dsc))
 				atusb(dsc, argv[i], argv[i+1]);
