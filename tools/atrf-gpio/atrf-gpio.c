@@ -15,11 +15,20 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
+#include <termios.h>
+#include <fcntl.h>
+#include <errno.h>
 
 #include "at86rf230.h"
 #include "atrf.h"
 
 #include "atrf-gpio.h"
+
+
+#define	DEFAULT_DELAY_MS	10
+
+
+/* ----- Board-specific drivers -------------------------------------------- */
 
 
 static void atben(struct atrf_dsc *dsc, const char *pattern, const char *next)
@@ -44,6 +53,9 @@ static void atusb(struct atrf_dsc *dsc, const char *pattern, const char *next)
 }
 
 
+/* ----- Commands ---------------------------------------------------------- */
+
+
 static void bad_reg_op(const char *arg)
 {
 	fprintf(stderr, "invalid operation \"%s\"\n", arg);
@@ -60,7 +72,15 @@ static int reg_op(struct atrf_dsc *dsc, const char *arg, int doit)
 
 	if (!strcmp(arg, "delay")) {
 		if (doit)
-			usleep(10000);
+			usleep(DEFAULT_DELAY_MS*1000);
+		return 1;
+	}
+	if (!strncmp(arg, "delay=", 6)) {
+		value = strtoul(arg+6, &end, 0);
+		if (!value || *end)
+			bad_reg_op(arg);
+		if (doit)
+			usleep(value*1000);
 		return 1;
 	}
 	if (!strcmp(arg, "frame")) {
@@ -138,10 +158,77 @@ static int reg_op(struct atrf_dsc *dsc, const char *arg, int doit)
 }
 
 
+/* ----- Pass/Fail/Quit input ---------------------------------------------- */
+
+
+static struct termios old_term;
+
+
+static void restore_term(void)
+{
+	if (tcsetattr(0, TCSAFLUSH, &old_term) < 0)
+		perror("tcsetattr");
+}
+
+
+static void raw(void)
+{
+	struct termios term;
+
+	if (tcgetattr(0, &old_term) < 0) {
+		perror("tcgetattr");
+		exit(1);
+	}
+	term = old_term;
+	cfmakeraw(&term);
+	if (tcsetattr(0, TCSAFLUSH, &term) < 0) {
+		perror("tcsetattr");
+		exit(1);
+	}
+	atexit(restore_term);
+	if (fcntl(0, F_SETFL, O_NONBLOCK) < 0) {
+		perror("fcntl");
+		exit(1);
+	}
+}
+
+
+static void pass_fail(void)
+{
+	ssize_t got;
+	char ch;
+
+	got = read(0, &ch, 1);
+	if (got < 0) {
+		if (errno == EAGAIN)
+			return;
+		perror("read");
+		exit(1);
+	}
+	switch (ch) {
+	case 'P':
+	case 'p':
+		exit(0);
+	case 'F':
+	case 'f':
+	case 'Q':
+	case 'q':
+	case 3:	/* Ctrl-C */
+		exit(1);
+	default:
+		break;
+	}
+}
+
+
+/* ----- Command line processing and main loop ----------------------------- */
+
+
 static void usage(const char *name)
 {
 	fprintf(stderr,
-"usage: %s [-d driver[:arg]] command|pattern ...\n"
+"usage: %s [-c] [-d driver[:arg]] command|pattern ...\n"
+"  -c               cycle, waiting for Pass/Fail/Quit input\n"
 "  -d driver[:arg]  use the specified driver (default: %s)\n\n"
 "  command is one of:\n"
 "    reg=value    set transceiver register\n"
@@ -149,7 +236,7 @@ static void usage(const char *name)
 "                 read transceiver register and (optionally) verify value\n"
 "    addr!value   write one byte to SRAM\n"
 "    addr/value   read and verify one byte from SRAM\n"
-"    delay        wait 10 ms\n"
+"    delay[=ms]   wait the specified number of milliseconds (default: %d ms)\n"
 "    frame        write a one-byte frame to the frame buffer\n"
 "    reset        reset the transceiver\n"
 "    slp_tr       pulse SLP_TR\n"
@@ -160,7 +247,7 @@ static void usage(const char *name)
 "    l/o = no pull-up, expect to read 0  h = no pull-up, expect to read 1\n"
 "    Z = pull up, don't read             z = no pull-up, don't read\n"
 "    x = don't care                      . = separator\n"
-    , name, atrf_default_driver_name());
+    , name, atrf_default_driver_name(), DEFAULT_DELAY_MS);
 	exit(1);
 }
 
@@ -183,12 +270,16 @@ int main(int argc, char *const *argv)
 {
 	const char *driver = NULL;
 	struct atrf_dsc *dsc;
+	int cycle = 0;
 	int trx_off = 1;
 	int c, i;
 	const char *s;
 
-	while ((c = getopt(argc, argv, "d:p")) != EOF)
+	while ((c = getopt(argc, argv, "cd:p")) != EOF)
 		switch (c) {
+		case 'c':
+			cycle = 1;
+			break;
 		case 'd':
 			driver = optarg;
 			break;
@@ -224,15 +315,24 @@ int main(int argc, char *const *argv)
 		    != TRX_STATUS_TRX_OFF);
 	}
 
-	for (i = optind; i != argc; i++) {
-		if (*argv[i] == '#')
-			continue;
-		if (reg_op(dsc, argv[i], 1))
-			continue;
-		if (atrf_usb_handle(dsc))
-			atusb(dsc, argv[i], argv[i+1]);
+	if (cycle)
+		raw();
+
+	while (1) {
+		for (i = optind; i != argc; i++) {
+			if (*argv[i] == '#')
+				continue;
+			if (reg_op(dsc, argv[i], 1))
+				continue;
+			if (atrf_usb_handle(dsc))
+				atusb(dsc, argv[i], argv[i+1]);
+			else
+				atben(dsc, argv[i], argv[i+1]);
+		}
+		if (cycle)
+			pass_fail();
 		else
-			atben(dsc, argv[i], argv[i+1]);
+			break;
 	}
 
 //	atrf_close(dsc);
