@@ -1,4 +1,4 @@
-PCBNEW-BOARD Version 1 date Fri Apr  1 19:30:26 2011
+PCBNEW-BOARD Version 1 date Tue Jun  7 16:35:05 2011
 
 # Created by Pcbnew(2010-12-27 BZR 2685)-unstable
 
@@ -20,8 +20,8 @@ $EndGENERAL
 $SHEETDESCR
 Sheet A4 11700 8267
 Title "IEEE 802.15.4 Transceiver (AT86RF231) as 8:10 card"
-Date "1 apr 2011"
-Rev "20110330"
+Date "7 jun 2011"
+Rev "20110607"
 Comp "Werner Almesberger"
 Comment1 ""
 Comment2 ""
@@ -1056,14 +1056,14 @@ Po 235 -235
 $EndPAD
 $EndMODULE  QFN32-VHHD-6
 $MODULE FIDUCIAL
-Po 51890 32756 0 15 4D8A0F1F 4D8A0ED9 ~~
+Po 51890 32756 0 15 4DEE7D30 4D8A0ED9 ~~
 Li FIDUCIAL
 Sc 4D8A0ED9
 AR 
 Op 0 0 0
 .SolderMask 1
-At VIRTUAL 
-T0 -1102 0 200 200 0 40 N V 25 N"FIDUCIAL"
+At SMD 
+T0 -1142 0 200 200 0 40 N V 25 N"FIDUCI-2"
 T1 0 150 200 200 0 40 N I 25 N"Val*"
 $PAD
 Sh "?" O 392 392 0 0 0
@@ -1081,14 +1081,14 @@ Po 0 0
 $EndPAD
 $EndMODULE  FIDUCIAL
 $MODULE FIDUCIAL
-Po 49252 25709 0 15 4D8A109B 4D8A0F8C ~~
+Po 49252 25709 0 15 4DEE7CED 4D8A0F8C ~~
 Li FIDUCIAL
 Sc 4D8A0F8C
 AR 
 Op 0 0 0
 .SolderMask 1
-At VIRTUAL 
-T0 1024 -276 200 200 0 40 N V 25 N"FIDUCIAL"
+At SMD 
+T0 1102 -276 200 200 0 40 N V 25 N"FIDUCI-1"
 T1 0 150 200 200 0 40 N I 25 N"Val*"
 $PAD
 Sh "?" O 392 392 0 0 0
@@ -1955,7 +1955,7 @@ ZLayer 0
 ZAux 9 E
 ZClearance 80 T
 ZMinThickness 100
-ZOptions 1 16 F 80 120
+ZOptions 1 16 S 80 120
 ZCorner 51772 35394 0
 ZCorner 51772 29961 0
 ZCorner 50709 28898 0
@@ -2078,7 +2078,7 @@ ZLayer 0
 ZAux 7 E
 ZClearance 80 T
 ZMinThickness 100
-ZOptions 1 16 F 80 120
+ZOptions 1 16 S 80 120
 ZCorner 48740 29370 0
 ZCorner 49252 28858 0
 ZCorner 49252 26299 0
@@ -2129,7 +2129,7 @@ ZLayer 0
 ZAux 19 E
 ZClearance 80 T
 ZMinThickness 100
-ZOptions 1 16 F 80 120
+ZOptions 1 16 S 80 120
 ZCorner 52323 29331 0
 ZCorner 52323 28937 0
 ZCorner 54291 28937 0
@@ -2189,7 +2189,7 @@ ZLayer 0
 ZAux 17 E
 ZClearance 80 T
 ZMinThickness 100
-ZOptions 1 16 F 80 120
+ZOptions 1 16 S 80 120
 ZCorner 61890 28937 0
 ZCorner 61890 27165 0
 ZCorner 55551 27165 0
@@ -2273,7 +2273,7 @@ ZLayer 15
 ZAux 17 E
 ZClearance 80 T
 ZMinThickness 100
-ZOptions 1 16 F 80 120
+ZOptions 1 16 S 80 120
 ZCorner 52323 29331 0
 ZCorner 52323 28937 0
 ZCorner 54291 28937 0
@@ -2380,7 +2380,7 @@ ZLayer 0
 ZAux 13 E
 ZClearance 80 T
 ZMinThickness 100
-ZOptions 1 16 F 80 120
+ZOptions 1 16 S 80 120
 ZCorner 51220 27835 0
 ZCorner 51378 27677 0
 ZCorner 52047 27677 0
@@ -2413,7 +2413,7 @@ ZLayer 15
 ZAux 3 E
 ZClearance 80 T
 ZMinThickness 100
-ZOptions 1 16 F 200 200
+ZOptions 1 16 S 200 200
 ZCorner 50748 27047 0
 ZCorner 50748 27031 0
 ZCorner 50709 27047 1
@@ -2424,7 +2424,7 @@ ZLayer 15
 ZAux 17 E
 ZClearance 80 T
 ZMinThickness 100
-ZOptions 1 16 F 80 120
+ZOptions 1 16 S 80 120
 ZCorner 61890 28937 0
 ZCorner 61890 27165 0
 ZCorner 55551 27165 0
@@ -2570,7 +2570,7 @@ ZLayer 22
 ZAux 10 E
 ZClearance 80 T
 ZMinThickness 100
-ZOptions 0 16 F 200 200
+ZOptions 0 16 S 200 200
 ZCorner 51850 35472 0
 ZCorner 51850 33465 0
 ZCorner 52402 32913 0
