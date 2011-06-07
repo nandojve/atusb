@@ -178,8 +178,7 @@ spectrum()
 # todo:
 # - trim values (maybe)
 # - decide on power
-# - decide on offset
-	cmd "atrf-path -g -T +0.5 -P $PROFILE $REF $DUT 10"
+	cmd "atrf-path -g -P $PROFILE $REF $DUT 10"
 	expect PASS
 }
 

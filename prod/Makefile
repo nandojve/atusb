@@ -34,10 +34,12 @@ flash:
 	./atusb-flash $(ATUSB_REF) $(ATUSB_DUT)
 
 spectrum:
-	atrf-path -g -T +0.5 $(ATBEN_REF) $(ATBEN_DUT) 10 | \
+	@echo "$(ATBEN_REF) => $(ATBEN_DUT)"
+	atrf-path -g $(ATBEN_REF) $(ATBEN_DUT) 10 | \
 	  $(GENPATHPROF) $(SPECTRUM_MARGIN) >ben.profile || \
 	  { rm -rf ben.profile; exit 1; }
-	atrf-path -g -T +0.5 $(ATUSB_REF) $(ATUSB_DUT) 10 | \
+	@echo "$(ATBEN_DUT) => $(ATBEN_BEN)"
+	atrf-path -g $(ATUSB_REF) $(ATUSB_DUT) 10 | \
 	  $(GENPATHPROF) $(SPECTRUM_MARGIN) >usb.profile || \
 	  { rm -rf usb.profile; exit 1; }
 
