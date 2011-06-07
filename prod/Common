@@ -51,6 +51,12 @@ step()
 #####  Test result  ###########################################################
 
 
+g_echo()
+{
+	/bin/echo -e "$@"
+}
+
+
 finish()
 {
 	echo "$cmd" >>$LOG
@@ -62,7 +68,7 @@ finish()
 
 pass()
 {
-	echo '\r\033[42;30m PASS \033[0m '
+	g_echo '\r\033[42;30m PASS \033[0m '
 	echo "$step: PASS" >>$LOG
 	finish </dev/null
 }
@@ -70,7 +76,7 @@ pass()
 
 fail()
 {
-	echo '\r\033[41;37m FAIL \033[0m '
+	g_echo '\r\033[41;37m FAIL \033[0m '
 	echo "$step: FAIL" >>$LOG
 	finish
 #
@@ -82,7 +88,7 @@ fail()
 
 todo()
 {
-	echo '\r\033[43;30m TODO \033[0m '
+	g_echo '\r\033[43;30m TODO \033[0m '
 	echo "$step: TODO" >>$LOG
 	finish </dev/null
 }
