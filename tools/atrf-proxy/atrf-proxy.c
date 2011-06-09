@@ -224,7 +224,7 @@ static int cmd_zero(struct atrf_dsc *dsc, struct netio *netio, const char *cmd)
 		if (res < 0)
 			return netio_printf(netio, "-I/O error\n");
 		if (!res)
-			usleep(100*1000);
+			usleep(2*1000);
 		return netio_printf(netio, "+%d\n", res);
 	}
 	return netio_printf(netio, "-unrecognized command\n");
