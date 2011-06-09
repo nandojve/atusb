@@ -68,12 +68,12 @@ void reset_rf(void)
 	/* AT86RF231 data sheet, 12.4.13, reset pulse width: 625 ns (min) */
 
 	CLR(nRST_RF);
-	_delay_us(1);
+	_delay_us(2);
 	SET(nRST_RF);
 
 	/* 12.4.14: SPI access latency after reset: 625 ns (min) */
 
-	_delay_us(1);
+	_delay_us(2);
 
 	/* we must restore TRX_CTRL_0 after each reset (9.6.4) */
 
