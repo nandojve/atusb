@@ -19,8 +19,13 @@
 #include "spi.h"
 
 
+static int spi_initialized = 0;
+
+
 void spi_begin(void)
 {
+	if (!spi_initialized)
+		spi_init();
 	CLR(nSS);
 }
 
@@ -41,6 +46,13 @@ void spi_end(void)
 }
 
 
+void spi_off(void)
+{
+	spi_initialized = 0;
+	UCSR1B = 0;
+}
+
+
 void spi_init(void)
 {
 	SET(nSS);
@@ -55,4 +67,6 @@ void spi_init(void)
 	UCSR1B = 1 << RXEN1 | 1 << TXEN1;
 			/* enable receiver and transmitter */
 	UBRR1 = 0;	/* reconfirm the bit rate */
+
+	spi_initialized = 1;
 }

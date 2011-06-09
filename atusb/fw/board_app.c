@@ -94,7 +94,7 @@ int gpio(uint8_t port, uint8_t data, uint8_t dir, uint8_t mask, uint8_t *res)
 	}
 
 	/* disable the UART so that we can meddle with these pins as well. */
-	UCSR1B = 0;
+	spi_off();
 	_delay_ms(1);
 
 	switch (port) {
@@ -114,8 +114,6 @@ int gpio(uint8_t port, uint8_t data, uint8_t dir, uint8_t mask, uint8_t *res)
 		res[2] = DDRD;
 		break;
 	}
-
-	spi_init();
 
 	return 1;
 }
