@@ -43,7 +43,6 @@ int main(void)
 	uint32_t loop = 0;
 
 	board_init();
-	spi_init();
 	reset_rf();
 
 	/* now we should be at 8 MHz */
