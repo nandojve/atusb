@@ -72,7 +72,7 @@ static int xfer_one(struct atrf_dsc *tx, struct atrf_dsc *rx)
 	uint8_t buf[PSDU_SIZE+1]; /* +1 for LQI */
 	int n, i;
 
-	atrf_reg_write(tx, REG_TRX_STATE, TRX_CMD_TX_START);
+	atrf_slp_tr(tx, 1, 1);
 #if 0
 	irq = wait_for_interrupt(rx, IRQ_TRX_END, IRQ_TRX_END | IRQ_RX_START,
 	    1000, 5); /* 5 ms */
