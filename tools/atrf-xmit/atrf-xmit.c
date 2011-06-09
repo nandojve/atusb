@@ -72,10 +72,15 @@ static int xfer_one(struct atrf_dsc *tx, struct atrf_dsc *rx)
 	uint8_t buf[PSDU_SIZE+1]; /* +1 for LQI */
 	int n, i;
 
+	if (atrf_interrupt(rx)) {
+		fprintf(stderr, "unexpected receiver interrupt\n");
+		exit(1);
+	}
+
 	atrf_slp_tr(tx, 1, 1);
-#if 0
+#if 1
 	irq = wait_for_interrupt(rx, IRQ_TRX_END, IRQ_TRX_END | IRQ_RX_START,
-	    1000, 5); /* 5 ms */
+	    1000, 0);
 #else
 	/*
 	 * Just waiting for the maximum time is much faster than polling the
