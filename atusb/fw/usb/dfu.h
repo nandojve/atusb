@@ -78,6 +78,18 @@ struct dfu {
 };
 
 
+#define	DFU_ITF_DESCR(itf)						     \
+	9,			/* bLength */				     \
+	USB_DT_INTERFACE,	/* bDescriptorType */			     \
+	(itf),			/* bInterfaceNumber */			     \
+	0,			/* bAlternateSetting */			     \
+	0,			/* bNumEndpoints */			     \
+	0xfe,			/* bInterfaceClass (application specific) */ \
+	0x01,			/* bInterfaceSubClass (device fw upgrade) */ \
+	0x02,			/* bInterfaceProtocol (DFU mode protocol) */ \
+	0,			/* iInterface */
+
+
 extern struct dfu dfu;
 
 

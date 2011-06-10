@@ -77,15 +77,7 @@ const uint8_t config_descriptor[] = {
 
 	/* Interface #0 */
 
-	9,			/* bLength */
-	USB_DT_INTERFACE,	/* bDescriptorType */
-	0,			/* bInterfaceNumber */
-	0,			/* bAlternateSetting */
-	0,			/* bNumEndpoints */
-	0xfe,			/* bInterfaceClass (application specific) */
-	0x01,			/* bInterfaceSubClass (device fw upgrade) */
-	0x02,			/* bInterfaceProtocol (DFU mode protocol) */
-	0,			/* iInterface */
+	DFU_ITF_DESCR(0)
 };
 
 
