@@ -190,6 +190,7 @@ void usb_poll(void)
 	if (flags & (1 << EORSTI)) {
 		if (user_reset)
 			user_reset();
+		user_setup = NULL;
 		ep_init();
 		UDINT &= ~(1 << EORSTI);
 	}

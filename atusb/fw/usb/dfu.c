@@ -288,7 +288,7 @@ static void my_reset(void)
 
 void dfu_init(void)
 {
-	user_setup = my_setup;
+	user_setups[0] = my_setup;
 	user_get_descriptor = my_descr;
 	user_reset = my_reset;
 }

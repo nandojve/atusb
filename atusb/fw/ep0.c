@@ -209,5 +209,5 @@ static int my_setup(const struct setup_request *setup)
 
 void ep0_init(void)
 {
-	user_setup = my_setup;
+	user_setups[0] = my_setup;
 }
