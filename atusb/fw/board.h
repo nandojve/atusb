@@ -62,6 +62,8 @@
 #define	DFU_USB_PRODUCT	USB_PRODUCT
 
 
+#define	BOARD_MAX_mA	40
+
 #define	HAS_BOARD_SERNUM
 
 extern uint8_t board_sernum[42];

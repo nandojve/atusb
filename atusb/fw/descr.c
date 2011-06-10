@@ -61,7 +61,7 @@ const uint8_t config_descriptor[] = {
 	1,			/* bConfigurationValue (> 0 !) */
 	0,			/* iConfiguration */
 	USB_ATTR_BUS_POWERED,	/* bmAttributes */
-	50/2,			/* bMaxPower (50 mA) */
+	((BOARD_MAX_mA)+1)/2,	/* bMaxPower */
 
 	/* Interface #0 */
 
