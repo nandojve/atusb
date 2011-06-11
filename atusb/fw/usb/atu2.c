@@ -24,6 +24,7 @@
 #include <util/delay.h>
 
 #include <avr/io.h>
+#include <avr/interrupt.h>
 #include "usb.h"
 #include "../board.h"
 
@@ -177,14 +178,17 @@ static void ep_init(void)
 
 	while (!(UESTA0X & (1 << CFGOK)));
 
+	UEIENX =
+	    (1 << RXSTPE) | (1 << RXOUTE) | (1 << STALLEDE) | (1 << TXINE);
+
 	eps[0].state = EP_IDLE;
 	eps[0].size = 64;
 }
 
 
-void usb_poll(void)
+ISR(USB_GEN_vect)
 {
-	uint8_t flags, i;
+	uint8_t flags;
 
 	flags = UDINT;
 	if (flags & (1 << EORSTI)) {
@@ -193,11 +197,17 @@ void usb_poll(void)
 		ep_init();
 		UDINT = ~(1 << EORSTI);
 	}
+}
+
+
+ISR(USB_COM_vect)
+{
+	uint8_t flags, i;
+
 	flags = UEINT;
 	for (i = 0; i != NUM_EPS; i++)
-		if (1 || flags & (1 << i))
+		if (flags & (1 << i))
 			handle_ep(i);
-	/* @@@ USB bus reset */
 }
 
 
@@ -223,6 +233,7 @@ void usb_init(void)
 	USBCON &= ~(1 << FRZCLK);	/* thaw the clock */
 
 	UDCON &= ~(1 << DETACH);	/* attach the pull-up */
+	UDIEN = 1 << EORSTE;		/* enable device interrupts  */
 //	UDCON |= 1 << RSTCPU;		/* reset CPU on bus reset */
 
 	ep_init();

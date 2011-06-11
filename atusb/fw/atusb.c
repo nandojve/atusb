@@ -37,8 +37,11 @@ int main(void)
 	ep0_init();
 	timer_init();
 
+	/* move interrupt vectors to 0 */
+	MCUCR = 1 << IVCE;
+	MCUCR = 0;
+
 	sei();
 
-	while (1)
-		usb_poll();
+	while (1);
 }

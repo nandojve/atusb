@@ -14,6 +14,7 @@
 #include <stdint.h>
 
 #include <avr/io.h>
+#include <avr/interrupt.h>
 #include <avr/pgmspace.h>
 
 #define F_CPU   8000000UL
@@ -50,10 +51,15 @@ int main(void)
 	usb_init();
 	dfu_init();
 
+	/* move interrupt vectors to the boot loader */
+	MCUCR = 1 << IVCE;
+	MCUCR = 1 << IVSEL;
+
+	sei();
+
 	led(1);
 
 	while (loop != MS_TO_LOOPS(2000)) {
-		usb_poll();
 		if (dfu.state == dfuIDLE && pgm_read_byte(zero) != 0xff)
 			loop++;
 		else
@@ -61,6 +67,8 @@ int main(void)
 	}
 
 	led(0);
+
+	cli();
 
 	usb_reset();
 	run_payload();

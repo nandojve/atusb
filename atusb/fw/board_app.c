@@ -51,7 +51,7 @@ ISR(TIMER1_OVF_vect)
 }
 
 
-static uint64_t __timer_read(void)
+uint64_t timer_read(void)
 {
 	uint32_t high;
 	uint8_t low, mid;
@@ -72,17 +72,6 @@ static uint64_t __timer_read(void)
 	 * as if they were signed and thus get sign-expanded. Sounds wrong-ish.
 	 */
 	return (uint64_t) high << 16 | (uint64_t) mid << 8 | (uint64_t) low;
-}
-
-
-uint64_t timer_read(void)
-{
-	uint64_t res;
-
-	cli();
-	res = __timer_read();
-	sei();
-	return res;
 }
 
 
