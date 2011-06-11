@@ -134,7 +134,7 @@ static void handle_ep(int n)
 		ep->state = EP_IDLE;
 		if (!ep_setup())
 			goto stall;
-		UEINTX &= ~(1 << RXSTPI);
+		UEINTX = ~(1 << RXSTPI);
 	}
 	if (UEINTX & (1 << RXOUTI)) {
 		/* @@ EP_TX: cancel */
@@ -142,18 +142,18 @@ static void handle_ep(int n)
 			goto stall;
 		if (!ep_rx(ep))
 			goto stall;
-//		UEINTX &= ~(1 << RXOUTI);
-		UEINTX &= ~(1 << RXOUTI | 1 << FIFOCON);
+		/* @@@ gcc 4.5.2 wants this cast */
+		UEINTX = (uint8_t) ~(1 << RXOUTI | 1 << FIFOCON);
 	}
 	if (UEINTX & (1 << STALLEDI)) {
 		ep->state = EP_IDLE;
-		UEINTX &= ~(1 << STALLEDI);
+		UEINTX = ~(1 << STALLEDI);
 	}
 	if (UEINTX & (1 << TXINI)) {
 		/* @@ EP_RX: cancel (?) */
 		if (ep->state == EP_TX) {
 			ep_tx(ep);
-			UEINTX &= ~(1 << TXINI);
+			UEINTX = ~(1 << TXINI);
 			if (ep->state == EP_IDLE && ep->callback)
 				ep->callback(ep->user);
 		}
@@ -161,7 +161,7 @@ static void handle_ep(int n)
 	return;
 
 stall:
-	UEINTX &= ~(1 << RXSTPI | 1 << RXOUTI | 1 << STALLEDI);
+	UEINTX = ~(1 << RXSTPI | 1 << RXOUTI | 1 << STALLEDI);
 	ep->state = EP_IDLE;
 	UECONX |= 1 << STALLRQ;
 }
@@ -191,7 +191,7 @@ void usb_poll(void)
 		if (user_reset)
 			user_reset();
 		ep_init();
-		UDINT &= ~(1 << EORSTI);
+		UDINT = ~(1 << EORSTI);
 	}
 	flags = UEINT;
 	for (i = 0; i != NUM_EPS; i++)
