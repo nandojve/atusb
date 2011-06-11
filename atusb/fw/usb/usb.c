@@ -36,7 +36,7 @@ extern void panic(void);
 #endif
 
 int (*user_setup)(const struct setup_request *setup);
-int (*user_setups[2])(const struct setup_request *setup);
+void (*user_set_interface)(int nth);
 int (*user_get_descriptor)(uint8_t type, uint8_t index,
     const uint8_t **reply, uint8_t *size);
 void (*user_reset)(void);
@@ -145,7 +145,8 @@ int handle_setup(const struct setup_request *setup)
 			    p += p[0]) {
 				if (p[2] == setup->wIndex &&
 				    p[3] == setup->wValue) {
-					user_setup = user_setups[i];
+					if (user_set_interface)
+						user_set_interface(i);
 					return 1;
 				}
 				i++;
@@ -170,8 +171,6 @@ int handle_setup(const struct setup_request *setup)
 	default:
 		if (user_setup)
 			return user_setup(setup);
-		if (user_setups[0])
-			return user_setups[0](setup);
 		return 0;
 	}
 
