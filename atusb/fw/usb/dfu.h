@@ -99,6 +99,9 @@ void flash_write(const uint8_t *buf, uint16_t size);
 void flash_end_write(void);
 uint16_t flash_read(uint8_t *buf, uint16_t size);
 
+int dfu_setup_common(const struct setup_request *setup);
+int dfu_my_descr(uint8_t type, uint8_t index, const uint8_t **reply,
+    uint8_t *size);
 
 void dfu_init(void);
 

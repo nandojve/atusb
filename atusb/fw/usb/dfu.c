@@ -31,7 +31,6 @@
 #include "dfu.h"
 
 #include "../board.h"
-#include "../sernum.h"
 
 
 #ifndef NULL
@@ -78,29 +77,6 @@ const uint8_t config_descriptor[] = {
 	/* Interface #0 */
 
 	DFU_ITF_DESCR(0)
-};
-
-
-static const uint8_t functional_descriptor[] = {
-	9,			/* bLength */
-	DFU_DT_FUNCTIONAL,	/* bDescriptorType */
-	0xf,			/* bmAttributes (claim omnipotence :-) */
-	LE(0xffff),		/* wDetachTimeOut (we're very patient) */
-	LE(EP0_SIZE),		/* wTransferSize */
-	LE(0x101),		/* bcdDFUVersion */
-};
-
-
-/*
- * The worst-case activity would be flashing a one page and erasing another
- * one, would should take less than 10 ms. A 100 ms timeout ought to be plenty.
- */
-
-struct dfu dfu = {
-	OK,			/* bStatus */
-	LE(100), 0,		/* bwPollTimeout, 100 ms */
-	dfuIDLE,		/* bState */
-	0,			/* iString */
 };
 
 
@@ -229,40 +205,14 @@ static int my_setup(const struct setup_request *setup)
 		next_block++;
 		dfu.state = dfuUPLOAD_IDLE;
 		return ok;
-	case DFU_FROM_DEV(DFU_GETSTATUS):
-		debug("DFU_GETSTATUS\n");
-		usb_send(&eps[0], (uint8_t *) &dfu, sizeof(dfu), NULL, NULL);
-		return 1;
-	case DFU_TO_DEV(DFU_CLRSTATUS):
-		debug("DFU_CLRSTATUS\n");
-		dfu.state = dfuIDLE;
-		dfu.status = OK;
-		return 1;
-	case DFU_FROM_DEV(DFU_GETSTATE):
-		debug("DFU_GETSTATE\n");
-		usb_send(&eps[0], &dfu.state, 1, NULL, NULL);
-		return 1;
 	case DFU_TO_DEV(DFU_ABORT):
 		debug("DFU_ABORT\n");
 		dfu.state = dfuIDLE;
 		dfu.status = OK;
 		return 1;
 	default:
-		error("DFU rt %x, rq%x ?\n",
-		    setup->bmRequestType, setup->bRequest);
-		return 0;
+		return dfu_setup_common(setup);
 	}
-}
-
-
-static int my_descr(uint8_t type, uint8_t index, const uint8_t **reply,
-    uint8_t *size)
-{
-	if (type != DFU_DT_FUNCTIONAL)
-		return sernum_get_descr(type, index, reply, size);
-	*reply = functional_descriptor;
-	*size = sizeof(functional_descriptor);
-	return 1;
 }
 
 
@@ -281,6 +231,6 @@ static void my_reset(void)
 void dfu_init(void)
 {
 	user_setup = my_setup;
-	user_get_descriptor = my_descr;
+	user_get_descriptor = dfu_my_descr;
 	user_reset = my_reset;
 }

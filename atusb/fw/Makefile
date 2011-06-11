@@ -32,7 +32,8 @@ USB_ID = 20b7:1540
 
 USB_OBJS = usb.o atu2.o
 OBJS = atusb.o board.o board_app.o sernum.o spi.o descr.o ep0.o $(USB_OBJS)
-BOOT_OBJS = boot.o board.o sernum.o spi.o flash.o dfu.o $(USB_OBJS)
+BOOT_OBJS = boot.o board.o sernum.o spi.o flash.o dfu.o dfu_common.o \
+	    $(USB_OBJS)
 
 vpath %.c usb/
 
