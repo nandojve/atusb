@@ -62,6 +62,11 @@ enum dfu_state {
 	dfuERROR
 };
 
+enum dfu_itf_proto {
+	dfu_proto_runtime	= 1,	/* Runtime protocol */
+	dfu_proto_dfu		= 2,	/* DFU mode protocol */
+};
+
 
 #define DFU_DT_FUNCTIONAL	0x21	/* DFU FUNCTIONAL descriptor type */
 
@@ -78,7 +83,7 @@ struct dfu {
 };
 
 
-#define	DFU_ITF_DESCR(itf)						     \
+#define	DFU_ITF_DESCR(itf, proto)					     \
 	9,			/* bLength */				     \
 	USB_DT_INTERFACE,	/* bDescriptorType */			     \
 	(itf),			/* bInterfaceNumber */			     \
@@ -86,7 +91,7 @@ struct dfu {
 	0,			/* bNumEndpoints */			     \
 	0xfe,			/* bInterfaceClass (application specific) */ \
 	0x01,			/* bInterfaceSubClass (device fw upgrade) */ \
-	0x02,			/* bInterfaceProtocol (DFU mode protocol) */ \
+	(proto),		/* bInterfaceProtocol (dfu_proto_*) */	     \
 	0,			/* iInterface */
 
 
