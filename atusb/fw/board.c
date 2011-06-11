@@ -135,10 +135,5 @@ void board_init(void)
 	CLKPR = 1 << CLKPCE;
 	CLKPR = 0;
 
-	/* configure timer 1 as a free-running CLK counter */
-
-	TCCR1A = 0;
-	TCCR1B = 1 << CS10;
-
 	get_sernum();
 }

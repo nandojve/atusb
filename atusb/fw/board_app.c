@@ -74,6 +74,15 @@ uint64_t timer_read(void)
 }
 
 
+void timer_init(void)
+{
+	/* configure timer 1 as a free-running CLK counter */
+
+	TCCR1A = 0;
+	TCCR1B = 1 << CS10;
+}
+
+
 int gpio(uint8_t port, uint8_t data, uint8_t dir, uint8_t mask, uint8_t *res)
 {
 	switch (port) {
