@@ -75,11 +75,11 @@ gpio_usb()
 
 	step "GPIO scan (TRX_OFF)"
 	cmd "$LOCAL_EXEC atrf-gpio -d $LOCAL_DUT \
-		HHHH0HzH.HxHxHxHh.oHzHHHHH	'# TRX_OFF state (H)'	\
-		HHHH0H0H.HxHxHxHh.oHzHHHHH	'# test LED'		\
-		HHHH0HzH.HxHxHxHh.o0zHHHHH	'# test nSEL'		\
-		HHHH0HzH.HxHxHxHh.oHz0HHHH	'# test MOSI'		\
-		HHHH0HzH.HxHxHxHh.oHzHH0HH	'# test SCLK'"
+		HHHH0HzH.HxHxHHHh.oHzHHHHH	'# TRX_OFF state (H)'	\
+		HHHH0H0H.HxHxHHHh.oHzHHHHH	'# test LED'		\
+		HHHH0HzH.HxHxHHHh.o0zHHHHH	'# test nSEL'		\
+		HHHH0HzH.HxHxHHHh.oHz0HHHH	'# test MOSI'		\
+		HHHH0HzH.HxHxHHHh.oHzHH0HH	'# test SCLK'"
 	doit
 
 	# INT
