@@ -28,7 +28,7 @@
 #include "atusb/ep0.h"
 
 
-#define	MS_TO_LOOPS(ms) ((uint32_t) (ms)*81)
+#define	MS_TO_LOOPS(ms) ((uint32_t) (ms)*335)
 
 
 static void (*run_payload)(void) = 0;
@@ -59,7 +59,7 @@ int main(void)
 
 	led(1);
 
-	while (loop != MS_TO_LOOPS(2000)) {
+	while (loop != MS_TO_LOOPS(2500)) {
 		if (dfu.state == dfuIDLE && pgm_read_byte(zero) != 0xff)
 			loop++;
 		else
