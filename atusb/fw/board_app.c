@@ -14,6 +14,7 @@
 #include <stdint.h>
 
 #include <avr/io.h>
+#include <avr/interrupt.h>
 
 #define F_CPU   8000000UL
 #include <util/delay.h>
@@ -22,7 +23,7 @@
 #include "spi.h"
 
 
-static uint32_t timer_h = 0;	/* 2^(16+32) / 8 MHz = ~1.1 years */
+static volatile uint32_t timer_h = 0;	/* 2^(16+32) / 8 MHz = ~1.1 years */
 
 
 void reset_cpu(void)
@@ -44,22 +45,22 @@ void slp_tr(void)
 }
 
 
-void timer_poll(void)
+ISR(TIMER1_OVF_vect)
 {
-	if (!(TIFR1 & (1 << TOV1)))
-		return;
-	TIFR1 = 1 << TOV1;
 	timer_h++;
 }
 
 
-uint64_t timer_read(void)
+static uint64_t __timer_read(void)
 {
 	uint32_t high;
 	uint8_t low, mid;
 
 	do {
-		timer_poll();
+		if (TIFR1 & (1 << TOV1)) {
+			TIFR1 = 1 << TOV1;
+			timer_h++;
+		}
 		high = timer_h;
 		low = TCNT1L;
 		mid = TCNT1H;
@@ -74,12 +75,27 @@ uint64_t timer_read(void)
 }
 
 
+uint64_t timer_read(void)
+{
+	uint64_t res;
+
+	cli();
+	res = __timer_read();
+	sei();
+	return res;
+}
+
+
 void timer_init(void)
 {
 	/* configure timer 1 as a free-running CLK counter */
 
 	TCCR1A = 0;
 	TCCR1B = 1 << CS10;
+
+	/* enable timer overflow interrupt */
+
+	TIMSK1 = 1 << TOIE1;
 }
 
 

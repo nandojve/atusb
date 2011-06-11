@@ -14,6 +14,7 @@
 #include <stdint.h>
 
 #include <avr/io.h>
+#include <avr/interrupt.h>
 
 #include "usb.h"
 
@@ -36,8 +37,8 @@ int main(void)
 	ep0_init();
 	timer_init();
 
-	while (1) {
+	sei();
+
+	while (1)
 		usb_poll();
-		timer_poll();
-	}
 }

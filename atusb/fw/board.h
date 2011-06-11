@@ -77,7 +77,6 @@ void slp_tr(void);
 void led(int on);
 void panic(void);
 
-void timer_poll(void);
 uint64_t timer_read(void);
 void timer_init(void);
 
