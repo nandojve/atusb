@@ -14,6 +14,7 @@
 #include <stdint.h>
 
 #include <avr/io.h>
+#include <avr/sleep.h>
 #include <avr/interrupt.h>
 
 #include "usb.h"
@@ -43,5 +44,6 @@ int main(void)
 
 	sei();
 
-	while (1);
+	while (1)
+		sleep_mode();
 }
