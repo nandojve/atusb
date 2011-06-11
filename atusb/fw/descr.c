@@ -12,6 +12,7 @@
 
 
 #include "usb.h"
+#include "dfu.h"
 #include "board.h"
 
 
@@ -55,9 +56,9 @@ const uint8_t config_descriptor[] = {
 #if 0
 	LE(9+9+7+7),		/* wTotalLength */
 #else
-	LE(9+9),		/* wTotalLength */
+	LE(9+9+9),		/* wTotalLength */
 #endif
-	1,			/* bNumInterfaces */
+	2,			/* bNumInterfaces */
 	1,			/* bConfigurationValue (> 0 !) */
 	0,			/* iConfiguration */
 	USB_ATTR_BUS_POWERED,	/* bmAttributes */
@@ -98,4 +99,8 @@ const uint8_t config_descriptor[] = {
 	LE(EP1_SIZE),		/* wMaxPacketSize */
 	0,			/* bInterval */
 #endif
+
+	/* Interface #1 */
+
+	DFU_ITF_DESCR(1, dfu_proto_runtime)
 };

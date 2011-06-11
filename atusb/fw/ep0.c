@@ -21,11 +21,13 @@
 #endif
 
 #include "usb.h"
+#include "dfu.h"
 
 #include "at86rf230.h"
 #include "atusb/ep0.h"
 #include "version.h"
 #include "board.h"
+#include "sernum.h"
 #include "spi.h"
 
 
@@ -207,7 +209,43 @@ static int my_setup(const struct setup_request *setup)
 }
 
 
+static int my_dfu_setup(const struct setup_request *setup)
+{
+	switch (setup->bmRequestType | setup->bRequest << 8) {
+	case DFU_TO_DEV(DFU_DETACH):
+		/* @@@ should use wTimeout */
+		dfu.state = appDETACH;
+		return 1;
+	default:
+		return dfu_setup_common(setup);
+	}
+}
+
+
+static void my_set_interface(int nth)
+{
+	if (nth) {
+		user_setup = my_dfu_setup;
+		user_get_descriptor = dfu_my_descr;
+		dfu.state = appIDLE;
+	} else {
+		user_setup = my_setup;
+		user_get_descriptor = sernum_get_descr;
+	}
+}
+
+
+static void my_reset(void)
+{
+	if (dfu.state == appDETACH)
+		reset_cpu();
+}
+
+
 void ep0_init(void)
 {
 	user_setup = my_setup;
+	user_set_interface = my_set_interface;
+	my_set_interface(0);
+	user_reset = my_reset;
 }
