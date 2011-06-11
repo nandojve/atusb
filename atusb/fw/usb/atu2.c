@@ -70,6 +70,15 @@ int set_addr(uint8_t addr)
 }
 
 
+void usb_ep_change(struct ep_descr *ep)
+{
+	if (ep->state == EP_TX) {
+		UENUM = ep-eps;
+		UEIENX |= 1 << TXINE;
+	}
+}
+
+
 static int ep_setup(void)
 {
 	struct setup_request setup;
@@ -157,6 +166,8 @@ static void handle_ep(int n)
 			UEINTX = ~(1 << TXINI);
 			if (ep->state == EP_IDLE && ep->callback)
 				ep->callback(ep->user);
+		} else {
+			UEIENX &= ~(1 << TXINE);
 		}
 	}
 	return;

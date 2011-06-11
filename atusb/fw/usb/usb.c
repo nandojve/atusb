@@ -51,6 +51,7 @@ void usb_io(struct ep_descr *ep, enum ep_state state, uint8_t *buf,
 	ep->end = buf+size;
 	ep->callback = callback;
 	ep->user = user;
+	usb_ep_change(ep);
 }
 
 
