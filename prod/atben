@@ -29,10 +29,11 @@ gpio_ben()
 
 	step "GPIO scan (TRX_OFF)"
 	cmd "$LOCAL_EXEC \"atrf-gpio -d $LOCAL_DUT \
-		hzHhho	'# TRX_OFF state'	\
-		0zHhho	'# test SCLK'		\
-		hz0hho	'# test SLP_TR'		\
-		hzH0ho	'# test MOSI'		\
+		hHHhho	'# TRX_OFF state'	\
+		0HHhho	'# test SCLK'		\
+		00Hhho	'# test MISO'		\
+		hH0hho	'# test SLP_TR'		\
+		hHH0ho	'# test MOSI'		\
 		hzHh0o	'# test nSEL'\""
 	doit
 
