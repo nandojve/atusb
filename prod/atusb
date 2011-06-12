@@ -39,37 +39,6 @@ led()
 
 gpio_usb()
 {
-	# P_ON state (after reset; transceiver pull-up/downs active)
-
-#
-#		BBBBBBBB CCCCCCCC DDDDDDDD
-#		01234567 01234567 01234567
-#
-#		-xxxS-L- -x-----n InMM-S--     
-#		    T E         R RSIO C
-#
-# Pull in P_ON      v           ^ -^-v v
-#
-
-if false; then
-	step "GPIO scan (P_ON)"
-	cmd "$LOCAL_EXEC atrf-gpio -d $LOCAL_DUT -p \
-		HHHHoHxH.HxHxHxHh.ohzoHoHH	'# reset state (H)'	\
-		HHHH0HxH.HxHxHxHh.ohzoHoHH	'# test SLP_TR (0)'	\
-		HHHHoH0H.HxHxHxHh.ohzoHoHH	'# test LED (0)'	\
-		HHHHoHxH.HxHxHxHh.LhzoHoHH	'# test IRQ_RF (0)'	\
-		HHHHoHxH.HxHxHxHh.o0zoHoHH	'# test nSEL (0)'	\
-		HHHHoHxH.HxHxHxHh.ohz0HoHH	'# test MOSI (0)'	\
-		HHHHoHxH.HxHxHxHh.ohzoH0HH	'# test SCLK (0)'	\
-		0000o0x0.0x0x0x0h.ohzo0o00	'# reset state (0)'	\
-		000010x0.0x0x0x0h.ohzo0o00	'# test SLP_TR (1)'	\
-		0000o010.0x0x0x0h.ohzo0o00	'# test LED (1)'	\
-		0000o0x0.0x0x0x0h.o1zo0o00	'# test nSEL (1)'	\
-		0000o0x0.0x0x0x0h.ohz10o00	'# test MOSI (1)'	\
-		0000o0x0.0x0x0x0h.ohzo0100	'# test SCLK (1)'"
-	doit
-fi
-
 	# TRX_OFF state (transceiver pull-up/downs inactive)
 
 	#	-xxxS-L- -x-----n InMM-S--     
@@ -109,7 +78,7 @@ fi
 	#	    T E         R RSIO C
 
 	step "GPIO scan (INT)"
-	cmd "$LOCAL_EXEC atrf-gpio -d $LOCAL_DUT -p	\
+	cmd "$LOCAL_EXEC atrf-gpio -d $LOCAL_DUT			\
 		xxxxxxxx.xxxxxxxx.oxxxxxxx	'# reset state'		\
 		0x04=1				'# IRQ_POLARITY = 1'	\
 		xxxxxxxx.xxxxxxxx.hxxxxxxx	'# test INT (1)'	\

@@ -15,6 +15,7 @@ gpio_ben()
 #
 
 	# P_ON state (after reset; transceiver pull-up/downs active)
+	# (Note: this only works on atben because we power-cycle to reset)
 
 	step "GPIO scan (P_ON)"
 	cmd "$LOCAL_EXEC \"atrf-gpio -d $LOCAL_DUT -p \
