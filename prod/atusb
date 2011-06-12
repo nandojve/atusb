@@ -75,11 +75,30 @@ gpio_usb()
 
 	step "GPIO scan (TRX_OFF)"
 	cmd "$LOCAL_EXEC atrf-gpio -d $LOCAL_DUT \
-		HHHH0HzH.HxHxHHHh.oHzHHHHH	'# TRX_OFF state (H)'	\
-		HHHH0H0H.HxHxHHHh.oHzHHHHH	'# test LED'		\
-		HHHH0HzH.HxHxHHHh.o0zHHHHH	'# test nSEL'		\
-		HHHH0HzH.HxHxHHHh.oHz0HHHH	'# test MOSI'		\
-		HHHH0HzH.HxHxHHHh.oHzHH0HH	'# test SCLK'"
+		HHHH0HzH.HxHxHHHh.oHHHHHHH	'# TRX_OFF state (H)'	\
+		0HHH0HzH.HxHxHHHh.oHHHHHHH	'# test B0'		\
+		H0HH0HzH.HxHxHHHh.oHHHHHHH	'# test B1 (ICSP SCK)'	\
+		HH0H0HzH.HxHxHHHh.oHHHHHHH	'# test B2 (ICSP MOSI)'	\
+		HHH00HzH.HxHxHHHh.oHHHHHHH	'# test B3 (ICSP MISO)'	\
+		HHHH00zH.HxHxHHHh.oHHHHHHH	'# test B5'		\
+		HHHH0H0H.HxHxHHHh.oHHHHHHH	'# test B6 (LED, 0)'	\
+		HHHH0H1H.HxHxHHHh.oHHHHHHH	'# test B6 (LED, 1)'	\
+		HHHH0Hz0.HxHxHHHh.oHHHHHHH	'# test B7'		\
+		HHHH0HzH.0xHxHHHh.oHHHHHHH	'# test C0'		\
+		HHHH0HzH.Hx0xHHHh.oHHHHHHH	'# test C2'		\
+		HHHH0HzH.HxHx0HHh.oHHHHHHH	'# test C4'		\
+		HHHH0HzH.HxHxH0Hh.oHHHHHHH	'# test C5'		\
+		HHHH0HzH.HxHxHH0h.oHHHHHHH	'# test C6'		\
+		HHHH0HzH.HxHxHHH1.oHHHHHHH	'# test C7 (nRST_RF)'	\
+		HHHH0HzH.HxHxHHHh.0HHHHHHH	'# test D0 (IRQ_RF)'	\
+		HHHH0HzH.HxHxHHHh.o0zHHHHH	'# test D1 (nSS)'	\
+		HHHH0HzH.HxHxHHHh.oH0HHHHH	'# test D2 (MISO)'	\
+		HHHH0HzH.HxHxHHHh.oHz0HHHH	'# test D3 (MOSI)'	\
+		HHHH0HzH.HxHxHHHh.oHzH0HHH	'# test D4'		\
+		HHHH0HzH.HxHxHHHh.oHzHH0HH	'# test D5 (SCLK)'	\
+		HHHH0HzH.HxHxHHHh.oHzHHH0H	'# test D6'		\
+		HHHH0HzH.HxHxHHHh.oHzHHHH0	'# test D7'		\
+		HHHH0HzH.HxHxHHHh.oHzHHHHH	'# test LED'"
 	doit
 
 	# INT
