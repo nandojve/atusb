@@ -51,6 +51,7 @@ gpio_usb()
 # Pull in P_ON      v           ^ -^-v v
 #
 
+if false; then
 	step "GPIO scan (P_ON)"
 	cmd "$LOCAL_EXEC atrf-gpio -d $LOCAL_DUT -p \
 		HHHHoHxH.HxHxHxHh.ohzoHoHH	'# reset state (H)'	\
@@ -67,6 +68,7 @@ gpio_usb()
 		0000o0x0.0x0x0x0h.ohz10o00	'# test MOSI (1)'	\
 		0000o0x0.0x0x0x0h.ohzo0100	'# test SCLK (1)'"
 	doit
+fi
 
 	# TRX_OFF state (transceiver pull-up/downs inactive)
 
