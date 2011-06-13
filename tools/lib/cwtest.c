@@ -90,9 +90,9 @@ static void start_test_mode_231(struct atrf_dsc *dsc)
 {
 	atrf_reg_write(dsc, REG_PART_NUM, 0x54);			/*13 */
 	atrf_reg_write(dsc, REG_PART_NUM, 0x46);			/*14 */
-	
+
 	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_PLL_ON);		/*15 */
-	wait_for_interrupt(dsc, IRQ_PLL_LOCK, IRQ_PLL_LOCK, 10, 0);	/*16 */
+	wait_for_interrupt(dsc, IRQ_PLL_LOCK, IRQ_PLL_LOCK, 10, 20);	/*16 */
 
 	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_TX_START);		/*17 */
 }
