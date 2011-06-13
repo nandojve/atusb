@@ -26,6 +26,16 @@
 static int last_cont_tx; /* @@@ hack for resuming on the 230 */
 
 
+int cw_test_needs_reset(struct atrf_dsc *dsc)
+{
+	if (atrf_usb_handle(dsc))
+		return 1;
+	if (atrf_identify(dsc) == artf_at86rf230)
+		return 1;
+	return 0;
+}
+
+
 static void enter_test_mode_230(struct atrf_dsc *dsc, uint8_t cont_tx)
 {
 	atrf_buf_write(dsc, "", 1);
@@ -39,7 +49,7 @@ static void enter_test_mode_230(struct atrf_dsc *dsc, uint8_t cont_tx)
 	}
 
 	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_PLL_ON);
-	wait_for_interrupt(dsc, IRQ_PLL_LOCK, IRQ_PLL_LOCK, 10, 20);
+	wait_for_interrupt(dsc, IRQ_PLL_LOCK, IRQ_PLL_LOCK, 10, 0);
 
 	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_TX_START);
 }
@@ -92,7 +102,7 @@ static void start_test_mode_231(struct atrf_dsc *dsc)
 	atrf_reg_write(dsc, REG_PART_NUM, 0x46);			/*14 */
 
 	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_PLL_ON);		/*15 */
-	wait_for_interrupt(dsc, IRQ_PLL_LOCK, IRQ_PLL_LOCK, 10, 20);	/*16 */
+	wait_for_interrupt(dsc, IRQ_PLL_LOCK, IRQ_PLL_LOCK, 10, 0);	/*16 */
 
 	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_TX_START);		/*17 */
 }
@@ -142,7 +152,7 @@ void cw_test_end(struct atrf_dsc *dsc)
 	 * AT86RF231 also exits test mode if we send it to sleep for a
 	 * moment.
 	 */
-	if (atrf_identify(dsc) == artf_at86rf230 || atrf_usb_handle(dsc))
+	if (cw_test_needs_reset(dsc))
 		atrf_reset_rf(dsc);
 	else {
 		usleep(2);	/* table 7-1: tTR12(typ) = 1 us */

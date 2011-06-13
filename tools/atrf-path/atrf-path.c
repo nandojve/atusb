@@ -74,14 +74,11 @@ static void sample(const struct sweep *sweep, int cont_tx,
 	int sum = 0, min = -1, max = -1;
 	double offset = tx_power_step2dBm(sweep->tx, sweep->power);
 
-/*
- * For the 230, we don't have reset-less exit from test mode (yet ?) and
- * need to set up things from scratch:
- * 
- *	init_tx(sweep->tx, sweep->trim_tx, sweep->power);
- *	set_channel(sweep->tx, chan);
- *	usleep(155);    / * table 7-2, tTR19 * /
- */
+	if (cw_test_needs_reset(sweep->tx)) {
+		init_tx(sweep->tx, sweep->trim_tx, sweep->power);
+		need_init = 1;
+	}
+	usleep(155);	/* table 7-2, tTR19 */
 	if (first || need_init) {
 		cw_test_begin(sweep->tx, cont_tx);
 		need_init = 0;
@@ -123,7 +120,6 @@ static int do_half_sweep(const struct sweep *sweep, int cont_tx,
 	for (i = 0; i != N_CHAN; i++) {
 		set_channel(sweep->rx, chan);
 		set_channel(sweep->tx, chan);
-		usleep(155);	/* table 7-2, tTR19 */
 
 		sample(sweep, cont_tx, res, chan == 11 && !sweep->cont_tx);
 		if (res->avg > sweep->max[i])
