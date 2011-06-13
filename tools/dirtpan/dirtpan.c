@@ -31,6 +31,8 @@
 
 #include <ieee802154.h>
 
+#include "daemon.h"
+
 
 /*
  * Control byte structure:
