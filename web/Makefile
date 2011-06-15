@@ -1,10 +1,12 @@
+DL=800px-Atben_atusb_prod_03.jpg 800px-Atben_atusb_prod_05.jpg \
+   785px-Atben_atusb_prod_09.jpg 800px-Atben_atusb_prod_07.jpg
 GEN=atben-pcba-small.jpg atusb-pcba-small.jpg \
     atusb-use-small.jpg atben-use-small.jpg
 
 all:	$(GEN)
 
-upload:	$(GEN)
-	rsync -e ssh index.html $(GEN) \
+upload:	index.html $(GEN) $(DL)
+	rsync -e ssh index.html $(DL) $(GEN) \
 	  www-data@downloads.qi-hardware.com:werner/wpan/web/
 
 800px-Atben_atusb_prod_03.jpg:
