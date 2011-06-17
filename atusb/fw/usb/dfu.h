@@ -16,6 +16,8 @@
 
 #include <stdint.h>
 
+#include "usb.h"
+
 
 enum dfu_request {
 	DFU_DETACH,
