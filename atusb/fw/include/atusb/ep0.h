@@ -34,6 +34,10 @@
  * ->host	ATUSB_BUF_READ		-		-	#bytes
  * host->	ATUSB_SRAM_WRITE	-		addr	#bytes
  * ->host	ATUSB_SRAM_READ		-		addr	#bytes
+ *
+ * host->	ATUSB_SPI_WRITE		byte0		byte1	#bytes
+ * ->host	ATUSB_SPI_READ1		byte0		-	#bytes
+ * ->host	ATUSB_SPI_READ2		byte0		byte1	#bytes
  */
 
 /*
@@ -82,6 +86,9 @@ enum atspi_requests {
 	ATUSB_BUF_READ,
 	ATUSB_SRAM_WRITE,
 	ATUSB_SRAM_READ,
+	ATUSB_SPI_WRITE			= 0x30,	/* SPI group */
+	ATUSB_SPI_READ1,
+	ATUSB_SPI_READ2,
 };
 
 

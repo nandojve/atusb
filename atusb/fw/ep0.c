@@ -58,11 +58,12 @@ static void do_buf_write(void *user)
 
 static int my_setup(const struct setup_request *setup)
 {
+	uint16_t req = setup->bmRequestType | setup->bRequest << 8;
 	unsigned tmp;
 	uint8_t i;
 	uint64_t tmp64;
 
-	switch (setup->bmRequestType | setup->bRequest << 8) {
+	switch (req) {
 	case ATUSB_FROM_DEV(ATUSB_ID):
 		debug("ATUSB_ID\n");
 		if (setup->wLength > 3)
@@ -195,6 +196,30 @@ static int my_setup(const struct setup_request *setup)
 		spi_begin();
 		spi_send(AT86RF230_SRAM_READ);
 		spi_send(setup->wIndex);
+		for (i = 0; i != setup->wLength; i++)
+			buf[i] = spi_recv();
+		spi_end();
+		usb_send(&eps[0], buf, setup->wLength, NULL, NULL);
+		return 1;
+
+	case ATUSB_TO_DEV(ATUSB_SPI_WRITE):
+		size = setup->wLength+2;
+		if (size > sizeof(buf))
+			return 0;
+		buf[0] = setup->wValue;
+		buf[1] = setup->wIndex;
+		if (setup->wLength)
+			usb_recv(&eps[0], buf+2, setup->wLength,
+			    do_buf_write, NULL);
+		else
+			do_buf_write(NULL);
+		return 1;
+	case ATUSB_FROM_DEV(ATUSB_SPI_READ1):
+	case ATUSB_FROM_DEV(ATUSB_SPI_READ2):
+		spi_begin();
+		spi_send(setup->wValue);
+		if (req == ATUSB_SPI_READ2)
+			spi_send(setup->wIndex);
 		for (i = 0; i != setup->wLength; i++)
 			buf[i] = spi_recv();
 		spi_end();
