@@ -15,7 +15,7 @@ LIB = libatrf.a
 
 include ../Makefile.common
 
-OBJS_host = atusb.o usbopen.o
+OBJS_host = atusb.o atusb-common.o usbopen.o
 OBJS_ben_jlime = atben.o
 OBJS_ben_openwrt = atben.o
 
