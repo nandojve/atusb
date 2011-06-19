@@ -35,6 +35,7 @@ static const struct atrf_driver *drivers[] = {
 #endif
 #ifdef HAVE_USB
 	&atusb_driver,
+	&atusb_spi_driver,
 #endif
 	&atnet_driver,
 	NULL
@@ -44,7 +45,7 @@ static const struct atrf_driver *drivers[] = {
 void *atrf_usb_handle(struct atrf_dsc *dsc)
 {
 #ifdef HAVE_USB
-	if (dsc->driver == &atusb_driver)
+	if (dsc->driver == &atusb_driver || dsc->driver == &atusb_spi_driver)
 		return atusb_dev_handle(dsc->handle);
 #endif
 	return NULL;

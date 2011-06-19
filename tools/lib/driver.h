@@ -40,6 +40,7 @@ struct atrf_driver {
 
 
 extern struct atrf_driver atusb_driver;
+extern struct atrf_driver atusb_spi_driver;
 extern struct atrf_driver atben_driver;
 extern struct atrf_driver atnet_driver;
 
