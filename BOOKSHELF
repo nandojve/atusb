@@ -132,3 +132,8 @@ D: http://www.molex.com/pdm_docs/sd/734120110_sd.pdf
 # dfu
 N: dfu
 D: http://www.usb.org/developers/devclass_docs/DFU_1.1.pdf
+
+# RFC 4944: Transmission of IPv6 Packets over IEEE 802.15.4 Networks
+N: rfc4944
+A: 6lowpan
+D: http://www.rfc-editor.org/rfc/pdfrfc/rfc4944.txt.pdf
