@@ -20,7 +20,7 @@
 
 void flush_interrupts(struct atrf_dsc *dsc);
 uint8_t wait_for_interrupt(struct atrf_dsc *dsc, uint8_t wait_for,
-    uint8_t ignore, int sleep_us, int timeout);
+    uint8_t ignore, int timeout_ms);
 
 int tx_power_dBm2step(struct atrf_dsc *dsc, double power);
 double tx_power_step2dBm(struct atrf_dsc *dsc, int step);

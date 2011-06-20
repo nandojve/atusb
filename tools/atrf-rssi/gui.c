@@ -74,7 +74,7 @@ static void sweep(struct atrf_dsc *dsc, int *z)
 	for (chan = 11; chan <= 26; chan++) {
 		atrf_reg_write(dsc, REG_PHY_CC_CCA, chan);
 		/* 150 us, according to AVR2001 section 3.5 */
-		wait_for_interrupt(dsc, IRQ_PLL_LOCK, IRQ_PLL_LOCK, 10, 20);
+		wait_for_interrupt(dsc, IRQ_PLL_LOCK, IRQ_PLL_LOCK, 1);
 
 		*z++ = Z_STEP*atrf_reg_read(dsc, REG_PHY_RSSI) & RSSI_MASK;
 #if 0

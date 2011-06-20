@@ -54,7 +54,7 @@ static void init_tx(struct atrf_dsc *dsc, int trim, int channel, int power)
 		buf[i] = i;
 	atrf_buf_write(dsc, buf, sizeof(buf));
 	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_PLL_ON);
-	wait_for_interrupt(dsc, IRQ_PLL_LOCK, IRQ_PLL_LOCK, 10, 20);
+	wait_for_interrupt(dsc, IRQ_PLL_LOCK, IRQ_PLL_LOCK, 1);
 }
 
 
@@ -62,7 +62,7 @@ static void init_rx(struct atrf_dsc *dsc, int trim, int channel)
 {
 	init_common(dsc, trim, channel);
 	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_RX_ON);
-	wait_for_interrupt(dsc, IRQ_PLL_LOCK, IRQ_PLL_LOCK, 10, 20);
+	wait_for_interrupt(dsc, IRQ_PLL_LOCK, IRQ_PLL_LOCK, 1);
 }
 
 
@@ -84,7 +84,7 @@ static int xfer_one(struct atrf_dsc *tx, struct atrf_dsc *rx)
 	atrf_slp_tr(tx, 1, 1);
 #if 1
 	irq = wait_for_interrupt(rx, IRQ_TRX_END, IRQ_TRX_END | IRQ_RX_START,
-	    1000, 0);
+	    0);
 #else
 	/*
 	 * Just waiting for the maximum time is much faster than polling the

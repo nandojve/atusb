@@ -100,8 +100,8 @@ static struct atrf_dsc *init_txrx(const char *driver, int trim, unsigned mhz)
 
 	flush_interrupts(dsc);
 	if (atrf_identify(dsc) == artf_at86rf231)
-		wait_for_interrupt(dsc, IRQ_CCA_ED_DONE, IRQ_CCA_ED_DONE,
-		    10, 50); /* according to table 7-1, 37 us max */
+		wait_for_interrupt(dsc, IRQ_CCA_ED_DONE, IRQ_CCA_ED_DONE, 1);
+		    /* according to table 7-1, 37 us max */
 
 	return dsc;
 }
@@ -138,7 +138,7 @@ static void receive_message(struct atrf_dsc *dsc)
 
 	fprintf(stderr, "Ready.\n");
 	wait_for_interrupt(dsc, IRQ_TRX_END,
-	    IRQ_TRX_END | IRQ_RX_START | IRQ_AMI, 10, 0);
+	    IRQ_TRX_END | IRQ_RX_START | IRQ_AMI, 0);
 	if (!run)
 		return;
 
@@ -216,8 +216,7 @@ static void receive_pcap(struct atrf_dsc *dsc, const char *name)
 	write_pcap_hdr(file);
 	while (run) {
 		wait_for_interrupt(dsc,
-		    IRQ_TRX_END, IRQ_TRX_END | IRQ_RX_START | IRQ_AMI,
-		    10, 0);
+		    IRQ_TRX_END, IRQ_TRX_END | IRQ_RX_START | IRQ_AMI, 0);
 		if (!run)
 			break;
 		gettimeofday(&now, NULL);
@@ -248,7 +247,7 @@ static void receive(struct atrf_dsc *dsc, const char *name)
 	 * 180 us, according to AVR2001 section 4.2. We time out after
 	 * nominally 200 us.
 	 */
-	wait_for_interrupt(dsc, IRQ_PLL_LOCK, IRQ_PLL_LOCK, 10, 20);
+	wait_for_interrupt(dsc, IRQ_PLL_LOCK, IRQ_PLL_LOCK, 1);
 
 	if (name)
 		receive_pcap(dsc, name);
@@ -266,7 +265,7 @@ static void transmit(struct atrf_dsc *dsc, const char *msg, int times)
 	 * 180 us, according to AVR2001 section 4.3. We time out after
 	 * nominally 200 us.
 	 */
-	wait_for_interrupt(dsc, IRQ_PLL_LOCK, IRQ_PLL_LOCK, 10, 20);
+	wait_for_interrupt(dsc, IRQ_PLL_LOCK, IRQ_PLL_LOCK, 1);
 
 	/*
 	 * We need to copy the message to append the CRC placeholders.
@@ -280,7 +279,7 @@ static void transmit(struct atrf_dsc *dsc, const char *msg, int times)
 
 		/* wait up to 10 ms (nominally) */
 		wait_for_interrupt(dsc, IRQ_TRX_END,
-		   IRQ_TRX_END | IRQ_PLL_LOCK, 10, 1000);
+		   IRQ_TRX_END | IRQ_PLL_LOCK, 10);
 	}
 }
 
@@ -296,7 +295,7 @@ static void transmit_pattern(struct atrf_dsc *dsc, double pause_s, int times)
 	 * 180 us, according to AVR2001 section 4.3. We time out after
 	 * nominally 200 us.
 	 */
-	wait_for_interrupt(dsc, IRQ_PLL_LOCK, IRQ_PLL_LOCK, 10, 20);
+	wait_for_interrupt(dsc, IRQ_PLL_LOCK, IRQ_PLL_LOCK, 1);
 
 	while (run) {
 		memset(buf, n, sizeof(buf));
@@ -306,7 +305,7 @@ static void transmit_pattern(struct atrf_dsc *dsc, double pause_s, int times)
 
 		/* wait up to 10 ms (nominally) */
 		wait_for_interrupt(dsc, IRQ_TRX_END,
-		   IRQ_TRX_END | IRQ_PLL_LOCK, 10, 1000);
+		   IRQ_TRX_END | IRQ_PLL_LOCK, 10);
 
 		if (pause_s >= 1)
 			sleep(pause_s);
@@ -327,26 +326,25 @@ static void ping_tx(struct atrf_dsc *dsc, const struct ping *pck)
 	 * 180 us, according to AVR2001 section 4.3. We time out after
 	 * nominally 200 us.
 	 */
-	wait_for_interrupt(dsc, IRQ_PLL_LOCK, IRQ_PLL_LOCK, 10, 20);
+	wait_for_interrupt(dsc, IRQ_PLL_LOCK, IRQ_PLL_LOCK, 1);
 
 	atrf_buf_write(dsc, pck, sizeof(*pck));
 	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_TX_START);
 
 	/* wait up to 10 ms (nominally) */
 	wait_for_interrupt(dsc, IRQ_TRX_END,
-	   IRQ_TRX_END | IRQ_PLL_LOCK, 10, 1000);
+	   IRQ_TRX_END | IRQ_PLL_LOCK, 10);
 }
 
 
-static enum rx_res ping_rx(struct atrf_dsc *dsc, struct ping *pck, int wait_ds)
+static enum rx_res ping_rx(struct atrf_dsc *dsc, struct ping *pck, int wait_ms)
 {
 	uint8_t irq;
 	int n;
 
 	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_RX_ON);
 	irq = wait_for_interrupt(dsc, IRQ_TRX_END,
-	    IRQ_TRX_END | IRQ_RX_START | IRQ_PLL_LOCK,
-	    100000, wait_ds);
+	    IRQ_TRX_END | IRQ_RX_START | IRQ_PLL_LOCK, wait_ms);
 	if (!run)
 		return rx_exit;
 	if (!irq)
@@ -382,7 +380,7 @@ static void ping(struct atrf_dsc *dsc, double max_wait_s, int master)
 				break;
 		}
 		first = 0;
-		res = ping_rx(dsc, &rx_pck, master ? max_wait_s*10 : 0);
+		res = ping_rx(dsc, &rx_pck, master ? max_wait_s*1000 : 0);
 		switch (res) {
 		case rx_good:
 			tx_pck.ack = rx_pck.seq;

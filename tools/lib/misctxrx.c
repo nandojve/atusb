@@ -20,18 +20,22 @@
 
 #include "at86rf230.h"
 #include "atrf.h"
+#include "timeout.h"
 #include "misctxrx.h"
+
+
+#define	MAX_WAIT_MS	100	/* make sure we respond to ^C */
 
 
 /* ----- Interrupts -------------------------------------------------------- */
 
 
-static volatile int run = 1;
+static volatile int sigint;
 
 
 static void die(int sig)
 {
-	run = 0;
+	sigint = 1;
 }
 
 
@@ -47,56 +51,68 @@ void flush_interrupts(struct atrf_dsc *dsc)
 
 
 uint8_t wait_for_interrupt(struct atrf_dsc *dsc, uint8_t wait_for,
-    uint8_t ignore, int sleep_us, int timeout)
+    uint8_t ignore, int timeout_ms)
 {
+	struct timeout to;
 	uint8_t irq = 0, show;
 	void (*old_sig)(int);
+	int ms;
+	int timedout = 0;
 
-	run = 1;
+	sigint = 0;
 	old_sig = signal(SIGINT, die);
-	while (run) {
-		while (run && !atrf_interrupt(dsc)) {
-			usleep(sleep_us);
-			if (timeout && !--timeout) {
-				irq = 0;
-				goto out;
+	if (timeout_ms)
+		timeout_start(&to, timeout_ms);
+	while (!sigint && !timedout) {
+		while (!sigint && !timedout) {
+			if (timeout_ms) {
+				ms = timeout_left_ms(&to);
+				if (ms > 0) {
+					if (ms > MAX_WAIT_MS)
+						ms = MAX_WAIT_MS;
+				} else {
+					timedout = 1;
+					ms = 1;
+				}
+			} else {
+				ms = MAX_WAIT_MS;
 			}
+			irq = atrf_interrupt_wait(dsc, ms);
+			if (irq)
+				break;
 		}
-		irq = atrf_reg_read(dsc, REG_IRQ_STATUS);
+
 		if (atrf_error(dsc))
 			exit(1);
-		if (!irq)
-			continue;
+
 		show = irq & ~ignore;
-		if (!show) {
-			if (irq & wait_for)
-				break;
-			continue;
+		if (show) {
+			fprintf(stderr, "IRQ (0x%02x):", irq);
+			if (irq & IRQ_PLL_LOCK)
+				fprintf(stderr, " PLL_LOCK");
+			if (irq & IRQ_PLL_UNLOCK)
+				fprintf(stderr, " PLL_UNLOCK");
+			if (irq & IRQ_RX_START)
+				fprintf(stderr, " RX_START");
+			if (irq & IRQ_TRX_END)
+				fprintf(stderr, " TRX_END");
+			if (irq & IRQ_CCA_ED_DONE)
+				fprintf(stderr, " CCA_ED_DONE");
+			if (irq & IRQ_AMI)
+				fprintf(stderr, " AMI");
+			if (irq & IRQ_TRX_UR)
+				fprintf(stderr, " TRX_UR");
+			if (irq & IRQ_BAT_LOW)
+				fprintf(stderr, " BAT_LOW");
+			fprintf(stderr, "\n");
 		}
-		fprintf(stderr, "IRQ (0x%02x):", irq);
-		if (irq & IRQ_PLL_LOCK)
-			fprintf(stderr, " PLL_LOCK");
-		if (irq & IRQ_PLL_UNLOCK)
-			fprintf(stderr, " PLL_UNLOCK");
-		if (irq & IRQ_RX_START)
-			fprintf(stderr, " RX_START");
-		if (irq & IRQ_TRX_END)
-			fprintf(stderr, " TRX_END");
-		if (irq & IRQ_CCA_ED_DONE)
-			fprintf(stderr, " CCA_ED_DONE");
-		if (irq & IRQ_AMI)
-			fprintf(stderr, " AMI");
-		if (irq & IRQ_TRX_UR)
-			fprintf(stderr, " TRX_UR");
-		if (irq & IRQ_BAT_LOW)
-			fprintf(stderr, " BAT_LOW");
-		fprintf(stderr, "\n");
+
 		if (irq & wait_for)
 			break;
 	}
 out:
 	signal(SIGINT, old_sig);
-	if (!run)
+	if (sigint)
 		raise(SIGINT);
 	return irq;
 }
