@@ -463,6 +463,26 @@ static int atnet_interrupt(void *handle)
 }
 
 
+int atnet_interrupt_wait(void *handle, int timeout_ms)
+{
+	struct atnet_dsc *dsc = handle;
+	unsigned long value;
+	char *end;
+
+	if (dsc->error)
+		return 0;
+	if (dialog(dsc, "WAIT %d", timeout_ms) < 0)
+		return 0;
+	value = strtoul(dsc->reply+1, &end, 0);
+	if (*end || value > 1) {
+		fprintf(stderr, "invalid response \"%s\"\n", dsc->reply+1);
+		dsc->error = 1;
+		return 0;
+	}
+	return value;
+}
+
+
 /* ----- CLKM handling ----------------------------------------------------- */
 
 
@@ -496,4 +516,5 @@ struct atrf_driver atnet_driver = {
 	.sram_write	= atnet_sram_write,
 	.sram_read	= atnet_sram_read,
 	.interrupt	= atnet_interrupt,
+	.interrupt_wait	= atnet_interrupt_wait,
 };

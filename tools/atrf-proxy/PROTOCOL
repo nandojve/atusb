@@ -60,8 +60,8 @@ POLL
 +0|1
 -message
 
-WAIT
-+0|1
+WAIT timeout_ms
++value
 -message
 
 
@@ -84,8 +84,9 @@ The device is implicitly opened when establishing a TCP session. The
 device is implicitly closed when closing the TCP session.
 
 
-Asynchrous interrupt notification (not implemented yet)
+Asynchrous interrupt notification
 ---------------------------------
 
 The WAIT command is not answered until an interrupt or another command is
-received. WAIT returns the interrupt status, just like POLL.
+received. WAIT returns the value of the IRQ_STATUS register. If WAIT
+times out before receiving an interrupt, it returns 0.

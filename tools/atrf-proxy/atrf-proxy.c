@@ -168,6 +168,18 @@ static int cmd_more(struct atrf_dsc *dsc, struct netio *netio, const char *cmd)
 			return netio_printf(netio, "-I/O error\n");
 		return netio_printf(netio, "+0x%02x\n", res);
 	}
+	if (!strcasecmp(cmd, "wait")) {
+		uint8_t res;
+
+		if (!n)
+			n = 1;
+		res = atrf_interrupt_wait(dsc, n);
+		if (atrf_error(dsc))
+			return netio_printf(netio, "-I/O error\n");
+		if (res < 0)
+			return netio_printf(netio, "-not supported\n");
+		return netio_printf(netio, "+0x%02x\n", res);
+	}
 	if (!strcasecmp(cmd, "getram")) {
 		uint8_t res;
 
