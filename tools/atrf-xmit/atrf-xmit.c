@@ -1,5 +1,5 @@
 /*
- * atrf-ber/atrf-ber.c - Fast transmission test
+ * atrf-xmit/atrf-xmit.c - Fast transmission test
  *
  * Written 2011 by Werner Almesberger
  * Copyright 2011 Werner Almesberger

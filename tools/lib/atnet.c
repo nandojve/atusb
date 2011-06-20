@@ -474,7 +474,7 @@ int atnet_interrupt_wait(void *handle, int timeout_ms)
 	if (dialog(dsc, "WAIT %d", timeout_ms) < 0)
 		return 0;
 	value = strtoul(dsc->reply+1, &end, 0);
-	if (*end || value > 1) {
+	if (*end || value > 0xff) {
 		fprintf(stderr, "invalid response \"%s\"\n", dsc->reply+1);
 		dsc->error = 1;
 		return 0;
