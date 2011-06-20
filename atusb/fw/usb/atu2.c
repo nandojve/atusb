@@ -40,7 +40,7 @@
 #endif
 
 
-#define NUM_EPS	1
+#define NUM_EPS	2
 
 
 struct ep_descr eps[NUM_EPS];
@@ -112,7 +112,7 @@ static int ep_rx(struct ep_descr *ep)
 		ep->state = EP_IDLE;
 		if (ep->callback)
 			ep->callback(ep->user);
-		if (ep == &eps[0])
+//		if (ep == &eps[0])
 			usb_send(ep, NULL, 0, NULL, NULL);
 	}
 	return 1;
@@ -137,6 +137,7 @@ static void ep_tx(struct ep_descr *ep)
 static void handle_ep(int n)
 {
 	struct ep_descr *ep = eps+n;
+	uint8_t mask;
 
 	UENUM = n;
 	if (UEINTX & (1 << RXSTPI)) {
@@ -163,7 +164,10 @@ static void handle_ep(int n)
 		/* @@ EP_RX: cancel (?) */
 		if (ep->state == EP_TX) {
 			ep_tx(ep);
-			UEINTX = ~(1 << TXINI);
+			mask = 1 << TXINI;
+			if (n)
+				mask |= 1 << FIFOCON;
+			UEINTX = ~mask;
 			if (ep->state == EP_IDLE && ep->callback)
 				ep->callback(ep->user);
 		} else {
@@ -194,6 +198,19 @@ static void ep_init(void)
 
 	eps[0].state = EP_IDLE;
 	eps[0].size = 64;
+
+	UENUM = 1;
+	UECONX = (1 << RSTDT) | (1 << EPEN);	/* enable */
+	UECFG0X = (1 << EPTYPE1) | (1 << EPDIR); /* bulk IN */
+	UECFG1X = 3 << EPSIZE0;	/* 64 bytes */
+	UECFG1X |= 1 << ALLOC;
+
+	while (!(UESTA0X & (1 << CFGOK)));
+
+	UEIENX = (1 << STALLEDE) | (1 << TXINE);
+
+	eps[1].state = EP_IDLE;
+	eps[1].size = 64;
 }
 
 

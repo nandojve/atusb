@@ -26,8 +26,6 @@
 #define NULL 0
 #endif
 
-#define NUM_EPS	1
-
 #if 1
 extern void panic(void);
 #define BUG_ON(cond)	do { if (cond) panic(); } while (0)
