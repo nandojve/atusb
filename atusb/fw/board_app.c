@@ -93,6 +93,8 @@ void timer_init(void)
 
 int gpio(uint8_t port, uint8_t data, uint8_t dir, uint8_t mask, uint8_t *res)
 {
+	EIMSK = 0; /* must reset to recover INT_RF */
+
 	switch (port) {
 	case 1:
 		DDRB = (DDRB & ~mask) | dir;
@@ -154,5 +156,5 @@ void board_app_init(void)
 {
 	/* enable INT0, trigger on rising edge */
 	EICRA = 1 << ISC01 | 1 << ISC00;
-	EIMSK = 1;
+	EIMSK = 1 << 0;
 }
