@@ -41,12 +41,13 @@ static void die(int sig)
 
 void flush_interrupts(struct atrf_dsc *dsc)
 {
-	/*
-	 * If the driver doesn't support atrf_interrupt_wait, we use
-	 * atrf_reg_read.
-	 */
-	if (atrf_interrupt_wait(dsc, 1) < 0)
-		atrf_reg_read(dsc, REG_IRQ_STATUS);
+	int res;
+
+	res = atrf_interrupt_wait(dsc, 1);
+	if (res < 0) {
+		fprintf(stderr, "atrf_interrupt_wait returns %d\n", res);
+		exit(1);
+	}
 }
 
 
