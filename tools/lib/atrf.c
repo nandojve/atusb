@@ -323,3 +323,10 @@ int atrf_interrupt(struct atrf_dsc *dsc)
 	return
 	    dsc->driver->interrupt ? dsc->driver->interrupt(dsc->handle) : 1;
 }
+
+
+int atrf_interrupt_wait(struct atrf_dsc *dsc, int timeout_ms)
+{
+	return dsc->driver->interrupt_wait ?
+	    dsc->driver->interrupt_wait(dsc->handle, timeout_ms) : -1;
+}
