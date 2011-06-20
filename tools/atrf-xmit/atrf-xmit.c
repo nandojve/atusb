@@ -39,7 +39,7 @@ static void init_common(struct atrf_dsc *dsc, int trim, int channel)
 	atrf_set_clkm(dsc, 0);
 	atrf_reg_write(dsc, REG_PHY_CC_CCA, (1 << CCA_MODE_SHIFT) | channel);
 	atrf_reg_write(dsc, REG_IRQ_MASK, 0xff);
-	(void) atrf_reg_read(dsc, REG_IRQ_STATUS);
+	flush_interrupts(dsc);
 }
 
 
