@@ -11,6 +11,7 @@
  */
 
 
+#include <stddef.h>
 #include <stdint.h>
 
 #include <avr/io.h>
@@ -19,6 +20,8 @@
 #define F_CPU   8000000UL
 #include <util/delay.h>
 
+#include "usb.h"
+#include "at86rf230.h"
 #include "board.h"
 #include "spi.h"
 
@@ -130,4 +133,26 @@ int gpio(uint8_t port, uint8_t data, uint8_t dir, uint8_t mask, uint8_t *res)
 	}
 
 	return 1;
+}
+
+
+ISR(INT0_vect)
+{
+	static uint8_t irq;
+
+	if (eps[1].state != EP_IDLE)
+		return;
+	spi_begin();
+	spi_send(AT86RF230_REG_READ | REG_IRQ_STATUS);
+	irq = spi_recv();
+	spi_end();
+	usb_send(&eps[1], &irq, 1, NULL, NULL);
+}
+
+
+void board_app_init(void)
+{
+	/* enable INT0, trigger on rising edge */
+	EICRA = 1 << ISC01 | 1 << ISC00;
+	EIMSK = 1;
 }

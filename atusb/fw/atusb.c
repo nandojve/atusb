@@ -28,6 +28,7 @@
 int main(void)
 {
 	board_init();
+	board_app_init();
 	reset_rf();
 
 	user_get_descriptor = sernum_get_descr;
