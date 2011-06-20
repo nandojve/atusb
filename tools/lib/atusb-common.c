@@ -15,10 +15,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <usb.h>
+#include <errno.h>
 
 #include "atusb/ep0.h"
 #include "atusb/usb-ids.h"
 
+#include "at86rf230.h"
 #include "usbopen.h"
 #include "driver.h"
 #include "atusb-common.h"
@@ -53,6 +55,7 @@ void *atusb_open(const char *arg)
 {
 	usb_dev_handle *dev;
 	struct atusb_dsc *dsc;
+	int res;
 
 	usb_unrestrict();
 	if (arg)
@@ -60,6 +63,12 @@ void *atusb_open(const char *arg)
 	dev = open_usb(USB_VENDOR, USB_PRODUCT);
 	if (!dev) {
 		fprintf(stderr, ":-(\n");
+		return NULL;
+	}
+
+	res = usb_claim_interface(dev, 0);
+	if (res) {
+		fprintf(stderr, "usb_claim_interface: %d\n", res);
 		return NULL;
 	}
 
@@ -183,6 +192,64 @@ int atusb_interrupt(void *handle)
 	}
 
 	return buf;
+}
+
+
+/*
+ * The logic here is a bit tricky. Assuming that we can get a lot of
+ * interrupts, system state can change as follows:
+ *
+ * Event		IRQ_STATUS	EP1 on atusb	EP1 on host	irq
+ *				INT					(var)
+ * --------------------	------- ---	------------	-----------	-----
+ * interrupt A		A	H	EP_IDLE		-		-
+ * INT0 handler 	-	-	EP_TX (A)	-		-
+ * interrupt B		B	H	EP_TX (A)	-		-
+ * INT0 handler		B	H	EP_TX (A)	-		-
+ * IN from host		B	H	EP_IDLE		A		-
+ * interrupt C		B+C	H	EP_IDLE		A		-
+ * call to atusb_interrupt_wait
+ * read IRQ_STATUS	-	-	EP_IDLE		A		B+C
+ * interrupt D		D	H	EP_IDLE		A		B+C
+ * INT0 handler		-	-	EP_TX (D)	A		B+C
+ * IN from host		-	-	EP_IDLE		A, D		B+C
+ * usb_bulk_read	-	-	EP_IDLE		-		A+B+C+D
+ * usb_bulk_read -> no more data, done
+ *
+ * We therefore have to consider interrupts queued up at the host and pending
+ * in REG_IRQ_STATUS in addition to anything that may arrive while we wait.
+ */
+ 
+
+int atusb_interrupt_wait(void *handle, int timeout_ms)
+{
+	struct atusb_dsc *dsc = handle;
+	uint8_t irq, buf[100];
+	int res, i;
+
+	if (dsc->error)
+		return 0;
+
+	irq = atusb_driver.reg_read(handle, REG_IRQ_STATUS);
+	if (irq)
+		timeout_ms = 1;
+
+	while (1) {
+		res = usb_bulk_read(dsc->dev, 1,
+		    (char *) &buf, sizeof(buf), timeout_ms);
+		if (res == -ETIMEDOUT)
+			break;
+		if (res < 0) {
+			fprintf(stderr, "usb_bulk_read: %d\n", res);
+			dsc->error = 1;
+			return 0;
+			    /* < 0 is already taken by atrf_interrupt_wait */
+		}
+		timeout_ms = 1;
+		for (i = 0; i != res; i++)
+			irq |= buf[i];
+	}
+	return irq;
 }
 
 
