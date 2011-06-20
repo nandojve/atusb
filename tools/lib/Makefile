@@ -19,7 +19,8 @@ OBJS_host = atusb.o atusb-spi.o atusb-common.o usbopen.o
 OBJS_ben_jlime = atben.o
 OBJS_ben_openwrt = atben.o
 
-OBJS = atrf.o atnet.o misctxrx.o cwtest.o netio.o daemon.o $(OBJS_$(TARGET))
+OBJS = atrf.o atnet.o misctxrx.o cwtest.o netio.o daemon.o timeout.o \
+       $(OBJS_$(TARGET))
 
 .PHONY:		all clean spotless
 
