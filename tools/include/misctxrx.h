@@ -18,6 +18,7 @@
 #include "atrf.h"
 
 
+void flush_interrupts(struct atrf_dsc *dsc);
 uint8_t wait_for_interrupt(struct atrf_dsc *dsc, uint8_t wait_for,
     uint8_t ignore, int sleep_us, int timeout);
 
