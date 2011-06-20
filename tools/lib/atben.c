@@ -19,6 +19,7 @@
 #include <sys/mman.h>
 
 #include "at86rf230.h"
+#include "timeout.h"
 #include "driver.h"
 
 
@@ -383,6 +384,25 @@ static int atben_interrupt(void *handle)
 }
 
 
+int atben_interrupt_wait(void *handle, int timeout_ms)
+{
+	struct timeout to;
+	int timedout;
+
+	timeout_start(&to, timeout_ms);
+	while (1) {
+		timedout = timeout_reached(&to);
+		if (atben_interrupt(handle))
+			return atben_reg_read(handle, REG_IRQ_STATUS);
+		if (timedout)
+			return 0;
+		usleep(1000);
+	}
+
+	return 0;
+}
+
+
 /* ----- Driver-specific hacks --------------------------------------------- */
 
 
@@ -412,4 +432,5 @@ struct atrf_driver atben_driver = {
 	.sram_write	= atben_sram_write,
 	.sram_read	= atben_sram_read,
 	.interrupt	= atben_interrupt,
+	.interrupt_wait	= atben_interrupt_wait,
 };
