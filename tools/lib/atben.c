@@ -388,12 +388,17 @@ int atben_interrupt_wait(void *handle, int timeout_ms)
 {
 	struct timeout to;
 	int timedout;
+	uint8_t irq;
 
 	timeout_start(&to, timeout_ms);
 	while (1) {
 		timedout = timeout_reached(&to);
-		if (atben_interrupt(handle))
-			return atben_reg_read(handle, REG_IRQ_STATUS);
+		if (atben_interrupt(handle)) {
+			irq = atben_reg_read(handle, REG_IRQ_STATUS);
+			if (irq)
+				return irq;
+			fprintf(stderr, "ignoring stray interrupt\n");
+		}
 		if (timedout)
 			return 0;
 		usleep(1000);
