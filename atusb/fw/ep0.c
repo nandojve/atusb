@@ -218,7 +218,7 @@ static int my_setup(const struct setup_request *setup)
 	case ATUSB_FROM_DEV(ATUSB_SPI_READ2):
 		spi_begin();
 		spi_send(setup->wValue);
-		if (req == ATUSB_SPI_READ2)
+		if (req == ATUSB_FROM_DEV(ATUSB_SPI_READ2))
 			spi_send(setup->wIndex);
 		for (i = 0; i != setup->wLength; i++)
 			buf[i] = spi_recv();
