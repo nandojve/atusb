@@ -26,7 +26,7 @@ led()
 #
 	step "LED"
 	cmd "echo >/dev/tty;						\
-		echo 'Press [P]ass if the LED blinks, [F]ail if not'	\
+		g_echo 'Press \033[7m P \033[mass if the LED blinks, \033[7m F \033[mail if not' \
 		  >/dev/tty;						\
 		atrf-gpio -c -p						\
                 xxxxxx1x.xxxxxxxx.xxxxxxxx				\
