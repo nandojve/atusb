@@ -23,6 +23,7 @@
 
 
 #define	FROM_DEV	ATUSB_FROM_DEV(0)
+#define	TO_DEV		ATUSB_TO_DEV(0)
 
 
 static const char *name[24] = {
@@ -105,10 +106,17 @@ static void dump(const uint8_t *data, const uint8_t *dir,
 
 static void restore_gpios(void)
 {
-	int i;
+	int i, res;
 
 	for (i = 0; i != 3; i++)
 		gpio(orig_dsc, i+1, orig_data+i, orig_dir+i, 0xff);
+
+	res = usb_control_msg(atrf_usb_handle(orig_dsc),
+	    TO_DEV, ATUSB_GPIO_CLEANUP, 0, 0, NULL, 0, 1000);
+	if (res < 0) {
+		fprintf(stderr, "ATUSB_GPIO_CLEANUP: %s\n", usb_strerror());
+		_exit(1);
+	}
 }
 
 
