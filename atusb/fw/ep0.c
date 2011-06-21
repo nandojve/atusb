@@ -125,6 +125,9 @@ static int my_setup(const struct setup_request *setup)
 			return 0;
 		usb_send(&eps[0], buf, 3, NULL, NULL);
 		return 1;
+	case ATUSB_TO_DEV(ATUSB_GPIO_CLEANUP):
+		gpio_cleanup();
+		return 1;
 
 	case ATUSB_TO_DEV(ATUSB_SLP_TR):
 		debug("ATUSB_SLP_TR\n");

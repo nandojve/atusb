@@ -81,6 +81,7 @@ uint64_t timer_read(void);
 void timer_init(void);
 
 int gpio(uint8_t port, uint8_t data, uint8_t dir, uint8_t mask, uint8_t *res);
+void gpio_cleanup(void);
 
 void board_init(void);
 void board_app_init(void);

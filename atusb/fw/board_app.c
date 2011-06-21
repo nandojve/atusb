@@ -93,7 +93,7 @@ void timer_init(void)
 
 int gpio(uint8_t port, uint8_t data, uint8_t dir, uint8_t mask, uint8_t *res)
 {
-	EIMSK = 0; /* must reset to recover INT_RF */
+	EIMSK = 0; /* recover INT_RF to ATUSB_GPIO_CLEANUP or an MCU reset */
 
 	switch (port) {
 	case 1:
@@ -135,6 +135,12 @@ int gpio(uint8_t port, uint8_t data, uint8_t dir, uint8_t mask, uint8_t *res)
 	}
 
 	return 1;
+}
+
+
+void gpio_cleanup(void)
+{
+	EIMSK = 1 << 0;
 }
 
 
