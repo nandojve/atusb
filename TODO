@@ -1,4 +1,36 @@
-*** NEEDS UPDATING ***
+Current stuff
+-------------
+
+- add spi_atben driver, for improved performance and to serve as an
+  example for spi_atusb
+
+- need to document fab workflow in makefiles/Makefile.kicad
+
+  Deadline: before FISL 12 :-)
+
+- boot.hex is now bigger than 4 kB. Need to split USB stack build into
+  "lean" and "fat" version.
+
+  Work-around: those wishing to build their boot loader should use
+  commit ce16a16.
+
+- atusb/fw/ design flaw: we can send an interrupt queued in EP1 after
+  a control transfer has happened that turns off the interrupt source
+
+  Work-around: none
+
+- atusb/fw/ should combine interrupts so that we don't have to read
+  IRQ_STATUS (this goal may conflict with the synchronization
+  requirement above, though)
+
+- show WLAN channels in atrf-rssi -g
+
+- atusb/fw/: think of a better way to re-enable INT0 after ATUSB_GPIO
+
+- atusb/fw/: remove obsolete atusb requests
+
+
+*** EVERYTHING BELOW NEEDS UPDATING ***
 
 General
 =======
