@@ -213,17 +213,14 @@ int atusb_interrupt_wait(void *handle, int timeout_ms)
 	if (irq)
 		timeout_ms = 1;
 
-	while (1) {
-		res = usb_bulk_read(dsc->dev, 1,
-		    (char *) &buf, sizeof(buf), timeout_ms);
-		if (res == -ETIMEDOUT)
-			break;
+	res = usb_bulk_read(dsc->dev, 1,
+	    (char *) &buf, sizeof(buf), timeout_ms);
+	if (res != -ETIMEDOUT) {
 		if (res < 0) {
 			fprintf(stderr, "usb_bulk_read: %d\n", res);
 			dsc->error = 1;
 			return 0; /* handle this via atrf_error */
 		}
-		timeout_ms = 1;
 		for (i = 0; i != res; i++)
 			irq |= buf[i];
 	}
