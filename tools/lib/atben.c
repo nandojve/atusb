@@ -387,12 +387,14 @@ static int atben_interrupt(void *handle)
 int atben_interrupt_wait(void *handle, int timeout_ms)
 {
 	struct timeout to;
-	int timedout;
+	int timedout = 0;
 	uint8_t irq;
 
-	timeout_start(&to, timeout_ms);
+	if (timeout_ms)
+		timeout_start(&to, timeout_ms);
 	while (1) {
-		timedout = timeout_reached(&to);
+		if (timeout_ms)
+			timedout = timeout_reached(&to);
 		if (atben_interrupt(handle)) {
 			irq = atben_reg_read(handle, REG_IRQ_STATUS);
 			if (irq)
