@@ -171,8 +171,6 @@ static int cmd_more(struct atrf_dsc *dsc, struct netio *netio, const char *cmd)
 	if (!strcasecmp(cmd, "wait")) {
 		int res;
 
-		if (!n)
-			n = 1;
 		res = atrf_interrupt_wait(dsc, n);
 		if (atrf_error(dsc))
 			return netio_printf(netio, "-I/O error\n");

@@ -83,6 +83,7 @@ device is implicitly closed when closing the TCP session.
 Asynchrous interrupt notification
 ---------------------------------
 
-The WAIT command is not answered until an interrupt or another command is
-received. WAIT returns the value of the IRQ_STATUS register. If WAIT
-times out before receiving an interrupt, it returns 0.
+The WAIT command is not answered until an interrupt or until a timeout.
+A timeout value of 0 means infinite. WAIT returns the value of the
+IRQ_STATUS register. If WAIT times out before receiving an interrupt,
+it returns 0.
