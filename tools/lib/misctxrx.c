@@ -24,9 +24,6 @@
 #include "misctxrx.h"
 
 
-#define	MAX_WAIT_MS	100	/* make sure we respond to ^C */
-
-
 /* ----- Interrupts -------------------------------------------------------- */
 
 
@@ -68,15 +65,12 @@ uint8_t wait_for_interrupt(struct atrf_dsc *dsc, uint8_t wait_for,
 		while (!sigint && !timedout) {
 			if (timeout_ms) {
 				ms = timeout_left_ms(&to);
-				if (ms > 0) {
-					if (ms > MAX_WAIT_MS)
-						ms = MAX_WAIT_MS;
-				} else {
+				if (ms <= 0) {
 					timedout = 1;
 					ms = 1;
 				}
 			} else {
-				ms = MAX_WAIT_MS;
+				ms = 0;
 			}
 			irq = atrf_interrupt_wait(dsc, ms);
 			if (irq)
