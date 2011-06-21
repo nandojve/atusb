@@ -196,8 +196,6 @@ static int cmd_more(struct atrf_dsc *dsc, struct netio *netio, const char *cmd)
 
 static int cmd_zero(struct atrf_dsc *dsc, struct netio *netio, const char *cmd)
 {
-	int res;
-
 	if (!strcasecmp(cmd, "spec")) {
 		const char *spec = atrf_driver_spec(dsc, 1);
 
@@ -230,14 +228,6 @@ static int cmd_zero(struct atrf_dsc *dsc, struct netio *netio, const char *cmd)
 			return -1;
 		buf[got] = '\n';
 		return netio_write(netio, buf, got+1);
-	}
-	if (!strcasecmp(cmd, "poll")) {
-		res = atrf_interrupt(dsc);
-		if (res < 0)
-			return netio_printf(netio, "-I/O error\n");
-		if (!res)
-			usleep(2*1000);
-		return netio_printf(netio, "+%d\n", res);
 	}
 	return netio_printf(netio, "-unrecognized command\n");
 }

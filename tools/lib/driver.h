@@ -35,7 +35,6 @@ struct atrf_driver {
 	int (*buf_read)(void *dsc, void *buf, int size);
 	void (*sram_write)(void *dsc, uint8_t addr, uint8_t value);
 	uint8_t (*sram_read)(void *dsc, uint8_t addr);
-	int (*interrupt)(void *dsc);
 	int (*interrupt_wait)(void *dsc, int timeout_ms);
 };
 

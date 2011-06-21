@@ -56,10 +56,6 @@ GETRAM addr
 +value
 -message
 
-POLL
-+0|1
--message
-
 WAIT timeout_ms
 +value
 -message

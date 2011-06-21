@@ -441,28 +441,6 @@ static uint8_t atnet_sram_read(void *handle, uint8_t addr)
 /* ----- RF interrupt ------------------------------------------------------ */
 
 
-static int atnet_interrupt(void *handle)
-{
-	struct atnet_dsc *dsc = handle;
-	unsigned long value;
-	char *end;
-
-	if (dsc->error)
-		return -1;
-	if (dialog(dsc, "POLL") < 0) {
-		dsc->error = 1;
-		return -1;
-	}
-	value = strtoul(dsc->reply+1, &end, 0);
-	if (*end || value > 1) {
-		fprintf(stderr, "invalid response \"%s\"\n", dsc->reply+1);
-		dsc->error = 1;
-		return -1;
-	}
-	return value;
-}
-
-
 int atnet_interrupt_wait(void *handle, int timeout_ms)
 {
 	struct atnet_dsc *dsc = handle;
@@ -515,6 +493,5 @@ struct atrf_driver atnet_driver = {
 	.buf_read	= atnet_buf_read,
 	.sram_write	= atnet_sram_write,
 	.sram_read	= atnet_sram_read,
-	.interrupt	= atnet_interrupt,
 	.interrupt_wait	= atnet_interrupt_wait,
 };

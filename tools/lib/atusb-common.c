@@ -174,27 +174,6 @@ void atusb_slp_tr(void *handle, int on, int pulse)
 /* ----- RF interrupt ------------------------------------------------------ */
 
 
-int atusb_interrupt(void *handle)
-{
-	struct atusb_dsc *dsc = handle;
-	uint8_t buf;
-	int res;
-
-	if (dsc->error)
-		return -1;
-	
-	res = usb_control_msg(dsc->dev, FROM_DEV, ATUSB_POLL_INT, 0, 0,
-	    (void *) &buf, 1, 1000);
-	if (res < 0) {
-		fprintf(stderr, "ATUSB_POLL_INT: %d\n", res);
-		dsc->error = 1;
-		return -1;
-	}
-
-	return buf;
-}
-
-
 /*
  * The logic here is a bit tricky. Assuming that we can get a lot of
  * interrupts, system state can change as follows:

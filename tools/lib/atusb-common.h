@@ -33,7 +33,6 @@ void atusb_reset(void *handle);
 void atusb_reset_rf(void *handle);
 void atusb_test_mode(void *handle);
 void atusb_slp_tr(void *handle, int on, int pulse);
-int atusb_interrupt(void *handle);
 int atusb_interrupt_wait(void *handle, int timeout_ms);
 
 int atusb_set_clkm(void *handle, int mhz);

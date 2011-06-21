@@ -436,6 +436,5 @@ struct atrf_driver atben_driver = {
 	.buf_read	= atben_buf_read,
 	.sram_write	= atben_sram_write,
 	.sram_read	= atben_sram_read,
-	.interrupt	= atben_interrupt,
 	.interrupt_wait	= atben_interrupt_wait,
 };

@@ -161,6 +161,5 @@ struct atrf_driver atusb_driver = {
 	.buf_read	= atusb_buf_read,
 	.sram_write	= atusb_sram_write,
 	.sram_read	= atusb_sram_read,
-	.interrupt	= atusb_interrupt,
 	.interrupt_wait	= atusb_interrupt_wait,
 };

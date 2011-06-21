@@ -55,7 +55,6 @@ int atrf_buf_read(struct atrf_dsc *dsc, void *buf, int size);
 void atrf_sram_write(struct atrf_dsc *dsc, uint8_t addr, uint8_t value);
 uint8_t atrf_sram_read(struct atrf_dsc *dsc, uint8_t addr);
 
-int atrf_interrupt(struct atrf_dsc *dsc);
 int atrf_interrupt_wait(struct atrf_dsc *dsc, int timeout_ms);
 
 #endif /* !ATRF_H */
