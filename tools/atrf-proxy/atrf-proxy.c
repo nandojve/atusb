@@ -176,8 +176,6 @@ static int cmd_more(struct atrf_dsc *dsc, struct netio *netio, const char *cmd)
 		res = atrf_interrupt_wait(dsc, n);
 		if (atrf_error(dsc))
 			return netio_printf(netio, "-I/O error\n");
-		if (res < 0)
-			return netio_printf(netio, "-not supported\n");
 		return netio_printf(netio, "+0x%02x\n", res);
 	}
 	if (!strcasecmp(cmd, "getram")) {

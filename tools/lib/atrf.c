@@ -320,6 +320,5 @@ uint8_t atrf_sram_read(struct atrf_dsc *dsc, uint8_t addr)
 
 int atrf_interrupt_wait(struct atrf_dsc *dsc, int timeout_ms)
 {
-	return dsc->driver->interrupt_wait ?
-	    dsc->driver->interrupt_wait(dsc->handle, timeout_ms) : -1;
+	return dsc->driver->interrupt_wait(dsc->handle, timeout_ms);
 }

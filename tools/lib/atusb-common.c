@@ -221,8 +221,7 @@ int atusb_interrupt_wait(void *handle, int timeout_ms)
 		if (res < 0) {
 			fprintf(stderr, "usb_bulk_read: %d\n", res);
 			dsc->error = 1;
-			return 0;
-			    /* < 0 is already taken by atrf_interrupt_wait */
+			return 0; /* handle this via atrf_error */
 		}
 		timeout_ms = 1;
 		for (i = 0; i != res; i++)
