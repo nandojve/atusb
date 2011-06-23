@@ -81,6 +81,8 @@ void *atusb_open(const char *arg)
 	dsc->dev = dev;
 	dsc->error = 0;
 
+	atusb_driver.reg_read(dsc, REG_IRQ_STATUS);
+
 	return dsc;
 }
 
@@ -203,28 +205,23 @@ void atusb_slp_tr(void *handle, int on, int pulse)
 int atusb_interrupt_wait(void *handle, int timeout_ms)
 {
 	struct atusb_dsc *dsc = handle;
-	uint8_t irq, buf[100];
-	int res, i;
+	char buf;
+	int res;
 
 	if (dsc->error)
 		return 0;
 
-	irq = atusb_driver.reg_read(handle, REG_IRQ_STATUS);
-	if (irq)
-		timeout_ms = 1;
-
 	res = usb_bulk_read(dsc->dev, 1,
 	    (char *) &buf, sizeof(buf), timeout_ms);
-	if (res != -ETIMEDOUT) {
-		if (res < 0) {
-			fprintf(stderr, "usb_bulk_read: %d\n", res);
-			dsc->error = 1;
-			return 0; /* handle this via atrf_error */
-		}
-		for (i = 0; i != res; i++)
-			irq |= buf[i];
+	if (res == -ETIMEDOUT)
+		return 0;
+	if (res < 0) {
+		fprintf(stderr, "usb_bulk_read: %d\n", res);
+		dsc->error = 1;
+		return 0; /* handle this via atrf_error */
 	}
-	return irq;
+
+	return atusb_driver.reg_read(handle, REG_IRQ_STATUS);
 }
 
 
