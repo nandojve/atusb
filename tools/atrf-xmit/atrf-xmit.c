@@ -72,22 +72,22 @@ static int xfer_one(struct atrf_dsc *tx, struct atrf_dsc *rx)
 	uint8_t buf[PSDU_SIZE+1]; /* +1 for LQI */
 	int n, i;
 
-	if (atrf_interrupt_wait(tx, 1)) {
+	if (wait_for_interrupt(tx, IRQ_TRX_END, IRQ_TRX_END, 1)) {
 		fprintf(stderr, "unexpected sender interrupt\n");
 		exit(1);
 	}
-	if (atrf_interrupt_wait(rx, 1)) {
+	if (wait_for_interrupt(rx, IRQ_TRX_END, IRQ_TRX_END, 1)) {
 		fprintf(stderr, "unexpected receiver interrupt\n");
 		exit(1);
 	}
 
 	atrf_slp_tr(tx, 1, 1);
 	irq = wait_for_interrupt(rx, IRQ_TRX_END, IRQ_TRX_END | IRQ_RX_START,
-	    0);
+	    10);
 	if (!(irq & IRQ_TRX_END))
 		return 0;
 
-	irq = atrf_interrupt_wait(tx, 1);
+	irq = wait_for_interrupt(tx, IRQ_TRX_END, IRQ_TRX_END, 1);
 	if (!(irq & IRQ_TRX_END)) {
 		fprintf(stderr, "sender claims packet was not sent ?\n");
 		exit(1);
