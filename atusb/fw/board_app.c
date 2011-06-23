@@ -144,29 +144,20 @@ void gpio_cleanup(void)
 }
 
 
-static uint8_t irqs = 0;
-
-
-static void irqs_more(void *user)
+static void done(void *user)
 {
-	static uint8_t buf;
-
-	if (!irqs)
-		return;
-	buf = irqs;
-	usb_send(&eps[1], &buf, 1, irqs_more, NULL);
-	irqs = 0;
+	led(0);
 }
 
 
 ISR(INT0_vect)
 {
-	spi_begin();
-	spi_send(AT86RF230_REG_READ | REG_IRQ_STATUS);
-	irqs |= spi_recv();
-	spi_end();
-	if (eps[1].state == EP_IDLE)
-		irqs_more(NULL);
+	static uint8_t buf;
+
+	if (eps[1].state == EP_IDLE) {
+		led(1);
+		usb_send(&eps[1], &buf, 1, done, NULL);
+	}
 }
 
 
