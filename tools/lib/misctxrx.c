@@ -24,6 +24,9 @@
 #include "misctxrx.h"
 
 
+#define	MIN_TIMEOUT_MS	10
+
+
 /* ----- Interrupts -------------------------------------------------------- */
 
 
@@ -59,8 +62,11 @@ uint8_t wait_for_interrupt(struct atrf_dsc *dsc, uint8_t wait_for,
 
 	sigint = 0;
 	old_sig = signal(SIGINT, die);
-	if (timeout_ms)
+	if (timeout_ms) {
+		if (timeout_ms < MIN_TIMEOUT_MS)
+			timeout_ms = MIN_TIMEOUT_MS;
 		timeout_start(&to, timeout_ms);
+	}
 	while (!sigint && !timedout) {
 		while (!sigint && !timedout) {
 			if (timeout_ms) {
