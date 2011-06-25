@@ -18,11 +18,11 @@ include ../Makefile.common
 CFLAGS_host += $(shell sdl-config --cflags)
 MACROS_host += -DHAVE_GFX
 LDLIBS_host += $(shell sdl-config --libs) -lSDL_gfx
-OBJS_host = gui.o zgrid.o digit.o
+OBJS_host = gui.o zgrid.o digit.o letter.o
 
 CFLAGS_ben_jlime += $(shell sdl-config --cflags)
 MACROS_ben_jlime += -DHAVE_GFX
 LDLIBS_ben_jlime += -lSDL -lSDL_gfx
-OBJS_ben_jlime = gui.o zgrid.o digit.o
+OBJS_ben_jlime = gui.o zgrid.o digit.o letter.o
 
 $(MAIN):	$(OBJS_$(TARGET))

@@ -26,6 +26,7 @@
 
 #include "zgrid.h"
 #include "digit.h"
+#include "letter.h"
 #include "gui.h"
 
 
@@ -42,6 +43,7 @@
 #define	FREQ_RGBA	0x20ff00ff	/* frequency color */
 #define WCHAN_RGBA	0xffff00e0	/* WLAN channel number color */
 #define WLAN_RGBA	0x8080ffff	/* WLAN channel occupancy color */
+#define	SEL_RGBA	WLAN_RGBA	/* WLAN area selector */
 
 #define	X_STEP		17	/* grid x step */
 #define	Y_STEP		 2	/* grid y step */
@@ -56,12 +58,16 @@
 #define	WLAN_XR		(X_STEP*9.5/5)
 #define	WLAN_YH		6
 
+#define	X_SEL		(XRES-20)
+#define	Y_SEL		(YRES-50)
+
 
 static enum {
+	area_off,
 	area_us,
 	area_eu,
 	area_jp,
-} wlan_area = area_us;
+} wlan_area = area_off;
 
 
 static struct timeval t0;
@@ -112,6 +118,8 @@ static void clear(SDL_Surface *s)
 	x-7+(pos)*4, x-5+(pos)*4, y+15, y+13, y+11, FREQ_RGBA
 #define	CWLAN(pos) \
 	x-4+(pos)*5, x-1+(pos)*5, y+6, y+3, y, WCHAN_RGBA
+#define	CSEL(pos) \
+	x-4+(pos)*5, x-1+(pos)*5, y+6, y+3, y, SEL_RGBA
 
 
 static void label_channels(SDL_Surface *s, int sx, int x0, int y0)
@@ -135,6 +143,47 @@ static void label_channels(SDL_Surface *s, int sx, int x0, int y0)
 			y--;
 		x += sx;
 	}
+}
+
+
+static void print(SDL_Surface *s, int x, int y, const char *t)
+{
+	int i = 0;
+
+	while (*t) {
+		letter(s, *t, CSEL(i));
+		t++;
+		i++;
+	}
+}
+
+
+static void area_selector(SDL_Surface *s, int x0, int y0)
+{
+	int x, y, r;
+
+	print(s, x0, y0, "EU");
+	print(s, x0, y0+9, "JP");
+	print(s, x0, y0+18, "US");
+	switch (wlan_area) {
+	case area_off:
+		return;
+	case area_eu:
+		y = 0;
+		break;
+	case area_jp:
+		y = 1;
+		break;
+	case area_us:
+		y = 2;
+		break;
+	default:
+		abort();
+	}
+	y = y0+9*y+3;
+	x = x0-8;
+	r = 6;
+	filledTrigonColor(s, x, y, x-r, y+r/2, x-r, y-r/2, SEL_RGBA);
 }
 
 
@@ -257,7 +306,10 @@ void gui(struct atrf_dsc *dsc)
 		    X_OFFSET, Y_OFFSET,
 		    FG_RGBA, BG_RGBA);
 		label_channels(surf, X_STEP, X_OFFSET, Y_OFFSET);
-		label_wlan_channels(surf, X_STEP, X_WLAN_OFFSET, Y_WLAN_OFFSET);
+		area_selector(surf, X_SEL, Y_SEL);
+		if (wlan_area != area_off)
+			label_wlan_channels(surf, X_STEP, X_WLAN_OFFSET,
+			    Y_WLAN_OFFSET);
 
 		SDL_UnlockSurface(surf);
 		SDL_UpdateRect(surf, 0, 0, 0, 0);
