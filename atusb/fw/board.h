@@ -64,6 +64,12 @@
 
 #define	BOARD_MAX_mA	40
 
+#ifdef BOOT_LOADER
+#define	NUM_EPS	1
+#else
+#define	NUM_EPS	2
+#endif
+
 #define	HAS_BOARD_SERNUM
 
 extern uint8_t board_sernum[42];

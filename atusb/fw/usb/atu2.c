@@ -40,9 +40,6 @@
 #endif
 
 
-#define NUM_EPS	2
-
-
 struct ep_descr eps[NUM_EPS];
 
 
@@ -199,6 +196,8 @@ static void ep_init(void)
 	eps[0].state = EP_IDLE;
 	eps[0].size = 64;
 
+#ifndef BOOT_LOADER
+
 	UENUM = 1;
 	UECONX = (1 << RSTDT) | (1 << EPEN);	/* enable */
 	UECFG0X = (1 << EPTYPE1) | (1 << EPDIR); /* bulk IN */
@@ -211,6 +210,8 @@ static void ep_init(void)
 
 	eps[1].state = EP_IDLE;
 	eps[1].size = 64;
+
+#endif
 }
 
 
