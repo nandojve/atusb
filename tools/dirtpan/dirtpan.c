@@ -19,6 +19,7 @@
 #include <string.h>
 #include <fcntl.h>
 #include <signal.h>
+#include <errno.h>
 #include <assert.h>
 #include <sys/types.h>
 #include <sys/time.h>
@@ -63,6 +64,29 @@ enum packet_type {
 #define	T_REASS_MS	200
 #define	T_ACK_MS	50
 
+
+static struct {
+	unsigned tx_pck;	/* packets enqueued */
+	unsigned lost;		/* packets never acked */
+	unsigned rx_pck;	/* packets successfully received */
+	unsigned tx_frm;	/* frames sent */
+	unsigned rx_frm;	/* frames received */
+	unsigned tx_frst;	/* pt_first sent */
+	unsigned rx_frst;	/* pt_first received */
+	unsigned tx_nxt;	/* pt_next sent */
+	unsigned rx_nxt;	/* pt_next received */
+	unsigned tx_ack;	/* pt_ack sent */
+	unsigned rx_ack;	/* pt_ack received */
+	unsigned invalid;	/* invalid packet type */
+	unsigned not_rx;	/* pt_next but not receiving */
+	unsigned rx_seq;	/* wrong rx sequence */
+	unsigned not_tx;	/* pt_ack but not sending */
+	unsigned ack_seq;	/* wrong ack sequence */
+	unsigned garbled;	/* IPv4 length problem */
+	unsigned no_ack;	/* no ack response (giving up) */
+	unsigned retry;		/* retransmit */
+	unsigned reass;		/* reassembly timeout */
+} stats;
 
 static int tun, net;
 static uint8_t rx_packet[MAX_PACKET], tx_packet[MAX_PACKET+1];
@@ -142,6 +166,35 @@ static void debug_timeout(const char *label)
 	}
 	debug_label(label);
 	fprintf(stderr, "\n");
+}
+
+
+/* ----- Statistics -------------------------------------------------------- */
+
+
+static void handle_usr1(int sig)
+{
+	fprintf(stderr, "\n"
+	    "tx_pck\t%6u\n"  "tx_lost\t%6u\n" "rx_pck\t%6u\n"
+	    "tx_frm\t%6u\n"  "rx_frm\t%6u\n"  "tx_frst\t%6u\n"
+	    "rx_frst\t%6u\n" "tx_nxt\t%6u\n"  "rx_nxt\t%6u\n"
+	    "tx_ack\t%6u\n"  "rx_ack\t%6u\n"  "invalid\t%6u\n"
+	    "not_rx\t%6u\n"  "rx_seq\t%6u\n"  "not_tx\t%6u\n"
+	    "ack_seq\t%6u\n" "garbled\t%6u\n" "no_ack\t%6u\n"
+	    "retry\t%6u\n"   "reass\t%6u\n",
+	    stats.tx_pck, stats.lost, stats.rx_pck,
+	    stats.tx_frm, stats.rx_frm, stats.tx_frst,
+	    stats.rx_frst, stats.tx_nxt, stats.rx_nxt,
+	    stats.tx_ack, stats.rx_ack, stats.invalid,
+	    stats.not_rx, stats.rx_seq, stats.not_tx,
+	    stats.ack_seq, stats.garbled, stats.no_ack,
+	    stats.retry, stats.reass);
+}
+
+
+static void handle_usr2(int sig)
+{
+	memset(&stats, 0, sizeof(stats));
 }
 
 
@@ -245,6 +298,7 @@ static void send_frame(void *buf, int size)
 {
 	debug_dirt("->", buf, size);
 	write_buf(net, buf, size);
+	stats.tx_frm++;
 }
 
 
@@ -252,7 +306,14 @@ static void send_more(void)
 {
 	uint8_t *p = tx_pos-1;
 
-	*p = (tx_pos == tx_packet+1 ? pt_first : pt_next) | (tx_seq ? SEQ : 0);
+	if (tx_pos == tx_packet+1) {
+		*p = pt_first;
+		stats.tx_frst++;
+	} else {
+		*p = pt_next;
+		stats.tx_nxt++;
+	}
+	*p |= tx_seq ? SEQ : 0;
 	send_frame(p, send_size()+1);
 	start_timer(&t_ack, T_ACK_MS);
 }
@@ -263,6 +324,7 @@ static void send_ack(int seq)
 	uint8_t ack = pt_ack | (seq ? SEQ : 0);
 
 	send_frame(&ack, 1);
+	stats.tx_ack++;
 }
 
 
@@ -276,8 +338,11 @@ static void rx_pck(void *buf, int size)
 
 	debug_dirt("-<", buf, size);
 
-	if (size < 1)
+	stats.rx_frm++;
+	if (size < 1) {
+		stats.invalid++;
 		return;
+	}
 
 	ctrl = *p;
 	type = ctrl & PT_MASK;
@@ -285,6 +350,7 @@ static void rx_pck(void *buf, int size)
 
 	switch (type) {
 	case pt_first:
+		stats.rx_frst++;
 		send_ack(seq);
 		if (rxing) {
 			stop_timer(&t_reass);
@@ -292,21 +358,32 @@ static void rx_pck(void *buf, int size)
 		}
 		break;
 	case pt_next:
+		stats.rx_nxt++;
 		send_ack(seq);
-		if (!rxing)
+		if (!rxing) {
+			stats.not_rx++;
 			return;
-		if (seq == rx_seq)
+		}
+		if (seq == rx_seq) {
+			stats.rx_seq++;
 			return; /* retransmission */
+		}
 		break;
 	case pt_ack:
-		if (!txing)
+		stats.rx_ack++;
+		if (!txing) {
+			stats.not_tx++;
 			return;
-		if (seq != tx_seq)
+		}
+		if (seq != tx_seq) {
+			stats.ack_seq++;
 			return;
+		}
 		stop_timer(&t_ack);
 		tx_pos += send_size();
 		tx_left -= send_size();
 		if (!tx_left) {
+			stats.lost--;
 			txing = 0;
 			return;
 		}
@@ -315,21 +392,27 @@ static void rx_pck(void *buf, int size)
 		send_more();
 		return;
 	default:
-		abort();
+		stats.invalid++;
+		return;
 	}
 
 	if (!rxing) {
-		if (size < 5)
+		if (size < 5) {
+			stats.garbled++;
 			return;
+		}
 		rx_left = p[3] << 8 | p[4];
-		if (rx_left > MAX_PACKET)
+		if (rx_left > MAX_PACKET) {
+			stats.garbled++;
 			return;
+		}
 		start_timer(&t_reass, T_REASS_MS);
 		rxing = 1;
 		rx_pos = rx_packet;
 	}
 
 	if (rx_left < size-1) {
+		stats.garbled++;
 		stop_timer(&t_reass);
 		rxing = 0;
 		return;
@@ -344,6 +427,7 @@ static void rx_pck(void *buf, int size)
 		write_buf(tun, rx_packet, rx_pos-(void *) rx_packet);
 		stop_timer(&t_reass);
 		rxing = 0;
+		stats.rx_pck++;
 	}
 }
 
@@ -366,6 +450,8 @@ static void tx_pck(void *buf, int size)
 	tx_seq = !tx_seq;
 	retries = 0;
 	send_more();
+	stats.tx_pck++;
+	stats.lost++;
 }
 
 
@@ -374,10 +460,13 @@ static void ack_timeout(void)
 	debug_timeout("ACK-TO");
 	assert(txing);
 	stop_timer(&t_ack);
-	if (++retries == MAX_TRIES)
+	if (++retries == MAX_TRIES) {
 		txing = 0;
-	else
+		stats.no_ack++;
+	} else {
 		send_more();
+		stats.retry++;
+	}
 }
 
 
@@ -386,6 +475,7 @@ static void reass_timeout(void)
 	debug_timeout("REASS-TO");
 	assert(rxing);
 	stop_timer(&t_reass);
+	stats.reass++;
 	rxing = 0;
 }
 
@@ -413,7 +503,8 @@ static void event(void)
 	res = select(net > tun ? net+1 : tun+1, &rset, NULL, NULL,
 	    timer_delta(to));
 	if (res < 0) {
-		perror("select");
+		if (errno != EINTR)
+			perror("select");
 		return;
 	}
 	if (!res) {
@@ -600,9 +691,15 @@ int main(int argc, char **argv)
 	net = open_net(pan, src, dst);
 	tun = open_tun(cmd);
 
-	if (foreground || !daemonize())
-		while (1)
-			event();
 
-	return 0;
+	if (foreground) {
+		signal(SIGUSR1, handle_usr1);
+		signal(SIGUSR2, handle_usr2);
+	} else {
+		if (daemonize())
+			return 0;
+	}
+
+	while (1)
+		event();
 }
