@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux/mips 2.6.38 Kernel Configuration
-# Thu May 12 14:20:23 2011
+# Sat Jun 25 12:31:35 2011
 #
 CONFIG_MIPS=y
 
@@ -754,6 +754,7 @@ CONFIG_SPI_BITBANG=y
 CONFIG_SPI_GPIO=y
 # CONFIG_SPI_PXA2XX_PCI is not set
 # CONFIG_SPI_XILINX is not set
+CONFIG_SPI_ATBEN=y
 # CONFIG_SPI_DESIGNWARE is not set
 
 #
