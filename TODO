@@ -4,6 +4,12 @@ Current stuff
 - add spi_atben driver, for improved performance and to serve as an
   example for spi_atusb
 
+  Resolution: done. Average frame buffer transfer speed increased from
+  about 0.82 Mbps to 4.2 Mbps. Things still pending:
+
+  - restore GPIOs in spi_atben
+  - update unbinding procedure
+
 - need to document fab workflow in makefiles/Makefile.kicad
 
   Deadline: before FISL 12 :-)
