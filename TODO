@@ -14,16 +14,25 @@ Current stuff
   Work-around: those wishing to build their boot loader should use
   commit ce16a16.
 
+  Resolution: should work now (after the stack split). Still needs
+  testing.
+
 - atusb/fw/ design flaw: we can send an interrupt queued in EP1 after
   a control transfer has happened that turns off the interrupt source
 
-  Work-around: none
+  Work-around: seems that waiting for 10 ms gets it most of the time
 
 - atusb/fw/ should combine interrupts so that we don't have to read
   IRQ_STATUS (this goal may conflict with the synchronization
   requirement above, though)
 
+  Resolution: do less instead of more - we now don't even touch
+  IRQ_STATUS in the atusb firmware and just send a zero byte as an
+  indication that something has happened.
+
 - show WLAN channels in atrf-rssi -g
+
+  Resolution: done
 
 - atusb/fw/: think of a better way to re-enable INT0 after ATUSB_GPIO
 
