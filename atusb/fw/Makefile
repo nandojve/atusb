@@ -30,11 +30,10 @@ SIZE = $(AVR_PREFIX)size
 
 USB_ID = 20b7:1540
 
-USB_OBJS = usb.o atu2.o
-OBJS = atusb.o board.o board_app.o sernum.o spi.o descr.o ep0.o dfu_common.o \
-       $(USB_OBJS)
-BOOT_OBJS = boot.o board.o sernum.o spi.o flash.o dfu.o dfu_common.o \
-	    $(USB_OBJS)
+OBJS = atusb.o board.o board_app.o sernum.o spi.o descr.o ep0.o \
+       dfu_common.o usb.o app-atu2.o
+BOOT_OBJS = boot.o board.o sernum.o spi.o flash.o dfu.o \
+            dfu_common.o usb.o boot-atu2.o
 
 vpath %.c usb/
 
@@ -110,15 +109,31 @@ version.c:
 
 # ----- Dependencies ----------------------------------------------------------
 
+MKDEP =									\
+	$(DEPEND) $< |							\
+	  sed 								\
+	    -e 's|^$(basename $(notdir $<)).o:|$@:|'			\
+	    -e '/^\(.*:\)\? */{p;s///;s/ *\\\?$$/ /;s/  */:\n/g;H;}'	\
+	    -e '$${g;p;}'						\
+	    -e d >$(basename $@).d;					\
+	  [ "$${PIPESTATUS[*]}" = "0 0" ] ||				\
+	  { rm -f $(basename $@).d; exit 1; }
+
 %.o:            %.c
 		$(CC) $(CFLAGS) -Os -c $<
-		$(DEPEND) $< | \
-		  sed -e \
-		    '/^\(.*:\)\? */{p;s///;s/ *\\\?$$/ /;s/  */:\n/g;H;}' \
-		    -e '$${g;p;}' -e d >$*.d; \
-		  [ "$${PIPESTATUS[*]}" = "0 0" ] || { rm -f $*.d; exit 1; }
+		$(MKDEP)
 
 -include $(OBJS:.o=.d)
+
+# ----- Object file variants --------------------------------------------------
+
+app-%.o:	usb/%.c
+		$(CC) $(CFLAGS) -Os -o $@ -c $<
+		$(MKDEP)
+
+boot-%.o:	usb/%.c
+		$(CC) $(CFLAGS) -DBOOT_LOADER -Os -o $@ -c $<
+		$(MKDEP)
 
 # ----- Programming and device control ----------------------------------------
 
