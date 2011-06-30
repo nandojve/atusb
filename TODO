@@ -12,8 +12,6 @@ Current stuff
 
 - need to document fab workflow in makefiles/Makefile.kicad
 
-  Deadline: before FISL 12 :-)
-
 - boot.hex is now bigger than 4 kB. Need to split USB stack build into
   "lean" and "fat" version.
 
@@ -36,14 +34,15 @@ Current stuff
   IRQ_STATUS in the atusb firmware and just send a zero byte as an
   indication that something has happened.
 
-- show WLAN channels in atrf-rssi -g
-
-  Resolution: done
-
 - atusb/fw/: think of a better way to re-enable INT0 after ATUSB_GPIO
 
 - atusb/fw/: remove obsolete atusb requests
 
+- auto-detect whether the dependencies for bulding dirtpan are met
+
+- write GETTING-STARTED similar to what we had for gta02-core
+
+- properly report EPERM if not running as root
 
 *** EVERYTHING BELOW NEEDS UPDATING ***
 
