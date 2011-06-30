@@ -12,7 +12,7 @@
 
 
 BEN_DIRS=atrf-gpio atrf-id atrf-path atrf-proxy atrf-reset \
-	 atrf-rssi atrf-trim atrf-txrx atrf-xmit atrf-xtal dirtpan
+	 atrf-rssi atrf-trim atrf-txrx atrf-xmit atrf-xtal #dirtpan
 DIRS=$(BEN_DIRS) usbwait
 TARGET_ONLY_DIRS=lib
 
