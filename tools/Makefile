@@ -12,7 +12,17 @@
 
 
 BEN_DIRS=atrf-gpio atrf-id atrf-path atrf-proxy atrf-reset \
-	 atrf-rssi atrf-trim atrf-txrx atrf-xmit atrf-xtal #dirtpan
+	 atrf-rssi atrf-trim atrf-txrx atrf-xmit atrf-xtal
+
+ifneq ($(wildcard ../install/lowpan-tools-0.2.2/include/ieee802154.h),)
+DIRTPAN := dirtpan
+endif
+ifneq ($(wildcard ../install/linux-zigbee/include/ieee802154.h),)
+DIRTPAN := dirtpan
+endif
+
+BEN_DIRS += $(DIRTPAN)
+
 DIRS=$(BEN_DIRS) usbwait
 TARGET_ONLY_DIRS=lib
 
