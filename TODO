@@ -38,8 +38,6 @@ Current stuff
 
 - atusb/fw/: remove obsolete atusb requests
 
-- auto-detect whether the dependencies for bulding dirtpan are met
-
 - write GETTING-STARTED similar to what we had for gta02-core
 
 - properly report EPERM if not running as root
