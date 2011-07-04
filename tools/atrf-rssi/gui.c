@@ -23,6 +23,7 @@
 #include "at86rf230.h"
 #include "atrf.h"
 #include "misctxrx.h"
+#include "getkey.h"
 
 #include "zgrid.h"
 #include "digit.h"
@@ -262,6 +263,8 @@ void gui(struct atrf_dsc *dsc)
 	}
 	atexit(SDL_Quit);
 
+	get_key_init();
+
 	surf = SDL_SetVideoMode(XRES, YRES, 0, SDL_SWSURFACE);
 	if (!surf) {
 		fprintf(stderr, "SDL_SetVideoMode: %s\n", SDL_GetError());
@@ -293,6 +296,26 @@ void gui(struct atrf_dsc *dsc)
 			default:
 				break;
 			}
+		}
+
+		switch (get_key()) {
+		case 'J':
+		case 'j':
+			wlan_area = area_jp;
+			break;
+		case 'E':
+		case 'e':
+			wlan_area = area_eu;
+			break;
+		case 'U':
+		case 'u':
+			wlan_area = area_us;
+			break;
+		case 'Q':
+		case 'q':
+			return;
+		default:
+			break;
 		}
 
 		shift_grid(z, N_CHAN, N_TIME);
