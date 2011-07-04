@@ -15,9 +15,6 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
-#include <termios.h>
-#include <fcntl.h>
-#include <errno.h>
 
 #include "SDL.h"
 #include "SDL_gfxPrimitives.h"
@@ -25,6 +22,7 @@
 #include "at86rf230.h"
 #include "atrf.h"
 #include "misctxrx.h"
+#include "getkey.h"
 
 #include "sweep.h"
 #include "gui.h"
@@ -216,61 +214,6 @@ static void draw_dumps(SDL_Surface *s, int cont_tx)
 }
 
 
-/* ----- Console input ----------------------------------------------------- */
-
-
-static struct termios old_term;
-
-
-static void restore_term(void)
-{
-	if (tcsetattr(0, TCSAFLUSH, &old_term) < 0)
-		perror("tcsetattr");
-}
-
-
-static void raw(void)
-{
-	struct termios term;
-
-	if (tcgetattr(0, &old_term) < 0) {
-		perror("tcgetattr");
-		exit(1);
-	}
-	term = old_term;
-	cfmakeraw(&term);
-	if (tcsetattr(0, TCSAFLUSH, &term) < 0) {
-		perror("tcsetattr");
-		exit(1);
-	}
-	atexit(restore_term);
-	if (fcntl(0, F_SETFL, O_NONBLOCK) < 0) {
-		perror("fcntl");
-		exit(1);
-	}
-}
-
-
-static char get_key(void)
-{
-	ssize_t got;
-        char ch;
-
-	got = read(0, &ch, 1);
-	if (got == 1)
-		return ch;
-	if (got >= 0) {
-		fprintf(stderr, "unexpected read() return value %d\n",
-		    (int) got);
-		exit(1);
-	}
-	if (errno == EAGAIN)
-		return 0;
-	perror("read");
-	exit(1);
-}
-
-
 /* --- temporarily, for optimizing --- */
 
 #if 0
@@ -322,7 +265,7 @@ int gui(const struct sweep *sweep, int sweeps)
 	}
 	atexit(SDL_Quit);
 
-	raw();
+	get_key_init();
 
 	surf = SDL_SetVideoMode(XRES, YRES, 0, SDL_SWSURFACE);
 	if (!surf) {
