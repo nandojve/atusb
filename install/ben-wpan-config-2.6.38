@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux/mips 2.6.38 Kernel Configuration
-# Sat Jun 25 12:31:35 2011
+# Sun Jun 26 20:14:22 2011
 #
 CONFIG_MIPS=y
 
@@ -1118,7 +1118,7 @@ CONFIG_FAT_DEFAULT_IOCHARSET="iso8859-1"
 CONFIG_PROC_FS=y
 CONFIG_PROC_KCORE=y
 CONFIG_PROC_SYSCTL=y
-# CONFIG_PROC_PAGE_MONITOR is not set
+CONFIG_PROC_PAGE_MONITOR=y
 CONFIG_SYSFS=y
 CONFIG_TMPFS=y
 # CONFIG_TMPFS_POSIX_ACL is not set
