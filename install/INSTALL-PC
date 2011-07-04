@@ -15,9 +15,8 @@
 
 3. Build the user space tools of the linux-zigbee project
 
-	wget http://ufpr.dl.sourceforge.net/project/linux-zigbee/linux-zigbee-sources/0.2.2/lowpan-tools-0.2.2.tar.gz
-	tar xfz lowpan-tools-0.2.2.tar.gz
-	cd lowpan-tools-0.2.2
-	./configure
+	git clone git://linux-zigbee.git.sourceforge.net/gitroot/linux-zigbee/linux-zigbee
+	cd linux-zigbee
+	./autogen.sh
 	make
 	make install

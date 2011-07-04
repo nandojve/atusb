@@ -15,4 +15,5 @@ MAIN = dirtpan
 
 include ../Makefile.common
 
-CFLAGS += -I. -I../../install/lowpan-tools-0.2.2/include/
+CFLAGS += -I. -I../../install/lowpan-tools-0.2.2/include/ \
+	  -I../../install/linux-zigbee/include/
