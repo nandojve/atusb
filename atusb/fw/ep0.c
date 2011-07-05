@@ -56,12 +56,37 @@ static void do_buf_write(void *user)
 #define	BUILD_OFFSET	7	/* '#' plus "65535" plus ' ' */
 
 
+#ifdef DEBUG_LOG
+
+#define	LOG_SIZE	16
+
+static struct {
+	uint16_t n;
+	struct setup_request setup;
+} log_buf[LOG_SIZE];
+
+static int log_pos = 0;
+
+#endif /* DEBUG_LOG */
+
+
 static int my_setup(const struct setup_request *setup)
 {
 	uint16_t req = setup->bmRequestType | setup->bRequest << 8;
 	unsigned tmp;
 	uint8_t i;
 	uint64_t tmp64;
+
+#ifdef DEBUG_LOG
+
+	uint8_t pos;
+
+	pos = log_pos & (LOG_SIZE-1);
+	log_buf[pos].n = log_pos;
+	log_buf[pos].setup = *setup;
+	log_pos++;
+
+#endif /* DEBUG_LOG */
 
 	switch (req) {
 	case ATUSB_FROM_DEV(ATUSB_ID):
@@ -128,6 +153,12 @@ static int my_setup(const struct setup_request *setup)
 	case ATUSB_TO_DEV(ATUSB_GPIO_CLEANUP):
 		gpio_cleanup();
 		return 1;
+
+#ifdef DEBUG_LOG
+	case ATUSB_FROM_DEV(ATUSB_READ_LOG):
+		usb_send(&eps[0], log_buf, sizeof(log_buf), NULL, NULL);
+		return 1;
+#endif
 
 	case ATUSB_TO_DEV(ATUSB_SLP_TR):
 		debug("ATUSB_SLP_TR\n");
