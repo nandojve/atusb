@@ -40,7 +40,14 @@ Current stuff
 
 - write GETTING-STARTED similar to what we had for gta02-core
 
-- properly report EPERM if not running as root
+- find out why "make dfu" doesn't work on my u1010
+
+- make tools interruptible (^C) again when using atusb (the new
+  interrupt code removed the timeout and usb_bulk_read seems to simply
+  ignore signals)
+
+- update OpenWrt cross-toolchain and check build. Also check if
+  SDL_gfx is now available.
 
 *** EVERYTHING BELOW NEEDS UPDATING ***
 
