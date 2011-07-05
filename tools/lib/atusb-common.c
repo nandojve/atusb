@@ -62,11 +62,20 @@ void *atusb_open(const char *arg)
 		restrict_usb_path(arg);
 	dev = open_usb(USB_VENDOR, USB_PRODUCT);
 	if (!dev) {
-		fprintf(stderr, ":-(\n");
+		if (errno == EPERM)
+			fprintf(stderr, "Permission denied. "
+			    "You may need to become root.\n");
+		else
+			fprintf(stderr, ":-(\n");
 		return NULL;
 	}
 
 	res = usb_claim_interface(dev, 0);
+	if (res == -EPERM) {
+		fprintf(stderr,
+		    "Permission denied. You may need to become root.\n");
+		return NULL;
+	}
 	if (res) {
 		fprintf(stderr, "usb_claim_interface: %d\n", res);
 		return NULL;
