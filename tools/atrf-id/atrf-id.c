@@ -112,53 +112,10 @@ static void show_usb_info(struct atrf_dsc *dsc)
 }
 
 
-static void do_dump_debug(struct atrf_dsc *dsc)
-{
-	usb_dev_handle *dev;
-	uint8_t buf[1024];
-	int res;
-	struct log {
-		uint16_t n;
-		uint8_t bmRequestType;
-		uint8_t bRequest;
-		uint16_t wValue;
-		uint16_t wIndex;
-		uint16_t wLength;
-	} *p;
-
-	dev = atrf_usb_handle(dsc);
-	if (!dev)
-		return;
-
-	res = usb_control_msg(dev, FROM_DEV, ATUSB_READ_LOG, 0, 0,
-	    (void *) buf, sizeof(buf), 1000);
-	if (res < 0) {
-		fprintf(stderr, "ATUSB_READ_LOG: %s\n", usb_strerror());
-		return;
-	}
-
-	printf("Number\tbmRequestType\tbRequest\twValue\twIndex\twLength\n");
-	for (p = (void *) buf; (uint8_t *) (p+1) <= buf+res; p++) {
-		printf("%u\t", p->n);
-		printf("0x%02x\t\t", p->bmRequestType);
-		printf("0x%02x\t\t", p->bRequest);
-		printf("0x%04x\t", p->wValue);
-		printf("0x%04x\t", p->wIndex);
-		printf("0x%04x\n", p->wLength);
-
-	}
-}
-
-
 #else /* HAVE_USB */
 
 
 static void show_usb_info(struct atrf_dsc *dsc)
-{
-}
-
-
-static void do_dump_debug(struct atrf_dsc *dsc)
 {
 }
 
@@ -204,7 +161,6 @@ static void usage(const char *name)
 	fprintf(stderr,
 "usage: %s [-d driver[:arg]] [-s [-s]]\n\n"
 "  -d driver[:arg]  use the specified driver (default: %s)\n"
-"  -D               dump atusb debug buffer\n"
 "  -s               print only the local driver specification\n"
 "  -s -s            print only the remote driver specification\n"
     , name, atrf_default_driver_name());
@@ -217,16 +173,12 @@ int main(int argc, char *const *argv)
 	const char *driver = NULL;
 	struct atrf_dsc *dsc;
 	int spec_only = 0;
-	int dump_debug = 0;
 	int c;
 
-	while ((c = getopt(argc, argv, "d:Ds")) != EOF)
+	while ((c = getopt(argc, argv, "d:s")) != EOF)
 		switch (c) {
 		case 'd':
 			driver = optarg;
-			break;
-		case 'D':
-			dump_debug = 1;
 			break;
 		case 's':
 			spec_only++;
@@ -253,8 +205,6 @@ int main(int argc, char *const *argv)
 	} else {
 		show_info(dsc);
 	}
-	if (dump_debug)
-		do_dump_debug(dsc);
 
 	atrf_close(dsc);
 
