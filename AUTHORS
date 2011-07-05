@@ -8,7 +8,7 @@ Rene Harder <rehar@saweb.de>
   components/antenna.lib
   modules/mini-usb.fpd
 
-Werner Almesberger <werner@openmoko.org>
+Werner Almesberger <werner@almesberger.net>
 
   components/at86rf230.lib
   components/at86rf231.lib
