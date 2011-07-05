@@ -16,6 +16,8 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <dirent.h>
+#include <fnmatch.h>
 #include <sys/mman.h>
 
 #include "at86rf230.h"
@@ -36,6 +38,10 @@ enum {
 	IRQ	= 1 << 12,	/* DAT2, PD12 */
 	nSEL	= 1 << 13,	/* DAT3/CD, PD13 */
 };
+
+
+#define	MMC_PATH	"/sys/bus/platform/drivers/jz4740-mmc"
+#define	AT86RF230_PATH	"/sys/bus/spi/drivers/at86rf230"
 
 
 #define SOC_BASE	0x10000000
@@ -184,9 +190,52 @@ static void atben_reset_rf(void *handle)
 }
 
 
+static int find_file(const char *path, const char *pattern)
+{
+	DIR *dir;
+	const struct dirent *de;
+
+	dir = opendir(path);
+	if (!dir)
+		return 0;
+	while ((de = readdir(dir)))
+		if (!fnmatch(pattern, de->d_name, 0))
+			break;
+	if (closedir(dir) < 0) {
+		perror("closedir");
+		exit(1);
+	}
+	return !!de;
+}
+
+
+static int slot_in_use(void)
+{
+	if (find_file(MMC_PATH, "*.0")) {
+		fprintf(stderr,
+"The 8:10 card slot is currently used by the MMC controller.\n"
+"You can try to detach it with:\n"
+"# echo jz4740-mmc.0 >/sys/bus/platform/drivers/jz4740-mmc/unbind\n");
+		return 1;
+	}
+	if (find_file(AT86RF230_PATH, "*.0")) {
+		fprintf(stderr,
+"The 8:10 card slot is currently used by the AT86RF230 kernel driver.\n"
+"You can try to detach it with:\n"
+"# cd /sys/bus/spi/drivers/at86rf230\n"
+"# echo spi*.0 >unbind\n");
+		return 1;
+	}
+	return 0;
+}
+
+
 static void *atben_open(const char *arg)
 {
 	struct atben_dsc *dsc;
+
+	if (slot_in_use())
+		return NULL;
 
 	dsc = malloc(sizeof(*dsc));
 	if (!dsc) {
