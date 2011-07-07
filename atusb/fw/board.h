@@ -73,6 +73,7 @@
 #define	HAS_BOARD_SERNUM
 
 extern uint8_t board_sernum[42];
+extern uint8_t irq_serial;
 
 
 void reset_rf(void);

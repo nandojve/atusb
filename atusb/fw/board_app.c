@@ -150,13 +150,15 @@ static void done(void *user)
 }
 
 
+uint8_t irq_serial;
+
+
 ISR(INT0_vect)
 {
-	static uint8_t buf;
-
 	if (eps[1].state == EP_IDLE) {
 		led(1);
-		usb_send(&eps[1], &buf, 1, done, NULL);
+		irq_serial++;
+		usb_send(&eps[1], &irq_serial, 1, done, NULL);
 	}
 }
 

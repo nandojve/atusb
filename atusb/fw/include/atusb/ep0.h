@@ -39,6 +39,7 @@
  * host->	ATUSB_SPI_WRITE		byte0		byte1	#bytes
  * ->host	ATUSB_SPI_READ1		byte0		-	#bytes
  * ->host	ATUSB_SPI_READ2		byte0		byte1	#bytes
+ * ->host	ATUSB_SPI_WRITE2_SYNC	byte0		bute1	0/1
  */
 
 /*
@@ -91,6 +92,7 @@ enum atspi_requests {
 	ATUSB_SPI_WRITE			= 0x30,	/* SPI group */
 	ATUSB_SPI_READ1,
 	ATUSB_SPI_READ2,
+	ATUSB_SPI_WRITE2_SYNC,
 };
 
 

@@ -217,6 +217,16 @@ static int my_setup(const struct setup_request *setup)
 		else
 			do_buf_write(NULL);
 		return 1;
+	case ATUSB_FROM_DEV(ATUSB_SPI_WRITE2_SYNC):
+		spi_begin();
+		spi_send(setup->wValue);
+		spi_send(setup->wIndex);
+		spi_end();
+		buf[0] = irq_serial;
+		if (setup->wLength)
+			usb_send(&eps[0], buf, 1, NULL, NULL);
+		return 1;
+
 	case ATUSB_FROM_DEV(ATUSB_SPI_READ1):
 	case ATUSB_FROM_DEV(ATUSB_SPI_READ2):
 		spi_begin();
