@@ -61,7 +61,7 @@ endif
 
 # ----- Rules -----------------------------------------------------------------
 
-.PHONY:		all clean upload prog dfu update version.c
+.PHONY:		all clean upload prog dfu update version.c bindist
 .PHONY:		prog-app prog-read on off reset
 
 all:		$(NAME).bin boot.hex
@@ -134,6 +134,19 @@ app-%.o:	usb/%.c
 boot-%.o:	usb/%.c
 		$(CC) $(CFLAGS) -DBOOT_LOADER -Os -o $@ -c $<
 		$(MKDEP)
+
+# ----- Distribution ----------------------------------------------------------
+
+BINDIST_BASE=http://downloads.qi-hardware.com/people/werner/wpan/bindist
+ATUSB_BIN_NAME=atusb-`git rev-parse HEAD | cut -c 1-7`.bin
+
+bindist:
+		qippl atusb.bin wpan/bindist/$(ATUSB_BIN_NAME)
+		@echo $(BINDIST_BASE)/$(ATUSB_BIN_NAME)
+		@echo md5sum: `md5sum atusb.bin | sed 's/ .*//'`
+		@echo atrf-id: \
+		  `sed '/.*number = \(.*\);/s//#\1/p;d' version.c` \
+		  `sed '/.*date = "\(.*\)";/s//\1/p;d' version.c`
 
 # ----- Programming and device control ----------------------------------------
 
