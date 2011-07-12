@@ -284,6 +284,34 @@ static void transmit(struct atrf_dsc *dsc, const char *msg, int times)
 }
 
 
+static void receive_hmac(struct atrf_dsc *dsc)
+{
+	uint8_t buf[MAX_PSDU];
+	uint8_t lqi;
+	int n, i;
+
+	atrf_rx_mode(dsc, 1);
+	n = atrf_rx(dsc, buf, sizeof(buf), &lqi);
+	atrf_rx_mode(dsc, 0);
+
+	if (n < 2) {
+		fprintf(stderr, "%d bytes received\n", n);
+		exit(1);
+	}
+	for (i = 0; i != n-2; i++)
+		putchar(buf[i] < ' ' || buf[i] > '~' ? '?' : buf[i]);
+	putchar('\n');
+}
+
+
+static void transmit_hmac(struct atrf_dsc *dsc, const char *msg)
+{
+	atrf_rx_mode(dsc, 1);
+	atrf_tx(dsc, msg, strlen(msg));
+	atrf_rx_mode(dsc, 0);
+}
+
+
 static void transmit_pattern(struct atrf_dsc *dsc, double pause_s, int times)
 {
 	uint8_t buf[MAX_PSDU];
@@ -433,12 +461,16 @@ static void usage(const char *name)
 {
 	fprintf(stderr,
 "usage: %s [common_options] [message [repetitions]]\n"
+"       %s [common_options] -H [message]\n"
 "       %s [common_options] -E pause_s [repetitions]\n"
 "       %s [common_options] -P [max_wait_s]\n"
 "       %s [common_options] -T offset [command]\n\n"
 "  text message mode:\n"
 "    message     message string to send (if absent, receive)\n"
 "    repetitions number of times the message is sent (default 1)\n\n"
+"  text message mode (hard MAC):\n"
+"    -H          use hard MAC mode\n"
+"    message     message string to send (if absent, receive)\n"
 "  PER test mode (transmit only):\n"
 "    -E pause_s  seconds to pause between frames (floating-point)\n"
 "    repetitions number of messages to send (default: infinite)\n\n"
@@ -461,7 +493,7 @@ static void usage(const char *name)
 "    -p power    transmit power, -17.2 to 3.0 dBm (default %.1f)\n"
 "    -r rate     data rate, 250k, 500k, 1M, or 2M (default: 250k)\n"
 "    -t trim     trim capacitor, 0 to 15 (default %d)\n"
-	    , name, name, name, name,
+	    , name, name, name, name, name,
 	    DEFAULT_CHANNEL, atrf_default_driver_name(),
 	    2405+5*(DEFAULT_CHANNEL-11), DEFAULT_POWER,
 	    DEFAULT_TRIM);
@@ -473,6 +505,7 @@ int main(int argc, char *const *argv)
 {
 	enum {
 		mode_msg,
+		mode_hmac,
 		mode_per,
 		mode_ping,
 		mode_cont_tx,
@@ -491,7 +524,7 @@ int main(int argc, char *const *argv)
 	const char *pcap_file = NULL;
 	struct atrf_dsc *dsc;
 
-	while ((c = getopt(argc, argv, "c:C:d:f:o:p:r:E:Pt:T:")) != EOF)
+	while ((c = getopt(argc, argv, "c:C:d:f:Ho:p:r:E:Pt:T:")) != EOF)
 		switch (c) {
 		case 'c':
 			channel = strtoul(optarg, &end, 0);
@@ -512,6 +545,9 @@ int main(int argc, char *const *argv)
 			channel = (freq-2405)/5+11;
 			if (channel < 11 || channel > 26)
 				usage(*argv);
+			break;
+		case 'H':
+			mode = mode_hmac;
 			break;
 		case 'o':
 			pcap_file = optarg;
@@ -582,6 +618,10 @@ int main(int argc, char *const *argv)
 		case mode_msg:
 			receive(dsc, pcap_file);
 			break;
+		case mode_hmac:
+while(1)
+			receive_hmac(dsc);
+			break;
 		case mode_per:
 			set_power_dBm(dsc, power, 0);
 			transmit_pattern(dsc, pause_s, 0);
@@ -601,6 +641,7 @@ int main(int argc, char *const *argv)
 	case 2:
 		switch (mode) {
 		case mode_msg:
+		case mode_hmac:
 			break;
 		case mode_per:
 		case mode_ping:
@@ -622,6 +663,10 @@ int main(int argc, char *const *argv)
 		case mode_msg:
 			set_power_dBm(dsc, power, 1);
 			transmit(dsc, argv[optind], times);
+			break;
+		case mode_hmac:
+			set_power_dBm(dsc, power, 1);
+			transmit_hmac(dsc, argv[optind]);
 			break;
 		case mode_per:
 			times = strtoul(argv[optind], &end, 0);
