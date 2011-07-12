@@ -168,4 +168,7 @@ struct atrf_driver atusb_spi_driver = {
 	.sram_write	= atusb_spi_sram_write,
 	.sram_read	= atusb_spi_sram_read,
 	.interrupt_wait	= atusb_interrupt_wait,
+	.rx_mode	= atusb_rx_mode,
+	.rx		= atusb_rx,
+	.tx		= atusb_tx,
 };

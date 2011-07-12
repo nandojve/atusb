@@ -14,6 +14,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <usb.h>
 #include <errno.h>
 
@@ -273,6 +274,84 @@ int atusb_set_clkm(void *handle, int mhz)
 		return 0;
 	}
 	return atrf_set_clkm_generic(atusb_driver.reg_write, dsc, mhz);
+}
+
+
+/* ----- HardMAC ----------------------------------------------------------- */
+
+
+void atusb_rx_mode(void *handle, int on)
+{
+	struct atusb_dsc *dsc = handle;
+	int res;
+
+	if (dsc->error)
+		return;
+
+	res = usb_control_msg(dsc->dev, TO_DEV, ATUSB_RX_MODE,
+	    on, 0, NULL, 0, 1000);
+	if (res < 0) {
+		fprintf(stderr, "ATUSB_RX_MODE: %d\n", res);
+		dsc->error = 1;
+	}
+}
+
+
+int atusb_rx(void *handle, void *buf, int size, uint8_t *lqi)
+{
+	struct atusb_dsc *dsc = handle;
+	uint8_t len;
+	int res;
+	uint8_t tmp[MAX_PSDU+2]; /* PHR, LQI */
+
+	/*
+	 * Seems that either the USB stack of libusb doesn't like it if we do a
+	 * read of size one followed by the full read. Therefore, we just do
+	 * a maximum-sized read and hope that we don't split packets.
+	 */
+	res = usb_bulk_read(dsc->dev, 1, (char *) tmp, sizeof(tmp), 0);
+	if (res < 0) {
+		fprintf(stderr, "usb_bulk_read: %d\n", res);
+		dsc->error = 1;
+		return 0;
+	}
+
+	len = tmp[0];
+	if (len & 0x80) {
+		fprintf(stderr, "atusb_rx: invalid length 0x%02x\n", len);
+		return 0;
+	}
+	if (len > size) {
+		fprintf(stderr, "atusb_rx: len %u > size %d\n", len, size);
+		return 0;
+	}
+	if (len > res+2) {
+		fprintf(stderr, "atusb_rx: len %u > res %d+2\n", len, res);
+		return 0;
+	}
+
+	memcpy(buf, tmp+1, len);
+	if (lqi)
+		*lqi = tmp[len+1];
+
+	return len;
+}
+
+
+void atusb_tx(void *handle, const void *buf, int size)
+{
+	struct atusb_dsc *dsc = handle;
+	int res;
+
+	if (dsc->error)
+		return;
+
+	res = usb_control_msg(dsc->dev, TO_DEV, ATUSB_TX,
+	    0, 0, (void *) buf, size, 1000);
+	if (res < 0) {
+		fprintf(stderr, "ATUSB_TX: %d\n", res);
+		dsc->error = 1;
+	}
 }
 
 
