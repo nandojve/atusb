@@ -17,6 +17,7 @@
 
 #include "at86rf230.h"
 #include "spi.h"
+#include "board.h"
 #include "mac.h"
 
 
@@ -51,6 +52,12 @@ static void reg_write(uint8_t reg, uint8_t value)
 }
 
 
+static void rx_done(void *user)
+{
+	led(0);
+}
+
+
 static int handle_irq(void)
 {
 	uint8_t irq;
@@ -81,7 +88,8 @@ static int handle_irq(void)
 	for (i = 0; i != size+1; i++)
 		rx_buf[i+1] = spi_recv();
 	spi_end();
-	usb_send(&eps[1], rx_buf, size+2, NULL, NULL);
+	led(1);
+	usb_send(&eps[1], rx_buf, size+2, rx_done, NULL);
 	return 1;
 }
 
@@ -120,7 +128,7 @@ static void do_tx(void *user)
 
 	spi_begin();
 	spi_send(AT86RF230_BUF_WRITE);
-	spi_send(tx_size);
+	spi_send(tx_size+2); /* CRC */
 	for (i = 0; i != tx_size; i++)
 		spi_send(tx_buf[i]);
 	spi_end();
@@ -146,5 +154,4 @@ int mac_tx(uint16_t flags, uint16_t len)
 	tx_size = len;
 	usb_recv(&eps[0], tx_buf, len, do_tx, NULL);
 	return 1;
-
 }
