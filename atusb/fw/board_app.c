@@ -22,8 +22,9 @@
 
 #include "usb.h"
 #include "at86rf230.h"
-#include "board.h"
 #include "spi.h"
+#include "mac.h"
+#include "board.h"
 
 
 static volatile uint32_t timer_h = 0;	/* 2^(16+32) / 8 MHz = ~1.1 years */
@@ -155,6 +156,10 @@ uint8_t irq_serial;
 
 ISR(INT0_vect)
 {
+	if (mac_irq) {
+		mac_irq();
+		return;
+	}
 	if (eps[1].state == EP_IDLE) {
 		led(1);
 		irq_serial = (irq_serial+1) | 0x80;

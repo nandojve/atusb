@@ -29,6 +29,7 @@
 #include "board.h"
 #include "sernum.h"
 #include "spi.h"
+#include "mac.h"
 
 
 #define	HW_TYPE		HW_TYPE_110131
@@ -238,6 +239,11 @@ static int my_setup(const struct setup_request *setup)
 		spi_end();
 		usb_send(&eps[0], buf, setup->wLength, NULL, NULL);
 		return 1;
+
+	case ATUSB_TO_DEV(ATUSB_RX_MODE):
+		return mac_rx(setup->wValue);
+	case ATUSB_TO_DEV(ATUSB_TX):
+		return mac_tx(setup->wValue, setup->wLength);
 
 	default:
 		error("Unrecognized SETUP: 0x%02x 0x%02x ...\n",

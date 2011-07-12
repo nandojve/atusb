@@ -31,7 +31,7 @@ SIZE = $(AVR_PREFIX)size
 USB_ID = 20b7:1540
 
 OBJS = atusb.o board.o board_app.o sernum.o spi.o descr.o ep0.o \
-       dfu_common.o usb.o app-atu2.o
+       dfu_common.o usb.o app-atu2.o mac.o
 BOOT_OBJS = boot.o board.o sernum.o spi.o flash.o dfu.o \
             dfu_common.o usb.o boot-atu2.o
 

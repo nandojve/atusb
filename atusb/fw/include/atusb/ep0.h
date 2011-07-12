@@ -39,7 +39,10 @@
  * host->	ATUSB_SPI_WRITE		byte0		byte1	#bytes
  * ->host	ATUSB_SPI_READ1		byte0		-	#bytes
  * ->host	ATUSB_SPI_READ2		byte0		byte1	#bytes
- * ->host	ATUSB_SPI_WRITE2_SYNC	byte0		bute1	0/1
+ * ->host	ATUSB_SPI_WRITE2_SYNC	byte0		byte1	0/1
+ *
+ * host->	ATUSB_RX_MODE		on		-	0
+ * host->	ATUSB_TX		flags		0	#bytes
  */
 
 /*
@@ -93,6 +96,8 @@ enum atspi_requests {
 	ATUSB_SPI_READ1,
 	ATUSB_SPI_READ2,
 	ATUSB_SPI_WRITE2_SYNC,
+	ATUSB_RX_MODE			= 0x40, /* HardMAC group */
+	ATUSB_TX,
 };
 
 
