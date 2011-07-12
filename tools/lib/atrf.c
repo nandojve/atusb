@@ -322,3 +322,25 @@ int atrf_interrupt_wait(struct atrf_dsc *dsc, int timeout_ms)
 {
 	return dsc->driver->interrupt_wait(dsc->handle, timeout_ms);
 }
+
+
+void atrf_rx_mode(struct atrf_dsc *dsc, int on)
+{
+	if (dsc->driver->rx_mode)
+		dsc->driver->rx_mode(dsc->handle, on);
+}
+
+
+int atrf_rx(struct atrf_dsc *dsc, void *buf, int size, uint8_t *lqi)
+{
+	if (!dsc->driver->rx)
+		return 0;
+	return dsc->driver->rx(dsc->handle, buf, size, lqi);
+}
+
+
+void atrf_tx(struct atrf_dsc *dsc, const void *buf, int size)
+{
+	if (dsc->driver->tx)
+		dsc->driver->tx(dsc->handle, buf, size);
+}

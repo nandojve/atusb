@@ -20,7 +20,7 @@
 #include "mac.h"
 
 
-void (*mac_irq)(void) = NULL;
+int (*mac_irq)(void) = NULL;
 
 
 static uint8_t rx_buf[MAX_PSDU+2]; /* PHDR+payload+LQ */
@@ -51,35 +51,30 @@ static void reg_write(uint8_t reg, uint8_t value)
 }
 
 
-static void handle_irq(void)
+static int handle_irq(void)
 {
 	uint8_t irq;
 	uint8_t size, i;
 
-	irq = reg_read(REG_IRQ_STATUS);
-	if (!(irq & IRQ_TRX_END))
-		return;
-
-	/*
-	 * @@@ we probably also have to handle at least IRQ_PLL_UNLOCK, because
-	 * a PLL unlock should cause a transition out of BUSY_TX without
-	 * TRX_END.
-	 */
 	if (txing) {
 		txing = 0;
-		return;
+		return 0;
 	}
+
+	irq = reg_read(REG_IRQ_STATUS);
+	if (!(irq & IRQ_TRX_END))
+		return 1;
 
 	/* unlikely */
 	if (eps[1].state != EP_IDLE)
-		return;
+		return 1;
 
 	spi_begin();
 	spi_send(AT86RF230_BUF_READ);
 	size = spi_recv();
 	if (size & 0x80) {
 		spi_end();
-		return;
+		return 1;
 	}
 
 	rx_buf[0] = size;
@@ -87,6 +82,7 @@ static void handle_irq(void)
 		rx_buf[i+1] = spi_recv();
 	spi_end();
 	usb_send(&eps[1], rx_buf, size+2, NULL, NULL);
+	return 1;
 }
 
 

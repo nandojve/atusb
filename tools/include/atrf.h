@@ -57,4 +57,10 @@ uint8_t atrf_sram_read(struct atrf_dsc *dsc, uint8_t addr);
 
 int atrf_interrupt_wait(struct atrf_dsc *dsc, int timeout_ms);
 
+/* HardMAC operations */
+
+void atrf_rx_mode(struct atrf_dsc *dsc, int on);
+int atrf_rx(struct atrf_dsc *dsc, void *buf, int size, uint8_t *lqi);
+void atrf_tx(struct atrf_dsc *dsc, const void *buf, int size);
+
 #endif /* !ATRF_H */

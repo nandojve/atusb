@@ -157,8 +157,8 @@ uint8_t irq_serial;
 ISR(INT0_vect)
 {
 	if (mac_irq) {
-		mac_irq();
-		return;
+		if (mac_irq())
+			return;
 	}
 	if (eps[1].state == EP_IDLE) {
 		led(1);
