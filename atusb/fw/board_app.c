@@ -157,7 +157,7 @@ ISR(INT0_vect)
 {
 	if (eps[1].state == EP_IDLE) {
 		led(1);
-		irq_serial++;
+		irq_serial = (irq_serial+1) | 0x80;
 		usb_send(&eps[1], &irq_serial, 1, done, NULL);
 	}
 }
