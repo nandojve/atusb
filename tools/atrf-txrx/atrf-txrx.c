@@ -619,7 +619,6 @@ int main(int argc, char *const *argv)
 			receive(dsc, pcap_file);
 			break;
 		case mode_hmac:
-while(1)
 			receive_hmac(dsc);
 			break;
 		case mode_per:
