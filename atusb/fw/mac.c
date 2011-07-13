@@ -28,6 +28,7 @@ static uint8_t rx_buf[MAX_PSDU+2]; /* PHDR+payload+LQ */
 static uint8_t tx_buf[MAX_PSDU];
 static uint8_t tx_size = 0;
 static int txing = 0;
+static int queued_tx_ack = 0;
 
 
 static uint8_t reg_read(uint8_t reg)
@@ -55,6 +56,10 @@ static void reg_write(uint8_t reg, uint8_t value)
 static void rx_done(void *user)
 {
 	led(0);
+	if (queued_tx_ack) {
+		usb_send(&eps[1], "", 1, rx_done, NULL);
+		queued_tx_ack = 0;	
+	}
 }
 
 
@@ -64,6 +69,13 @@ static int handle_irq(void)
 	uint8_t size, i;
 
 	if (txing) {
+		if (eps[1].state == EP_IDLE)
+			usb_send(&eps[1], "", 1, rx_done, NULL);
+		else {
+			if (queued_tx_ack)
+				panic();
+			queued_tx_ack = 1;
+		}
 		txing = 0;
 		return 0;
 	}
@@ -79,7 +91,7 @@ static int handle_irq(void)
 	spi_begin();
 	spi_send(AT86RF230_BUF_READ);
 	size = spi_recv();
-	if (size & 0x80) {
+	if (!size || (size & 0x80)) {
 		spi_end();
 		return 1;
 	}
