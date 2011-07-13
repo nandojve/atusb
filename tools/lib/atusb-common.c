@@ -341,6 +341,7 @@ int atusb_rx(void *handle, void *buf, int size, uint8_t *lqi)
 void atusb_tx(void *handle, const void *buf, int size)
 {
 	struct atusb_dsc *dsc = handle;
+	uint8_t tmp;
 	int res;
 
 	if (dsc->error)
@@ -352,6 +353,14 @@ void atusb_tx(void *handle, const void *buf, int size)
 		fprintf(stderr, "ATUSB_TX: %d\n", res);
 		dsc->error = 1;
 	}
+	res = usb_bulk_read(dsc->dev, 1, (char *) &tmp, 1, 0);
+	if (res < 0) {
+		fprintf(stderr, "usb_bulk_read: %d\n", res);
+		dsc->error = 1;
+		return 0;
+	}
+	if (tmp)
+		fprintf(stderr, "atusb_tx: ACK is non-zero 0x%02x\n", tmp);
 }
 
 
