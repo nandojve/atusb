@@ -43,8 +43,8 @@ LibName1=power
 LibName2=device
 LibName3=conn
 LibName4=../../kicad-libs/components/c8051f320
-LibName5=../components/mini_usb_b
-LibName6=../components/usb_a_plug
+LibName5=../../kicad-libs/components/mini_usb_b
+LibName6=../../kicad-libs/components/usb_a_plug
 [pcbnew]
 version=1
 PadDrlX=320
@@ -65,7 +65,7 @@ MSegLar=150
 LastNetListRead=cntr.net
 [pcbnew/libraries]
 LibDir=
-LibName1=../modules/mini-usb
+LibName1=../../kicad-libs/modules/mini-usb
 LibName2=../../kicad-libs/modules/pads
 LibName3=../../kicad-libs/modules/qfp
 LibName4=../../kicad-libs/modules/stdpass
