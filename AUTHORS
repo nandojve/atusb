@@ -6,7 +6,6 @@ Alvaro Lopes <alvieboy@alvie.com>
 Rene Harder <rehar@saweb.de>
 
   components/antenna.lib
-  modules/mini-usb.fpd
 
 Werner Almesberger <werner@almesberger.net>
 
@@ -19,5 +18,4 @@ Werner Almesberger <werner@almesberger.net>
   modules/mmcx-f-edge.fpd
   modules/sot-323.fpd
   modules/u-fl-receptacle.fpd
-  moduled/usb_a_plug_smt.fpd
   modules/xtal-4.fpd
