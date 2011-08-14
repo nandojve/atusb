@@ -42,7 +42,7 @@ ShowSheetReferenceAndTitleBlock=1
 LibName1=power
 LibName2=device
 LibName3=conn
-LibName4=../components/c8051f320
+LibName4=../../kicad-libs/components/c8051f320
 LibName5=../components/mini_usb_b
 LibName6=../components/usb_a_plug
 [pcbnew]
