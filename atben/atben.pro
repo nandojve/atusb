@@ -1,4 +1,4 @@
-update=Wed Mar 23 12:38:34 2011
+update=Wed Jul 20 12:33:01 2011
 last_client=pcbnew
 [eeschema]
 version=1
@@ -70,7 +70,7 @@ LastNetListRead=atben.net
 LibDir=
 LibName1=../ants/meander
 LibName2=../../kicad-libs/modules/pads
-LibName3=../modules/qfn
+LibName3=../../kicad-libs/modules/qfn
 LibName4=../../kicad-libs/modules/stdpass
 LibName5=../../kicad-libs/modules/8_10-card
 LibName6=../modules/0805-6

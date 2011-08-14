@@ -1,4 +1,4 @@
-update=Wed Mar 23 13:03:50 2011
+update=Sat Jul 23 20:05:48 2011
 last_client=pcbnew
 [cvpcb]
 version=1
@@ -71,7 +71,7 @@ LibDir=
 LibName1=../ants/meander
 LibName2=../modules/usb_a_plug_smt
 LibName3=../../kicad-libs/modules/pads
-LibName4=../modules/qfn
+LibName4=../../kicad-libs/modules/qfn
 LibName5=../../kicad-libs/modules/stdpass
 LibName6=../modules/xtal-4
 LibName7=../modules/0805-6
