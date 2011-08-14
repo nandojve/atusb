@@ -6,15 +6,6 @@
 # N	Data sheet identifier (N tag of BOOKSHELF; can be omitted if equal to S)
 #
 
-# C8051F320 MCU
-S: c8051f320
-
-# C8051F326 MCU
-S: c8051f326
-
-# ATmega8U2/16U2/32U2 MCU
-S: atmega8u2
-
 # mini_usb_b (generic)
 S: mini_usb_b
 
