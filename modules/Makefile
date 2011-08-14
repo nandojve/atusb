@@ -1,4 +1,4 @@
-MODULES=0805-6 meander mmcx-f-edge sot-323 \
+MODULES=0805-6 meander mmcx-f-edge \
 	u-fl-receptacle xtal-4
 
 .SUFFIXES:	.fpd .mod
