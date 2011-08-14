@@ -137,3 +137,8 @@ D: http://www.usb.org/developers/devclass_docs/DFU_1.1.pdf
 N: rfc4944
 A: 6lowpan
 D: http://www.rfc-editor.org/rfc/pdfrfc/rfc4944.txt.pdf
+
+# "Adapting TI LPRF Reference Designs for Layer Stacking"
+N: AN068
+A: pcbcng
+D: http://www.ti.com/lit/an/swra236a/swra236a.pdf
