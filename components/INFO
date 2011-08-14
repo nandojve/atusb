@@ -6,9 +6,6 @@
 # N	Data sheet identifier (N tag of BOOKSHELF; can be omitted if equal to S)
 #
 
-# mini_usb_b (generic)
-S: mini_usb_b
-
 # Atmel AT86RF230 2.4 GHz Transceiver for IEEE 802.15.4
 S: at86rf230
 
@@ -32,7 +29,3 @@ N: 748421245
 # Example: Johanson 2450FB15L0001 balun/filter
 S: balun-smt6
 N: 2450FB15L0001
-
-# USB A plug
-S: usb_a_plug
-N: usb_a_plug_smt
