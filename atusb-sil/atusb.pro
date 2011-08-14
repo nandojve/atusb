@@ -71,7 +71,7 @@ LastNetListRead=atusb.net
 [pcbnew/libraries]
 LibDir=
 LibName1=../ants/meander
-LibName2=../modules/usb_a_plug_smt
+LibName2=../../kicad-libs/modules/usb_a_plug_smt
 LibName3=../../kicad-libs/modules/pads
 LibName4=../../kicad-libs/modules/qfn
 LibName5=../../kicad-libs/modules/stdpass

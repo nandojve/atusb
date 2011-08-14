@@ -70,5 +70,5 @@ LibName2=../../kicad-libs/modules/pads
 LibName3=../../kicad-libs/modules/qfp
 LibName4=../../kicad-libs/modules/stdpass
 LibName5=../modules/mmcx-f-edge
-LibName6=../modules/usb_a_plug_smt
+LibName6=../../kicad-libs/modules/usb_a_plug_smt
 LibName7=../modules/sot-323
