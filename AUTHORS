@@ -20,8 +20,6 @@ Werner Almesberger <werner@almesberger.net>
   components/usb_a_plug.lib (based on mini_usb_b.lib by Alvaro Lopes)
   modules/meander.fpd
   modules/mmcx-f-edge.fpd
-  modules/qfn.fpd
-  modules/qfp.fpd
   modules/sot-323.fpd
   modules/u-fl-receptacle.fpd
   moduled/usb_a_plug_smt.fpd
