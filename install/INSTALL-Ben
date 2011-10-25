@@ -73,8 +73,10 @@
 	- connect to the Ben
 	  ssh $NN
 	- run the following commands:
+  OWRT	  opkg update
   OWRT	  opkg install ip
   OWRT	  opkg install ldconfig
+  OWRT	  opkg install libnl-1
 	  mkdir -p /usr/local/var/run
 	  exit
 
