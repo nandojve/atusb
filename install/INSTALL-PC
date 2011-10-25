@@ -14,11 +14,12 @@
 2. Set up the user space
 
 	# iproute - probably already installed
-	aptiude install libnl1
+	aptitude install libnl1
 	mkdir -p /usr/local/var/run
 
 3. Build the user space tools of the linux-zigbee project
 
+	aptitude install libnl-dev
 	git clone git://linux-zigbee.git.sourceforge.net/gitroot/linux-zigbee/linux-zigbee
 	cd linux-zigbee
 	./autogen.sh
