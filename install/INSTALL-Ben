@@ -14,7 +14,7 @@
 	cd qi-kernel
 	git checkout ben-wpan
 	cp ../ben-wpan-config-2.6.38 .config
-  	patch -p1 -s <../openwrt-preinit-hack.patch
+	patch -p1 -s < ../qi_lb60-NAND-add-data-partition.patch
   OWRT	make ARCH=mips CROSS_COMPILE=mipsel-openwrt-linux- vmlinux.bin
   Jlime	make ARCH=mips CROSS_COMPILE=mipsel-linux- vmlinux.bin
 	gzip -9 -f arch/mips/boot/vmlinux.bin
@@ -31,6 +31,12 @@
 	cd ..
 
 3. Install the kernel
+
+    Using u-boot without reflash:
+
+	- set up TCP/IP networking with the Ben
+	- copy uImage to Ben /boot/uImage
+	- hold F4 when poweron
 
     Using usbboot:
 
@@ -67,8 +73,12 @@
 	- connect to the Ben
 	  ssh $NN
 	- run the following commands:
+  OWRT	  opkg update
   OWRT	  opkg install ip
   OWRT	  opkg install ldconfig
+  OWRT	  opkg install libnl-1
+  OWRT	  opkg install lowpan-tools
+  OWRT	  opkg install dirtpan
 	  mkdir -p /usr/local/var/run
 	  exit
 
@@ -77,8 +87,6 @@
 	wget http://www.infradead.org/~tgr/libnl/files/libnl-1.1.tar.gz
 	tar xfz libnl-1.1.tar.gz
 	cd libnl-1.1
-  OWRT	gcc=`readlink -f \`which mipsel-openwrt-linux-gcc\``
-  OWRT	./configure --prefix=${gcc%/bin/*} --host=mipsel-openwrt-linux
   Jlime patch -p1 -s <../libnl-1.1-limits.patch
   Jlime	inc=`mipsel-linux-cpp -v </dev/null 2>&1 | grep usr/include | tr -d \ `
   Jlime	./configure --prefix=${inc%/include} --host=mipsel-linux
@@ -93,7 +101,6 @@
 
 	git clone git://linux-zigbee.git.sourceforge.net/gitroot/linux-zigbee/linux-zigbee
 	cd linux-zigbee
-  OWRT	./autogen.sh --host=mipsel-openwrt-linux
   JLime	./autogen.sh --host=mipsel-linux
 	make
 
@@ -110,8 +117,6 @@
 	cp lowpan-tools-0.2.2/include/ieee802154.h tools/dirtpan/
 
 	cd ben-wpan/tools
-  OWRT	make TARGET=ben_openwrt
-  OWRT	make -C dirtpan TARGET=ben_openwrt
   JLime	make TARGET=ben_jlime
   JLime	make -C dirtpan TARGET=ben_jlime
 	scp dirtpan/dirtpan $NN:/usr/sbin
