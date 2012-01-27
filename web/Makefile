@@ -8,7 +8,7 @@ GEN=atben-pcba-small.jpg atusb-pcba-small.jpg \
 all:	$(GEN)
 
 upload:	index.html zoom.html $(GEN) $(DL)
-	rsync -e ssh index.html $(DL) $(GEN) \
+	rsync -e ssh index.html zoom.html $(DL) $(GEN) \
 	  www-data@downloads.qi-hardware.com:werner/wpan/web/
 
 800px-Atben_atusb_prod_03.jpg:
