@@ -18,7 +18,7 @@
 #
 
 
-PLOT_BRD = pcbnew --plot=ps_a4 --ps-pads-drill-opt=none --fill-all-zones
+PLOT_BRD = pcbnew --plot=ps --plot-fill-all-zones
 CPTX = ../../eda-tools/mlztx/cptx
 GMERGE = ../../eda-tools/fab/gmerge
 DRL2GERBER = ../../eda-tools/fab/drl2gerber
@@ -72,10 +72,10 @@ back:		$(NAME)-Back.ps
 #
 
 %-Front.ps:	%.brd
-		$(PLOT_BRD) -l Front --mirror $<
+		$(PLOT_BRD) --layers=Front --plot-mirror $<
 
 %-Back.ps:	%.brd
-		$(PLOT_BRD) -l Back $<
+		$(PLOT_BRD) --layers=Back $<
 
 # --- Industrial production ---------------------------------------------------
 
@@ -92,9 +92,9 @@ SMT_FILES = README-SMT $(NAME)-front.png $(NAME)-bom.csv $(NAME)-pos.csv \
 gerber:		$(GERBERS)
 
 $(GERBERS):	$(NAME).brd Makefile
-		pcbnew --plot=gerber --origin=aux \
-		  -l `pcbnew --list-layers $(BRD) | tr '\012' ,` \
-		  --fill-all-zones --exclude-pcb-edge \
+		pcbnew --plot=gerber --plot-aux-origin \
+		  --layers=`pcbnew --list-layers $(BRD) | tr '\012' ,` \
+		  --plot-fill-all-zones --plot-exclude-edge \
 		  $(BRD)
 		$(GMERGE) $(NAME)-SilkS_Front.gto $(NAME)-Comments.gbr >_tmp \
 		  || { rm -rf _tmp; exit 1; }
@@ -103,10 +103,10 @@ $(GERBERS):	$(NAME).brd Makefile
 fab:		fab-pcb fab-smt
 
 $(NAME)-PCB_Edges.dxf: $(NAME).brd
-		pcbnew --plot=dxf --origin=aux -l PCB_Edges $(BRD)
+		pcbnew --plot=dxf --plot-aux-origin --layers=PCB_Edges $(BRD)
 
 $(NAME).drl:	$(NAME).brd
-		pcbnew --drill --origin=aux $(BRD)
+		pcbnew --drill --drill-aux-origin $(BRD)
 
 fab-pcb:	$(PCB_FILES)
 		mkdir -p fab
