@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Fri May 27 04:26:53 2011
+EESchema Schematic File Version 2  date Wed May 23 23:48:20 2012
 LIBS:power
 LIBS:device
 LIBS:conn
@@ -8,13 +8,13 @@ LIBS:usb_a_plug
 LIBS:xtal-4
 LIBS:antenna
 LIBS:balun-smt6
-LIBS:atusb-cache
-EELAYER 24  0
+EELAYER 25  0
 EELAYER END
-$Descr A4 11700 8267
+$Descr A4 11693 8268
+encoding utf-8
 Sheet 2 3
 Title "IEEE 802.15.4 USB Transceiver (AT86RF231)"
-Date "27 may 2011"
+Date "24 may 2012"
 Rev "20110527"
 Comp "Werner Almesberger"
 Comment1 ""
@@ -256,15 +256,6 @@ F 0 "#PWR06" H 9750 3300 30  0001 C CNN
 F 1 "GND" H 9750 3230 30  0001 C CNN
 	1    9750 3300
 	0    -1   -1   0   
-$EndComp
-$Comp
-L USB_A_PLUG~ CON1
-U 1 1 4CF4AD1B
-P 1750 4450
-F 0 "CON1" H 1950 4900 60  0000 C CNN
-F 1 "USB_A_PLUG" H 1750 4050 60  0000 C CNN
-	1    1750 4450
-	-1   0    0    -1  
 $EndComp
 Text Notes 7150 800  0    60   ~ 0
 Space P11 through P16 at 100 mil interval close to board edge\nto allow use with a 0.1" header soldered to the board.
@@ -516,5 +507,14 @@ F 1 "10uF" H 5100 5900 50  0000 L CNN
 F 2 "0603" H 5050 6000 60  0001 C CNN
 	1    5050 6000
 	1    0    0    -1  
+$EndComp
+$Comp
+L USB_A_PLUG CON1
+U 1 1 4FBDA09F
+P 1750 4450
+F 0 "CON1" H 1950 4900 60  0000 C CNN
+F 1 "USB_A_PLUG" H 1750 4050 60  0000 C CNN
+	1    1750 4450
+	-1   0    0    -1  
 $EndComp
 $EndSCHEMATC
