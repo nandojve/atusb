@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Fri Apr  1 19:30:08 2011
+EESchema Schematic File Version 2  date Tue May 29 02:48:17 2012
 LIBS:power
 LIBS:device
 LIBS:conn
@@ -6,12 +6,13 @@ LIBS:at86rf231
 LIBS:antenna
 LIBS:balun-smt6
 LIBS:xtal-4
-EELAYER 24  0
+EELAYER 25  0
 EELAYER END
-$Descr A4 11700 8267
+$Descr A4 11693 8268
+encoding utf-8
 Sheet 1 1
 Title "IEEE 802.15.4 Transceiver (AT86RF231) as 8:10 card"
-Date "1 apr 2011"
+Date "29 may 2012"
 Rev "20110401"
 Comp "Werner Almesberger"
 Comment1 ""
@@ -260,12 +261,12 @@ $Comp
 L XTAL-4 X1
 U 1 1 4D317045
 P 8450 1600
-F 0 "X1" V 8700 2200 60  0000 C CNN
-F 1 "16MHz" V 8550 2100 60  0000 C CNN
+F 0 "X1" V 8600 2300 60  0000 R CNN
+F 1 "16MHz" V 8450 2300 60  0000 R CNN
 F 2 "xtal4-3.2mmx2.5mm" H 8450 1600 60  0001 C CNN
-F 4 "8pF" V 8400 2150 60  0000 C CNN "Field4"
-F 5 "40ppm" V 8300 2100 60  0000 C CNN "Field5"
-F 6 "ESR=80R" V 8200 2050 60  0000 C CNN "Field6"
+F 4 "8pF" V 8300 2300 60  0000 R CNN "Field4"
+F 5 "40ppm" V 8200 2300 60  0000 R CNN "Field5"
+F 6 "ESR<=100R" V 8100 2300 60  0000 R CNN "Field6"
 	1    8450 1600
 	0    -1   -1   0   
 $EndComp

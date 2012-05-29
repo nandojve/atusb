@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Fri May 27 04:26:53 2011
+EESchema Schematic File Version 2  date Tue May 29 02:46:44 2012
 LIBS:power
 LIBS:device
 LIBS:conn
@@ -8,13 +8,13 @@ LIBS:usb_a_plug
 LIBS:xtal-4
 LIBS:antenna
 LIBS:balun-smt6
-LIBS:atusb-cache
-EELAYER 24  0
+EELAYER 25  0
 EELAYER END
-$Descr A4 11700 8267
+$Descr A4 11693 8268
+encoding utf-8
 Sheet 3 3
 Title "IEEE 802.15.4 USB Transceiver (AT86RF231)"
-Date "27 may 2011"
+Date "29 may 2012"
 Rev "20110527"
 Comp "Werner Almesberger"
 Comment1 ""
@@ -613,12 +613,12 @@ $Comp
 L XTAL-4 X1
 U 1 1 4C63FA9F
 P 9700 1800
-F 0 "X1" V 9950 2400 60  0000 C CNN
-F 1 "16MHz" V 9800 2300 60  0000 C CNN
+F 0 "X1" V 9850 2500 60  0000 R CNN
+F 1 "16MHz" V 9700 2500 60  0000 R CNN
 F 2 "xtal4-3.2mmx2.5mm" H 9700 1800 60  0001 C CNN
-F 4 "8pF" V 9650 2350 60  0000 C CNN "Field1"
-F 5 "40ppm" V 9550 2300 60  0000 C CNN "Field2"
-F 6 "ESR=80R" V 9450 2250 60  0000 C CNN "Field3"
+F 4 "8pF" V 9550 2500 60  0000 R CNN "Field1"
+F 5 "40ppm" V 9450 2500 60  0000 R CNN "Field2"
+F 6 "ESR<=100R" V 9350 2500 60  0000 R CNN "Field3"
 	1    9700 1800
 	0    -1   -1   0   
 $EndComp
