@@ -357,7 +357,7 @@ void atusb_tx(void *handle, const void *buf, int size)
 	if (res < 0) {
 		fprintf(stderr, "usb_bulk_read: %d\n", res);
 		dsc->error = 1;
-		return 0;
+		return;
 	}
 	if (tmp)
 		fprintf(stderr, "atusb_tx: ACK is non-zero 0x%02x\n", tmp);
