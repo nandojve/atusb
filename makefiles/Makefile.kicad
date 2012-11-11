@@ -17,14 +17,17 @@
 # VERSION	"release" version number
 #
 
+ifndef TOP
+TOP = ../..
+endif
 
 PLOT_BRD = pcbnew --plot=ps --plot-fill-all-zones
-CPTX = ../../eda-tools/mlztx/cptx
-GMERGE = ../../eda-tools/fab/gmerge
-DRL2GERBER = ../../eda-tools/fab/drl2gerber
-PRETTYGERBV = ../../eda-tools/fab/prettygerbv
-POS2FAB = ../../eda-tools/fab/pos2fab
-FPDOC = PATH=$$PATH:../../eda-tools/fab:../../eda-tools/fpd2pdf fpdoc
+CPTX = $(TOP)/eda-tools/mlztx/cptx
+GMERGE = $(TOP)/eda-tools/fab/gmerge
+DRL2GERBER = $(TOP)/eda-tools/fab/drl2gerber
+PRETTYGERBV = $(TOP)/eda-tools/fab/prettygerbv
+POS2FAB = $(TOP)/eda-tools/fab/pos2fab
+FPDOC = PATH=$$PATH:$(TOP)/eda-tools/fab:$(TOP)/eda-tools/fpd2pdf fpdoc
 
 DIR = $(shell pwd | sed 's|.*/||')
 
