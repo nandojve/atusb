@@ -62,7 +62,10 @@ frame antenna {
 	__32: vec __30(0mm, -L1)
 	pad "X" __31 . trace
 	__38: vec .(tail, W2)
-	pad "X" __32 . trace
+// @@@ avoid problems with zero-sized tails. Note that this breaks non-zero
+// tails. Anyone trying to use these experimental antennas is advised to
+// switch to kicad-libs/modules/meander-2450MHz.fpd instead.
+//	pad "X" __32 . trace
 	__35: vec __29(D3+tail, D2)
 	line . __34 w
 	__36: vec .(0mm, -(D2+W2+L6-D4))
