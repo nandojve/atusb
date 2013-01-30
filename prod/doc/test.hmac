@@ -207,7 +207,7 @@ A downward-pointing red triangle would indicate that the signal is too
 weak, an upward-pointing yellow triangle would indicate that the signal
 is too strong.
 <P>
-<A href="atrf-path.png"><IMG src="atrf-path-small.png"</A>
+<A href="atrf-path.png"><IMG src="atrf-path-small.png"></A>
 <P>
 To finish the test, the operator must type either <B>P</B>, <B>F</B>,
 or <B>Q</B>. <B>P</B> means "pass" and can only be
