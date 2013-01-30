@@ -33,7 +33,7 @@ setup-%.png:	setup.fig
 		mv ../../$*/$@ .
 
 atben-%-small.png: \
-		  atben.fig
+		  atben.fig atben-front.png
 		./figfilt `echo $@ | tr -cd 'A-Z'` $< | \
 		    fig2dev -L png -m 0.5 -S 4 >$@ || \
 		    { rm -f $@; exit 1; }
@@ -42,13 +42,13 @@ atben-compor.png: \
 		  atben-compor.fig
 		fig2dev -L png -m 0.25 -S 4 $< >$@ || { rm -f $@; exit 1; }
 
-atben-%.png:	atben.fig
+atben-%.png:	atben.fig atben-front.png
 		./figfilt `echo $@ | tr -cd 'A-Z'` $< | \
 		    fig2dev -L png -m 2 -S 4 >$@ || \
 		    { rm -f $@; exit 1; }
 
 atusb-%-small.png: \
-		  atusb.fig
+		  atusb.fig atusb-front.png
 		./figfilt `echo $@ | tr -cd 'A-Z'` $< | \
 		    fig2dev -L png -m 0.5 -S 4 >$@ || \
 		    { rm -f $@; exit 1; }
@@ -57,7 +57,7 @@ atusb-compor.png: \
 		  atusb-compor.fig
 		fig2dev -L png -m 0.25 -S 4 $< >$@ || { rm -f $@; exit 1; }
 
-atusb-%.png:	atusb.fig
+atusb-%.png:	atusb.fig atusb-front.png
 		./figfilt `echo $@ | tr -cd 'A-Z'` $< | \
 		    fig2dev -L png -m 2 -S 4 >$@ || \
 		    { rm -f $@; exit 1; }
