@@ -12,17 +12,35 @@ and to examine possible integration into future devices.
 This work is licensed under the terms detailed in the file COPYING.
 
 
-Hardware architecture
----------------------
+Hardware history
+----------------
 
 IEEE 802.15.4 transceiver chips are available from several manufacturers,
 including Atmel, Freescale, and Texas Instruments. These chips are similar
-in size, functionality, and cost. The first prototype is based on the
-Atmel AT86RF230.
+in size, functionality, and cost. The first prototype of this project was
+based on the Atmel AT86RF230.
 
-The RF module will be physically placed on the left side of the LCD
-module, replacing part of the display's PCB.
+The initial plan was to place the RF module on the left side of the LCD
+module of the Ben NanoNote, replacing part of the display's PCB. When
+installed in the Ben, the transceiver would connect directly via SPI to
+the Jz4720. For development, a SiLabs C8051F326 microcontroller
+implemented a USB to SPI conversion.
 
-When installed in the Ben, the transceiver will connect directly via SPI
-to the Jz4720. For development, a SiLabs C8051F326 microcontroller
-implements a USB to SPI conversion.
+Then Rikard Lindstrom came up with the idea of using the Ben's 8:10 card
+slot as a general expansion interface, which led to the idea of making
+a WPAN card in that form factor, with the benefit of being readily usable
+with any Ben already in existence.
+
+Thus the project was split in two parts: the atben card that had only the
+transceiver chip and would be used with the Ben, and the atusb card that
+would be similar to the original design but abandoned its clear physical
+separation of USB and RF.
+
+Meanwhile, an improved version of the AT86RF230, the AT86RF231, became
+available and the designs were updated for it. It also turned out that
+the clock from the Ben was too noisy to be used as a clock source for
+the transceiver. Therefore, a crystal was added to the atben design.
+
+Finally, the SiLabs C8051F326 was replaced by an ATmega32U2, mainly
+because the latter has a larger Flash memory and greater community
+acceptance.
