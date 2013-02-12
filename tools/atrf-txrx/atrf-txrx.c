@@ -67,6 +67,7 @@ enum mode {
 	mode_hmac,
 	mode_per,
 	mode_ping,
+	mode_rtt,
 	mode_cont_tx,
 };
 
@@ -452,6 +453,84 @@ static void ping(struct atrf_dsc *dsc, double max_wait_s, int master)
 }
 
 
+/* ----- Round-trip time --------------------------------------------------- */
+
+
+static void rtt_slave(struct atrf_dsc *dsc)
+{
+	uint8_t buf[MAX_PSDU];
+	int n;
+
+	while (run) {
+		atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_RX_ON);
+		wait_for_interrupt(dsc, IRQ_TRX_END,
+		    IRQ_TRX_END | IRQ_RX_START | IRQ_PLL_LOCK | IRQ_AMI, 0);
+		if (!run)
+			break;
+		n = atrf_buf_read(dsc, buf, sizeof(buf));
+		if (n < 0)
+			exit(1);
+		if (n < 2) {
+			fprintf(stderr, "%d bytes received\n", n);
+			continue;
+		}
+		atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_PLL_ON);
+		atrf_buf_write(dsc, buf, n);
+		atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_TX_START);	
+		wait_for_interrupt(dsc, IRQ_TRX_END,
+		    IRQ_TRX_END | IRQ_PLL_LOCK, 10);
+	}
+}
+
+
+static void rtt_master(struct atrf_dsc *dsc, int packets, int size)
+{
+	uint8_t buf[size+2]; /* +CRC */
+	struct timeval t0, t1;
+	uint8_t irq;
+	int first = 1;
+	double min = 0, max = 0, sum = 0, sum2 = 0, d;
+	int lost = 0, n;
+	int i;
+
+	memset(buf, 0, size+2);
+	for (i = 0; i != packets; i++) {
+		atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_PLL_ON);
+		atrf_buf_write(dsc, buf, size+2);
+		gettimeofday(&t0, NULL);
+		atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_TX_START);
+		wait_for_interrupt(dsc, IRQ_TRX_END,
+		    IRQ_TRX_END | IRQ_PLL_LOCK, 10);
+		atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_RX_ON);
+		irq = wait_for_interrupt(dsc, IRQ_TRX_END,
+		    IRQ_TRX_END | IRQ_RX_START | IRQ_PLL_LOCK | IRQ_AMI, 1000);
+		if (irq) {
+			gettimeofday(&t1, NULL);
+			d = t1.tv_sec-t0.tv_sec+(t1.tv_usec-t0.tv_usec)*1e-6;
+			sum += d;
+			sum2 += d*d;
+			if (first || d < min)
+				min = d;
+			if (first || d > max)
+				max = d;
+			first = 0;
+			n = atrf_buf_read(dsc, buf, size);
+			if (n != size)
+				fprintf(stderr, "%d bytes received\n", n);
+		} else {
+			lost++;
+		}
+	}
+	n = packets-lost;
+	printf("%d sent, %d received, %d lost (%g%%)\n",
+	    packets, n, lost, lost*100.0/packets);
+	if (n)
+		printf("rtt min/avg/max = %.3f/%.3f/%.3f ms, mdev = %.3f ms\n",
+		    min*1000.0, sum*1000.0/n, max*1000.0,
+		    sqrt((sum2-sum*sum/n)/n)*1000.0);
+}
+
+
 /* ----- Continuous wave test ---------------------------------------------- */
 
 
@@ -490,6 +569,7 @@ static void usage(const char *name)
 "       %s [common_options] -H [message]\n"
 "       %s [common_options] -E pause_s [repetitions]\n"
 "       %s [common_options] -P [max_wait_s]\n"
+"       %s [common_options] -R [packets size]\n"
 "       %s [common_options] -T offset [command]\n\n"
 "  text message mode:\n"
 "    message     message string to send (if absent, receive)\n"
@@ -503,6 +583,10 @@ static void usage(const char *name)
 "  Ping-pong mode:\n"
 "    -P          exchange packets between two stations\n"
 "    max_wait_s  generate a new packet if no response is received (master)\n\n"
+"  Round-trip time measurement:\n"
+"    -R          send/receive RTT measurement packets\n"
+"    packets     number of packets to send (master)\n"
+"    size        size of packets in bytes\n"
 "  constant wave test mode (transmit only):\n"
 "    -T offset   test mode. offset is the frequency offset of the constant\n"
 "                wave in MHz: -2, -0.5, or +0.5\n"
@@ -519,7 +603,7 @@ static void usage(const char *name)
 "    -p power    transmit power, -17.2 to 3.0 dBm (default %.1f)\n"
 "    -r rate     data rate, 250k, 500k, 1M, or 2M (default: 250k)\n"
 "    -t trim     trim capacitor, 0 to 15 (default %d)\n"
-	    , name, name, name, name, name,
+	    , name, name, name, name, name, name,
 	    DEFAULT_CHANNEL, atrf_default_driver_name(),
 	    2405+5*(DEFAULT_CHANNEL-11), DEFAULT_POWER,
 	    DEFAULT_TRIM);
@@ -545,7 +629,7 @@ int main(int argc, char *const *argv)
 	int channel = DEFAULT_CHANNEL;
 	double power = DEFAULT_POWER;
 	uint8_t rate = OQPSK_DATA_RATE_250;
-	int trim = DEFAULT_TRIM, times = 1;
+	int trim = DEFAULT_TRIM, times = 1, bytes;
 	uint8_t cont_tx = 0;
 	double pause_s = 0;
 	char *end;
@@ -555,7 +639,7 @@ int main(int argc, char *const *argv)
 	const char *pcap_file = NULL;
 	struct atrf_dsc *dsc;
 
-	while ((c = getopt(argc, argv, "c:C:d:E:f:Ho:p:Pr:t:T:")) != EOF)
+	while ((c = getopt(argc, argv, "c:C:d:E:f:Ho:p:Pr:Rt:T:")) != EOF)
 		switch (c) {
 		case 'c':
 			channel = strtoul(optarg, &end, 0);
@@ -616,6 +700,9 @@ int main(int argc, char *const *argv)
 			else
 				usage(*argv);
 			break;
+		case 'R':
+			set_mode(&mode, mode_rtt);
+			break;
 		case 't':
 			trim = strtoul(optarg, &end, 0);
 			if (*end)
@@ -660,6 +747,10 @@ int main(int argc, char *const *argv)
 			set_power_dBm(dsc, power, 1);
 			ping(dsc, pause_s, 0);
 			break;
+		case mode_rtt:
+			set_power_dBm(dsc, power, 1);
+			rtt_slave(dsc);
+			break;
 		case mode_cont_tx:
 			set_power_dBm(dsc, power, 0);
 			status = test_mode(dsc, cont_tx, NULL);
@@ -678,6 +769,19 @@ int main(int argc, char *const *argv)
 			/* fall through */
 		case mode_cont_tx:
 			usage(*argv);
+		case mode_rtt:
+			times = strtoul(argv[optind], &end, 0);
+			if (*end)
+				usage(*argv);
+			bytes = strtoul(argv[optind+1], &end, 0);
+			if (*end)
+				usage(*argv);
+			dsc = init_txrx(driver, trim, clkm);
+			set_channel(dsc, channel);
+			set_rate(dsc, rate);
+			set_power_dBm(dsc, power, 1);
+			rtt_master(dsc, times, bytes);
+			goto done;
 		default:
 			abort();
 		}
@@ -712,6 +816,9 @@ int main(int argc, char *const *argv)
 			set_power_dBm(dsc, power, 1);
 			ping(dsc, pause_s, 1);
 			break;
+		case mode_rtt:
+			usage(*argv);
+			break;
 		case mode_cont_tx:
 			set_power_dBm(dsc, power, 0);
 			status = test_mode(dsc, cont_tx, argv[optind]);
@@ -724,6 +831,7 @@ int main(int argc, char *const *argv)
 	default:
 		usage(*argv);
 	}
+done:
 
 	atrf_close(dsc);
 
