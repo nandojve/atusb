@@ -555,7 +555,7 @@ int main(int argc, char *const *argv)
 	const char *pcap_file = NULL;
 	struct atrf_dsc *dsc;
 
-	while ((c = getopt(argc, argv, "c:C:d:f:Ho:p:r:E:Pt:T:")) != EOF)
+	while ((c = getopt(argc, argv, "c:C:d:E:f:Ho:p:Pr:t:T:")) != EOF)
 		switch (c) {
 		case 'c':
 			channel = strtoul(optarg, &end, 0);
@@ -564,8 +564,21 @@ int main(int argc, char *const *argv)
 			if (channel < 11 || channel > 26)
 				usage(*argv);
 			break;
+		case 'C':
+			clkm = strtol(optarg, &end, 0);
+			if (*end)
+				usage(*argv);
+			if (!clkm)
+				usage(*argv);
+			break;
 		case 'd':
 			driver = optarg;
+			break;
+		case 'E':
+			set_mode(&mode, mode_per);
+			pause_s = strtof(optarg, &end);
+			if (*end)
+				usage(*argv);
 			break;
 		case 'f':
 			freq = strtoul(optarg, &end, 0);
@@ -588,6 +601,9 @@ int main(int argc, char *const *argv)
 			if (*end)
 				usage(*argv);
 			break;
+		case 'P':
+			set_mode(&mode, mode_ping);
+			break;
 		case 'r':
 			if (!strcmp(optarg, "250k"))
 				rate = OQPSK_DATA_RATE_250;
@@ -606,22 +622,6 @@ int main(int argc, char *const *argv)
 				usage(*argv);
 			if (trim > 15)
 				usage(*argv);
-			break;
-		case 'C':
-			clkm = strtol(optarg, &end, 0);
-			if (*end)
-				usage(*argv);
-			if (!clkm)
-				usage(*argv);
-			break;
-		case 'E':
-			set_mode(&mode, mode_per);
-			pause_s = strtof(optarg, &end);
-			if (*end)
-				usage(*argv);
-			break;
-		case 'P':
-			set_mode(&mode, mode_ping);
 			break;
 		case 'T':
 			set_mode(&mode, mode_cont_tx);
