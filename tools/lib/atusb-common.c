@@ -1,8 +1,8 @@
 /*
  * lib/atusb-common.c - ATUSB access functions shared by all ATUSB drivers
  *
- * Written 2010-2011 by Werner Almesberger
- * Copyright 2010-2011 Werner Almesberger
+ * Written 2010-2011, 2013 by Werner Almesberger
+ * Copyright 2010-2011, 2013 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -305,7 +305,7 @@ int atusb_rx(void *handle, void *buf, int size, uint8_t *lqi)
 	uint8_t tmp[MAX_PSDU+2]; /* PHR, LQI */
 
 	/*
-	 * Seems that either the USB stack of libusb doesn't like it if we do a
+	 * Seems that either the USB stack or libusb doesn't like it if we do a
 	 * read of size one followed by the full read. Therefore, we just do
 	 * a maximum-sized read and hope that we don't split packets.
 	 */
