@@ -1,8 +1,8 @@
 /*
  * atrf-txrx/atrf-txrx.c - ben-wpan AT86RF230 TX/RX
  *
- * Written 2010-2011 by Werner Almesberger
- * Copyright 2010-2011 Werner Almesberger
+ * Written 2010-2011, 2013 by Werner Almesberger
+ * Copyright 2010-2011, 2013 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -60,6 +60,14 @@ enum rx_res {
 	rx_good,
 	rx_bad,
 	rx_timeout,
+};
+
+enum mode {
+	mode_msg,
+	mode_hmac,
+	mode_per,
+	mode_ping,
+	mode_cont_tx,
 };
 
 
@@ -501,15 +509,20 @@ static void usage(const char *name)
 }
 
 
+static void set_mode(enum mode *mode, enum mode new)
+{
+	if (*mode == mode_msg) {
+		*mode = new;
+		return;
+	}
+	fprintf(stderr, "multiple mode selections\n");
+	exit(1);
+}
+
+
 int main(int argc, char *const *argv)
 {
-	enum {
-		mode_msg,
-		mode_hmac,
-		mode_per,
-		mode_ping,
-		mode_cont_tx,
-	} mode = mode_msg;
+	enum mode mode = mode_msg;
 	const char *driver = NULL;
 	int channel = DEFAULT_CHANNEL;
 	double power = DEFAULT_POWER;
@@ -547,7 +560,7 @@ int main(int argc, char *const *argv)
 				usage(*argv);
 			break;
 		case 'H':
-			mode = mode_hmac;
+			set_mode(&mode, mode_hmac);
 			break;
 		case 'o':
 			pcap_file = optarg;
@@ -584,16 +597,16 @@ int main(int argc, char *const *argv)
 				usage(*argv);
 			break;
 		case 'E':
-			mode = mode_per;
+			set_mode(&mode, mode_per);
 			pause_s = strtof(optarg, &end);
 			if (*end)
 				usage(*argv);
 			break;
 		case 'P':
-			mode = mode_ping;
+			set_mode(&mode, mode_ping);
 			break;
 		case 'T':
-			mode = mode_cont_tx;
+			set_mode(&mode, mode_cont_tx);
 			if (!strcmp(optarg, "-2"))
 				cont_tx = CONT_TX_M2M;
 			else if (!strcmp(optarg, "-0.5"))
