@@ -74,9 +74,12 @@ enum mode {
 static volatile int run = 1;
 
 
+/* ----- Helper functions -------------------------------------------------- */
+
+
 /*
- * clkm: 0   disable CLKM
- *       >0  output 2^(clkm-1) MHz signal
+ * mhz: 0   disable CLKM
+ *      >0  output specified clock
  */
 
 static struct atrf_dsc *init_txrx(const char *driver, int trim, unsigned mhz)
@@ -136,6 +139,9 @@ static void set_rate(struct atrf_dsc *dsc, uint8_t rate)
 		abort();
 	}
 }
+
+
+/* ----- Message transmit/receive ------------------------------------------ */
 
 
 static void receive_message(struct atrf_dsc *dsc)
@@ -320,6 +326,9 @@ static void transmit_hmac(struct atrf_dsc *dsc, const char *msg)
 }
 
 
+/* ----- PER test ---------------------------------------------------------- */
+
+
 static void transmit_pattern(struct atrf_dsc *dsc, double pause_s, int times)
 {
 	uint8_t buf[MAX_PSDU];
@@ -353,6 +362,9 @@ static void transmit_pattern(struct atrf_dsc *dsc, double pause_s, int times)
 		n++;
 	}
 }
+
+
+/* ----- Ping -------------------------------------------------------------- */
 
 
 static void ping_tx(struct atrf_dsc *dsc, const struct ping *pck)
@@ -440,6 +452,9 @@ static void ping(struct atrf_dsc *dsc, double max_wait_s, int master)
 }
 
 
+/* ----- Continuous wave test ---------------------------------------------- */
+
+
 static int test_mode(struct atrf_dsc *dsc, uint8_t cont_tx, const char *cmd)
 {
 	int status = 0;
@@ -457,6 +472,9 @@ static int test_mode(struct atrf_dsc *dsc, uint8_t cont_tx, const char *cmd)
 
 	return status;
 }
+
+
+/* ----- Command-line processing ------------------------------------------- */
 
 
 static void die(int sig)
