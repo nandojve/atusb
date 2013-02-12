@@ -297,7 +297,7 @@ void atusb_rx_mode(void *handle, int on)
 }
 
 
-int atusb_rx(void *handle, void *buf, int size, uint8_t *lqi)
+int atusb_rx(void *handle, void *buf, int size, int timeout_ms, uint8_t *lqi)
 {
 	struct atusb_dsc *dsc = handle;
 	uint8_t len;
@@ -309,7 +309,9 @@ int atusb_rx(void *handle, void *buf, int size, uint8_t *lqi)
 	 * read of size one followed by the full read. Therefore, we just do
 	 * a maximum-sized read and hope that we don't split packets.
 	 */
-	res = usb_bulk_read(dsc->dev, 1, (char *) tmp, sizeof(tmp), 0);
+	res = usb_bulk_read(dsc->dev, 1, (char *) tmp, sizeof(tmp), timeout_ms);
+	if (res == -ETIMEDOUT)
+		return 0;
 	if (res < 0) {
 		fprintf(stderr, "usb_bulk_read: %d\n", res);
 		dsc->error = 1;

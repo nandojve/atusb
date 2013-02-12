@@ -1,8 +1,8 @@
 /*
  * lib/driver.h - ATRF driver API
  *
- * Written 2010-2011 by Werner Almesberger
- * Copyright 2010-2011 Werner Almesberger
+ * Written 2010-2011, 2013 by Werner Almesberger
+ * Copyright 2010-2011, 2013 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ struct atrf_driver {
 	uint8_t (*sram_read)(void *dsc, uint8_t addr);
 	int (*interrupt_wait)(void *dsc, int timeout_ms);
 	void (*rx_mode)(void *dsc, int on);
-	int (*rx)(void *dsc, void *buf, int size, uint8_t *lqi);
+	int (*rx)(void *dsc, void *buf, int size, int timeout_ms, uint8_t *lqi);
 	void (*tx)(void *dsc, const void *buf, int size);
 };
 

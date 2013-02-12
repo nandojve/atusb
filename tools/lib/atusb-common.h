@@ -1,8 +1,8 @@
 /*
  * lib/atusb-common.h - ATUSB access functions shared by all ATUSB drivers
  *
- * Written 2010-2011 by Werner Almesberger
- * Copyright 2010-2011 Werner Almesberger
+ * Written 2010-2011, 2013 by Werner Almesberger
+ * Copyright 2010-2011, 2013 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ void atusb_test_mode(void *handle);
 void atusb_slp_tr(void *handle, int on, int pulse);
 int atusb_interrupt_wait(void *handle, int timeout_ms);
 void atusb_rx_mode(void *handle, int on);
-int atusb_rx(void *handle, void *buf, int size, uint8_t *lqi);
+int atusb_rx(void *handle, void *buf, int size, int timeout_ms, uint8_t *lqi);
 void atusb_tx(void *handle, const void *buf, int size);
 
 int atusb_set_clkm(void *handle, int mhz);

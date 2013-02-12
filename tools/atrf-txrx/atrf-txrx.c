@@ -299,7 +299,7 @@ static void receive_hmac(struct atrf_dsc *dsc)
 	int n, i;
 
 	atrf_rx_mode(dsc, 1);
-	n = atrf_rx(dsc, buf, sizeof(buf), &lqi);
+	n = atrf_rx(dsc, buf, sizeof(buf), 0, &lqi);
 	atrf_rx_mode(dsc, 0);
 
 	if (n < 2) {

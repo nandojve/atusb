@@ -1,8 +1,8 @@
 /*
  * lib/atrf.c - ATRF access functions library
  *
- * Written 2010-2011 by Werner Almesberger
- * Copyright 2010-2011 Werner Almesberger
+ * Written 2010-2011, 2013 by Werner Almesberger
+ * Copyright 2010-2011, 2013 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -331,11 +331,12 @@ void atrf_rx_mode(struct atrf_dsc *dsc, int on)
 }
 
 
-int atrf_rx(struct atrf_dsc *dsc, void *buf, int size, uint8_t *lqi)
+int atrf_rx(struct atrf_dsc *dsc, void *buf, int size, int timeout_ms,
+    uint8_t *lqi)
 {
 	if (!dsc->driver->rx)
 		return 0;
-	return dsc->driver->rx(dsc->handle, buf, size, lqi);
+	return dsc->driver->rx(dsc->handle, buf, size, timeout_ms, lqi);
 }
 
 
