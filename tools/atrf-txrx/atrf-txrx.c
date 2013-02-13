@@ -68,6 +68,7 @@ enum mode {
 	mode_per,
 	mode_ping,
 	mode_rtt,
+	mode_rtt_hmac,
 	mode_cont_tx,
 };
 
@@ -483,6 +484,24 @@ static void rtt_slave(struct atrf_dsc *dsc)
 }
 
 
+static void rtt_slave_hmac(struct atrf_dsc *dsc)
+{
+	uint8_t buf[MAX_PSDU];
+	int n;
+
+	atrf_rx_mode(dsc, 1);
+	while (run) {
+		n = atrf_rx(dsc, buf, sizeof(buf), 0, NULL);
+		if (n < 0)
+			exit(1);
+// uncomment if master doesn't turn around fast enough
+//usleep(10*1000);
+		atrf_tx(dsc, buf, n-2);
+	}
+	atrf_rx_mode(dsc, 0);
+}
+
+
 static void rtt_master(struct atrf_dsc *dsc, int packets, int size)
 {
 	uint8_t buf[size+2]; /* +CRC */
@@ -569,7 +588,7 @@ static void usage(const char *name)
 "       %s [common_options] -H [message]\n"
 "       %s [common_options] -E pause_s [repetitions]\n"
 "       %s [common_options] -P [max_wait_s]\n"
-"       %s [common_options] -R [packets size]\n"
+"       %s [common_options] -R [-H|packets size]\n"
 "       %s [common_options] -T offset [command]\n\n"
 "  text message mode:\n"
 "    message     message string to send (if absent, receive)\n"
@@ -615,6 +634,11 @@ static void set_mode(enum mode *mode, enum mode new)
 {
 	if (*mode == mode_msg) {
 		*mode = new;
+		return;
+	}
+	if ((*mode == mode_hmac && new == mode_rtt) ||
+	    (*mode == mode_rtt && new == mode_hmac)) {
+		*mode = mode_rtt_hmac;
 		return;
 	}
 	fprintf(stderr, "multiple mode selections\n");
@@ -751,6 +775,10 @@ int main(int argc, char *const *argv)
 			set_power_dBm(dsc, power, 1);
 			rtt_slave(dsc);
 			break;
+		case mode_rtt_hmac:
+			set_power_dBm(dsc, power, 1);
+			rtt_slave_hmac(dsc);
+			break;
 		case mode_cont_tx:
 			set_power_dBm(dsc, power, 0);
 			status = test_mode(dsc, cont_tx, NULL);
@@ -766,7 +794,7 @@ int main(int argc, char *const *argv)
 			break;
 		case mode_per:
 		case mode_ping:
-			/* fall through */
+		case mode_rtt_hmac:
 		case mode_cont_tx:
 			usage(*argv);
 		case mode_rtt:
@@ -817,6 +845,7 @@ int main(int argc, char *const *argv)
 			ping(dsc, pause_s, 1);
 			break;
 		case mode_rtt:
+		case mode_rtt_hmac:
 			usage(*argv);
 			break;
 		case mode_cont_tx:
