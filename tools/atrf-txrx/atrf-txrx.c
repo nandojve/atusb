@@ -494,8 +494,6 @@ static void rtt_slave_hmac(struct atrf_dsc *dsc)
 		n = atrf_rx(dsc, buf, sizeof(buf), 0, NULL);
 		if (n < 0)
 			exit(1);
-// uncomment if master doesn't turn around fast enough
-//usleep(10*1000);
 		atrf_tx(dsc, buf, n-2);
 	}
 	atrf_rx_mode(dsc, 0);
@@ -518,9 +516,17 @@ static void rtt_master(struct atrf_dsc *dsc, int packets, int size)
 		atrf_buf_write(dsc, buf, size+2);
 		gettimeofday(&t0, NULL);
 		atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_TX_START);
-		wait_for_interrupt(dsc, IRQ_TRX_END,
-		    IRQ_TRX_END | IRQ_PLL_LOCK, 10);
+
+		/* prepare transition to RX_ON while still sending */
+		while ((atrf_reg_read(dsc, REG_TRX_STATUS) & TRX_STATUS_MASK)
+       		    == TRX_STATUS_TRANSITION);
 		atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_RX_ON);
+
+		/* wait for transmission to end */
+		wait_for_interrupt(dsc, IRQ_TRX_END,
+		    IRQ_TRX_END | IRQ_RX_START | IRQ_PLL_LOCK | IRQ_AMI, 1);
+
+		/* wait for reception */
 		irq = wait_for_interrupt(dsc, IRQ_TRX_END,
 		    IRQ_TRX_END | IRQ_RX_START | IRQ_PLL_LOCK | IRQ_AMI, 1000);
 		if (irq) {
