@@ -1,8 +1,8 @@
 /*
  * fw/mac.c - HardMAC functions
  *
- * Written 2011 by Werner Almesberger
- * Copyright 2011 Werner Almesberger
+ * Written 2011, 2013 by Werner Almesberger
+ * Copyright 2011, 2013 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,6 +68,7 @@ static int handle_irq(void)
 	uint8_t irq;
 	uint8_t size, i;
 
+	irq = reg_read(REG_IRQ_STATUS);
 	if (txing) {
 		if (eps[1].state == EP_IDLE)
 			usb_send(&eps[1], "", 1, rx_done, NULL);
@@ -80,7 +81,6 @@ static int handle_irq(void)
 		return 0;
 	}
 
-	irq = reg_read(REG_IRQ_STATUS);
 	if (!(irq & IRQ_TRX_END))
 		return 1;
 
