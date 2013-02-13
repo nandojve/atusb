@@ -96,6 +96,7 @@ static int my_setup(const struct setup_request *setup)
 	case ATUSB_TO_DEV(ATUSB_RF_RESET):
 		debug("ATUSB_RF_RESET\n");
 		reset_rf();
+		mac_reset();
 		//ep_send_zlp(EP_CTRL);
 		return 1;
 

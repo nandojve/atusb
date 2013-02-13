@@ -37,7 +37,7 @@ static uint8_t reg_read(uint8_t reg)
 
 	spi_begin();
 	spi_send(AT86RF230_REG_READ | reg);
-	value= spi_recv();
+	value = spi_recv();
 	spi_end();
 
 	return value;
@@ -166,4 +166,12 @@ int mac_tx(uint16_t flags, uint16_t len)
 	tx_size = len;
 	usb_recv(&eps[0], tx_buf, len, do_tx, NULL);
 	return 1;
+}
+
+
+void mac_reset(void)
+{
+	mac_irq = NULL;
+	txing = 0;
+	queued_tx_ack = 0;
 }

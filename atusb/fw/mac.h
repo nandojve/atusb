@@ -1,8 +1,8 @@
 /*
  * fw/mac.h - HardMAC functions
  *
- * Written 2011 by Werner Almesberger
- * Copyright 2011 Werner Almesberger
+ * Written 2011, 2013 by Werner Almesberger
+ * Copyright 2011, 2013 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,5 +20,6 @@ extern int (*mac_irq)(void);
 
 int mac_rx(int on);
 int mac_tx(uint16_t flags, uint16_t len);
+void mac_reset(void);
 
 #endif /* !MAC_H */
