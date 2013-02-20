@@ -11,6 +11,7 @@
  */
 
 #include <stddef.h>
+#include <stdbool.h>
 #include <stdint.h>
 
 #include "usb.h"
@@ -27,8 +28,8 @@ int (*mac_irq)(void) = NULL;
 static uint8_t rx_buf[MAX_PSDU+2]; /* PHDR+payload+LQ */
 static uint8_t tx_buf[MAX_PSDU];
 static uint8_t tx_size = 0;
-static int txing = 0;
-static int queued_tx_ack = 0;
+static bool txing = 0;
+static bool queued_tx_ack = 0;
 
 
 static uint8_t reg_read(uint8_t reg)
