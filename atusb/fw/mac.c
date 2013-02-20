@@ -106,15 +106,23 @@ static int handle_irq(void)
 }
 
 
+static void change_state(uint8_t new)
+{
+	while ((reg_read(REG_TRX_STATUS) & TRX_STATUS_MASK) ==
+	    TRX_STATUS_TRANSITION);
+	reg_write(REG_TRX_STATE, new);
+}
+
+
 int mac_rx(int on)
 {
 	if (on) {
 		mac_irq = handle_irq;
 		reg_read(REG_IRQ_STATUS);
-		reg_write(REG_TRX_STATE, TRX_CMD_RX_ON);
+		change_state(TRX_CMD_RX_ON);
 	} else {
 		mac_irq = NULL;
-		reg_write(REG_TRX_STATE, TRX_CMD_FORCE_TRX_OFF);
+		change_state(TRX_CMD_FORCE_TRX_OFF);
 		txing = 0;
 	}
 	return 1;
@@ -153,9 +161,7 @@ static void do_tx(void *user)
 	 * Wait until we reach BUSY_TX, so that we command the transition to
 	 * RX_ON which will be executed upon TX completion.
 	 */
-	while ((reg_read(REG_TRX_STATUS) & TRX_STATUS_MASK) ==
-	    TRX_STATUS_TRANSITION);
-	reg_write(REG_TRX_STATE, TRX_CMD_RX_ON);
+	change_state(TRX_CMD_RX_ON);
 }
 
 
