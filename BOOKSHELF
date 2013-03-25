@@ -122,7 +122,7 @@ D: http://www.molex.com/pdm_docs/sd/480371000_sd.pdf
 # MMST3904: NPN small signal transistor in a SOT-323 package
 N: mmst3904
 A: npn
-D: http://61.222.192.61/mccsemi/up_pdf/MMST3904(SOT-323).PDF
+D: http://www.mccsemi.com/up_pdf/MMST3904(SOT-323).PDF
 
 #  Molex 73412-0110 (micro coaxial connector, receptacle) aka U.FL (Hirose)
 N: 73412-0110
