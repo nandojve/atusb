@@ -1,8 +1,8 @@
 /*
  * atrf-id/atrf-id.c - Identify a ben-wpan AT86RF230 board
  *
- * Written 2010-2011 by Werner Almesberger
- * Copyright 2010-2011 Werner Almesberger
+ * Written 2010-2011, 2013 by Werner Almesberger
+ * Copyright 2010-2011, 2013 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -135,10 +135,10 @@ static void show_info(struct atrf_dsc *dsc)
 	case atrf_unknown_chip:
 		printf("???");
 		break;
-	case artf_at86rf230:
+	case atrf_at86rf230:
 		printf("AT86RF230");
 		break;
-	case artf_at86rf231:
+	case atrf_at86rf231:
 		printf("AT86RF231");
 		break;
 	default:

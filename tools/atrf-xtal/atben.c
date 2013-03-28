@@ -1,8 +1,8 @@
 /*
  * atrf-xtal/atben.c - ATBEN-specific driver and evaluation
  *
- * Written 2011 by Werner Almesberger
- * Copyright 2011 Werner Almesberger
+ * Written 2011, 2013 by Werner Almesberger
+ * Copyright 2011, 2013 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,10 +59,10 @@ static void rf_setup(struct atrf_dsc *dsc, int size, int trim)
 
 	/* minimum TX power, maximize delays, disable CRC */
 	switch (atrf_identify(dsc)) {
-	case artf_at86rf230:
+	case atrf_at86rf230:
 		atrf_reg_write(dsc, REG_PHY_TX_PWR, 0xf);
 		break;
-	case artf_at86rf231:
+	case atrf_at86rf231:
 		atrf_reg_write(dsc, REG_PHY_TX_PWR, 0xff);
 		atrf_reg_write(dsc, REG_TRX_CTRL_1, 0);
 		break;

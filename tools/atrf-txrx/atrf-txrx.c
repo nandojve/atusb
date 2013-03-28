@@ -112,7 +112,7 @@ static struct atrf_dsc *init_txrx(const char *driver, int trim, unsigned mhz)
 	atrf_reg_write(dsc, REG_IRQ_MASK, 0xff);
 
 	flush_interrupts(dsc);
-	if (atrf_identify(dsc) == artf_at86rf231)
+	if (atrf_identify(dsc) == atrf_at86rf231)
 		wait_for_interrupt(dsc, IRQ_CCA_ED_DONE, IRQ_CCA_ED_DONE, 1);
 		    /* according to table 7-1, 37 us max */
 
@@ -131,10 +131,10 @@ static void set_rate(struct atrf_dsc *dsc, uint8_t rate)
 	if (!rate)
 		return;
 	switch (atrf_identify(dsc)) {
-	case artf_at86rf230:
+	case atrf_at86rf230:
 		fprintf(stderr, "AT86RF230 only supports 250 kbps\n");
 		break;
-	case artf_at86rf231:
+	case atrf_at86rf231:
 		atrf_reg_write(dsc, REG_TRX_CTRL_2, rate);
 		break;
 	default:

@@ -1,8 +1,8 @@
 /*
  * lib/misctxrx.c - Miscellaenous transceiver helper functions
  *
- * Written 2010-2011 by Werner Almesberger
- * Copyright 2010-2011 Werner Almesberger
+ * Written 2010-2011, 2013 by Werner Almesberger
+ * Copyright 2010-2011, 2013 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -146,11 +146,11 @@ void set_power_step(struct atrf_dsc *dsc, int power, int crc)
 	uint8_t tmp;
 
 	switch (atrf_identify(dsc)) {
-	case artf_at86rf230:
+	case atrf_at86rf230:
 		atrf_reg_write(dsc, REG_PHY_TX_PWR,
 		    (crc ? TX_AUTO_CRC_ON_230 : 0) | power);
 		break;
-	case artf_at86rf231:
+	case atrf_at86rf231:
 		tmp = atrf_reg_read(dsc, REG_PHY_TX_PWR);
 		tmp = (tmp & ~TX_PWR_MASK) | power;
 		atrf_reg_write(dsc, REG_PHY_TX_PWR, tmp);
@@ -166,9 +166,9 @@ void set_power_step(struct atrf_dsc *dsc, int power, int crc)
 static const double *tx_power_table(struct atrf_dsc *dsc)
 {
 	switch (atrf_identify(dsc)) {
-	case artf_at86rf230:
+	case atrf_at86rf230:
 		return tx_pwr_230;
-	case artf_at86rf231:
+	case atrf_at86rf231:
 		return tx_pwr_231;
 		break;
 	default:

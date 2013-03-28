@@ -1,8 +1,8 @@
 /*
  * include/atrf.h - ATRF access functions library
  *
- * Written 2010-2011 by Werner Almesberger
- * Copyright 2010-2011 Werner Almesberger
+ * Written 2010-2011, 2013 by Werner Almesberger
+ * Copyright 2010-2011, 2013 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,8 +18,8 @@
 
 enum atrf_chip_id {
 	atrf_unknown_chip	= 0,
-	artf_at86rf230		= 1,
-	artf_at86rf231		= 2,
+	atrf_at86rf230		= 1,
+	atrf_at86rf231		= 2,
 };
 
 

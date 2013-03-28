@@ -1,8 +1,8 @@
 /*
  * lib/cwtest.c - Set up AT86RF230/231 constant wave test mode
  *
- * Written 2010-2011 by Werner Almesberger
- * Copyright 2010-2011 Werner Almesberger
+ * Written 2010-2011, 2013 by Werner Almesberger
+ * Copyright 2010-2011, 2013 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ int cw_test_needs_reset(struct atrf_dsc *dsc)
 {
 	if (atrf_usb_handle(dsc))
 		return 1;
-	if (atrf_identify(dsc) == artf_at86rf230)
+	if (atrf_identify(dsc) == atrf_at86rf230)
 		return 1;
 	return 0;
 }
@@ -111,11 +111,11 @@ static void start_test_mode_231(struct atrf_dsc *dsc)
 void cw_test_begin(struct atrf_dsc *dsc, uint8_t cont_tx)
 {
 	switch (atrf_identify(dsc)) {
-	case artf_at86rf230:
+	case atrf_at86rf230:
 		enter_test_mode_230(dsc, cont_tx);
 		last_cont_tx = cont_tx;
 		break;
-	case artf_at86rf231:
+	case atrf_at86rf231:
 		prepare_test_mode_231(dsc, cont_tx);
 		start_test_mode_231(dsc);
 		break;
@@ -128,10 +128,10 @@ void cw_test_begin(struct atrf_dsc *dsc, uint8_t cont_tx)
 void cw_test_resume(struct atrf_dsc *dsc)
 {
 	switch (atrf_identify(dsc)) {
-	case artf_at86rf230:
+	case atrf_at86rf230:
 		enter_test_mode_230(dsc, last_cont_tx);
 		break;
-	case artf_at86rf231:
+	case atrf_at86rf231:
 		start_test_mode_231(dsc);
 		break;
 	default:
@@ -142,7 +142,7 @@ void cw_test_resume(struct atrf_dsc *dsc)
 
 void cw_test_end(struct atrf_dsc *dsc)
 {
-	if (atrf_identify(dsc) == artf_at86rf231)
+	if (atrf_identify(dsc) == atrf_at86rf231)
 		atrf_reg_write(dsc, REG_PART_NUM, 0);
 	
 	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_FORCE_TRX_OFF);

@@ -86,7 +86,7 @@ static enum atrf_chip_id identify(struct atrf_dsc *dsc)
 		switch (version) {
 		case 1: /* rev A */
 		case 2: /* rev B */
-			return artf_at86rf230;
+			return atrf_at86rf230;
 		default:
 			return atrf_unknown_chip;
 		}
@@ -94,7 +94,7 @@ static enum atrf_chip_id identify(struct atrf_dsc *dsc)
 	case 3:	/* AT86RF231 */
 		switch (version) {
 		case 2: /* rev A */
-			return artf_at86rf231;
+			return atrf_at86rf231;
 		default:
 			return atrf_unknown_chip;
 		}
