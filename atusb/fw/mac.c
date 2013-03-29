@@ -22,7 +22,7 @@
 #include "mac.h"
 
 
-int (*mac_irq)(void) = NULL;
+bool (*mac_irq)(void) = NULL;
 
 
 static uint8_t rx_buf[MAX_PSDU+2]; /* PHDR+payload+LQ */
@@ -64,7 +64,7 @@ static void rx_done(void *user)
 }
 
 
-static int handle_irq(void)
+static bool handle_irq(void)
 {
 	uint8_t irq;
 	uint8_t size, i;

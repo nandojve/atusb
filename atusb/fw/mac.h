@@ -17,7 +17,7 @@
 #include <stdint.h>
 
 
-extern int (*mac_irq)(void);
+extern bool (*mac_irq)(void);
 
 bool mac_rx(int on);
 bool mac_tx(uint16_t flags, uint16_t len);

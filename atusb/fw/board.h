@@ -82,7 +82,7 @@ void reset_cpu(void);
 uint8_t read_irq(void);
 void slp_tr(void);
 
-void led(int on);
+void led(bool on);
 void panic(void);
 
 uint64_t timer_read(void);

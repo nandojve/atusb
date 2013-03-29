@@ -1,8 +1,8 @@
 /*
  * fw/board.c - Board-specific functions (for boot loader and application)
  *
- * Written 2011 by Werner Almesberger
- * Copyright 2011 Werner Almesberger
+ * Written 2011, 2013 by Werner Almesberger
+ * Copyright 2011, 2013 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,6 +11,7 @@
  */
 
 
+#include <stdbool.h>
 #include <stdint.h>
 
 #include <avr/io.h>
@@ -81,7 +82,7 @@ void reset_rf(void)
 }
 
 
-void led(int on)
+void led(bool on)
 {
 	if (on)
 		SET(LED);
@@ -111,7 +112,7 @@ static char hex(uint8_t nibble)
 static void get_sernum(void)
 {
 	uint8_t sig;
-	int i;
+	uint8_t i;
 
 	for (i = 0; i != 10; i++) {
 		sig = boot_signature_byte_get(i+0xe);
