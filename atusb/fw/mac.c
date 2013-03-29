@@ -154,7 +154,7 @@ static void do_tx(void *user)
 		spi_send(tx_buf[i]);
 	spi_end();
 
-	reg_write(REG_TRX_STATE, TRX_CMD_TX_START);
+	slp_tr();
 
 	txing = 1;
 
