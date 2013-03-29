@@ -135,10 +135,19 @@ int mac_rx(int on)
 
 static void do_tx(void *user)
 {
+	uint16_t timeout = 0xffff;
 	uint8_t status;
 	uint8_t i;
 
-	do status = reg_read(REG_TRX_STATUS) & TRX_STATUS_MASK;
+	/*
+	 * If we time out here, the host driver will time out waiting for the
+	 * TRX_END acknowledgement.
+	 */
+	do {
+		if (!--timeout)
+			return;
+		status = reg_read(REG_TRX_STATUS) & TRX_STATUS_MASK;
+	}
 	while (status != TRX_STATUS_RX_ON && status != TRX_STATUS_RX_AACK_ON);
 
 	/*
