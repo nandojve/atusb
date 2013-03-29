@@ -155,7 +155,8 @@ void set_power_step(struct atrf_dsc *dsc, int power, int crc)
 		tmp = (tmp & ~TX_PWR_MASK) | power;
 		atrf_reg_write(dsc, REG_PHY_TX_PWR, tmp);
 		atrf_reg_write(dsc, REG_TRX_CTRL_1,
-		    crc ? TX_AUTO_CRC_ON : 0);
+		    (crc ? TX_AUTO_CRC_ON : 0) |
+		    SPI_CMD_MODE_PHY_RSSI << SPI_CMD_MODE_SHIFT);
 		break;
 	default:
 		abort();
