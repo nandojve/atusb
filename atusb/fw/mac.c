@@ -90,7 +90,10 @@ static int handle_irq(void)
 		return 1;
 
 	spi_begin();
-	spi_send(AT86RF230_BUF_READ);
+	if (!(spi_io(AT86RF230_BUF_READ) & RX_CRC_VALID)) {
+		spi_end();
+		return 1;
+	}
 	size = spi_recv();
 	if (!size || (size & 0x80)) {
 		spi_end();
@@ -181,4 +184,8 @@ void mac_reset(void)
 	mac_irq = NULL;
 	txing = 0;
 	queued_tx_ack = 0;
+
+	/* enable CRC and PHY_RSSI (with RX_CRC_VALID) in SPI status return */
+	reg_write(REG_TRX_CTRL_1,
+	    TX_AUTO_CRC_ON | SPI_CMD_MODE_PHY_RSSI << SPI_CMD_MODE_SHIFT);
 }
