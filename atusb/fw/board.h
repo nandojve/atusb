@@ -1,8 +1,8 @@
 /*
  * fw/board.h - Board-specific functions and definitions
  *
- * Written 2008-2011 by Werner Almesberger
- * Copyright 2008-2011 Werner Almesberger
+ * Written 2008-2011, 2013 by Werner Almesberger
+ * Copyright 2008-2011, 2013 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -13,6 +13,7 @@
 #ifndef BOARD_H
 #define	BOARD_H
 
+#include <stdbool.h>
 #include <stdint.h>
 
 
@@ -87,7 +88,7 @@ void panic(void);
 uint64_t timer_read(void);
 void timer_init(void);
 
-int gpio(uint8_t port, uint8_t data, uint8_t dir, uint8_t mask, uint8_t *res);
+bool gpio(uint8_t port, uint8_t data, uint8_t dir, uint8_t mask, uint8_t *res);
 void gpio_cleanup(void);
 
 void board_init(void);

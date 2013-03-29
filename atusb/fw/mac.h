@@ -13,13 +13,14 @@
 #ifndef MAC_H
 #define	MAC_H
 
+#include <stdbool.h>
 #include <stdint.h>
 
 
 extern int (*mac_irq)(void);
 
-int mac_rx(int on);
-int mac_tx(uint16_t flags, uint16_t len);
+bool mac_rx(int on);
+bool mac_tx(uint16_t flags, uint16_t len);
 void mac_reset(void);
 
 #endif /* !MAC_H */

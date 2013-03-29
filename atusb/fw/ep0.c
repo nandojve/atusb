@@ -1,8 +1,8 @@
 /*
  * fw/ep0.c - EP0 extension protocol
  *
- * Written 2008-2011 by Werner Almesberger
- * Copyright 2008-2011 Werner Almesberger
+ * Written 2008-2011, 2013 by Werner Almesberger
+ * Copyright 2008-2011, 2013 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,6 +11,7 @@
  */
 
 
+#include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
 
@@ -57,7 +58,7 @@ static void do_buf_write(void *user)
 #define	BUILD_OFFSET	7	/* '#' plus "65535" plus ' ' */
 
 
-static int my_setup(const struct setup_request *setup)
+static bool my_setup(const struct setup_request *setup)
 {
 	uint16_t req = setup->bmRequestType | setup->bRequest << 8;
 	unsigned tmp;
@@ -254,7 +255,7 @@ static int my_setup(const struct setup_request *setup)
 }
 
 
-static int my_dfu_setup(const struct setup_request *setup)
+static bool my_dfu_setup(const struct setup_request *setup)
 {
 	switch (setup->bmRequestType | setup->bRequest << 8) {
 	case DFU_TO_DEV(DFU_DETACH):

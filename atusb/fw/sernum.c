@@ -1,8 +1,8 @@
 /*
  * fw/sernum.c - ATUSB serial number
  *
- * Written 2008-2011 by Werner Almesberger
- * Copyright 2008-2011 Werner Almesberger
+ * Written 2008-2011, 2013 by Werner Almesberger
+ * Copyright 2008-2011, 2013 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,6 +11,7 @@
  */
 
 
+#include <stdbool.h>
 #include <stdint.h>
 
 #include "usb.h"
@@ -26,7 +27,7 @@ static const uint8_t string_descriptor_0[] = {
 };
 
 
-int sernum_get_descr(uint8_t type, uint8_t index, const uint8_t **reply,
+bool sernum_get_descr(uint8_t type, uint8_t index, const uint8_t **reply,
     uint8_t *size)
 {
 	if (type != USB_DT_STRING)

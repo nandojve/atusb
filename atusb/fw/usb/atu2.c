@@ -1,8 +1,8 @@
 /*
  * fw/usb/atu2.c - Chip-specific driver for Atmel ATxxxU2 USB chips
  *
- * Written 2008-2011 by Werner Almesberger
- * Copyright 2008-2011 Werner Almesberger
+ * Written 2008-2011, 2013 by Werner Almesberger
+ * Copyright 2008-2011, 2013 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
  * - enumeration often encounters an error -71 (from which it recovers)
  */
 
+#include <stdbool.h>
 #include <stdint.h>
 
 #define F_CPU   8000000UL
@@ -59,11 +60,10 @@ static void enable_addr(void *user)
 }
 
 
-int set_addr(uint8_t addr)
+void set_addr(uint8_t addr)
 {
 	UDADDR = addr;
 	usb_send(&eps[0], NULL, 0, enable_addr, NULL);
-	return 1;
 }
 
 
@@ -76,7 +76,7 @@ void usb_ep_change(struct ep_descr *ep)
 }
 
 
-static int ep_setup(void)
+static bool ep_setup(void)
 {
 	struct setup_request setup;
 
@@ -96,7 +96,7 @@ static int ep_setup(void)
 }
 
 
-static int ep_rx(struct ep_descr *ep)
+static bool ep_rx(struct ep_descr *ep)
 {
 	uint8_t size;
 

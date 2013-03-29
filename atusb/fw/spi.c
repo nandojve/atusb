@@ -1,8 +1,8 @@
 /*
  * fw/spi.c - ATmega8 family SPI I/O
  *
- * Written 2011 by Werner Almesberger
- * Copyright 2011 Werner Almesberger
+ * Written 2011, 2013 by Werner Almesberger
+ * Copyright 2011, 2013 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,6 +11,7 @@
  */
 
 
+#include <stdbool.h>
 #include <stdint.h>
 
 #include <avr/io.h>
@@ -19,7 +20,7 @@
 #include "spi.h"
 
 
-static int spi_initialized = 0;
+static bool spi_initialized = 0;
 
 
 void spi_begin(void)

@@ -118,7 +118,7 @@ static void change_state(uint8_t new)
 }
 
 
-int mac_rx(int on)
+bool mac_rx(int on)
 {
 	if (on) {
 		mac_irq = handle_irq;
@@ -178,7 +178,7 @@ static void do_tx(void *user)
 }
 
 
-int mac_tx(uint16_t flags, uint16_t len)
+bool mac_tx(uint16_t flags, uint16_t len)
 {
 	if (len > MAX_PSDU)
 		return 0;

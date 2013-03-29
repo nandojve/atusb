@@ -1,8 +1,8 @@
 /*
  * boot/dfu_common.c - DFU protocol engine parts common to App/DFU
  *
- * Written 2008-2011 by Werner Almesberger
- * Copyright 2008-2011 Werner Almesberger
+ * Written 2008-2011, 2013 by Werner Almesberger
+ * Copyright 2008-2011, 2013 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@
  */
 
 
+#include <stdbool.h>
 #include <stdint.h>
 
 #include "usb.h"
@@ -65,7 +66,7 @@ struct dfu dfu = {
 };
 
 
-int dfu_setup_common(const struct setup_request *setup)
+bool dfu_setup_common(const struct setup_request *setup)
 {
 	switch (setup->bmRequestType | setup->bRequest << 8) {
 	case DFU_FROM_DEV(DFU_GETSTATUS):
@@ -89,7 +90,7 @@ int dfu_setup_common(const struct setup_request *setup)
 }
 
 
-int dfu_my_descr(uint8_t type, uint8_t index, const uint8_t **reply,
+bool dfu_my_descr(uint8_t type, uint8_t index, const uint8_t **reply,
     uint8_t *size)
 {
 	if (type != DFU_DT_FUNCTIONAL)

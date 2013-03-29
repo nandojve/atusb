@@ -1,8 +1,8 @@
 /*
  * boot/dfu.c - DFU protocol engine
  *
- * Written 2008-2011 by Werner Almesberger
- * Copyright 2008-2011 Werner Almesberger
+ * Written 2008-2011, 2013 by Werner Almesberger
+ * Copyright 2008-2011, 2013 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,6 +25,7 @@
  */
 
 
+#include <stdbool.h>
 #include <stdint.h>
 
 #include "usb.h"
@@ -81,7 +82,7 @@ const uint8_t config_descriptor[] = {
 
 
 static uint16_t next_block = 0;
-static int did_download;
+static bool did_download;
 
 
 static uint8_t buf[EP0_SIZE];
@@ -95,7 +96,7 @@ static void block_write(void *user)
 }
 
 
-static int block_receive(uint16_t length)
+static bool block_receive(uint16_t length)
 {
 	static uint16_t size;
 
@@ -115,7 +116,7 @@ static int block_receive(uint16_t length)
 }
 
 
-static int block_transmit(uint16_t length)
+static bool block_transmit(uint16_t length)
 {
 	uint16_t got;
 
@@ -134,9 +135,9 @@ static int block_transmit(uint16_t length)
 }
 
 
-static int my_setup(const struct setup_request *setup)
+static bool my_setup(const struct setup_request *setup)
 {
-	int ok;
+	bool ok;
 
 	switch (setup->bmRequestType | setup->bRequest << 8) {
 	case DFU_TO_DEV(DFU_DETACH):

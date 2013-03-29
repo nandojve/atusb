@@ -1,8 +1,8 @@
 /*
  * fw/board_app.c - Board-specific functions (for the application)
  *
- * Written 2011 by Werner Almesberger
- * Copyright 2011 Werner Almesberger
+ * Written 2011, 2013 by Werner Almesberger
+ * Copyright 2011, 2013 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -12,6 +12,7 @@
 
 
 #include <stddef.h>
+#include <stdbool.h>
 #include <stdint.h>
 
 #include <avr/io.h>
@@ -92,7 +93,7 @@ void timer_init(void)
 }
 
 
-int gpio(uint8_t port, uint8_t data, uint8_t dir, uint8_t mask, uint8_t *res)
+bool gpio(uint8_t port, uint8_t data, uint8_t dir, uint8_t mask, uint8_t *res)
 {
 	EIMSK = 0; /* recover INT_RF to ATUSB_GPIO_CLEANUP or an MCU reset */
 

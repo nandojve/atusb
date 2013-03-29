@@ -1,8 +1,8 @@
 /*
  * fw/flash.c - Board-specific flash functions
  *
- * Written 2011 by Werner Almesberger
- * Copyright 2011 Werner Almesberger
+ * Written 2011, 2013 by Werner Almesberger
+ * Copyright 2011, 2013 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -11,6 +11,7 @@
  */
 
 
+#include <stdbool.h>
 #include <stdint.h>
 
 #include <avr/boot.h>
@@ -29,7 +30,7 @@ void flash_start(void)
 }
 
 
-int flash_can_write(uint16_t size)
+bool flash_can_write(uint16_t size)
 {
 	return payload+size <= BOOT_ADDR;
 }

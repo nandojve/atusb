@@ -1,8 +1,8 @@
 /*
  * fw/sernum.h - ATUSB serial number
  *
- * Written 2011 by Werner Almesberger
- * Copyright 2011 Werner Almesberger
+ * Written 2011, 2013 by Werner Almesberger
+ * Copyright 2011, 2013 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -13,6 +13,7 @@
 #ifndef SERNUM_H
 #define	SERNUM_H
 
+#include <stdbool.h>
 #include <stdint.h>
 
 #include "board.h"
@@ -20,12 +21,12 @@
 
 #ifdef HAS_BOARD_SERNUM
 
-int sernum_get_descr(uint8_t type, uint8_t index, const uint8_t **reply,
+bool sernum_get_descr(uint8_t type, uint8_t index, const uint8_t **reply,
     uint8_t *size);
 
 #else /* HAS_BOARD_SERNUM */
 
-static inline int sernum_get_descr(uint8_t type, uint8_t index,
+static inline bool sernum_get_descr(uint8_t type, uint8_t index,
     const uint8_t **reply, uint8_t *size)
 {
 	return 0;

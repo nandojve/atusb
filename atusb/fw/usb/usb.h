@@ -1,8 +1,8 @@
 /*
  * fw/usb//usb.h - USB hardware setup and standard device requests
  *
- * Written 2008, 2009, 2011 by Werner Almesberger
- * Copyright 2008, 2009, 2011 Werner Almesberger
+ * Written 2008, 2009, 2011, 2013 by Werner Almesberger
+ * Copyright 2008, 2009, 2011, 2013 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,6 +15,7 @@
 #define USB_H
 
 
+#include <stdbool.h>
 #include <stdint.h>
 
 
@@ -132,9 +133,9 @@ extern const uint8_t device_descriptor[];
 extern const uint8_t config_descriptor[];
 extern struct ep_descr eps[];
 
-extern int (*user_setup)(const struct setup_request *setup);
+extern bool (*user_setup)(const struct setup_request *setup);
 extern void (*user_set_interface)(int nth);
-extern int (*user_get_descriptor)(uint8_t type, uint8_t index,
+extern bool (*user_get_descriptor)(uint8_t type, uint8_t index,
     const uint8_t **reply, uint8_t *size);
 extern void (*user_reset)(void);
 
@@ -148,8 +149,8 @@ extern void (*user_reset)(void);
 void usb_io(struct ep_descr *ep, enum ep_state state, uint8_t *buf,
     uint8_t size, void (*callback)(void *user), void *user);
 
-int handle_setup(const struct setup_request *setup);
-int set_addr(uint8_t addr);
+bool handle_setup(const struct setup_request *setup);
+void set_addr(uint8_t addr);
 void usb_ep_change(struct ep_descr *ep);
 void usb_reset(void);
 void usb_init(void);
