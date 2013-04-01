@@ -64,10 +64,33 @@ static void rx_done(void *user)
 }
 
 
+static void receive_frame(void)
+{
+	uint8_t size, i;
+
+	spi_begin();
+	if (!(spi_io(AT86RF230_BUF_READ) & RX_CRC_VALID)) {
+		spi_end();
+		return;
+	}
+	size = spi_recv();
+	if (!size || (size & 0x80)) {
+		spi_end();
+		return;
+	}
+
+	rx_buf[0] = size;
+	for (i = 0; i != size+1; i++)
+		rx_buf[i+1] = spi_recv();
+	spi_end();
+	led(1);
+	usb_send(&eps[1], rx_buf, size+2, rx_done, NULL);
+}
+
+
 static bool handle_irq(void)
 {
 	uint8_t irq;
-	uint8_t size, i;
 
 	irq = reg_read(REG_IRQ_STATUS);
 	if (!(irq & IRQ_TRX_END))
@@ -89,23 +112,8 @@ static bool handle_irq(void)
 	if (eps[1].state != EP_IDLE)
 		return 1;
 
-	spi_begin();
-	if (!(spi_io(AT86RF230_BUF_READ) & RX_CRC_VALID)) {
-		spi_end();
-		return 1;
-	}
-	size = spi_recv();
-	if (!size || (size & 0x80)) {
-		spi_end();
-		return 1;
-	}
+	receive_frame();
 
-	rx_buf[0] = size;
-	for (i = 0; i != size+1; i++)
-		rx_buf[i+1] = spi_recv();
-	spi_end();
-	led(1);
-	usb_send(&eps[1], rx_buf, size+2, rx_done, NULL);
 	return 1;
 }
 
