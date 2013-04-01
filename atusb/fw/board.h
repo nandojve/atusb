@@ -1,8 +1,8 @@
 /*
  * fw/board.h - Board-specific functions and definitions
  *
- * Written 2008-2011, 2013 by Werner Almesberger
- * Copyright 2008-2011, 2013 Werner Almesberger
+ * Written 2008-2011, 2013, 2013 by Werner Almesberger
+ * Copyright 2008-2011, 2013, 2013 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,6 +15,8 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+
+#include <atusb/atusb.h>
 
 
 #define	LED_PORT	B
@@ -56,8 +58,8 @@
 #define	PIN(n)		PIN_1(n##_PORT, n##_BIT)
 
 
-#define	USB_VENDOR	0x20b7	/* Qi Hardware */
-#define	USB_PRODUCT	0x1540	/* ben-wpan atusb */
+#define	USB_VENDOR	ATUSB_VENDOR_ID
+#define	USB_PRODUCT	ATUSB_PRODUCT_ID
 
 #define	DFU_USB_VENDOR	USB_VENDOR
 #define	DFU_USB_PRODUCT	USB_PRODUCT
