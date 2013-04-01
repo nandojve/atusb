@@ -1,8 +1,8 @@
 /*
  * lib/atusb.c - ATUSB access functions library (USB version)
  *
- * Written 2010-2011 by Werner Almesberger
- * Copyright 2010-2011 Werner Almesberger
+ * Written 2010-2011, 2013 by Werner Almesberger
+ * Copyright 2010-2011, 2013 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,7 +17,6 @@
 #include <usb.h>
 
 #include "atusb/ep0.h"
-#include "atusb/usb-ids.h"
 
 #include "usbopen.h"
 #include "driver.h"

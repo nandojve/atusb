@@ -19,7 +19,6 @@
 #include <errno.h>
 
 #include "atusb/ep0.h"
-#include "atusb/usb-ids.h"
 
 #include "at86rf230.h"
 #include "usbopen.h"
@@ -61,7 +60,7 @@ void *atusb_open(const char *arg)
 	usb_unrestrict();
 	if (arg)
 		restrict_usb_path(arg);
-	dev = open_usb(USB_VENDOR, USB_PRODUCT);
+	dev = open_usb(ATUSB_VENDOR_ID, ATUSB_PRODUCT_ID);
 	if (!dev) {
 		if (errno == EPERM)
 			fprintf(stderr, "Permission denied. "
