@@ -247,6 +247,12 @@ void usb_reset(void)
 }
 
 
+void usb_enable_bus_reset(void)
+{
+	UDCON |= 1 << RSTCPU;		/* reset CPU on bus reset */
+}
+
+
 void usb_init(void)
 {
 	USBCON |= 1 << FRZCLK;		/* freeze the clock */
@@ -263,7 +269,6 @@ void usb_init(void)
 
 	UDCON &= ~(1 << DETACH);	/* attach the pull-up */
 	UDIEN = 1 << EORSTE;		/* enable device interrupts  */
-//	UDCON |= 1 << RSTCPU;		/* reset CPU on bus reset */
 
 	ep_init();
 }

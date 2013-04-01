@@ -118,6 +118,7 @@ bool handle_setup(const struct setup_request *setup)
 	case TO_DEVICE(SET_CONFIGURATION):
 		if (setup->wValue != config_descriptor[5])
 			return 0;
+		usb_enable_bus_reset();
 		break;
 
 	/*
