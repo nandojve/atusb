@@ -42,7 +42,10 @@
  *          recipient (0 = device)
  */
 
+#ifndef USB_TYPE_VENDOR
 #define	USB_TYPE_VENDOR		0x40
+#endif
+
 #define	USB_DIR_IN		0x80
 #define	USB_DIR_OUT		0x00
 
