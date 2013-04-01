@@ -46,8 +46,13 @@
 #define	USB_TYPE_VENDOR		0x40
 #endif
 
+#ifndef USB_DIR_IN
 #define	USB_DIR_IN		0x80
+#endif
+
+#ifndef USB_DIR_OUT
 #define	USB_DIR_OUT		0x00
+#endif
 
 #define	ATUSB_FROM_DEV(req)	(ATUSB_REQ_FROM_DEV | (req) << 8)
 #define	ATUSB_TO_DEV(req)	(ATUSB_REQ_TO_DEV | (req) << 8)
