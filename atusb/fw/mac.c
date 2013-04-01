@@ -70,6 +70,9 @@ static bool handle_irq(void)
 	uint8_t size, i;
 
 	irq = reg_read(REG_IRQ_STATUS);
+	if (!(irq & IRQ_TRX_END))
+		return 1;
+
 	if (txing) {
 		if (eps[1].state == EP_IDLE)
 			usb_send(&eps[1], "", 1, rx_done, NULL);
@@ -79,11 +82,8 @@ static bool handle_irq(void)
 			queued_tx_ack = 1;
 		}
 		txing = 0;
-		return 0;
-	}
-
-	if (!(irq & IRQ_TRX_END))
 		return 1;
+	}
 
 	/* unlikely */
 	if (eps[1].state != EP_IDLE)
