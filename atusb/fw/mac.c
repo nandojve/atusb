@@ -30,6 +30,7 @@ static uint8_t tx_buf[MAX_PSDU];
 static uint8_t tx_size = 0;
 static bool txing = 0;
 static bool queued_tx_ack = 0;
+static bool queued_rx = 0;
 
 
 static uint8_t reg_read(uint8_t reg)
@@ -54,9 +55,17 @@ static void reg_write(uint8_t reg, uint8_t value)
 }
 
 
+static void receive_frame(void);
+
+
 static void rx_done(void *user)
 {
 	led(0);
+	if (queued_rx) {
+		receive_frame();
+		queued_rx = 0;
+		return;
+	}
 	if (queued_tx_ack) {
 		usb_send(&eps[1], "", 1, rx_done, NULL);
 		queued_tx_ack = 0;	
@@ -88,6 +97,14 @@ static void receive_frame(void)
 }
 
 
+static void flush_queued_rx(void)
+{
+	if (queued_rx)
+		receive_frame();
+	queued_rx = 0;
+}
+
+
 static bool handle_irq(void)
 {
 	uint8_t irq;
@@ -109,8 +126,10 @@ static bool handle_irq(void)
 	}
 
 	/* unlikely */
-	if (eps[1].state != EP_IDLE)
+	if (eps[1].state != EP_IDLE) {
+		queued_rx = 1;
 		return 1;
+	}
 
 	receive_frame();
 
@@ -165,7 +184,9 @@ static void do_tx(void *user)
 	 */
 	reg_write(REG_TRX_STATE, TRX_CMD_FORCE_PLL_ON);
 
+	flush_queued_rx();
 	handle_irq();
+	queued_rx = 0;
 
 	spi_begin();
 	spi_send(AT86RF230_BUF_WRITE);
@@ -201,6 +222,7 @@ void mac_reset(void)
 	mac_irq = NULL;
 	txing = 0;
 	queued_tx_ack = 0;
+	queued_rx = 0;
 
 	/* enable CRC and PHY_RSSI (with RX_CRC_VALID) in SPI status return */
 	reg_write(REG_TRX_CTRL_1,
