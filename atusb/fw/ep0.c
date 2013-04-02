@@ -245,7 +245,7 @@ static bool my_setup(const struct setup_request *setup)
 	case ATUSB_TO_DEV(ATUSB_RX_MODE):
 		return mac_rx(setup->wValue);
 	case ATUSB_TO_DEV(ATUSB_TX):
-		return mac_tx(setup->wValue, setup->wLength);
+		return mac_tx(setup->wValue, setup->wIndex, setup->wLength);
 
 	default:
 		error("Unrecognized SETUP: 0x%02x 0x%02x ...\n",

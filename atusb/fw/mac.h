@@ -20,7 +20,7 @@
 extern bool (*mac_irq)(void);
 
 bool mac_rx(int on);
-bool mac_tx(uint16_t flags, uint16_t len);
+bool mac_tx(uint16_t flags, uint8_t seq, uint16_t len);
 void mac_reset(void);
 
 #endif /* !MAC_H */

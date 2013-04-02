@@ -31,6 +31,7 @@ static uint8_t tx_size = 0;
 static bool txing = 0;
 static bool queued_tx_ack = 0;
 static bool queued_rx = 0;
+static uint8_t next_seq, this_seq, queued_seq;
 
 
 static uint8_t reg_read(uint8_t reg)
@@ -67,7 +68,7 @@ static void rx_done(void *user)
 		return;
 	}
 	if (queued_tx_ack) {
-		usb_send(&eps[1], "", 1, rx_done, NULL);
+		usb_send(&eps[1], &queued_seq, 1, rx_done, NULL);
 		queued_tx_ack = 0;	
 	}
 }
@@ -114,12 +115,11 @@ static bool handle_irq(void)
 		return 1;
 
 	if (txing) {
-		if (eps[1].state == EP_IDLE)
-			usb_send(&eps[1], "", 1, rx_done, NULL);
-		else {
-			if (queued_tx_ack)
-				panic();
+		if (eps[1].state == EP_IDLE) {
+			usb_send(&eps[1], &this_seq, 1, rx_done, NULL);
+		} else {
 			queued_tx_ack = 1;
+			queued_seq = this_seq;
 		}
 		txing = 0;
 		return 1;
@@ -198,6 +198,7 @@ static void do_tx(void *user)
 	slp_tr();
 
 	txing = 1;
+	this_seq = next_seq;
 
 	/*
 	 * Wait until we reach BUSY_TX, so that we command the transition to
@@ -207,11 +208,12 @@ static void do_tx(void *user)
 }
 
 
-bool mac_tx(uint16_t flags, uint16_t len)
+bool mac_tx(uint16_t flags, uint8_t seq, uint16_t len)
 {
 	if (len > MAX_PSDU)
 		return 0;
 	tx_size = len;
+	next_seq = seq;
 	usb_recv(&eps[0], tx_buf, len, do_tx, NULL);
 	return 1;
 }
@@ -223,6 +225,7 @@ void mac_reset(void)
 	txing = 0;
 	queued_tx_ack = 0;
 	queued_rx = 0;
+	next_seq = this_seq = queued_seq = 0;
 
 	/* enable CRC and PHY_RSSI (with RX_CRC_VALID) in SPI status return */
 	reg_write(REG_TRX_CTRL_1,
