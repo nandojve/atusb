@@ -1,0 +1,173 @@
+Performance analysis of SPI drivers for ATBEN
+=============================================
+
+This was originally posted on April 10 2013 to the linux-zigbee and
+the qi-hardware list. The URLs have been updated for stability.
+
+What this is all about
+----------------------
+
+The ATBEN board on the Ben NanoNote needs a bit-banging SPI driver.
+There are several ways to implement this, ranging from reuse of the
+generic spi-gpio driver to an optimized driver that's specific for
+this platform.
+
+I implemented several such approaches and measured their performance
+in the Ben NanoNote. Below are my findings.
+
+Comments welcome.
+
+
+Cast and characters
+-------------------
+
+spi_atben_gpio: NanoNote-specific framework for setting up the
+AT86RF230/1 with SPI-GPIO or one of the optimized drivers (below).
+The name derives from spi_atben (see below) and should be changed
+(maybe to atben_spi or atben_spi_gpio ?) since it is not an SPI
+driver but merely a framework that provides configuration data and
+performs miscellaneous platform setup.
+https://github.com/wpwrak/ben-wpan-linux/blob/perfcomp/drivers/net/ieee802154/spi_atben_gpio.c
+
+spi_atben: like spi_atben_gpio, but contains a highly optimized
+SPI driver for the ATBEN configuration in the Ben NanoNote.
+https://github.com/wpwrak/ben-wpan-linux/blob/perfcomp/drivers/net/ieee802154/spi_atben.c
+
+spi-jz4740-gpio: SPI-GPIO driver optimized for the Jz4740. Uses the
+optimized register accesses from spi_atben but pin assignment is not
+restricted to ATBEN. The only limitation is that MOSI, MISO, and
+SCLK must be on the same port.
+https://github.com/wpwrak/ben-wpan-linux/blob/perfcomp/drivers/spi/spi-jz4740-gpio.c
+
+spi-gpio-atben: task-specific SPI-GPIO driver using the #include
+"spi-gpio.c" method. Replaces gpiolib functions with register
+accesses specific to the ATBEN configuration in the Ben NanoNote.
+Note that some of the code could be moved into Jz4740
+architecture-specific GPIO support.
+https://github.com/wpwrak/ben-wpan-linux/blob/perfcomp/drivers/spi/spi-gpio-atben.c
+
+In the following sections, we abbreviate the stack configurations
+as follows:
+
+Abbreviation	Framework	Transport	Chip driver
+---------------	---------------	---------------	-----------
+spi-gpio	spi_atben_gpio	spi-gpio	at86rf230
+spi-gpio-atben	spi_atben_gpio	spi-gpio-atben	at86rf230
+spi-jz4740-gpio	spi_atben_gpio	spi-jz4740-gpio	at86rf230
+spi_atben	spi_atben			at86rf230
+
+
+Measurements
+------------
+
+Access time to AT86RF231 registers and buffer, in microseconds, on
+an otherwise idle Ben NanoNote:
+
+Driver		read from 0x51		read 120 bytes from buffer
+|		|	write 0x0a to 0x15	write 1 byte to buffer (0x33)
+|		|	|	read 1 byte from buffer	write 120 bytes
+|		|	|	|	|	|	|
+spi-gpio	 81	 85	186	1696	 97	1596
+spi-gpio-atben	 63	 59	123	 498	 65	 437
+spi-jz4740-gpio	 10	  8	 21	 280	 10	 231
+spi_atben	 10	  7	 21	 280	 10	 230
+
+Data rate for hypothetical buffer accesses of infinite length.
+I.e., kbps = 1000*119*8/(t_write120-t_write1)
+
+Driver		buffer read (kbps)	buffer write (kbps)
+---------------	-----------------------	-------------------
+spi-gpio	 630			 635			
+spi-gpio-atben	2549			2559
+spi-jz4740-gpio	3676			4308
+spi_atben	3676			4327
+
+At the air interface, IEEE 802.15.4 has a data rate of 250 kbps.
+The AT86RF231 transceiver also supports non-standard higher data
+rates up to 2 Mbps.
+
+Driver(s)				Code size (lines)
+---------------------------------------	-----------------
+spi_atben_gpio				 128
+spi_atben_gpio + spi-gpio-atben		 128+ 53
+spi_atben_gpio + spi-jz4740-gpio	 128+416
+spi_atben				 423
+
+
+Computational cost
+------------------
+
+The high-level operations of sending and receiving produce the
+following major low-level operations:
+
+Operation	register	buffer		waitqueue
+		read	write	read	write
+---------------	-------	-------	-------	-------	---------
+reception	1	-	1	-	1
+transmission	9	4	-	1	1
+
+Using the measured data from above, we get the following total
+computational overhead in microseconds, without considering the
+waitqueue scheduling delay:
+
+Driver		reception		transmission
+		1	120	127	1	120	125 (bytes)
+---------------	-------	-------	-------	-------	-------	-------
+spi-gpio	 267	1777	1866	1166	2665	2727
+spi-gpio-atben	 186	 561	 583 	 868	1240	1256
+spi-jz4740-gpio	  31	 290	 304 	 132	 353	 362
+
+Note that the minimum frame length in IEEE 802.15.4 is 5 bytes.
+The values for 125 (excluding CRC) and 127 (including CRC) bytes
+are extrapolated.
+
+According to [1], maximum-sized frames can be sent/received,
+including CSMA/CA and acknowledgement, at a rate between one
+every 4928 us and one every 7168 us.
+
+We would therefore get the following maximum CPU load:
+
+Driver		Reception	Transmission
+---------------	---------------	------------
+spi-gpio	38%		55%
+spi-gpio-atben	12%		25%
+spi-jz4740-gpio	 6%		 7%
+
+
+Observations
+------------
+
+spi-gpio needs the smallest amount of new code but is also very
+inefficient, making it questionable whether this configuration
+would yield acceptable performance in regular use.
+
+With spi-gpio-atben, only a small amount of code is added, but
+buffer accesses become almost 4 times faster. Register reads and
+writes are still fairly slow.
+
+spi_atben and spi-jz4740-gpio both achieve the best performance
+without significant differences between them. Both add a complete
+SPI driver. Of the two, spi-jz4740-gpio is preferable, because it
+uses the nearly universal spi_atben_gpio framework driver.
+
+
+Conclusion
+----------
+
+I think performance trumps most other considerations in this case.
+spi-gpio is clearly too inefficient. spi_atben_gpio with
+spi-jz4740-gpio offers the best performance and has a low impact
+on the system load (< 10%). In case this solution would be met
+with strong resistance for some reason, spi-gpio-atben would offer
+a compromise between performance and the amount of code.
+
+
+References
+----------
+
+[1] http://www.jennic.com/files/support_files/JN-AN-1035%20Calculating%20802-15-4%20Data%20Rates-1v0.pdf
+
+_______________________________________________
+Qi Hardware Discussion List
+Mail to list (members only): discussion@lists.en.qi-hardware.com
+Subscribe or Unsubscribe: http://lists.en.qi-hardware.com/mailman/listinfo/discussion
