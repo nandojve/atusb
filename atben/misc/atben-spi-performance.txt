@@ -4,6 +4,13 @@ Performance analysis of SPI drivers for ATBEN
 This was originally posted on April 10 2013 to the linux-zigbee and
 the qi-hardware list. The URLs have been updated for stability.
 
+Note that the code referenced in this analysis is meant to illustrate
+the general concepts. Some variants have been dropped since and the
+ones still in existence have been cleaned up and debugged in
+preparation for upstream submission. The current versions can be
+found in https://github.com/wpwrak/ben-wpan-linux
+
+
 What this is all about
 ----------------------
 
@@ -166,8 +173,3 @@ References
 ----------
 
 [1] http://www.jennic.com/files/support_files/JN-AN-1035%20Calculating%20802-15-4%20Data%20Rates-1v0.pdf
-
-_______________________________________________
-Qi Hardware Discussion List
-Mail to list (members only): discussion@lists.en.qi-hardware.com
-Subscribe or Unsubscribe: http://lists.en.qi-hardware.com/mailman/listinfo/discussion
