@@ -1,0 +1,104 @@
+#!/bin/sh
+
+hdr()
+{
+	cat <<EOF
+From: Werner Almesberger <werner@almesberger.net>
+To: discussion@lists.en.qi-hardware.com
+EOF
+}
+
+
+intro()
+{
+	hdr
+	case "$1" in
+	0)	cat <<EOF
+Subject: [RFC 0/3] ATBEN kernel support for the Ben NanoNote
+
+For review before submitting things upstream:
+
+This set of three patches adds support for the ATBEN IEEE 802.15.4 board,
+along with the infrastructure needed for the Ben NanoNote. It consists
+of three parts:
+
+1) addition of a platform-specific reset function to the AT86RF230 driver.
+   The driver assumes that it can reset the transceiver through a reset
+   pin, but ATBEN uses power cycling instead. We therefore need a
+   platform-specific function to perform the reset.
+
+2) addition of an SPI-GPIO driver optimized for the Jz4740. ATBEN
+   connects to a physical MMC interface but uses SPI (with some quirks)
+   for communication. We therefore have to use bit-banging.
+
+   The SPI-GPIO driver would be too slow, so we introduce a driver
+   optimized for the Ingenic Jz4740 SoC that implements a subset of
+   SPI-GPIO's functionality and is up to about six times faster.
+
+3) last but not least, we add the platform definitions that connect
+   the drivers and devices, and provide the platform-specific reset
+   function. Since all this is specific to the Ben NanoNote, the code
+   goes into arch/mips/jz4740/
+
+Comments welcome.
+
+- Werner
+EOF
+		exit;;
+	1)	cat <<EOF
+Subject: [RFC 1/3] at86rf230: add support for platform-specific reset function
+
+Some platforms may not connect the /RST line directly to a GPIO, or they
+may not connect it at all and instead use power cycling to reset the
+transceiver.
+
+An example of the latter type is the ATBEN board on the Ben NanoNote.
+
+This patch adds support for a platform-specific reset function to the
+AT86RF230/1 driver. If the platform provides a reset function, "rstn"
+is ignored and no GPIO is allocated for it.
+EOF
+		;;
+	2)	cat <<EOF
+Subject: [RFC 2/3] SPI-GPIO variant optimized for the Ingenic Jz4740 SoC
+
+This is a drop-in replacement for spi-gpio.c optimized for Jz4740-based
+systems. It is up to about six times faster than its generic counterpart.
+Only supports SPI mode 0 and CS active-low. Furthermore, MOSI, MISO, and
+SCK must be on the same port.
+
+A detailed performance analysis can be found here:
+http://projects.qi-hardware.com/index.php/p/ben-wpan/source/tree/master/atben/misc/atben-spi-performance.txt
+EOF
+	;;
+	3)	cat <<EOF
+Subject: [RFC 3/3] add ATBEN framework for Ben NanoNote in arch/mips/jz4740/
+
+These are the driver and device definitions, and a platform-specific
+reset function needed for operating an ATBEN IEEE 802.15.4 board on
+the Ben NanoNote (aka QI_LB60).
+EOF
+	;;
+	*)	echo "usage: $0 1|2|3" 1>&2
+		exit 1;;
+	esac
+}
+
+diffs()
+{
+	case "$1" in
+	1)	git diff upstream/master include/linux/spi/at86rf230.h
+		git diff upstream/master drivers/net/ieee802154/at86rf230.c
+		;;
+	2)	git diff upstream/master drivers/spi
+		;;
+	3)	git diff f07af316acaa03939e749a3ffe909510e5b7d536 arch/mips
+		;;
+	esac
+}
+
+intro "$@"
+echo ---
+diffs "$@" | diffstat
+echo
+diffs "$@"
