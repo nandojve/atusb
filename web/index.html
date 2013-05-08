@@ -23,8 +23,8 @@ details, please visit the
 <A href="http://en.qi-hardware.com/wiki/Ben_WPAN">wiki page</A>.
 <P>
 A first run of <B>atben</B> and <B>atusb</B> boards has been produced
-by <A href="http://www.tuxbrain.com/en">Tuxbrain S.L.</A> and is available
-for sale.
+by <A href="http://www.tuxbrain.com/en">Tuxbrain S.L.</A> and is currently
+available for sale from <A href="http://pulster.eu/">Pulster</A>.
 <P>
 <TABLE>
   <TR>
@@ -110,8 +110,8 @@ field with the
 <A href="http://www.usb.org/developers/devclass_docs/DFU_1.1.pdf">DFU</A>
 protocol.
 <BR>
-This boot loader occupies 4 kB of the 32 kB of Flash memory in
-<B>atusb</B>. The "application" uses another 6 kB. Developers
+This boot loader occupies a fixed 4 kB of the 32 kB of Flash memory in
+<B>atusb</B>. The "application" currently uses another 6 kB. Developers
 wishing to extend or replace the firmware thus have between 22 and
 28 kB available for experiments.
 <P>
@@ -137,14 +137,17 @@ Here is an overview of the status of the various project elements:
     <A href="http://projects.qi-hardware.com/index.php/p/ben-wpan/source/tree/master/tools">tools</A>,
     <A href="http://downloads.qi-hardware.com/people/werner/wpan/prod/">description</A>
   <TR><TH align="left">Production<TD bgcolor="#80ff80" align="center">Done
-    <TD><A href="http://en.qi-hardware.com/wiki/Ben_WPAN#Production_Notes">Production notes</A>
+    <TD><A href="http://en.qi-hardware.com/wiki/Ben_WPAN#Production_Notes">Production notes</A>, factory files:
+      <A href="http://downloads.qi-hardware.com/people/werner/wpan/fab/atben-pcb-110330.tar.gz">PCB</A> and
+      <A href="http://downloads.qi-hardware.com/people/werner/wpan/fab/atben-smt-110330.tar.gz">SMT</A>
   <TR><TH align="left">Firmware<TD bgcolor="#ffff00" align="center">
     Finishing
     <TD><A href="http://projects.qi-hardware.com/index.php/p/ben-wpan/source/tree/master/atusb/fw">source</A>
   <TR><TH align="left">Device driver<TD bgcolor="#ffff00" align="center">
     In progress
     <TD><A href="http://sourceforge.net/apps/trac/linux-zigbee/">linux-zigbee project</A>,
-      <A href="http://projects.qi-hardware.com/index.php/p/qi-kernel/source/tree/ben-wpan/drivers/ieee802154">ben-wpan kernel branch</A>
+      <A href="https://github.com/wpwrak/ben-wpan-linux">ben-wpan kernel branch</A>
+      <!--<A href="http://projects.qi-hardware.com/index.php/p/qi-kernel/source/tree/ben-wpan/drivers/ieee802154">ben-wpan kernel branch</A>-->
   <TR><TH align="left">MAC layer<TD bgcolor="#ffff00" align="center">
     In progress
     <TD><A href="http://sourceforge.net/apps/trac/linux-zigbee/">linux-zigbee project
@@ -167,13 +170,18 @@ list</A> and on the
 channel</A> on
 <A href="http://freenode.net/">freenode</A>.
 <BR>
-Tuxbrain have a
+Tuxbrain has a
 <A href="http://www.tuxbrain.com/en/content/free-and-open-replacement-wireless-lan">description</A>
-with additional pictures and a link to their
-<A href="https://www.tuxbrain.net/shop/index.php?cPath=347">shop</A>.
+with additional pictures.<!-- and a link to their
+<A href="https://www.tuxbrain.net/shop/index.php?cPath=347">shop</A>.-->
+<BR>
+Shop links at Pulster:
+<A href="http://pulster.eu/index.html?d__atben__NanoNote_wireless_card__atben_1183.htm">atben</A> and
+<A href="http://pulster.eu/index.html?d__atusb__NanoNote_wireless_card__atusb_1185.htm">atusb</A>.
+
 <P>
 <HR>
-Last update: 2011-06-15&nbsp;&nbsp;
+Last update: 2013-05-07&nbsp;&nbsp;
 <A href="mailto:werner@almesberger.net"><I>Werner Almesberger</I></A>
 <HR>
 </BODY>
