@@ -272,9 +272,45 @@ static void receive(struct atrf_dsc *dsc, const char *name)
 }
 
 
-static void transmit(struct atrf_dsc *dsc, const char *msg, int times)
+static int dehex(uint8_t *buf, const char *s)
+{
+	uint8_t *p;
+	int nibbles = 0;
+	uint8_t v = 0, nibble;
+	char cvt[2] = "?";
+	char *end;
+
+	for (p = buf; *s; s++) {
+		if (strchr(" \t,.:-", *s)) {
+			if (nibbles)
+				*p++ = v;
+			nibbles = 0;
+			continue;
+		}
+		cvt[0] = *s;
+		nibble = strtoul(cvt, &end, 16);
+		if (*end) {
+			fprintf(stderr, "invalid hex character \"%c\"\n", *s);
+			exit(1);
+		}
+		if (nibbles) {
+			*p++ = v << 4 | nibble;
+			nibbles = 0;
+		} else {
+			v = nibble;
+			nibbles++;
+		}
+	}
+	if (nibbles)
+		*p++ = v;
+	return p-buf;
+}
+
+
+static void transmit(struct atrf_dsc *dsc, const char *msg, int hex, int times)
 {
 	uint8_t buf[MAX_PSDU];
+	int len;
 
 	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_PLL_ON);
 	/*
@@ -286,8 +322,13 @@ static void transmit(struct atrf_dsc *dsc, const char *msg, int times)
 	/*
 	 * We need to copy the message to append the CRC placeholders.
 	 */
-	strcpy((void *) buf, msg);
-	atrf_buf_write(dsc, buf, strlen(msg)+2);
+	if (hex) {
+		len = dehex(buf, msg);
+	} else {
+		strcpy((void *) buf, msg);
+		len = strlen(msg);
+	}
+	atrf_buf_write(dsc, buf, len+2);
 
 	while (run && times--) {
 		/* @@@ should wait for clear channel */
@@ -590,13 +631,15 @@ static void die(int sig)
 static void usage(const char *name)
 {
 	fprintf(stderr,
-"usage: %s [common_options] [message [repetitions]]\n"
+"usage: %s [common_options] [[-x] message [repetitions]]\n"
 "       %s [common_options] -H [message]\n"
 "       %s [common_options] -E pause_s [repetitions]\n"
 "       %s [common_options] -P [max_wait_s]\n"
 "       %s [common_options] -R [-H|packets size]\n"
 "       %s [common_options] -T offset [command]\n\n"
 "  text message mode:\n"
+"    -x          message consists of hex bytes, optionally separated by\n"
+"                ' ', '.', ',', ':', or '-'\n"
 "    message     message string to send (if absent, receive)\n"
 "    repetitions number of times the message is sent (default 1)\n\n"
 "  text message mode (hard MAC):\n"
@@ -662,6 +705,7 @@ int main(int argc, char *const *argv)
 	int trim = DEFAULT_TRIM, times = 1, bytes;
 	uint8_t cont_tx = 0;
 	double pause_s = 0;
+	int hex = 0;
 	char *end;
 	int c, freq;
 	unsigned clkm = 0;
@@ -669,7 +713,7 @@ int main(int argc, char *const *argv)
 	const char *pcap_file = NULL;
 	struct atrf_dsc *dsc;
 
-	while ((c = getopt(argc, argv, "c:C:d:E:f:Ho:p:Pr:Rt:T:")) != EOF)
+	while ((c = getopt(argc, argv, "c:C:d:E:f:Ho:p:Pr:Rt:T:x")) != EOF)
 		switch (c) {
 		case 'c':
 			channel = strtoul(optarg, &end, 0);
@@ -751,6 +795,9 @@ int main(int argc, char *const *argv)
 			else
 				usage(*argv);
 			break;
+		case 'x':
+			hex = 1;
+			break;
 		default:
 			usage(*argv);
 		}
@@ -830,7 +877,7 @@ int main(int argc, char *const *argv)
 		switch (mode) {
 		case mode_msg:
 			set_power_dBm(dsc, power, 1);
-			transmit(dsc, argv[optind], times);
+			transmit(dsc, argv[optind], hex, times);
 			break;
 		case mode_hmac:
 			set_power_dBm(dsc, power, 1);
