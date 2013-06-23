@@ -146,7 +146,7 @@ static void set_rate(struct atrf_dsc *dsc, uint8_t rate)
 /* ----- Message transmit/receive ------------------------------------------ */
 
 
-static void receive_message(struct atrf_dsc *dsc)
+static void receive_message(struct atrf_dsc *dsc, int hex)
 {
 	uint8_t buf[MAX_PSDU+1]; /* PSDU+LQI */
 	int n, ok, i;
@@ -170,8 +170,13 @@ static void receive_message(struct atrf_dsc *dsc)
 	lqi = buf[n-1];
 	fprintf(stderr, "%d bytes payload, CRC %s, LQI %u, ED %d dBm\n",
 	    n-3, ok ? "OK" : "BAD", lqi, -91+ed);
-	for (i = 0; i != n-3; i++)
-		putchar(buf[i] < ' ' || buf[i] > '~' ? '?' : buf[i]);
+	if (hex) {
+		for (i = 0; i != n-3; i++)
+			printf("%s%02x", i ? " " : "", buf[i]);
+	} else {
+		for (i = 0; i != n-3; i++)
+			putchar(buf[i] < ' ' || buf[i] > '~' ? '?' : buf[i]);
+	}
 	putchar('\n');
 }
 
@@ -256,7 +261,7 @@ static void receive_pcap(struct atrf_dsc *dsc, const char *name)
 }
 
 
-static void receive(struct atrf_dsc *dsc, const char *name)
+static void receive(struct atrf_dsc *dsc, const char *name, int hex)
 {
 	atrf_reg_write(dsc, REG_TRX_STATE, TRX_CMD_RX_ON);
 	/*
@@ -268,7 +273,7 @@ static void receive(struct atrf_dsc *dsc, const char *name)
 	if (name)
 		receive_pcap(dsc, name);
 	else
-		receive_message(dsc);
+		receive_message(dsc, hex);
 }
 
 
@@ -631,7 +636,7 @@ static void die(int sig)
 static void usage(const char *name)
 {
 	fprintf(stderr,
-"usage: %s [common_options] [[-x] message [repetitions]]\n"
+"usage: %s [common_options] [-x] [message [repetitions]]\n"
 "       %s [common_options] -H [message]\n"
 "       %s [common_options] -E pause_s [repetitions]\n"
 "       %s [common_options] -P [max_wait_s]\n"
@@ -811,7 +816,7 @@ int main(int argc, char *const *argv)
 		set_rate(dsc, rate);
 		switch (mode) {
 		case mode_msg:
-			receive(dsc, pcap_file);
+			receive(dsc, pcap_file, hex);
 			break;
 		case mode_hmac:
 			receive_hmac(dsc);
