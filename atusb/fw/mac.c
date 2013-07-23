@@ -34,6 +34,9 @@ static bool queued_rx = 0;
 static uint8_t next_seq, this_seq, queued_seq;
 
 
+/* ----- Register access --------------------------------------------------- */
+
+
 static uint8_t reg_read(uint8_t reg)
 {
 	uint8_t value;
@@ -54,6 +57,9 @@ static void reg_write(uint8_t reg, uint8_t value)
 	spi_send(value);
 	spi_end();
 }
+
+
+/* ----- Interrupt handling ------------------------------------------------ */
 
 
 static void receive_frame(void);
@@ -135,6 +141,9 @@ static bool handle_irq(void)
 
 	return 1;
 }
+
+
+/* ----- TX/RX ------------------------------------------------------------- */
 
 
 static void change_state(uint8_t new)
