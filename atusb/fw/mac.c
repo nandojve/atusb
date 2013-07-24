@@ -29,12 +29,23 @@ bool (*mac_irq)(void) = NULL;
 
 
 static uint8_t rx_buf[RX_BUFS][MAX_PSDU+2]; /* PHDR+payload+LQ */
-static bool rx_in = 0, rx_out = 0;
 static uint8_t tx_buf[MAX_PSDU];
 static uint8_t tx_size = 0;
 static bool txing = 0;
 static bool queued_tx_ack = 0;
 static uint8_t next_seq, this_seq, queued_seq;
+
+
+/* ----- Receive buffer management ----------------------------------------- */
+
+
+static uint8_t rx_in = 0, rx_out = 0;
+
+
+static inline void next_buf(uint8_t *index)
+{
+	*index = (*index+1) % RX_BUFS;
+}
 
 
 /* ----- Register access --------------------------------------------------- */
@@ -95,7 +106,7 @@ static void tx_ack_done(void *user)
 static void rx_done(void *user)
 {
 	led(0);
-	rx_out = (rx_out+1) & (RX_BUFS-1);
+	next_buf(&rx_out);
 	usb_next();
 }
 
@@ -122,7 +133,7 @@ static void receive_frame(void)
 	spi_end();
 
 	buf[0] = size;
-	rx_in = (rx_in+1) & (RX_BUFS-1);
+	next_buf(&rx_in);
 
 	if (eps[1].state == EP_IDLE)
 		usb_next();
