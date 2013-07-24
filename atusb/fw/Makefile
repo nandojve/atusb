@@ -1,8 +1,8 @@
 #
 # Makefile - Makefile of the ATUSB firmware 
 #
-# Written 2010-2011 by Werner Almesberger
-# Copyright 2010-2011 by Werner Almesberger
+# Written 2010-2011, 2013 by Werner Almesberger
+# Copyright 2010-2011, 2013 by Werner Almesberger
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -69,10 +69,12 @@ all:		$(NAME).bin boot.hex
 $(NAME).elf:	$(OBJS)
 		$(MAKE) version.o
 		$(CC) $(CFLAGS) -o $@ $(OBJS) version.o
+		$(SIZE) $@
 
 boot.elf:	$(BOOT_OBJS)
 		$(CC) $(CFLAGS) -o $@ $(BOOT_OBJS) \
 		  -Wl,--section-start=.text=$(BOOT_ADDR)
+		$(SIZE) $@
 
 %.bin:		%.elf
 		$(BUILD) $(OBJCOPY) -j .text -j .data -O binary $< $@
@@ -80,7 +82,7 @@ boot.elf:	$(BOOT_OBJS)
 
 %.hex:		%.elf
 		$(BUILD) $(OBJCOPY) -j .text -j .data -O ihex $< $@
-		$(SIZE) $@
+		@echo "Size: `$(SIZE) -A boot.hex | sed '/Total */s///p;d'` B"
 
 # ----- Cleanup ---------------------------------------------------------------
 
