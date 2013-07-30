@@ -22,7 +22,7 @@
 #include "mac.h"
 
 
-#define	RX_BUFS	2
+#define	RX_BUFS	3
 
 
 bool (*mac_irq)(void) = NULL;
