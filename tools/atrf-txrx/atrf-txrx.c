@@ -75,7 +75,7 @@ enum mode {
 
 
 static volatile int run = 1;
-static bool quiet = 0;
+static bool quick = 0;
 
 
 /* ----- Helper functions -------------------------------------------------- */
@@ -240,7 +240,8 @@ static void receive_pcap(struct atrf_dsc *dsc, const char *name)
 	while (run) {
 		wait_for_interrupt(dsc,
 		    IRQ_TRX_END,
-		    quiet ? 0xff : IRQ_TRX_END | IRQ_RX_START | IRQ_AMI, 0);
+		    quick ? 0xff : IRQ_TRX_END | IRQ_RX_START | IRQ_AMI,
+		    quick ? -1 : 0);
 		if (!run)
 			break;
 		gettimeofday(&now, NULL);
@@ -252,7 +253,7 @@ static void receive_pcap(struct atrf_dsc *dsc, const char *name)
 			continue;
 		}
 		write_pcap_rec(file, &now, buf, n-1);
-		if (!quiet)
+		if (!quick)
 			(void) write(2, ".", 1);
 		count++;
 	}
@@ -678,8 +679,8 @@ static void usage(const char *name)
 "    -f freq     frequency in MHz, 2405 to 2480 (default %d)\n"
 "    -o file     write received data to a file in pcap format\n"
 "    -p power    transmit power, -17.2 to 3.0 dBm (default %.1f)\n"
-"    -q          quiet - suppress progress reports and warnings\n"
-"                (currently only used when capturing)\n"
+"    -q          quick and quiet - suppress progress reports and warnings,\n"
+"                poll aggressively (currently only used when capturing)\n"
 "    -r rate     data rate, 250k, 500k, 1M, or 2M (default: 250k)\n"
 "    -t trim     trim capacitor, 0 to 15 (default %d)\n"
 	    , name, name, name, name, name, name,
@@ -774,7 +775,7 @@ int main(int argc, char *const *argv)
 			set_mode(&mode, mode_ping);
 			break;
 		case 'q':
-			quiet = 1;
+			quick = 1;
 			break;
 		case 'r':
 			if (!strcmp(optarg, "250k"))
