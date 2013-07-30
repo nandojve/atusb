@@ -113,7 +113,7 @@ static void rx_done(void *user)
 
 static void receive_frame(void)
 {
-	uint8_t size, i;
+	uint8_t size;
 	uint8_t *buf;
 
 	spi_begin();
@@ -128,8 +128,7 @@ static void receive_frame(void)
 	}
 
 	buf = rx_buf[rx_in];
-	for (i = 0; i != size+1; i++)
-		buf[i+1] = spi_recv();
+	spi_recv_block(buf+1, size+1);
 	spi_end();
 
 	buf[0] = size;

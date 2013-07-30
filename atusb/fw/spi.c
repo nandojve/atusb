@@ -47,6 +47,21 @@ void spi_end(void)
 }
 
 
+void spi_recv_block(uint8_t *buf, uint8_t n)
+{
+	if (!n)
+		return;
+        UDR1 = 0;
+	while (--n) {
+		while (!(UCSR1A & 1 << RXC1));
+		*buf++ = UDR1;
+		UDR1 = 0;
+	}
+	while (!(UCSR1A & 1 << RXC1));
+	*buf++ = UDR1;
+}
+
+
 void spi_off(void)
 {
 	spi_initialized = 0;
