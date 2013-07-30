@@ -19,6 +19,14 @@
 
 
 void flush_interrupts(struct atrf_dsc *dsc);
+
+/*
+ * timeout_ms:
+ * > 0:   time out after that many milliseconds
+ * == 0:  wait forever
+ * < 0:   wait forever and eliminate poll delays (for high-speed capture)
+ */
+
 uint8_t wait_for_interrupt(struct atrf_dsc *dsc, uint8_t wait_for,
     uint8_t ignore, int timeout_ms);
 

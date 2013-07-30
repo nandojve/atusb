@@ -1,8 +1,8 @@
 /*
  * fw/spi.h - ATmega8 family SPI I/O
  *
- * Written 2011 by Werner Almesberger
- * Copyright 2011 Werner Almesberger
+ * Written 2011, 2013 by Werner Almesberger
+ * Copyright 2011, 2013 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,5 +24,7 @@ void spi_init(void);
 
 #define	spi_send(v)	(void) spi_io(v)
 #define	spi_recv(v)	spi_io(0)
+
+void spi_recv_block(uint8_t *buf, uint8_t n);
 
 #endif /* !SPI_H */
