@@ -221,7 +221,7 @@ int atusb_interrupt_wait(void *handle, int timeout_ms)
 		return 0;
 
 	res = usb_bulk_read(dsc->dev, 1,
-	    (char *) &buf, sizeof(buf), timeout_ms);
+	    (char *) &buf, sizeof(buf), timeout_ms < 0 : 0 : timeout_ms);
 	if (res == -ETIMEDOUT)
 		return 0;
 	if (res < 0) {

@@ -1,8 +1,8 @@
 /*
  * lib/atben.c - ATRF access functions library (Ben 8:10 card version)
  *
- * Written 2010-2011 by Werner Almesberger
- * Copyright 2010-2011 Werner Almesberger
+ * Written 2010-2011, 2013 by Werner Almesberger
+ * Copyright 2010-2011, 2013 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -439,10 +439,10 @@ int atben_interrupt_wait(void *handle, int timeout_ms)
 	int timedout = 0;
 	uint8_t irq;
 
-	if (timeout_ms)
+	if (timeout_ms > 0)
 		timeout_start(&to, timeout_ms);
 	while (1) {
-		if (timeout_ms)
+		if (timeout_ms > 0)
 			timedout = timeout_reached(&to);
 		if (atben_interrupt(handle)) {
 			irq = atben_reg_read(handle, REG_IRQ_STATUS);
@@ -452,7 +452,8 @@ int atben_interrupt_wait(void *handle, int timeout_ms)
 		}
 		if (timedout)
 			return 0;
-		usleep(1000);
+		if (timeout_ms >= 0)
+			usleep(1000);
 	}
 
 	return 0;

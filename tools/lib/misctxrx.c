@@ -62,14 +62,14 @@ uint8_t wait_for_interrupt(struct atrf_dsc *dsc, uint8_t wait_for,
 
 	sigint = 0;
 	old_sig = signal(SIGINT, die);
-	if (timeout_ms) {
+	if (timeout_ms > 0) {
 		if (timeout_ms < MIN_TIMEOUT_MS)
 			timeout_ms = MIN_TIMEOUT_MS;
 		timeout_start(&to, timeout_ms);
 	}
 	while (!sigint && !timedout) {
 		while (!sigint && !timedout) {
-			if (timeout_ms) {
+			if (timeout_ms > 0) {
 				ms = timeout_left_ms(&to);
 				if (ms <= 0) {
 					timedout = 1;
@@ -78,7 +78,8 @@ uint8_t wait_for_interrupt(struct atrf_dsc *dsc, uint8_t wait_for,
 			} else {
 				ms = 0;
 			}
-			irq = atrf_interrupt_wait(dsc, ms);
+			irq = atrf_interrupt_wait(dsc,
+			    timeout_ms < 0 ? -1 : ms);
 			if (irq)
 				break;
 		}
