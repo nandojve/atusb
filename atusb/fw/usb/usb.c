@@ -20,7 +20,7 @@
 #include <stdint.h>
 
 #include "usb.h"
-#include "../board.h"
+#include "board.h"
 
 
 #ifndef NULL

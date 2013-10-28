@@ -37,7 +37,7 @@ BOOT_OBJS = boot.o board.o sernum.o spi.o flash.o dfu.o \
 
 vpath %.c usb/
 
-CFLAGS += -Iinclude -Iusb
+CFLAGS += -Iinclude -Iusb -I.
 
 # ----- Verbosity control -----------------------------------------------------
 
