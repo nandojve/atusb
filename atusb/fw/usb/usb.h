@@ -20,6 +20,20 @@
 
 
 /*
+ * Packet identifier types
+ */
+
+#define	PID_OUT		0x1
+#define	PID_IN		0x9
+#define	PID_SOF		0x5
+#define	PID_SETUP	0xd
+#define	PID_DATA0	0x3
+#define	PID_DATA1	0xb
+#define	PID_ACK		0x2
+#define	PID_NAK		0xa
+#define	PID_STALL	0xe
+
+/*
  * Descriptor types
  *
  * Reuse libusb naming scheme (/usr/include/usb.h)
