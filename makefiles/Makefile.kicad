@@ -1,8 +1,8 @@
 #
 # Makefile.kicad - Makefile template for KiCAD projects
 #
-# Written 2011 by Werner Almesberger
-# Copyright 2011 Werner Almesberger
+# Written 2011, 2013 by Werner Almesberger
+# Copyright 2011, 2013 Werner Almesberger
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -82,9 +82,17 @@ back:		$(NAME)-Back.ps
 
 # --- Industrial production ---------------------------------------------------
 
-GERBERS = $(NAME)-SilkS_Front.gto $(NAME)-Mask_Front.gts \
-	  $(NAME)-Front.gtl $(NAME)-Back.gbl $(NAME)-Mask_Back.gbs \
-	  $(NAME)-PCB_Edges.gbr $(NAME)-SoldP_Front.gtp
+# $(call choose, basename, old-suffix, new-suffix)
+
+choose = $(if $(wildcard $(1)-$(3)), $(1)-$(3), $(1)-$(2))
+
+GERBERS = $(call choose, $(NAME),SilkS_Front.gto,F_SilkS.gto) \
+	  $(call choose, $(NAME),Mask_Front.gts,F_Mask.gts) \
+	  $(call choose, $(NAME),Front.gtl,F_Cu.gtl) \
+	  $(call choose, $(NAME),Back.gbl,B_Cu.gbl) \
+	  $(call choose, $(NAME),Mask_Back.gbs,B_Mask.gbs) \
+	  $(call choose, $(NAME),PCB_Edges.gbr,Edge_Cuts.gbr) \
+	  $(call choose, $(NAME),SoldP_Front.gtp,F_Paste.gtp)
 
 PCB_FILES = README-PCB $(NAME)-front.png $(NAME)-back.png \
 	    $(NAME)-PCB_Edges.dxf $(NAME).drl $(GERBERS)
