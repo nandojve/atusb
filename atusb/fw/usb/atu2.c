@@ -1,8 +1,8 @@
 /*
  * fw/usb/atu2.c - Chip-specific driver for Atmel ATxxxU2 USB chips
  *
- * Written 2008-2011, 2013 by Werner Almesberger
- * Copyright 2008-2011, 2013 Werner Almesberger
+ * Written 2008-2011, 2013-2014 by Werner Almesberger
+ * Copyright 2008-2011, 2013-2014 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include "usb.h"
-#include "../board.h"
+#include "board.h"
 
 
 #ifndef NULL
