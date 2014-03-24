@@ -1,8 +1,8 @@
 /*
  * fw/descr.c - USB descriptors
  *
- * Written 2008-2011 by Werner Almesberger
- * Copyright 2008-2011 Werner Almesberger
+ * Written 2008-2011, 2014 by Werner Almesberger
+ * Copyright 2008-2011, 2014 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -100,5 +100,5 @@ const uint8_t config_descriptor[] = {
 
 	/* Interface #1 */
 
-	DFU_ITF_DESCR(1, dfu_proto_runtime)
+	DFU_ITF_DESCR(1, 0, dfu_proto_runtime)
 };

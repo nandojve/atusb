@@ -1,8 +1,8 @@
 /*
  * fw/flash.c - Board-specific flash functions
  *
- * Written 2011, 2013 by Werner Almesberger
- * Copyright 2011, 2013 Werner Almesberger
+ * Written 2011, 2013, 2014 by Werner Almesberger
+ * Copyright 2011, 2013, 2014 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,19 +24,19 @@
 static uint32_t payload;
 
 
-void flash_start(void)
+static void flash_start(void)
 {
 	payload = 0;
 }
 
 
-bool flash_can_write(uint16_t size)
+static bool flash_can_write(uint16_t size)
 {
 	return payload+size <= BOOT_ADDR;
 }
 
 
-void flash_write(const uint8_t *buf, uint16_t size)
+static void flash_write(const uint8_t *buf, uint16_t size)
 {
 	static uint8_t last;
         const uint8_t *p;
@@ -61,7 +61,7 @@ void flash_write(const uint8_t *buf, uint16_t size)
 }
 
 
-void flash_end_write(void)
+static void flash_end_write(void)
 {
 	if (payload & (SPM_PAGESIZE-1)) {
 		boot_page_write(payload & ~(SPM_PAGESIZE-1));
@@ -71,7 +71,7 @@ void flash_end_write(void)
 }
 
 
-uint16_t flash_read(uint8_t *buf, uint16_t size)
+static uint16_t flash_read(uint8_t *buf, uint16_t size)
 {
 	uint16_t got = 0;
 
@@ -83,3 +83,15 @@ uint16_t flash_read(uint8_t *buf, uint16_t size)
 	}
 	return got;
 }
+
+
+static struct dfu_flash_ops flash_ops = {
+	.start		= flash_start,
+	.can_write	= flash_can_write,
+	.write		= flash_write,
+	.end_write	= flash_end_write,
+	.read		= flash_read,
+};
+
+
+struct dfu_flash_ops *dfu_flash_ops = &flash_ops;

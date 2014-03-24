@@ -42,6 +42,11 @@
 #define error(...)
 
 
+#ifndef DFU_ALT_SETTINGS
+#define	DFU_ALT_SETTINGS	1
+#endif
+
+
 const uint8_t device_descriptor[] = {
 	18,			/* bLength */
 	USB_DT_DEVICE,		/* bDescriptorType */
@@ -67,7 +72,7 @@ const uint8_t device_descriptor[] = {
 const uint8_t config_descriptor[] = {
 	9,			/* bLength */
 	USB_DT_CONFIG,		/* bDescriptorType */
-	LE(9+9),		/* wTotalLength */
+	LE(9+9*DFU_ALT_SETTINGS), /* wTotalLength */
 	1,			/* bNumInterfaces */
 	1,			/* bConfigurationValue (> 0 !) */
 	0,			/* iConfiguration */
@@ -77,7 +82,13 @@ const uint8_t config_descriptor[] = {
 
 	/* Interface #0 */
 
-	DFU_ITF_DESCR(0, dfu_proto_dfu)
+	DFU_ITF_DESCR(0, 0, dfu_proto_dfu)
+#if DFU_ALT_SETTINGS >= 1
+	DFU_ITF_DESCR(0, 1, dfu_proto_dfu)
+#endif
+#if DFU_ALT_SETTINGS >= 2
+	DFU_ITF_DESCR(0, 2, dfu_proto_dfu)
+#endif
 };
 
 
@@ -92,7 +103,7 @@ static void block_write(void *user)
 {
 	uint16_t *size = user;
 
-	flash_write(buf, *size);
+	dfu_flash_ops->write(buf, *size);
 }
 
 
@@ -100,7 +111,7 @@ static bool block_receive(uint16_t length)
 {
 	static uint16_t size;
 
-	if (!flash_can_write(length)) {
+	if (!dfu_flash_ops->can_write(length)) {
 		dfu.state = dfuERROR;	
 		dfu.status = errADDRESS;
 		return 0;
@@ -125,7 +136,7 @@ static bool block_transmit(uint16_t length)
 		dfu.status = errUNKNOWN;
 		return 1;
 	}
-	got = flash_read(buf, length);
+	got = dfu_flash_ops->read(buf, length);
 	if (got < length) {
 		length = got;
 		dfu.state = dfuIDLE;
@@ -152,7 +163,7 @@ static bool my_setup(const struct setup_request *setup)
 		debug("DFU_DNLOAD\n");
 		if (dfu.state == dfuIDLE) {
 			next_block = setup->wValue;
-			flash_start();
+			dfu_flash_ops->start();
 		}
 		else if (dfu.state != dfuDNLOAD_IDLE) {
 			error("bad state\n");
@@ -171,7 +182,7 @@ static bool my_setup(const struct setup_request *setup)
 		}
 		if (!setup->wLength) {
 			debug("DONE\n");
-			flash_end_write();
+			dfu_flash_ops->end_write();
 			dfu.state = dfuIDLE;
 			did_download = 1;
 			return 1;
@@ -184,7 +195,7 @@ static bool my_setup(const struct setup_request *setup)
 		debug("DFU_UPLOAD\n");
 		if (dfu.state == dfuIDLE) {
 			next_block = setup->wValue;
-			flash_start();
+			dfu_flash_ops->start();
 		}
 		else if (dfu.state != dfuUPLOAD_IDLE)
 			return 0;

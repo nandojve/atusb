@@ -1,8 +1,8 @@
 /*
  * boot/dfu.h - DFU protocol constants and data structures
  *
- * Written 2008, 2011, 2013 by Werner Almesberger
- * Copyright 2008, 2011, 2013 Werner Almesberger
+ * Written 2008, 2011, 2013, 2014 by Werner Almesberger
+ * Copyright 2008, 2011, 2013, 2014 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -86,11 +86,11 @@ struct dfu {
 };
 
 
-#define	DFU_ITF_DESCR(itf, proto)					     \
+#define	DFU_ITF_DESCR(itf, alt, proto)					     \
 	9,			/* bLength */				     \
 	USB_DT_INTERFACE,	/* bDescriptorType */			     \
 	(itf),			/* bInterfaceNumber */			     \
-	0,			/* bAlternateSetting */			     \
+	(alt),			/* bAlternateSetting */			     \
 	0,			/* bNumEndpoints */			     \
 	0xfe,			/* bInterfaceClass (application specific) */ \
 	0x01,			/* bInterfaceSubClass (device fw upgrade) */ \
@@ -98,14 +98,17 @@ struct dfu {
 	0,			/* iInterface */
 
 
+struct dfu_flash_ops {
+	void (*start)(void);
+	bool (*can_write)(uint16_t size);
+	void (*write)(const uint8_t *buf, uint16_t size);
+	void (*end_write)(void);
+	uint16_t (*read)(uint8_t *buf, uint16_t size);
+};
+
 extern struct dfu dfu;
+extern struct dfu_flash_ops *dfu_flash_ops;
 
-
-void flash_start(void);
-bool flash_can_write(uint16_t size);
-void flash_write(const uint8_t *buf, uint16_t size);
-void flash_end_write(void);
-uint16_t flash_read(uint8_t *buf, uint16_t size);
 
 bool dfu_setup_common(const struct setup_request *setup);
 bool dfu_my_descr(uint8_t type, uint8_t index, const uint8_t **reply,
