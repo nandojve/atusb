@@ -86,7 +86,7 @@ struct dfu {
 };
 
 
-#define	DFU_ITF_DESCR(itf, alt, proto)					     \
+#define	DFU_ITF_DESCR(itf, alt, proto, idx)				     \
 	9,			/* bLength */				     \
 	USB_DT_INTERFACE,	/* bDescriptorType */			     \
 	(itf),			/* bInterfaceNumber */			     \
@@ -95,7 +95,7 @@ struct dfu {
 	0xfe,			/* bInterfaceClass (application specific) */ \
 	0x01,			/* bInterfaceSubClass (device fw upgrade) */ \
 	(proto),		/* bInterfaceProtocol (dfu_proto_*) */	     \
-	0,			/* iInterface */
+	(idx),			/* iInterface */
 
 
 struct dfu_flash_ops {

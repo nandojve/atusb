@@ -46,6 +46,18 @@
 #define	DFU_ALT_SETTINGS	1
 #endif
 
+#ifndef DFU_ALT_NAME_0_IDX
+#define	DFU_ALT_NAME_0_IDX	0
+#endif
+
+#ifndef DFU_ALT_NAME_1_IDX
+#define	DFU_ALT_NAME_1_IDX	0
+#endif
+
+#ifndef DFU_ALT_NAME_2_IDX
+#define	DFU_ALT_NAME_2_IDX	0
+#endif
+
 
 const uint8_t device_descriptor[] = {
 	18,			/* bLength */
@@ -82,12 +94,12 @@ const uint8_t config_descriptor[] = {
 
 	/* Interface #0 */
 
-	DFU_ITF_DESCR(0, 0, dfu_proto_dfu)
+	DFU_ITF_DESCR(0, 0, dfu_proto_dfu, DFU_ALT_NAME_0_IDX)
 #if DFU_ALT_SETTINGS >= 1
-	DFU_ITF_DESCR(0, 1, dfu_proto_dfu)
+	DFU_ITF_DESCR(0, 1, dfu_proto_dfu, DFU_ALT_NAME_1_IDX)
 #endif
 #if DFU_ALT_SETTINGS >= 2
-	DFU_ITF_DESCR(0, 2, dfu_proto_dfu)
+	DFU_ITF_DESCR(0, 2, dfu_proto_dfu, DFU_ALT_NAME_2_IDX)
 #endif
 };
 

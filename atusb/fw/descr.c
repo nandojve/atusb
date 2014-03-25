@@ -100,5 +100,5 @@ const uint8_t config_descriptor[] = {
 
 	/* Interface #1 */
 
-	DFU_ITF_DESCR(1, 0, dfu_proto_runtime)
+	DFU_ITF_DESCR(1, 0, dfu_proto_runtime, 0)
 };
