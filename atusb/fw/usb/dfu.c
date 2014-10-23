@@ -95,10 +95,10 @@ const uint8_t config_descriptor[] = {
 	/* Interface #0 */
 
 	DFU_ITF_DESCR(0, 0, dfu_proto_dfu, DFU_ALT_NAME_0_IDX)
-#if DFU_ALT_SETTINGS >= 1
+#if DFU_ALT_SETTINGS > 1
 	DFU_ITF_DESCR(0, 1, dfu_proto_dfu, DFU_ALT_NAME_1_IDX)
 #endif
-#if DFU_ALT_SETTINGS >= 2
+#if DFU_ALT_SETTINGS > 2
 	DFU_ITF_DESCR(0, 2, dfu_proto_dfu, DFU_ALT_NAME_2_IDX)
 #endif
 };
