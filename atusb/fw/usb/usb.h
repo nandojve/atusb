@@ -182,7 +182,6 @@ bool handle_setup(const struct setup_request *setup);
 void set_addr(uint8_t addr);
 void usb_ep_change(struct ep_descr *ep);
 void usb_reset(void);
-void usb_enable_bus_reset(void);
 void usb_init(void);
 
 #endif /* !USB_H */
