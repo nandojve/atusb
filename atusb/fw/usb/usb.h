@@ -52,6 +52,11 @@
  */
 
 #define USB_CLASS_PER_INTERFACE	0
+#define	USB_CLASS_COMM		2
+#define	USB_CLASS_HID		3
+#define	USB_CLASS_MASS_STORAGE	8
+#define	USB_CLASS_HUB		9
+#define	USB_CLASS_DATA		10
 #define	USB_CLASS_APP_SPEC	0xfe
 #define USB_CLASS_VENDOR_SPEC	0xff
 
