@@ -1,8 +1,8 @@
 /*
  * fw/usb//usb.h - USB hardware setup and standard device requests
  *
- * Written 2008, 2009, 2011, 2013 by Werner Almesberger
- * Copyright 2008, 2009, 2011, 2013 Werner Almesberger
+ * Written 2008, 2009, 2011, 2013, 2015 by Werner Almesberger
+ * Copyright 2008, 2009, 2011, 2013, 2015 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,7 +51,8 @@
  * Reuse libusb naming scheme (/usr/include/usb.h)
  */
 
-#define USB_CLASS_PER_INTERFACE	0xfe
+#define USB_CLASS_PER_INTERFACE	0
+#define	USB_CLASS_APP_SPEC	0xfe
 #define USB_CLASS_VENDOR_SPEC	0xff
 
 /*

@@ -1,8 +1,8 @@
 /*
  * boot/dfu.c - DFU protocol engine
  *
- * Written 2008-2011, 2013-2014 by Werner Almesberger
- * Copyright 2008-2011, 2013-2014 Werner Almesberger
+ * Written 2008-2011, 2013-2015 by Werner Almesberger
+ * Copyright 2008-2011, 2013-2015 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,7 +63,7 @@ const uint8_t device_descriptor[] = {
 	18,			/* bLength */
 	USB_DT_DEVICE,		/* bDescriptorType */
 	LE(0x100),		/* bcdUSB */
-	USB_CLASS_PER_INTERFACE,/* bDeviceClass */
+	USB_CLASS_APP_SPEC,	/* bDeviceClass */
 	0x00,			/* bDeviceSubClass (per interface) */
 	0x00,			/* bDeviceProtocol (per interface) */
 	EP0_SIZE,		/* bMaxPacketSize */
