@@ -106,6 +106,7 @@ bool handle_setup(const struct setup_request *setup)
 		set_addr(setup->wValue);
 		break;
 	case FROM_DEVICE(GET_DESCRIPTOR):
+	case FROM_INTERFACE(GET_DESCRIPTOR):
 		if (!get_descriptor(setup->wValue >> 8, setup->wValue,
 		    setup->wLength))
 			return 0;
