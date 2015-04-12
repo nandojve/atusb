@@ -69,6 +69,15 @@
 #define	USB_ATTR_REMOTE_WAKEUP	0x20
 
 /*
+ * Endpoint type
+ */
+
+#define	USB_ENDPOINT_TYPE_CONTROL	0
+#define	USB_ENDPOINT_TYPE_ISOCHRONOUS	1
+#define	USB_ENDPOINT_TYPE_BULK		2
+#define	USB_ENDPOINT_TYPE_INTERRUPT	3
+
+/*
  * Setup request types
  */
 
