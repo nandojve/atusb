@@ -1,8 +1,8 @@
 /*
  * boot/dfu.h - DFU protocol constants and data structures
  *
- * Written 2008, 2011, 2013, 2014 by Werner Almesberger
- * Copyright 2008, 2011, 2013, 2014 Werner Almesberger
+ * Written 2008, 2011, 2013-2015 by Werner Almesberger
+ * Copyright 2008, 2011, 2013-2015 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -107,7 +107,7 @@ struct dfu_flash_ops {
 };
 
 extern struct dfu dfu;
-extern struct dfu_flash_ops *dfu_flash_ops;
+extern const struct dfu_flash_ops *dfu_flash_ops;
 
 
 bool dfu_setup_common(const struct setup_request *setup);
