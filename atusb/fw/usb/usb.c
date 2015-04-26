@@ -1,8 +1,8 @@
 /*
  * fw/usb/usb.c - USB hardware setup and standard device requests
  *
- * Written 2008-2011, 2013 by Werner Almesberger
- * Copyright 2008-2011, 2013 Werner Almesberger
+ * Written 2008-2011, 2013, 2015 by Werner Almesberger
+ * Copyright 2008-2011, 2013, 2015 Werner Almesberger
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -145,6 +145,8 @@ bool handle_setup(const struct setup_request *setup)
 			for (p = interface_descriptor;
 			    p != config_descriptor+config_descriptor[2];
 			    p += p[0]) {
+				if (p[1] != USB_DT_INTERFACE)
+					continue;
 				if (p[2] == setup->wIndex &&
 				    p[3] == setup->wValue) {
 					if (user_set_interface)
