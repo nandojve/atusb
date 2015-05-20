@@ -28,7 +28,12 @@ OBJCOPY = $(AVR_PREFIX)objcopy
 #OBJDUMP = $(AVR_PREFIX)objdump
 SIZE = $(AVR_PREFIX)size
 
-USB_ID = 20b7:1540
+# BCD notion is 0xJJMM with JJ being major and MM being minor. Thus 0x0020 is
+# version 0.2 */
+USB_BCD_VERSION = 0020
+USB_VENDOR_ID = 20b7
+USB_PRODUCT_ID = 1540
+USB_ID = $(USB_VENDOR_ID):$(USB_PRODUCT_ID)
 
 OBJS = atusb.o board.o board_app.o sernum.o spi.o descr.o ep0.o \
        dfu_common.o usb.o app-atu2.o mac.o
@@ -80,6 +85,11 @@ boot.elf:	$(BOOT_OBJS)
 		$(BUILD) $(OBJCOPY) -j .text -j .data -O binary $< $@
 		@echo "build #`cat .version`, `ls -l $@`"
 
+%.dfu:		%.bin
+		cp $(NAME).bin $(NAME).dfu
+		dfu-suffix -a $(NAME).dfu -d 0x$(USB_BCD_VERSION) \
+		  -p 0x$(USB_PRODUCT_ID) -v 0x$(USB_VENDOR_ID)
+
 %.hex:		%.elf
 		$(BUILD) $(OBJCOPY) -j .text -j .data -O ihex $< $@
 		@echo "Size: `$(SIZE) -A boot.hex | sed '/Total */s///p;d'` B"
@@ -87,7 +97,7 @@ boot.elf:	$(BOOT_OBJS)
 # ----- Cleanup ---------------------------------------------------------------
 
 clean:
-		rm -f $(NAME).bin $(NAME).elf
+		rm -f $(NAME).bin $(NAME).elf $(NAME).dfu
 		rm -f $(OBJS) $(OBJS:.o=.d)
 		rm -f boot.hex boot.elf
 		rm -f $(BOOT_OBJS) $(BOOT_OBJS:.o=.d)
@@ -177,8 +187,8 @@ prog-read:
 		ssh $(HOST) avrdude -F -p $(CHIP) -c nanonote_atusb \
 		  -U flash:r:mcu.bin:r
 
-dfu:		$(NAME).bin
-		dfu-util -d $(USB_ID) -D $(NAME).bin
+dfu:		$(NAME).dfu
+		dfu-util -d $(USB_ID) -D $(NAME).dfu
 
 update:		$(NAME).bin
 		-atrf-reset -a
