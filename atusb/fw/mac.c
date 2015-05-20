@@ -182,7 +182,7 @@ bool mac_rx(int on)
 	if (on) {
 		mac_irq = handle_irq;
 		reg_read(REG_IRQ_STATUS);
-		change_state(TRX_CMD_RX_ON);
+		change_state(TRX_CMD_RX_AACK_ON);
 	} else {
 		mac_irq = NULL;
 		change_state(TRX_CMD_FORCE_TRX_OFF);
@@ -232,9 +232,9 @@ static void do_tx(void *user)
 
 	/*
 	 * Wait until we reach BUSY_TX, so that we command the transition to
-	 * RX_ON which will be executed upon TX completion.
+	 * RX_AACK_ON which will be executed upon TX completion.
 	 */
-	change_state(TRX_CMD_RX_ON);
+	change_state(TRX_CMD_RX_AACK_ON);
 }
 
 
