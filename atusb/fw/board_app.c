@@ -154,8 +154,12 @@ static void done(void *user)
 
 uint8_t irq_serial;
 
-
+#ifdef ATUSB
 ISR(INT0_vect)
+#endif
+#ifdef RZUSB
+ISR(TIMER1_CAPT_vect)
+#endif
 {
 	if (mac_irq) {
 		if (mac_irq())
@@ -168,10 +172,20 @@ ISR(INT0_vect)
 	}
 }
 
-
+#ifdef ATUSB
 void board_app_init(void)
 {
 	/* enable INT0, trigger on rising edge */
 	EICRA = 1 << ISC01 | 1 << ISC00;
 	EIMSK = 1 << 0;
 }
+#endif
+#ifdef RZUSB
+void board_app_init(void)
+{
+	/* enable timer input capture 1, trigger on rising edge */
+	TCCR1B = (1 << ICES1);
+	TIFR1 = (1 << ICF1);
+	TIMSK1 = (1 << ICIE1);
+}
+#endif

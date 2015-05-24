@@ -21,7 +21,6 @@
 #include "board.h"
 #include "mac.h"
 
-
 #define	RX_BUFS	3
 
 
@@ -102,12 +101,22 @@ static void tx_ack_done(void *user)
 	usb_next();
 }
 
+static void change_state(uint8_t new)
+{
+	while ((reg_read(REG_TRX_STATUS) & TRX_STATUS_MASK) ==
+	    TRX_STATUS_TRANSITION);
+	reg_write(REG_TRX_STATE, new);
+}
 
 static void rx_done(void *user)
 {
 	led(0);
 	next_buf(&rx_out);
 	usb_next();
+#ifdef RZUSB
+	/* slap at86rf230 - reduce fragmentation issue */
+	change_state(TRX_STATUS_RX_AACK_ON);
+#endif
 }
 
 
@@ -117,10 +126,16 @@ static void receive_frame(void)
 	uint8_t *buf;
 
 	spi_begin();
+#ifdef ATUSB
 	if (!(spi_io(AT86RF230_BUF_READ) & RX_CRC_VALID)) {
 		spi_end();
 		return;
 	}
+#endif
+#ifdef RZUSB
+	spi_io(AT86RF230_BUF_READ);
+#endif
+
 	size = spi_recv();
 	if (!size || (size & 0x80)) {
 		spi_end();
@@ -169,14 +184,6 @@ static bool handle_irq(void)
 /* ----- TX/RX ------------------------------------------------------------- */
 
 
-static void change_state(uint8_t new)
-{
-	while ((reg_read(REG_TRX_STATUS) & TRX_STATUS_MASK) ==
-	    TRX_STATUS_TRANSITION);
-	reg_write(REG_TRX_STATE, new);
-}
-
-
 bool mac_rx(int on)
 {
 	if (on) {
@@ -209,12 +216,21 @@ static void do_tx(void *user)
 	}
 	while (status != TRX_STATUS_RX_ON && status != TRX_STATUS_RX_AACK_ON);
 
+#ifdef ATUSB
 	/*
 	 * We use TRX_CMD_FORCE_PLL_ON instead of TRX_CMD_PLL_ON because a new
 	 * reception may have begun while we were still working on the previous
 	 * one.
 	 */
 	reg_write(REG_TRX_STATE, TRX_CMD_FORCE_PLL_ON);
+#endif
+#ifdef RZUSB
+	/*
+	 * at86rf230 doesn't support force change, nevetherless this works
+	 * somehow
+	 */
+	reg_write(REG_TRX_STATE, TRX_CMD_PLL_ON);
+#endif
 
 	handle_irq();
 

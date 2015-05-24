@@ -18,7 +18,13 @@ CFLAGS = -g -mmcu=$(CHIP) -DBOOT_ADDR=$(BOOT_ADDR) \
 	 -Wall -Wextra -Wshadow -Werror -Wno-unused-parameter \
 	 -Wmissing-prototypes -Wmissing-declarations -Wstrict-prototypes
 
+ifeq ($(NAME),rzusb)
+CHIP=at90usb1287
+CFLAGS += -DRZUSB
+else
 CHIP=atmega32u2
+CFLAGS += -DATUSB
+endif
 HOST=jlime
 BOOT_ADDR=0x7000
 

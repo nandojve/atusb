@@ -18,7 +18,7 @@
 
 #include <atusb/atusb.h>
 
-
+#ifdef ATUSB
 #define	LED_PORT	B
 #define	LED_BIT		  6
 #define	nRST_RF_PORT	C
@@ -38,6 +38,34 @@
 #define	IRQ_RF_PORT	D
 #define	IRQ_RF_BIT	  0
 
+#define SPI_WAIT_DONE()	while (!(UCSR1A & 1 << RXC1))
+#define SPI_DATA	UDR1
+
+#endif
+#ifdef RZUSB
+#define	LED_PORT	D
+#define	LED_BIT		  7
+#define	nRST_RF_PORT	B
+#define	nRST_RF_BIT	  5
+#define	SLP_TR_PORT	B
+#define	SLP_TR_BIT	  4
+
+#define SCLK_PORT	B
+#define SCLK_BIT	  1
+#define	MOSI_PORT	B
+#define	MOSI_BIT	  2
+
+#define	MISO_PORT	B
+#define	MISO_BIT	  3
+#define	nSS_PORT	B
+#define	nSS_BIT		  0
+#define	IRQ_RF_PORT	D
+#define	IRQ_RF_BIT	  4
+
+#define SPI_WAIT_DONE()	while ((SPSR & (1 << SPIF)) == 0)
+#define SPI_DATA	SPDR
+
+#endif
 
 #define	SET_2(p, b)	PORT##p |= 1 << (b)
 #define	CLR_2(p, b)	PORT##p &= ~(1 << (b))

@@ -34,9 +34,9 @@ void spi_begin(void)
 uint8_t spi_io(uint8_t v)
 {
 //      while (!(UCSR1A & 1 << UDRE1));
-	UDR1 = v;
-	while (!(UCSR1A & 1 << RXC1));
-	return UDR1;
+	SPI_DATA = v;
+	SPI_WAIT_DONE();
+	return SPDR;
 }
 
 
@@ -51,21 +51,26 @@ void spi_recv_block(uint8_t *buf, uint8_t n)
 {
 	if (!n)
 		return;
-	UDR1 = 0;
+	SPI_DATA = 0;
 	while (--n) {
-		while (!(UCSR1A & 1 << RXC1));
-		*buf++ = UDR1;
-		UDR1 = 0;
+		SPI_WAIT_DONE();
+		*buf++ = SPI_DATA;
+		SPI_DATA = 0;
 	}
-	while (!(UCSR1A & 1 << RXC1));
-	*buf++ = UDR1;
+	SPI_WAIT_DONE();
+	*buf++ = SPI_DATA;
 }
 
 
 void spi_off(void)
 {
 	spi_initialized = 0;
-	UCSR1B = 0;
+	#ifdef ATUSB
+		UCSR1B = 0;
+	#endif
+	#ifdef RZUSB
+		SPCR &= ~(1 << SPE);
+	#endif
 }
 
 
@@ -77,12 +82,18 @@ void spi_init(void)
 	OUT(nSS);
 	IN(MISO);
 
+#ifdef ATUSB
 	UBRR1 = 0;	/* set bit rate to zero to begin */
 	UCSR1C = 1 << UMSEL11 | 1 << UMSEL10;
 			/* set MSPI, MSB first, SPI data mode 0 */
 	UCSR1B = 1 << RXEN1 | 1 << TXEN1;
 			/* enable receiver and transmitter */
 	UBRR1 = 0;	/* reconfirm the bit rate */
+#endif
+#ifdef RZUSB
+	SPCR = (1 << SPE) | (1 << MSTR);
+	SPSR = (1 << SPI2X);
+#endif
 
 	spi_initialized = 1;
 }

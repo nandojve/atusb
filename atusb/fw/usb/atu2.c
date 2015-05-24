@@ -252,12 +252,27 @@ void usb_init(void)
 	USBCON |= 1 << FRZCLK;		/* freeze the clock */
 
 	/* enable the PLL and wait for it to lock */
+#ifdef ATUSB
 	PLLCSR &= ~(1 << PLLP2 | 1 << PLLP1 | 1 << PLLP0);
+#endif
+#ifdef RZUSB
+	/* TODO sheet page 50 For Atmel AT90USB128x only. Do not use with Atmel AT90USB64x. */
+	/*  FOR 8 XTAL Mhz only!!! */
+	PLLCSR = ((1 << PLLP1) | (1 << PLLP0));
+#endif
 	PLLCSR |= 1 << PLLE;
 	while (!(PLLCSR & (1 << PLOCK)));
 
+#ifdef ATUSB
 	USBCON &= ~(1 << USBE);		/* reset the controller */
 	USBCON |= 1 << USBE;
+#endif
+#ifdef RZUSB
+	UHWCON |= (1 << UVREGE);
+
+	USBCON &= ~((1 << USBE) | (1 << OTGPADE));		/* reset the controller */
+	USBCON |= ((1 << USBE) | (1 << OTGPADE));
+#endif
 
 	USBCON &= ~(1 << FRZCLK);	/* thaw the clock */
 

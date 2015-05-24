@@ -41,11 +41,24 @@ static void set_clkm(void)
 	 * clock. The clock switching procedure is described in the ATmega32U2
 	 * data sheet in secton 8.2.2.
 	 */
-
+#ifdef ATUSB
 	spi_begin();
 	spi_send(AT86RF230_REG_WRITE | REG_TRX_CTRL_0);
 	spi_send(CLKM_CTRL_8MHz);
 	spi_end();
+#endif
+#ifdef RZUSB
+	spi_begin();
+	spi_send(AT86RF230_REG_WRITE | REG_TRX_CTRL_0);
+	spi_send(0x10);
+	spi_end();
+
+	/* TX_AUTO_CRC_ON, default disabled */
+	spi_begin();
+	spi_send(AT86RF230_REG_WRITE | 0x05);
+	spi_send(0x80);
+	spi_end();
+#endif
 }
 
 
@@ -131,10 +144,15 @@ void board_init(void)
 	WDTCSR = 1 << WDCE;	/* Disable watchdog while still enabling
 				   change */
 
-	/* We start with a 1 MHz/8 clock. Disable the prescaler. */
-
 	CLKPR = 1 << CLKPCE;
+#ifdef ATUSB
+	/* We start with a 1 MHz/8 clock. Disable the prescaler. */
 	CLKPR = 0;
+#endif
+#ifdef RZUSB
+	/* We start with a 16 MHz/8 clock. Put the prescaler to 2. */
+	CLKPR = 1 << CLKPS0;
+#endif
 
 	get_sernum();
 }
