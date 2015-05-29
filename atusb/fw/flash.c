@@ -85,7 +85,7 @@ static uint16_t flash_read(uint8_t *buf, uint16_t size)
 }
 
 
-const static struct dfu_flash_ops flash_ops = {
+static const struct dfu_flash_ops flash_ops = {
 	.start		= flash_start,
 	.can_write	= flash_can_write,
 	.write		= flash_write,
