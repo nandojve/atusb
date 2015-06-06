@@ -34,9 +34,9 @@ void spi_begin(void)
 uint8_t spi_io(uint8_t v)
 {
 //      while (!(UCSR1A & 1 << UDRE1));
-        UDR1 = v;
-        while (!(UCSR1A & 1 << RXC1));
-        return UDR1;
+	UDR1 = v;
+	while (!(UCSR1A & 1 << RXC1));
+	return UDR1;
 }
 
 
@@ -51,7 +51,7 @@ void spi_recv_block(uint8_t *buf, uint8_t n)
 {
 	if (!n)
 		return;
-        UDR1 = 0;
+	UDR1 = 0;
 	while (--n) {
 		while (!(UCSR1A & 1 << RXC1));
 		*buf++ = UDR1;

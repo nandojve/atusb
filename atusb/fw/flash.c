@@ -39,7 +39,7 @@ static bool flash_can_write(uint16_t size)
 static void flash_write(const uint8_t *buf, uint16_t size)
 {
 	static uint8_t last;
-        const uint8_t *p;
+	const uint8_t *p;
 
 	for (p = buf; p != buf+size; p++) {
 		if (!(payload & (SPM_PAGESIZE-1))) {
@@ -57,7 +57,7 @@ static void flash_write(const uint8_t *buf, uint16_t size)
 			boot_page_write(payload-SPM_PAGESIZE);
 			boot_spm_busy_wait();
 		}
-        }
+	}
 }
 
 
