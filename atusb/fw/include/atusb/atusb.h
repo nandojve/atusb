@@ -46,6 +46,8 @@ enum atusb_requests {
 	ATUSB_SPI_WRITE2_SYNC,
 	ATUSB_RX_MODE			= 0x40, /* HardMAC group */
 	ATUSB_TX,
+	ATUSB_EUI64_WRITE		= 0x50, /* Parameter in EEPROM grp */
+	ATUSB_EUI64_READ,
 };
 
 /*
@@ -77,6 +79,8 @@ enum atusb_requests {
  *
  * host->	ATUSB_RX_MODE		on		-	0
  * host->	ATUSB_TX		flags		ack_seq	#bytes
+ * host->	ATUSB_EUI64_WRITE	-		-	#bytes (8)
+ * ->host	ATUSB_EUI64_READ	-		-	#bytes (8)
  */
 
 #define ATUSB_REQ_FROM_DEV	(USB_TYPE_VENDOR | USB_DIR_IN)

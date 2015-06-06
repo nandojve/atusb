@@ -3,6 +3,7 @@
  *
  * Written 2008-2011, 2013 by Werner Almesberger
  * Copyright 2008-2011, 2013 Werner Almesberger
+ * Copyright 2015-2016 Stefan Schmidt
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,6 +17,10 @@
 #include <string.h>
 
 #include <avr/io.h>
+#include <avr/eeprom.h>
+
+#define F_CPU   8000000UL
+#include <util/delay.h>
 
 #ifndef NULL
 #define NULL 0
@@ -43,6 +48,14 @@ static const uint8_t id[] = { EP0ATUSB_MAJOR, EP0ATUSB_MINOR, HW_TYPE };
 static uint8_t buf[MAX_PSDU+3]; /* command, PHDR, and LQI */
 static uint8_t size;
 
+
+static void do_eeprom_write(void *user)
+{
+	int i;
+
+	for (i = 0; i < size; i++)
+		eeprom_update_byte((uint8_t*)i, buf[i]);
+}
 
 static void do_buf_write(void *user)
 {
@@ -246,6 +259,18 @@ static bool my_setup(const struct setup_request *setup)
 		return mac_rx(setup->wValue);
 	case ATUSB_TO_DEV(ATUSB_TX):
 		return mac_tx(setup->wValue, setup->wIndex, setup->wLength);
+	case ATUSB_TO_DEV(ATUSB_EUI64_WRITE):
+		debug("ATUSB_EUI64_WRITE\n");
+		usb_recv(&eps[0], buf, setup->wLength, do_eeprom_write, NULL);
+		_delay_ms(100);
+		reset_cpu();
+		return 1;
+
+	case ATUSB_FROM_DEV(ATUSB_EUI64_READ):
+		debug("ATUSB_EUI64_READ\n");
+		eeprom_read_block(buf, (const void*)0, 8);
+		usb_send(&eps[0], buf, 8, NULL, NULL);
+		return 1;
 
 	default:
 		error("Unrecognized SETUP: 0x%02x 0x%02x ...\n",
