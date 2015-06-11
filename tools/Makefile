@@ -12,7 +12,8 @@
 
 
 BEN_DIRS=atrf-gpio atrf-id atrf-path atrf-proxy atrf-reset \
-	 atrf-rssi atrf-trim atrf-txrx atrf-xmit atrf-xtal
+	 atrf-rssi atrf-trim atrf-txrx atrf-xmit atrf-xtal \
+	 atusb-eui64
 
 ifneq ($(wildcard ../install/lowpan-tools-0.2.2/include/ieee802154.h),)
 DIRTPAN := dirtpan
