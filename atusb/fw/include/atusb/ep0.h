@@ -23,10 +23,11 @@
  * 0.0	initial release
  * 0.1  addition of ATUSB_TEST
  * 0.2  First public release
+ * 0.3	ATUSB_EUI64_READ/WRITE for permanent EUI64 handling
  */
 
 #define EP0ATUSB_MAJOR	0	/* EP0 protocol, major revision */
-#define EP0ATUSB_MINOR	2	/* EP0 protocol, minor revision */
+#define EP0ATUSB_MINOR	3	/* EP0 protocol, minor revision */
 
 #define	HW_TYPE_100813	0	/* 2010-08-13 */
 #define	HW_TYPE_101216	1	/* 2010-12-16 */
