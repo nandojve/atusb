@@ -36,7 +36,7 @@ uint8_t spi_io(uint8_t v)
 //      while (!(UCSR1A & 1 << UDRE1));
 	SPI_DATA = v;
 	SPI_WAIT_DONE();
-	return SPDR;
+	return SPI_DATA;
 }
 
 
