@@ -29,39 +29,6 @@
 
 uint8_t board_sernum[42] = { 42, USB_DT_STRING };
 
-
-static void set_clkm(void)
-{
-	/* switch CLKM to 8 MHz */
-
-	/*
-	 * @@@ Note: Atmel advise against changing the external clock in
-	 * mid-flight. We should therefore switch to the RC clock first, then
-	 * crank up the external clock, and finally switch back to the external
-	 * clock. The clock switching procedure is described in the ATmega32U2
-	 * data sheet in secton 8.2.2.
-	 */
-#ifdef ATUSB
-	spi_begin();
-	spi_send(AT86RF230_REG_WRITE | REG_TRX_CTRL_0);
-	spi_send(CLKM_CTRL_8MHz);
-	spi_end();
-#endif
-#ifdef RZUSB
-	spi_begin();
-	spi_send(AT86RF230_REG_WRITE | REG_TRX_CTRL_0);
-	spi_send(0x10);
-	spi_end();
-
-	/* TX_AUTO_CRC_ON, default disabled */
-	spi_begin();
-	spi_send(AT86RF230_REG_WRITE | 0x05);
-	spi_send(0x80);
-	spi_end();
-#endif
-}
-
-
 void reset_rf(void)
 {
 	/* set up all the outputs; default port value is 0 */
@@ -122,7 +89,7 @@ static char hex(uint8_t nibble)
 }
 
 
-static void get_sernum(void)
+void get_sernum(void)
 {
 	uint8_t sig;
 	uint8_t i;
@@ -132,27 +99,4 @@ static void get_sernum(void)
 		board_sernum[(i << 2)+2] = hex(sig >> 4);
 		board_sernum[(i << 2)+4] = hex(sig & 0xf);
 	}
-}
-
-
-void board_init(void)
-{
-	/* Disable the watchdog timer */
-
-	MCUSR = 0;		/* Remove override */
-	WDTCSR |= 1 << WDCE;	/* Enable change */
-	WDTCSR = 1 << WDCE;	/* Disable watchdog while still enabling
-				   change */
-
-	CLKPR = 1 << CLKPCE;
-#ifdef ATUSB
-	/* We start with a 1 MHz/8 clock. Disable the prescaler. */
-	CLKPR = 0;
-#endif
-#ifdef RZUSB
-	/* We start with a 16 MHz/8 clock. Put the prescaler to 2. */
-	CLKPR = 1 << CLKPS0;
-#endif
-
-	get_sernum();
 }

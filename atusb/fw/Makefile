@@ -46,6 +46,16 @@ OBJS = atusb.o board.o board_app.o sernum.o spi.o descr.o ep0.o \
 BOOT_OBJS = boot.o board.o sernum.o spi.o flash.o dfu.o \
             dfu_common.o usb.o boot-atu2.o
 
+
+ifeq ($(NAME),rzusb)
+OBJS += board_rzusb.o
+BOOT_OBJS += board_rzusb.o
+else
+OBJS += board_atusb.o
+BOOT_OBJS += board_atusb.o
+endif
+
+
 vpath %.c usb/
 
 CFLAGS += -Iinclude -Iusb -I.

@@ -19,52 +19,10 @@
 #include <atusb/atusb.h>
 
 #ifdef ATUSB
-#define	LED_PORT	B
-#define	LED_BIT		  6
-#define	nRST_RF_PORT	C
-#define	nRST_RF_BIT	  7
-#define	SLP_TR_PORT	B
-#define	SLP_TR_BIT	  4
-
-#define SCLK_PORT	D
-#define SCLK_BIT	  5
-#define	MOSI_PORT	D
-#define	MOSI_BIT	  3
-
-#define	MISO_PORT	D
-#define	MISO_BIT	  2
-#define	nSS_PORT	D
-#define	nSS_BIT		  1
-#define	IRQ_RF_PORT	D
-#define	IRQ_RF_BIT	  0
-
-#define SPI_WAIT_DONE()	while (!(UCSR1A & 1 << RXC1))
-#define SPI_DATA	UDR1
-
+#include "board_atusb.h"
 #endif
 #ifdef RZUSB
-#define	LED_PORT	D
-#define	LED_BIT		  7
-#define	nRST_RF_PORT	B
-#define	nRST_RF_BIT	  5
-#define	SLP_TR_PORT	B
-#define	SLP_TR_BIT	  4
-
-#define SCLK_PORT	B
-#define SCLK_BIT	  1
-#define	MOSI_PORT	B
-#define	MOSI_BIT	  2
-
-#define	MISO_PORT	B
-#define	MISO_BIT	  3
-#define	nSS_PORT	B
-#define	nSS_BIT		  0
-#define	IRQ_RF_PORT	D
-#define	IRQ_RF_BIT	  4
-
-#define SPI_WAIT_DONE()	while ((SPSR & (1 << SPIF)) == 0)
-#define SPI_DATA	SPDR
-
+#include "board_rzusb.h"
 #endif
 
 #define	SET_2(p, b)	PORT##p |= 1 << (b)
@@ -121,7 +79,8 @@ void timer_init(void);
 bool gpio(uint8_t port, uint8_t data, uint8_t dir, uint8_t mask, uint8_t *res);
 void gpio_cleanup(void);
 
-void board_init(void);
+void get_sernum(void);
+
 void board_app_init(void);
 
 #endif /* !BOARD_H */
