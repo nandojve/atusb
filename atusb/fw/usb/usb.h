@@ -184,4 +184,6 @@ void usb_ep_change(struct ep_descr *ep);
 void usb_reset(void);
 void usb_init(void);
 
+void ep_init(void);
+
 #endif /* !USB_H */

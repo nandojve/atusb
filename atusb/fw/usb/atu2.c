@@ -180,7 +180,7 @@ stall:
 }
 
 
-static void ep_init(void)
+void ep_init(void)
 {
 	UENUM = 0;
 	UECONX = (1 << RSTDT) | (1 << EPEN);	/* enable */
@@ -244,41 +244,4 @@ void usb_reset(void)
 {
 	UDCON |= 1 << DETACH;	/* detach the pull-up */
 	_delay_ms(1);
-}
-
-
-void usb_init(void)
-{
-	USBCON |= 1 << FRZCLK;		/* freeze the clock */
-
-	/* enable the PLL and wait for it to lock */
-#ifdef ATUSB
-	PLLCSR &= ~(1 << PLLP2 | 1 << PLLP1 | 1 << PLLP0);
-#endif
-#ifdef RZUSB
-	/* TODO sheet page 50 For Atmel AT90USB128x only. Do not use with Atmel AT90USB64x. */
-	/*  FOR 8 XTAL Mhz only!!! */
-	PLLCSR = ((1 << PLLP1) | (1 << PLLP0));
-#endif
-	PLLCSR |= 1 << PLLE;
-	while (!(PLLCSR & (1 << PLOCK)));
-
-#ifdef ATUSB
-	USBCON &= ~(1 << USBE);		/* reset the controller */
-	USBCON |= 1 << USBE;
-#endif
-#ifdef RZUSB
-	UHWCON |= (1 << UVREGE);
-
-	USBCON &= ~((1 << USBE) | (1 << OTGPADE));		/* reset the controller */
-	USBCON |= ((1 << USBE) | (1 << OTGPADE));
-#endif
-
-	USBCON &= ~(1 << FRZCLK);	/* thaw the clock */
-
-	UDCON &= ~(1 << DETACH);	/* attach the pull-up */
-	UDIEN = 1 << EORSTE;		/* enable device interrupts  */
-//	UDCON |= 1 << RSTCPU;		/* reset CPU on bus reset */
-
-	ep_init();
 }

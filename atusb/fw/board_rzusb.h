@@ -41,4 +41,8 @@
 void set_clkm(void);
 void board_init(void);
 
+void spi_begin(void);
+void spi_off(void);
+void spi_init(void);
+
 #endif /* !BOARD_H */

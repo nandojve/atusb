@@ -25,6 +25,9 @@
 #include "at86rf230.h"
 #include "board.h"
 #include "spi.h"
+#include "usb/usb.h"
+
+static bool spi_initialized = 0;
 
 void set_clkm(void)
 {
@@ -63,4 +66,64 @@ void board_init(void)
 	CLKPR = 1 << CLKPS0;
 
 	get_sernum();
+}
+
+void spi_begin(void)
+{
+	if (!spi_initialized)
+		spi_init();
+	CLR(nSS);
+}
+
+void spi_off(void)
+{
+	spi_initialized = 0;
+	SPCR &= ~(1 << SPE);
+}
+
+void spi_init(void)
+{
+	SET(nSS);
+	OUT(SCLK);
+	OUT(MOSI);
+	OUT(nSS);
+	IN(MISO);
+
+	SPCR = (1 << SPE) | (1 << MSTR);
+	SPSR = (1 << SPI2X);
+
+	spi_initialized = 1;
+}
+
+void usb_init(void)
+{
+	USBCON |= 1 << FRZCLK;		/* freeze the clock */
+
+	/* enable the PLL and wait for it to lock */
+	/* TODO sheet page 50 For Atmel AT90USB128x only. Do not use with Atmel AT90USB64x. */
+	/*  FOR 8 XTAL Mhz only!!! */
+	PLLCSR = ((1 << PLLP1) | (1 << PLLP0));
+	PLLCSR |= 1 << PLLE;
+	while (!(PLLCSR & (1 << PLOCK)));
+
+	UHWCON |= (1 << UVREGE);
+
+	USBCON &= ~((1 << USBE) | (1 << OTGPADE));		/* reset the controller */
+	USBCON |= ((1 << USBE) | (1 << OTGPADE));
+
+	USBCON &= ~(1 << FRZCLK);	/* thaw the clock */
+
+	UDCON &= ~(1 << DETACH);	/* attach the pull-up */
+	UDIEN = 1 << EORSTE;		/* enable device interrupts  */
+//	UDCON |= 1 << RSTCPU;		/* reset CPU on bus reset */
+
+	ep_init();
+}
+
+void board_app_init(void)
+{
+	/* enable timer input capture 1, trigger on rising edge */
+	TCCR1B = (1 << ICES1);
+	TIFR1 = (1 << ICF1);
+	TIMSK1 = (1 << ICIE1);
 }
