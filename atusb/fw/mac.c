@@ -113,7 +113,7 @@ static void rx_done(void *user)
 	led(0);
 	next_buf(&rx_out);
 	usb_next();
-#ifdef RZUSB
+#ifdef AT86RF230
 	/* slap at86rf230 - reduce fragmentation issue */
 	change_state(TRX_STATUS_RX_AACK_ON);
 #endif
@@ -126,13 +126,13 @@ static void receive_frame(void)
 	uint8_t *buf;
 
 	spi_begin();
-#ifdef ATUSB
+#ifdef AT86RF231
 	if (!(spi_io(AT86RF230_BUF_READ) & RX_CRC_VALID)) {
 		spi_end();
 		return;
 	}
 #endif
-#ifdef RZUSB
+#ifdef AT86RF230
 	spi_io(AT86RF230_BUF_READ);
 #endif
 
@@ -216,7 +216,7 @@ static void do_tx(void *user)
 	}
 	while (status != TRX_STATUS_RX_ON && status != TRX_STATUS_RX_AACK_ON);
 
-#ifdef ATUSB
+#ifdef AT86RF231
 	/*
 	 * We use TRX_CMD_FORCE_PLL_ON instead of TRX_CMD_PLL_ON because a new
 	 * reception may have begun while we were still working on the previous
@@ -224,7 +224,7 @@ static void do_tx(void *user)
 	 */
 	reg_write(REG_TRX_STATE, TRX_CMD_FORCE_PLL_ON);
 #endif
-#ifdef RZUSB
+#ifdef AT86RF230
 	/*
 	 * at86rf230 doesn't support force change, nevetherless this works
 	 * somehow
