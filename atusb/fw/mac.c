@@ -126,15 +126,7 @@ static void receive_frame(void)
 	uint8_t *buf;
 
 	spi_begin();
-#ifdef AT86RF231
-	if (!(spi_io(AT86RF230_BUF_READ) & RX_CRC_VALID)) {
-		spi_end();
-		return;
-	}
-#endif
-#ifdef AT86RF230
 	spi_io(AT86RF230_BUF_READ);
-#endif
 
 	size = spi_recv();
 	if (!size || (size & 0x80)) {
