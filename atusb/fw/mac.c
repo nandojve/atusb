@@ -233,15 +233,18 @@ static void do_tx(void *user)
 		spi_send(tx_buf[i]);
 	spi_end();
 
+	change_state(TRX_STATUS_TX_ARET_ON);
+
 	slp_tr();
 
 	txing = 1;
 	this_seq = next_seq;
 
 	/*
-	 * Wait until we reach BUSY_TX, so that we command the transition to
+	 * Wait until we reach BUSY_TX_ARET, so that we command the transition to
 	 * RX_AACK_ON which will be executed upon TX completion.
 	 */
+	change_state(TRX_CMD_PLL_ON);
 	change_state(TRX_CMD_RX_AACK_ON);
 }
 
