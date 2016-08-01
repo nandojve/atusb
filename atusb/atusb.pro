@@ -48,7 +48,7 @@ LibName6=../../kicad-libs/components/usb_a_plug
 LibName7=../components/xtal-4
 LibName8=../components/antenna
 LibName9=../components/balun-smt6
-LibName10=conn
+LibName10=../../kicad-libs/components/testpoint
 [pcbnew]
 version=1
 PadDrlX=320
