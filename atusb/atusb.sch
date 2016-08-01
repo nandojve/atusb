@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date Fri May 27 04:26:53 2011
+EESchema Schematic File Version 2
 LIBS:power
 LIBS:device
 LIBS:conn
@@ -9,9 +9,10 @@ LIBS:xtal-4
 LIBS:antenna
 LIBS:balun-smt6
 LIBS:atusb-cache
-EELAYER 24  0
+EELAYER 25 0
 EELAYER END
-$Descr A4 11700 8267
+$Descr A4 11693 8268
+encoding utf-8
 Sheet 1 3
 Title "IEEE 802.15.4 USB Transceiver (AT86RF231)"
 Date "27 may 2011"
@@ -60,6 +61,8 @@ U 1 1 4C641B9C
 P 10000 6100
 F 0 "#FLG01" H 10000 6370 30  0001 C CNN
 F 1 "PWR_FLAG" H 10000 6330 30  0000 C CNN
+F 2 "" H 10000 6100 60  0001 C CNN
+F 3 "" H 10000 6100 60  0001 C CNN
 	1    10000 6100
 	1    0    0    -1  
 $EndComp
@@ -69,6 +72,8 @@ U 1 1 4C641B91
 P 10000 6300
 F 0 "#PWR02" H 10000 6300 30  0001 C CNN
 F 1 "GND" H 10000 6230 30  0001 C CNN
+F 2 "" H 10000 6300 60  0001 C CNN
+F 3 "" H 10000 6300 60  0001 C CNN
 	1    10000 6300
 	1    0    0    -1  
 $EndComp
