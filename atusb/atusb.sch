@@ -1,13 +1,14 @@
 EESchema Schematic File Version 2
 LIBS:power
-LIBS:device
-LIBS:conn
+LIBS:r
+LIBS:c
 LIBS:at86rf231
 LIBS:atmega8u2
 LIBS:usb_a_plug
 LIBS:xtal-4
 LIBS:antenna
 LIBS:balun-smt6
+LIBS:conn
 LIBS:atusb-cache
 EELAYER 25 0
 EELAYER END

@@ -40,14 +40,15 @@ PrintMonochrome=1
 ShowSheetReferenceAndTitleBlock=1
 [eeschema/libraries]
 LibName1=power
-LibName2=device
-LibName3=conn
+LibName2=../../kicad-libs/components/r
+LibName3=../../kicad-libs/components/c
 LibName4=../components/at86rf231
 LibName5=../../kicad-libs/components/atmega8u2
 LibName6=../../kicad-libs/components/usb_a_plug
 LibName7=../components/xtal-4
 LibName8=../components/antenna
 LibName9=../components/balun-smt6
+LibName10=conn
 [pcbnew]
 version=1
 PadDrlX=320
