@@ -49,7 +49,7 @@ Both boards are based on the Atmel
 AT86RF231</A> transceiver. They operate in the license-free 2.4 GHz band
 using the
 <A href="http://en.wikipedia.org/wiki/IEEE_802.15.4">IEEE 802.15.4</A>
-physical and link layer. 
+physical and link layer.
 <BR>
 Note that IEEE 802.15.4 is different from
 <A href="http://en.wikipedia.org/wiki/IEEE_802.11">IEEE 802.11</A> (WLAN)
@@ -66,7 +66,7 @@ supports non-standard rates of up to 2 Mbps, with a reduced range.
 <H2>Compatibility</H2>
 
 <B>atben</B> and <B>atusb</B> can communicate at the physical and link
-layer with any device that implements the 
+layer with any device that implements the
 <A href="http://standards.ieee.org/getieee802/download/802.15.4-2006.pdf">IEEE
 802.15.4-2006 standard</A> for the 2.4 GHz band.
 <BR>
@@ -89,8 +89,8 @@ The host needs suitable drivers for the board.
 The ultimate goal is to fully support IPv6 with
 <A href="http://en.wikipedia.org/wiki/6LoWPAN">6LoWPAN</A>, in
 cooperation with the
-<A href="http://sourceforge.net/apps/trac/linux-zigbee/">linux-zigbee</A>
-project. This work is still in progress and may take a while.
+<A href="http://wpan.cakelab.org/">linux-wpan</A>
+project.
 <P>
 To make use of the boards while working on IPv6, we have developed a quick
 and dirty tunnelling mechanism for IPv4. A video demonstrating its use
@@ -140,19 +140,20 @@ Here is an overview of the status of the various project elements:
     <TD><A href="http://en.qi-hardware.com/wiki/Ben_WPAN#Production_Notes">Production notes</A>, factory files:
       <A href="http://downloads.qi-hardware.com/people/werner/wpan/fab/atben-pcb-110330.tar.gz">PCB</A> and
       <A href="http://downloads.qi-hardware.com/people/werner/wpan/fab/atben-smt-110330.tar.gz">SMT</A>
-  <TR><TH align="left">Firmware<TD bgcolor="#ffff00" align="center">
-    Finishing
+  <TR><TH align="left">Firmware<TD bgcolor="#80ff80" align="center">
+    Done
     <TD><A href="http://projects.qi-hardware.com/index.php/p/ben-wpan/source/tree/master/atusb/fw">source</A>,
         <A href="atusb-0.2.dfu">0.2 release</A>
-  <TR><TH align="left">Device driver<TD bgcolor="#ffff00" align="center">
-    Finishing
-    <TD><A href="https://git.kernel.org/cgit/linux/kernel/git/bluetooth/bluetooth-next.git/">mainlining through linux-wpan (bluetooh-next tree)</A>
+  <TR><TH align="left">Device driver<TD bgcolor="#80ff80" align="center">
+    Done
+    <TD><A
+href="https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/tree/drivers/net/ieee802154/atusb.c">In Linux mainline since 4.2 </A>
   <TR><TH align="left">MAC layer<TD bgcolor="#ffff00" align="center">
-    In progress
+    Finishing
     <TD><A href="http://wpan.cakelab.org/">linux-wpan project
   <TR><TH align="left">IPv4 hack<TD bgcolor="#80ff80" align="center">Done
     <TD><A href="http://projects.qi-hardware.com/index.php/p/ben-wpan/source/tree/master/tools/dirtpan">dirtpan</A>
-  <TR><TH align="left">6LoWPAN stack<TD bgcolor="#ffff00" align="center">In progress
+  <TR><TH align="left">6LoWPAN stack<TD bgcolor="#ffff00" align="center">Finishing
 </TABLE>
 <P>
 
