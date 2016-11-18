@@ -24,6 +24,9 @@
  * 0.1  addition of ATUSB_TEST
  * 0.2  First public release
  * 0.3	ATUSB_EUI64_READ/WRITE for permanent EUI64 handling
+ * 	Support to run the firmware on Atmel Raven USB dongles
+ * 	Remove FCS frame check from firmware and leave it to the driver
+ * 	Use extended operation mode for TX for automatic ACK handling
  */
 
 #define EP0ATUSB_MAJOR	0	/* EP0 protocol, major revision */
