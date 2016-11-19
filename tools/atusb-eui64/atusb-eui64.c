@@ -153,7 +153,7 @@ static void show_usb_info(struct atrf_dsc *dsc, unsigned char *mac, int write)
 		get_eui64(dev, eui64, EUI64_LEN);
 		printf("Current EUI64 address from EEPROM: ");
 		for (i = 0; i < EUI64_LEN; i++) {
-			printf("%02x", eui64[EUI64_LEN - 1 - i]);
+			printf("%02X", eui64[EUI64_LEN - 1 - i]);
 			if (i < EUI64_LEN -1)
 				printf(":");
 		}
