@@ -40,6 +40,16 @@ Requires a very recent toolchain, because ATmega32U2 is relatively new.
   this operation can fail with a message like "No DFU capable USB device
   found". Just retry, and it will eventually get through.
 
+
+HULUSB notes:
+-------------
+To prepare and flash the firmware on a HULUSB device some additional steps are
+needed;
+
+avr-objcopy -O ihex -R .signature -R .fuse -R .eeprom hulusb.elf hulusb.hex
+dfu-programmer at90usb1287 flash hulusb.hex
+dfu-programmer at90usb1287 reset
+
 --------------------------
 
 Making the toolchain:
