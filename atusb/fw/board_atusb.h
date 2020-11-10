@@ -17,11 +17,11 @@
 #include <stdint.h>
 
 #define	LED_PORT	B
-#define	LED_BIT		  6
+#define	LED_BIT		  0
 #define	nRST_RF_PORT	C
-#define	nRST_RF_BIT	  7
-#define	SLP_TR_PORT	B
-#define	SLP_TR_BIT	  4
+#define	nRST_RF_BIT	  6
+#define	SLP_TR_PORT	D
+#define	SLP_TR_BIT	  7
 
 #define SCLK_PORT	D
 #define SCLK_BIT	  5

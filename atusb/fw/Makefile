@@ -30,7 +30,7 @@ else ifeq ($(NAME),hulusb)
 CHIP=at90usb1287
 CFLAGS += -DHULUSB -DAT86RF212
 else
-CHIP=atmega32u2
+CHIP=atmega32u4
 CFLAGS += -DATUSB -DAT86RF231
 endif
 HOST=jlime
@@ -234,3 +234,6 @@ off:
 reset:
 		ssh $(HOST) poke 0x10010318 2048
 		ssh $(HOST) poke 0x10010314 2048
+
+# avrdude -F -p atmega32u4 -c atmelice -e -U flash:w:boot.hex:i -U lfuse:w:0x60:m -U hfuse:w:0xd8:m -U lock:w:0x2f:m
+# avrdude -F -p atmega32u4 -c atmelice -e -U flash:w:atusb.bin:r -U lfuse:w:0x60:m

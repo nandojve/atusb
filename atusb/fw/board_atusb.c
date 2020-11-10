@@ -71,7 +71,7 @@ void led(bool on)
 
 void set_clkm(void)
 {
-	/* switch CLKM to 8 MHz */
+	/* switch CLKM to 0 MHz */
 
 	/*
 	 * @@@ Note: Atmel advise against changing the external clock in
@@ -82,7 +82,7 @@ void set_clkm(void)
 	 */
 	spi_begin();
 	spi_send(AT86RF230_REG_WRITE | REG_TRX_CTRL_0);
-	spi_send(CLKM_CTRL_8MHz);
+	spi_send(CLKM_CTRL_OFF);
 	spi_end();
 }
 
@@ -135,10 +135,11 @@ void spi_init(void)
 
 void usb_init(void)
 {
+	UHWCON |= 1 << UVREGE;		/* Power-On USB pad regulator */
 	USBCON |= 1 << FRZCLK;		/* freeze the clock */
 
 	/* enable the PLL and wait for it to lock */
-	PLLCSR &= ~(1 << PLLP2 | 1 << PLLP1 | 1 << PLLP0);
+	PLLCSR &= ~(1 << PINDIV);
 	PLLCSR |= 1 << PLLE;
 	while (!(PLLCSR & (1 << PLOCK)));
 
@@ -146,6 +147,10 @@ void usb_init(void)
 	USBCON |= 1 << USBE;
 
 	USBCON &= ~(1 << FRZCLK);	/* thaw the clock */
+
+	USBCON |= 1 << OTGPADE;
+
+	while (!(USBSTA & (1 << VBUS)));
 
 	UDCON &= ~(1 << DETACH);	/* attach the pull-up */
 	UDIEN = 1 << EORSTE;		/* enable device interrupts  */
